@@ -2,15 +2,13 @@
 
 /* react関連 */
 import React from 'react';
-import ReactDOM from 'react-dom';               // createRootが未だ含まれていない
-import { createRoot } from 'react-dom/client';  // 現状createRootだけreact-dom/clientから取得
+import { createRoot } from 'react-dom/client';  // 現状createRootはreact-dom/clientから取得
 
 /* 共通スタイル */
-import GlobalStyle from './globalstyle';
-import Tabs from './App/Tab'
+import GlobalStyle from './globalStyle';
 
 /* App Component */
-// import App from './components/App';
+import App from './components/App';
 
 // rootを取得
 const rootDiv = document.querySelector('#root');
@@ -20,8 +18,8 @@ if (rootDiv) {
 
  root.render(
   <React.StrictMode>
-    <GlobalStyle />          {/* 共通スタイル  読み込み */}
-    <Tabs />
+    <GlobalStyle />          {/* 共通スタイルの読み込み */}
+    <App />                  {/* プレエントリの読み込み */}
   </React.StrictMode>
  );
 

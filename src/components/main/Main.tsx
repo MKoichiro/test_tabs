@@ -1,9 +1,9 @@
 /* Main Component */
 
 /* react 関連 */
-import React, { FC, useState, useRef } from 'react'; // 他の hooks も必要に応じてここでimport
+import React, { FC } from 'react'; // 他の hooks も必要に応じてここでimport
 /* styled-components 関連 */
-import styled, { css } from 'styled-components';
+import styled from 'styled-components';
 /* 子Component */
 import { StyledTabsContainer as TabsContainer } from './Tab';
 

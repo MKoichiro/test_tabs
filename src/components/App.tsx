@@ -2,6 +2,8 @@
 
 /* react関連 */
 import React from 'react';
+import TabAdminProvider from '../Providers';
+
 
 /* 各 Component */
 import { StyledHeader as Header } from './header/Header';
@@ -11,9 +13,11 @@ import { StyledFooter as Footer } from './footer/Footer';
 const App = () => {
   return (
     <>
-		  <Header />
-		  <Main />
-		  <Footer />
+			<TabAdminProvider>
+				<Header />
+				<Main />
+				<Footer />
+			</TabAdminProvider>
 	  </>
   );
 };

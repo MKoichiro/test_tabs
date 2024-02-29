@@ -7,8 +7,10 @@ const GlobalStyle = createGlobalStyle`
     --eng-ff-1:                            Arial, 'Helvetica Neue', Helvetica, sans-serif;
     --eng-ff-2: 'Times NewRoman', 'Times', Arial, 'Helvetica Neue', Helvetica, sans-serif;
     --eng-ff-3: 'Economica'              , Arial, 'Helvetica Neue', Helvetica, sans-serif;
+    --contents-width: 70vw;
     --border-weight: .15rem;
     @media (width < 600px) {
+      --contents-width: 90vw;
       --border-weight: .1rem;
     }
 

@@ -17,10 +17,13 @@ if (rootDiv) {
   const root = createRoot(rootDiv);
 
  root.render(
-  <React.StrictMode>
-    <GlobalStyle />          {/* 共通スタイルの読み込み */}
-    <App />                  {/* プレエントリの読み込み */}
-  </React.StrictMode>
+  <>
+    <React.StrictMode>
+      <GlobalStyle />          {/* 共通スタイルの読み込み */}
+      <App />                  {/* プレエントリの読み込み */}
+    </React.StrictMode>
+  </>
+
  );
 
 } else { console.error('The element with the id "root" is not found.') }

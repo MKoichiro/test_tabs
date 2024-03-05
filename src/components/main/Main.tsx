@@ -1,13 +1,13 @@
 /* Main Component */
 
 /* react 関連 */
-import React, { FC } from 'react'; // 他の hooks も必要に応じてここでimport
+import React, { FC } from 'react';
 /* styled-components 関連 */
 import styled from 'styled-components';
-/* 子Component */
+
 import { StyledTabsContainer as TabsContainer } from './TabsContainer';
 import AllTodosContainer from './AllTodosContainer';
-import CreateNew from './CreateNewTodo';
+import CreateNewTodo from './CreateNewTodo';
 import { EditCategories } from './editCategoriesModal/EditCategoriesModal';
 
 
@@ -26,7 +26,7 @@ const Main: FC<MainProps> = (props) => {
 				<AllTodosContainer />
 			</section>
 			<section className="form-create-new-todos-container">
-				<CreateNew />				{/* = form */}
+				<CreateNewTodo />				{/* = form */}
 			</section>
 			<section className="edit-categories-modal">
 				<EditCategories />	{/* = div */}

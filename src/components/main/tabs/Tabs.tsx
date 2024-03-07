@@ -1,23 +1,29 @@
-/* Tabs Component */
+/*
+  [Tabs Component]
+    element: ul (→ 今後 nav に変更する)
+    description:
+      category を切り替える tab menu を提供している
+*/
 
-import React, { FC, useRef, useContext } from 'react'; // 他の hooks も必要に応じてここでimport
+/* common: essential */
+import React, { FC, useRef, useContext } from 'react';
 import styled from 'styled-components';
+/* common: others */
 import { AllTodosAdminContext } from '../../../Providers';
+/* children components */
 import { Tab } from './Tab';
 
 
 // === component 定義部分 ============================================= //
-interface TabsContainerProps {
+interface TabsProps {
 	className?: string;
 }
-const TabsContainer: FC<TabsContainerProps> = (props) => {
+const Tabs: FC<TabsProps> = (props) => {
   const { className } = props;
   const { allTodos } = useContext(AllTodosAdminContext);
 
   const containerRef = useRef<HTMLUListElement | null>(null);
-  // const liRefs       = allTodos.map(() => useRef<HTMLLIElement | null>(null)); // anti-pattern
   const liRefs       = useRef<(HTMLLIElement | null)[]>([]);
-
 
 
 	return (
@@ -31,7 +37,7 @@ const TabsContainer: FC<TabsContainerProps> = (props) => {
           <Tab
             key={                           todos.id }
             todos={                            todos }
-            ref= { (e) => { liRefs.current[i] = e; } }
+            ref= {   e => { liRefs.current[i] = e; } }
             containerRef={              containerRef }
             index={                                i } />
         )
@@ -43,7 +49,7 @@ const TabsContainer: FC<TabsContainerProps> = (props) => {
 
 
 // === style 定義部分 ================================================= //
-const StyledTabsContainer = styled(TabsContainer)<TabsContainerProps>`
+const StyledTabsContainer = styled(Tabs)<TabsProps>`
   display: flex;
   height: 4rem;
   margin-top: 3.2rem;

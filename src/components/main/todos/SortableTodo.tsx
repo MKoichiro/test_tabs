@@ -1,20 +1,34 @@
+/*
+  [SortableTodo Component]
+    element: li
+    description:
+      Todo Componentと比較して、内部的にはこちらが実体だが、
+      外見上は drop 位置を示唆するゴースト要素
+*/
+
+
+/* common: essential */
 import React, { useContext } from 'react';
 import styled from 'styled-components';
+/* common: others */
 import { TodoType } from '../../../types/Todos';
 import { AllTodosAdminContext } from "../../../Providers";
+/* dnd-kit */
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
+/* children components */
 import { Detail } from './Detail';
 import { TodoHeader } from './Header';
 
 
+// === component 定義部分 ============================================= //
 interface PropsType {
   todo: TodoType;
   todosId: number;
 }
 
 export const SortableTodo = (props: PropsType) => {
-  // currentTodo"s"Id と currentTodo""Idがあるので注意
+  // currentTodo"s"Id と currentTodo""Id があるので注意
   const { todo: currentTodo, todosId: currentTodosId } = props;
   const {
     id: currentTodoId,
@@ -76,8 +90,11 @@ export const SortableTodo = (props: PropsType) => {
 
     </StyledLi>
   )
-}
+};
+// ============================================= component 定義部分 === //
 
+
+// === style 定義部分 ================================================= //
 const StyledLi = styled.li<{ $isOpen: boolean; $isCompleted: boolean; $isDragging: boolean; }>`
   color: ${ props =>  props.$isOpen ? '#fff' : '#000' };
   opacity: ${ props => props.$isDragging ? .5 : 1 };
@@ -103,3 +120,4 @@ const StyledLi = styled.li<{ $isOpen: boolean; $isCompleted: boolean; $isDraggin
 
   }
 `;
+// ================================================= style 定義部分 === //

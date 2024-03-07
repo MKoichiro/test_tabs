@@ -1,8 +1,17 @@
+/*
+  [Tab Component]
+    element: li
+    description:
+      category を切り替える tab menu の各 tab 要素
+*/
+
+
+/* common: required */
 import React, { useContext, forwardRef, Ref, RefObject } from 'react';
 import styled from 'styled-components';
+/* common: others */
 import { TodosType } from '../../../types/Todos';
 import { AllTodosAdminContext } from '../../../Providers';
-
 
 
 // === component 定義部分 ============================================= //

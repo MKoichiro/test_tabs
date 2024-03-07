@@ -1,11 +1,24 @@
+/*
+  [EditCategoriesModal]
+    element: div
+    description:
+      （未定）ボタンクリックで開く categories 編集用モーダルを提供している
+      category の削除、追加、表示順変更の機能を実装
+*/
+
+
+/* common: essential */
 import React, { useState } from 'react';
 import styled from 'styled-components';
+/* font awesome */
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faRectangleXmark } from '@fortawesome/free-regular-svg-icons';
-import { CreateNewCategories } from './CreateNewCategories';
+/* children components */
+import { CreateNewCategory } from './CreateNewCategory';
 import { Categories } from './Categories';
 
 
+// === component 定義部分 ============================================= //
 export const EditCategories = () => {
 
   const [isOpen, setIsOpen] = useState(true);
@@ -24,12 +37,15 @@ export const EditCategories = () => {
         <Categories />
       </section>
       <section className='form-create-new-categories-container'>
-        <CreateNewCategories />
+        <CreateNewCategory />
       </section>
     </StyledDiv>
   );
 };
+// ============================================= component 定義部分 === //
 
+
+// === style 定義部分 ================================================= //
 const StyledDiv = styled.div<{ $isOpen: boolean }>`
   position: relative;
 
@@ -38,3 +54,4 @@ const StyledDiv = styled.div<{ $isOpen: boolean }>`
     top: 1rem; right: 1rem;
   }
 `;
+// ================================================= style 定義部分 === //

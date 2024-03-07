@@ -1,17 +1,25 @@
-/* todos のトップコンポーネント */
+/*
+  [AllTodos Component]
+    element: div
+    description:
+      全 category の全 todos を表示する todos dir のトップコンポーネント
+      carousel のように、active な category の todos のみを閲覧させるようにしている
+*/
 
+/* common: essential */
 import React, { useContext } from 'react';
 import styled from 'styled-components';
-
-import { EachTodos } from './EachTodos';
+/* common: others */
 import { AllTodosAdminContext } from '../../../Providers';
+/* children components */
+import { EachTodos } from './EachTodos';
 
 
+// === component 定義部分 ============================================= //
 export const AllTodos = () => {
-
   const { activeIndex, allTodos } = useContext(AllTodosAdminContext);
 
-  const todosContainers = allTodos.map((todos, i) => {
+  const todosLis = allTodos.map((todos, i) => {
     return (
       <li key={ todos.id }>
         <EachTodos todosData={ todos } index={ i } />
@@ -21,15 +29,14 @@ export const AllTodos = () => {
 
   return (
     <StyledDiv $activeIndex={ activeIndex }>
-      <ul>
-        { todosContainers }
-      </ul>
+      <ul children={ todosLis } />
     </StyledDiv>
   );
 };
+// ============================================= component 定義部分 === //
 
 
-
+// === style 定義部分 ================================================= //
 const StyledDiv = styled.div<{ $activeIndex: number }>`
   overflow-x: hidden;
 
@@ -43,6 +50,5 @@ const StyledDiv = styled.div<{ $activeIndex: number }>`
       /* height: 500px; */
     }
   }
-
 `;
-
+// ================================================= style 定義部分 === //

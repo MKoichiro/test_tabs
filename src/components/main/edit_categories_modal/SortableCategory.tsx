@@ -1,11 +1,28 @@
+/*
+  [SortableCategory Component]
+    element: li
+    description:
+      Category Componentと比較して、内部的にはこちらが実体だが、
+      外見上は drop 位置を示唆するゴースト要素
+*/
+
+
+/* common: essential */
 import React from 'react';
+import styled from 'styled-components';
+/* common: others */
+import { TodosType } from '../../../types/Todos';
+/* material icons */
+import { DragIndicator } from '@mui/icons-material';
+/* dnd-kit */
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import styled from 'styled-components';
-import { TodosType } from '../../../types/Todos';
-import { DragIndicator } from '@mui/icons-material';
 
-interface PropsType { todos: TodosType }
+
+// === component 定義部分 ============================================= //
+interface PropsType {
+  todos: TodosType;
+}
 
 export const SortableCategory = (props: PropsType) => {
   const { todos } = props;
@@ -32,7 +49,10 @@ export const SortableCategory = (props: PropsType) => {
     </StyledLi>
   )
 };
+// ============================================= component 定義部分 === //
 
+
+// === style 定義部分 ================================================= //
 const StyledLi = styled.li<{ $isDragging: boolean; }>`
   font-size: var(--fs-category-name);
   touch-action: none;
@@ -41,3 +61,4 @@ const StyledLi = styled.li<{ $isDragging: boolean; }>`
     cursor: grab;
   }
 `;
+// ================================================= style 定義部分 === //

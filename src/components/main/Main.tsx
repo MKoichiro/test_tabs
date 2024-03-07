@@ -1,21 +1,13 @@
 /* Main Component */
 
-// all tabの実装
-// kanban viewの実装
-// locationの実装
-// googleカレンダーとの連携
-// dnd-kit todo部分に
-// form 履歴から入力
-// dnd-kit sort
-
 /* react 関連 */
 import React, { FC } from 'react';
 /* styled-components 関連 */
 import styled from 'styled-components';
 
-import { StyledTabsContainer as TabsContainer } from './tabs/TabsContainer';
+import { StyledTabsContainer as TabsContainer } from './tabs/Tabs';
 import { AllTodos } from './todos/AllTodos';
-import CreateNewTodo from './CreateNewTodo';
+import { CreateNewTodo } from './CreateNewTodo';
 import { EditCategories } from './edit_categories_modal/EditCategoriesModal';
 
 

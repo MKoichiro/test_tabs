@@ -1,11 +1,25 @@
-import { SyntheticListenerMap } from '@dnd-kit/core/dist/hooks/utilities'
-import { faTrashCan } from '@fortawesome/free-regular-svg-icons'
-import { faCircleExclamation, faGear } from '@fortawesome/free-solid-svg-icons'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+/*
+  [(/todos/)Header Component]
+    element: header
+    description:
+      todo の見出し部分を表示する component
+      SortableTodo と Todo の 2 箇所で呼び出される
+*/
+
+/* common: essential */
 import React from 'react'
 import styled from 'styled-components'
+/* font awesome */
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCircleExclamation, faGear } from '@fortawesome/free-solid-svg-icons';
+import { faTrashCan } from '@fortawesome/free-regular-svg-icons';
+/* material icons */
 import { DragIndicator } from '@mui/icons-material';
+/* dnd-kit */
+import { SyntheticListenerMap } from '@dnd-kit/core/dist/hooks/utilities';
 
+
+// === component 定義部分 ============================================= //
 interface PropsType{
   sortable: boolean;
   isExpired: boolean;
@@ -42,8 +56,12 @@ export const TodoHeader = (props: PropsType) => {
       </div>
     </header>
   )
-}
+};
+// ============================================= component 定義部分 === //
 
+
+// === style 定義部分 ================================================= //
 const StyledHeader = styled.header`
   
 `;
+// ================================================= style 定義部分 === //

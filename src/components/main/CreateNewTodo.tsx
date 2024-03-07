@@ -1,10 +1,22 @@
+/*
+  [CreateNewTodo Component]
+    element: form
+    description:
+      active な category に新たなtodoを追加するためのフォームを提供している
+*/
+
+
+/* common: essential */
 import React, { useContext, useRef } from 'react';
 import styled from 'styled-components';
-import { useForm } from 'react-hook-form';
-import { AllTodosAdminContext } from '../../Providers';
+/* common: others */
 import { TodoType, TodosType, PriorityType, StatusType } from '../../types/Todos';
+import { AllTodosAdminContext } from '../../Providers';
+/* react-hook-form */
+import { useForm } from 'react-hook-form';
 
 
+// === component 定義部分 ============================================= //
 interface DataType {
   title?: string;
   detail?: string;
@@ -17,7 +29,7 @@ interface DataType {
 type DeadlineType = { date: Date; use_time: boolean } | 'not set';
 
 
-const CreateNewTodo = () => {
+export const CreateNewTodo = () => {
   const { activeIndex, allTodos, dispatchAllTodosChange } = useContext(AllTodosAdminContext);
 
   // react-hook-form
@@ -227,9 +239,10 @@ const CreateNewTodo = () => {
     </StyledForm>
   );
 };
+// ============================================= component 定義部分 === //
 
 
-
+// === style 定義部分 ================================================= //
 const StyledForm = styled.form`
   height: 500px;
   background: cyan;
@@ -303,7 +316,4 @@ const StyledForm = styled.form`
 
   }
 `;
-
-
-
-export default CreateNewTodo;
+// ================================================= style 定義部分 === //

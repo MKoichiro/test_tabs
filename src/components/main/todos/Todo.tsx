@@ -1,9 +1,23 @@
+/*
+  [Todo Component]
+    element: div
+    description:
+      ul 内に収まって drop 先を示唆するSortableTodo Component に対して、
+      これは drag 中にカーソルに追従する、（外見上、）実体となるコピー要素
+*/
+
+
+/* common: essential */
 import React, { LegacyRef, forwardRef } from 'react';
 import styled from 'styled-components';
+/* common: others */
 import { TodoType } from '../../../types/Todos';
+/* children components */
 import { Detail } from './Detail';
 import { TodoHeader } from './Header';
 
+
+// === component 定義部分 ============================================= //
 interface PropsType {
   todo: TodoType;
   todosId: number;
@@ -32,7 +46,10 @@ export const Todo = forwardRef(({...props}: PropsType, ref: LegacyRef<HTMLDivEle
     </StyledDiv>
   );
 });
+// ============================================= component 定義部分 === //
 
+
+// === style 定義部分 ================================================= //
 const StyledDiv = styled.div`
   background: grey;
   
@@ -71,3 +88,4 @@ const StyledDiv = styled.div`
     }
   }
 `;
+// ================================================= style 定義部分 === //

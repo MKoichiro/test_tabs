@@ -1,20 +1,28 @@
+/*
+  [CreateNewCategory]
+    element: form
+    description:
+      edit categories modal 内で新たな category を追加するためのフォームを提供している
+*/
+
+
+/* common: essential */
 import React, { useContext, useRef } from 'react';
 import styled from 'styled-components';
-import { useForm } from 'react-hook-form';
+/* common: others */
 import { TodoType, TodosType } from '../../../types/Todos';
 import { AllTodosAdminContext } from '../../../Providers';
+/* react-hook-form */
+import { useForm } from 'react-hook-form';
 
 
-
-interface DataType {
-  category_name: string;
-}
-
+// === component 定義部分 ============================================= //
+// 新規カテゴリーにデフォルトで入れるtodoの見出し及びコメント
 const TEMPLATE_MESSAGE = {
   main: 'template message of main',
   detail: 'template message of detail',
 }
-
+// バリデーションエラーメッセージ
 const NAME_VALIDATION = {
   required: 'この項目は必須です。',
   pattern: {
@@ -23,8 +31,10 @@ const NAME_VALIDATION = {
   }
 }
 
-
-export const CreateNewCategories = () => {
+interface DataType {
+  category_name: string;
+}
+export const CreateNewCategory = () => {
 
   const { allTodos, dispatchAllTodosChange } = useContext(AllTodosAdminContext);
 
@@ -108,7 +118,10 @@ export const CreateNewCategories = () => {
     </StyledForm>
   )
 }
+// ============================================= component 定義部分 === //
 
+
+// === style 定義部分 ================================================= //
 const StyledForm = styled.form`
   fieldset {
     // reset
@@ -116,3 +129,4 @@ const StyledForm = styled.form`
     padding: 0;
   }
 `;
+// ================================================= style 定義部分 === //

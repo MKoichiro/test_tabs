@@ -1,8 +1,21 @@
+/*
+  [Categories Component]
+    element: ul
+    description:
+      edit categories modal 内で、現在の category 一覧をリスト表示している
+      各リストアイテムの category は dnd-kit で並び替え可能にしている
+*/
+
+
+/* common: essential */
 import React, { useContext, useState } from 'react';
 import styled from 'styled-components';
+/* common: others */
 import { AllTodosAdminContext } from '../../../Providers';
+/* children components */
 import { SortableCategory } from './SortableCategory';
-
+import { Category } from './Category';
+/* dnd-kit */
 import {
   DndContext,
   closestCenter,
@@ -21,26 +34,28 @@ import { arrayMove,
   sortableKeyboardCoordinates,
   verticalListSortingStrategy
 } from '@dnd-kit/sortable';
-import { Category } from './Category';
 
 
+// === component 定義部分 ============================================= //
 export const Categories = () => {
+  const { allTodos, dispatchAllTodosChange } = useContext(AllTodosAdminContext);
 
-  const { activeIndex, allTodos, dispatchAllTodosChange } = useContext(AllTodosAdminContext);
-
-  const [ activeId, setActiveId ] = useState<UniqueIdentifier | null>(null);
-
+  // dnd-kit/sortable 関連
+  // sensor 登録
   const sensors = useSensors(
     useSensor(PointerSensor),
     useSensor(TouchSensor),
     useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates })
   );
 
+  //
+  const [ activeId, setActiveId ] = useState<UniqueIdentifier | null>(null);
   const handleDragStart = (e: DragStartEvent) => {
     const { active } = e;
     setActiveId(active.id);
   };
 
+  //
   const handleDragEnd = (e: DragEndEvent) => {
     const { active, over } = e;
     if (active.id !== over?.id) {
@@ -52,6 +67,7 @@ export const Categories = () => {
     }
     setActiveId(null);
   };
+  // dnd-kit/sortable 関連
 
 
   return (
@@ -86,7 +102,11 @@ export const Categories = () => {
     </StyledUl>
   );
 };
+// ============================================= component 定義部分 === //
 
+
+// === style 定義部分 ================================================= //
 const StyledUl = styled.ul`
   --fs-category-name: 2rem; // font-sizeはGhostとPointerFollowingで一致させる
 `;
+// ================================================= style 定義部分 === //

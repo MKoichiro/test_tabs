@@ -1,7 +1,20 @@
+/*
+  [Detail Components]
+    elemnt: section
+    description:
+      todos の detail とその他プロパティを表示する component
+      SortableTodo と Todo の 2 箇所で呼び出される
+*/
+
+
+/* common: essential */
 import React from 'react';
 import styled from 'styled-components';
+/* common: others */
 import { PriorityType, StatusType } from '../../../types/Todos';
 
+
+// === component 定義部分 ============================================= //
 interface PropsType { 
   created_date: Date;
   updated_date: Date;
@@ -70,8 +83,11 @@ export const Detail = (props: PropsType) => {
       </section>
     </StyledSection>
   )
-}
+};
+// ============================================= component 定義部分 === //
 
+
+// === style 定義部分 ================================================= //
 const StyledSection = styled.section`
   .todo-info {
     width: 20%;
@@ -88,3 +104,4 @@ const StyledSection = styled.section`
     }
   }
 `;
+// ================================================= style 定義部分 === //

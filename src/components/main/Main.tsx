@@ -13,10 +13,10 @@ import React, { FC } from 'react';
 /* styled-components 関連 */
 import styled from 'styled-components';
 
-import { StyledTabsContainer as TabsContainer } from './TabsContainer';
-import AllTodosContainer from './AllTodosContainer';
+import { StyledTabsContainer as TabsContainer } from './tabs/TabsContainer';
+import { AllTodos } from './todos/AllTodos';
 import CreateNewTodo from './CreateNewTodo';
-import { EditCategories } from './editCategoriesModal/EditCategoriesModal';
+import { EditCategories } from './edit_categories_modal/EditCategoriesModal';
 
 
 // === component 定義部分 ============================================= //
@@ -31,7 +31,7 @@ const Main: FC<MainProps> = (props) => {
 			<h1 children="Main" />
 			<section className="todos-display-container">
 				<TabsContainer />
-				<AllTodosContainer />
+				<AllTodos />
 			</section>
 			<section className="form-create-new-todos-container">
 				<CreateNewTodo />				{/* = form */}

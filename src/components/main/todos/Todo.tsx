@@ -29,7 +29,7 @@ export const Todo = forwardRef(({...props}: PropsType, ref: LegacyRef<HTMLDivEle
     id: currentTodoId,
     main,
     expired: isExpired,
-    open: isOpen,
+    // open: isOpen,
     completed: isCompleted,
     ...rest
   } = todo;

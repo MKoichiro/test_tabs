@@ -11,7 +11,7 @@ import React from 'react'
 import styled from 'styled-components'
 /* font awesome */
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCircleExclamation, faGear } from '@fortawesome/free-solid-svg-icons';
+import { faChevronUp, faCircleExclamation, faGear } from '@fortawesome/free-solid-svg-icons';
 import { faTrashCan } from '@fortawesome/free-regular-svg-icons';
 /* material icons */
 import { DragIndicator } from '@mui/icons-material';
@@ -49,6 +49,9 @@ export const TodoHeader = (props: PropsType) => {
       <div className="btn-container">
         <button onClick={() => executeTodoPropsEdit('archived')}>
           <FontAwesomeIcon icon={faTrashCan} />
+        </button>
+        <button onClick={() => executeTodoPropsEdit('open')}>
+          <FontAwesomeIcon icon={faChevronUp} />
         </button>
         <button onClick={() => executeTodoPropsEdit('open')}>
           <FontAwesomeIcon icon={faGear} />

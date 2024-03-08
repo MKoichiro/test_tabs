@@ -27,8 +27,8 @@ const storedAllTodos: TodosType[] = [
         priority: 'not set',
         archived: false,
         main: '今日やること',
-        detail: 'aiueoとかきくけこ',
-				open: true,
+        detail: 'aiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこ',
+				open: false,
       },
       {
         id: 2,
@@ -623,3 +623,10 @@ const AllTodosAdminProvider = ({ children }: { children: React.ReactNode }) => {
 
 export default AllTodosAdminProvider;
 export { AllTodosAdminContext };
+
+
+export const $contentWidth = {
+  pc: 70,
+  tb: 70,
+  sp: 90,
+};

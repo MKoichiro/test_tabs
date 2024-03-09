@@ -625,8 +625,26 @@ export default AllTodosAdminProvider;
 export { AllTodosAdminContext };
 
 
-export const $contentWidth = {
+interface ContentWidthType {
+  pc: number;
+  tb: number;
+  sp: number;
+}
+export const $contentWidth: ContentWidthType = {
   pc: 70,
   tb: 70,
   sp: 90,
+};
+
+export const getPx = ($contentWidth: ContentWidthType) => {
+  switch (true) {
+    case (1024 < innerWidth):
+      return innerWidth * ($contentWidth.pc / 100);
+    case (600 < innerWidth && innerWidth <= 1024):
+      return innerWidth * ($contentWidth.tb / 100);
+    case (innerWidth <= 600):
+      return innerWidth * ($contentWidth.pc / 100);
+
+    default: return new Error('getPx()で予期せぬエラー');
+  }
 };

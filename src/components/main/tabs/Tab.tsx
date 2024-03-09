@@ -12,6 +12,7 @@ import styled from 'styled-components';
 /* common: others */
 import { TodosType } from '../../../types/Todos';
 import { AllTodosAdminContext } from '../../../Providers';
+import { $contentWidth, getPx } from '../../../Providers';
 
 
 // === component 定義部分 ============================================= //
@@ -26,18 +27,21 @@ export const Tab = forwardRef((props: PropsType, liRef: Ref<HTMLLIElement>) => {
   const { allTodos, dispatchAllTodosChange } = useContext(AllTodosAdminContext);
 
 
+
   const handleContainerScroll = () => {
     // null check
     const container = containerRef.current;
+    const currentContentWidth = getPx($contentWidth);
     if (!liRef) {     console.error('li 要素が見つかりません。'); return; }
     if (!container) { console.error('tab ul が見つかりません。'); return; }
 
     // get scroll coordinate
-    const containerWidth = container.getBoundingClientRect().width;
-    const inActiveTabWidth = containerWidth * .15;
-    const scroll = inActiveTabWidth * index;
-    // execute scroll
-    container.scrollTo({ left: scroll, behavior: 'smooth' });
+    if (!(currentContentWidth instanceof Error)) {
+      const inActiveTabWidth = currentContentWidth * .15;
+      const scroll = inActiveTabWidth * index;
+      // execute scroll
+      container.scrollTo({ left: scroll, behavior: 'smooth' });
+    }
   };
 
   const toggleActive = () => {

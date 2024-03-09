@@ -12,7 +12,7 @@ import React, { useContext, useState, TouchEvent, useEffect, useRef } from 'reac
 import styled from 'styled-components';
 /* common: others */
 import { TodoType } from '../../../types/Todos';
-import { $contentWidth } from '../../../Providers';
+import { $contentWidth, getPx } from '../../../Providers';
 import { AllTodosAdminContext } from "../../../Providers";
 /* dnd-kit */
 import { useSortable } from '@dnd-kit/sortable';
@@ -27,7 +27,8 @@ import { faTrashCan } from '@fortawesome/free-solid-svg-icons';
 
 const TOUCH_MOVE_DELAY = 8;
 
-// const contentWidthPx = $contentWidth.map(())
+const contentWidth = getPx($contentWidth);
+const deleteBtnWidth = !(contentWidth instanceof Error) ? contentWidth * .2 : 0;
 
 
 // === component 定義部分 ============================================= //
@@ -84,60 +85,75 @@ export const SortableTodo = (props: PropsType) => {
 
   // li毎に関数定義されてしまうから、ここら辺の処理はEachTodosに移動した方がよさそう、それかメモ化？
   // --- li を左にスワイプして右に delete btn を表示 ------------------------------- //
-  const [startX, setStartX] = useState(0);
-  const [startY, setStartY] = useState(0);
-  const [translateX, setTranslateX] = useState(0);
-  const [isSlided, setIsSlided] = useState(false);
+  const containerRef = useRef<HTMLDivElement | null>(null);
+  const [startX, setStartX] = useState<number | undefined>(undefined);
+  const [startY, setStartY] = useState<number | undefined>(undefined);
 
   // --- TouchStart ---
   const handleTouchStart = (e: TouchEvent) => {
-    setTimeout(() => {
-      setStartX(e.touches[0].clientX);
-      setStartY(e.touches[0].clientY);
-    }, TOUCH_MOVE_DELAY);
+    setStartX(e.touches[0].clientX);
+    setStartY(e.touches[0].clientY);
+    if (containerRef.current) { containerRef.current.style.overflow = 'scroll'; }
   };
 
   // --- TouchMove ---
-  let id: NodeJS.Timeout | null = null;
+  let allowed:    boolean = false,
+      rejected: boolean = false;
+  // 初回でallowがtrueになるか、rejectがtrueになるかの二択、ともにtrueにはなり得ない。
   const handleTouchMove = (e: TouchEvent) => {
-    (id !== null) && clearTimeout(id); // 頻繁に発火するので間引く
-    id = setTimeout(netProcess, TOUCH_MOVE_DELAY);
+    if (rejected || allowed) { return }
+    if (!(startX && startY && containerRef.current)) { return } // null check
 
-    // 正味の処理内容
-    function netProcess() {
-      id = null;
-      const swipingDisplacement = e.touches[0].clientX - startX; // スワイプ中の符号を含む変位
+    // 以下、初回のみ判定し、次回以降は早期リターン
 
-      const yDisplacement = e.touches[0].clientY - startY;
-      if (Math.abs(swipingDisplacement) < Math.abs(yDisplacement)) { return }; // 縦方向の変位の方が大きい場合は抜ける
-      
-      // swiping to left: 往路, 表示させる過程
-      if (!isSlided && Math.sign(swipingDisplacement) === -1 && -200 < swipingDisplacement) {
-        setTranslateX(swipingDisplacement);
-      }
-      // swiping to right: 復路, 非表示にする過程
-      if (isSlided && Math.sign(swipingDisplacement) === 1 && swipingDisplacement < 200) {
-        setTranslateX(swipingDisplacement - 200);
-      }
-    };
+    // スワイプ中の符号を含む変位
+    const DisplacementX = e.touches[0].clientX - startX;
+    const DisplacementY = e.touches[0].clientY - startY;
+    // 傾きの絶対値
+    const gradient = Math.abs(DisplacementY / DisplacementX);
+
+    if (gradient > 1/ 2) {
+      // 「単なる垂直方向のページスクロール」と判定
+      console.log('rejected');
+      rejected = true;
+      containerRef.current.style.overflow = 'hidden';
+    } else {
+      // 「削除ボタン非/表示のためのアクション」と判定
+      console.log('allowed');
+      allowed = true;
+    }
   };
 
   // --- TouchEnd ---
-  const handleTouchEnd = () => {
-    setTimeout(netProcess, TOUCH_MOVE_DELAY); // 確実に TouchMove の処理より後に実行するための setTimeout
+  const handleTouchEnd = (e: TouchEvent) => {
+    if (!(startX && containerRef.current)) { return }
 
-    // 正味の処理内容
-    function netProcess() {
-      setStartX(0);
-      if (translateX < -100) {
-        setTranslateX(-200);
-        setIsSlided(true);
+    const which = (e.changedTouches[0].clientX - startX > 0) ? 'right' : 'left';
+    if (which === 'left') {
+      if (e.changedTouches[0].clientX - startX < -deleteBtnWidth * .5) {
+        containerRef.current.scrollTo({left: deleteBtnWidth, behavior: 'instant'});
       } else {
-        setTranslateX(0);
-        setIsSlided(false);
+        containerRef.current.scrollTo({left: 0, behavior: 'instant'});
       }
-    };
+    }
+
+    if (which === 'right') {
+      if (e.changedTouches[0].clientX - startX < deleteBtnWidth * .5) {
+        containerRef.current.scrollTo({left: deleteBtnWidth, behavior: 'instant'});
+      } else {
+        containerRef.current.scrollTo({left: 0, behavior: 'instant'});
+      }
+
+    }
+
+    // initialize;
+    allowed = false;
+    rejected = false;
+    setStartX(undefined);
+    setStartY(undefined);
+    containerRef.current.style.overflow = 'hidden';
   };
+
   // ------------------------------- li を左にスワイプして右に delete btn を表示 --- //
 
 
@@ -146,27 +162,32 @@ export const SortableTodo = (props: PropsType) => {
       key={ currentTodoId }
       $isCompleted={ isCompleted }
       $isDragging={ isDragging }
-      ref={e => {setNodeRef(e);}}
+      ref={e => {setNodeRef(e)}}
       style={style}
       {...attributes}
-      onTouchStart={ handleTouchStart }
-      onTouchMove={ handleTouchMove }
-      onTouchEnd={ handleTouchEnd }
-      $translateX={ translateX }
     >
-      <div className="todo-container">
-        <TodoHeader
-          sortable={ true }
-          listeners={ listeners }
-          main={main}
-          isExpired={ isExpired }
-          onBtnsClick={ handleTodoPropsEdit } />
+      <div
+        className='scroll-container'
+        ref={containerRef}
+        onTouchStart={ handleTouchStart }
+        onTouchMove={ handleTouchMove }
+        onTouchEnd={ handleTouchEnd }
+      >
+        <div className="todo-container">
+          <TodoHeader
+            sortable={ true }
+            listeners={ listeners }
+            main={main}
+            isExpired={ isExpired }
+            onBtnsClick={ handleTodoPropsEdit } />
 
-        <Detail {...rest} />
+          <Detail {...rest} />
+        </div>
+        <button className="btn-delete">
+          <FontAwesomeIcon icon={faTrashCan}/>
+        </button>
       </div>
-      <button className="btn-delete">
-        <FontAwesomeIcon icon={faTrashCan}/>
-      </button>
+
 
     </StyledLi>
   )
@@ -175,18 +196,28 @@ export const SortableTodo = (props: PropsType) => {
 
 
 // === style 定義部分 ================================================= //
-const StyledLi = styled.li<{ $isCompleted: boolean; $isDragging: boolean; $translateX: number; }>`
+const StyledLi = styled.li<{ $isCompleted: boolean; $isDragging: boolean; }>`
   opacity: ${ props => props.$isDragging ? .5 : 1 };
-  transform: ${ props => `translateX(${ props.$translateX }px)` };
+  color: pink;
 
-  display: flex;
+  .scroll-container {
+    width: 100%;
+    display: flex;
+    overflow: hidden;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  :-webkit-scrollbar {
+    display: none;
+  }
 
   .todo-container {
     min-width: 100%;
   }
   .btn-delete {
-    min-width: 20%;
+    min-width: ${`${deleteBtnWidth}px`};
     background: #999;
+    z-index: 100;
   }
 
   .gripper {

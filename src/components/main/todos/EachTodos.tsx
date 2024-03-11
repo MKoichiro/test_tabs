@@ -35,8 +35,33 @@ import {
   sortableKeyboardCoordinates,
   verticalListSortingStrategy } from "@dnd-kit/sortable";
 
+import { $contentWidth, getPx } from '../../../Providers';
+
+const contentWidth = getPx($contentWidth);
+const deleteBtnWidth = !(contentWidth instanceof Error) ? contentWidth * .5 : 0;
+
 
 // === component 定義部分 ============================================= //
+export interface TouchStartArgType {
+  e: React.TouchEvent<HTMLLIElement>;
+  setStartX: (x: number | undefined) => void;
+  setStartY: (y: number | undefined) => void;
+}
+export interface TouchMoveArgType {
+  displacementX: number;
+  setTranslateX: (x: number) => void;
+  isSlided: boolean
+}
+export interface TouchEndArgType {
+  e: React.TouchEvent<HTMLLIElement>;
+  startX: number | undefined;
+  setStartX: (x: number | undefined) => void;
+  setStartY: (y: number | undefined) => void;
+  containerRef: React.RefObject<HTMLDivElement | null>;
+  setTranslateX: (x: number) => void;
+  setIsSlided: (isSlided: boolean) => void;
+}
+
 interface PropsType {
   todosData: TodosType;
   index: number;
@@ -81,6 +106,59 @@ export const EachTodos: FC<PropsType> = (props) => {
   // -------------------------------------- dnd-kit/sortable 関連 --- //
 
 
+  // --- swipe して delete btn 関連 --------------------------------- //
+  // 子の SortableLi の中で定義しても良いが、li の数が無限に増えうるので親で定義しておく。
+
+  // --- TouchStart ---------
+  const handleTouchStart = (args: TouchStartArgType) => {
+    const { e, setStartX, setStartY } = args;
+    setStartX(e.touches[0].clientX);
+    setStartY(e.touches[0].clientY);
+  };
+
+  // --- TouchMove ---------
+  const handleTouchMove = (args: TouchMoveArgType) => {
+    const {  displacementX, setTranslateX, isSlided } = args;
+    // allowed = true の場合の2回目以降
+    switch (true) {
+      case (!isSlided): // sliding to "Left" to "Open"
+        setTranslateX(displacementX);
+        break;
+      case (isSlided):  // sliding to "Right" to "Close"
+        setTranslateX(displacementX - deleteBtnWidth);
+        break;
+    }
+  };
+
+  // --- TouchEnd ---------
+  const handleTouchEnd = (args: TouchEndArgType) => {
+    const DURATION = 300;
+    const { e, startX, setStartX, setStartY, containerRef, setTranslateX, setIsSlided } = args;
+    if (!(startX && containerRef.current)) { return }
+
+    const toggleThresholdX = - deleteBtnWidth / 2;
+    const displacementX    = e.changedTouches[0].clientX - startX;
+
+    containerRef.current.style.transition = `transform ${ DURATION }ms`;
+    setTimeout(() => {
+      if (containerRef.current) { containerRef.current.style.transition = 'none' }
+    }, DURATION);
+
+    if (displacementX < toggleThresholdX) {
+      setTranslateX(-deleteBtnWidth);
+      setIsSlided(true);
+    } else {
+      setTranslateX(0);
+      setIsSlided(false);
+    }
+
+    // initialize
+    setStartX(undefined);
+    setStartY(undefined);
+  };
+  // --------------------------------- swipe して delete btn 関連 --- //
+
+
   return (
     <StyledUl>
       <DndContext
@@ -93,7 +171,7 @@ export const EachTodos: FC<PropsType> = (props) => {
           items={ todos }
           strategy={verticalListSortingStrategy}
         >
-          { todos.map(todo => !todo.archived && <SortableTodo key={ todo.id } todo={ todo } todosId={ todosData.id } /> ) }
+          { todos.map(todo => !todo.archived && <SortableTodo key={ todo.id } todo={ todo } todosId={ todosData.id } handleTouchStart={handleTouchStart} handleTouchMove={handleTouchMove} handleTouchEnd={handleTouchEnd}/> ) }
         </SortableContext>
 
         {/* dnd-kit/sortable: createPortalでラップして、

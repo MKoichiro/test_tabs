@@ -38,6 +38,7 @@ export const Todo = forwardRef(({...props}: PropsType, ref: LegacyRef<HTMLDivEle
     <StyledDiv ref={ref}>
 
       <TodoHeader
+        isCompleted={ isCompleted }
         sortable={false}
         main={main}
         isExpired={isExpired} />

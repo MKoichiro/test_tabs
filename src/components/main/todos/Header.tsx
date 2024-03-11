@@ -21,6 +21,7 @@ import { SyntheticListenerMap } from '@dnd-kit/core/dist/hooks/utilities';
 
 // === component 定義部分 ============================================= //
 interface PropsType{
+  isCompleted: boolean;
   sortable: boolean;
   isExpired: boolean;
   main?: string;
@@ -29,7 +30,7 @@ interface PropsType{
 }
 
 export const TodoHeader = (props: PropsType) => {
-  const {sortable, main, isExpired, onBtnsClick, listeners} = props;
+  const {isCompleted, sortable, main, isExpired, onBtnsClick, listeners} = props;
 
   const executeTodoPropsEdit = (propName: string) => {
     if (sortable) {onBtnsClick && onBtnsClick(propName);}
@@ -37,7 +38,10 @@ export const TodoHeader = (props: PropsType) => {
 
 
   return (
-    <header>
+    <StyledHeader
+      $isCompleted={ isCompleted }
+
+    >
       <span className="gripper" {...listeners}>
         <DragIndicator />
       </span>
@@ -57,14 +61,25 @@ export const TodoHeader = (props: PropsType) => {
           <FontAwesomeIcon icon={faGear} />
         </button>
       </div>
-    </header>
+    </StyledHeader>
   )
 };
 // ============================================= component 定義部分 === //
 
 
 // === style 定義部分 ================================================= //
-const StyledHeader = styled.header`
-  
+const StyledHeader = styled.header<{$isCompleted: boolean}>`
+  display: flex;
+  h4 {
+    text-decoration: ${ props => props.$isCompleted ? 'line-through' : '' };
+  }
+  .icon-expired {
+    color: red;
+  }
+  .gripper {
+    touch-action: none;
+    padding: 0 .8rem;
+    cursor: grab;
+  }
 `;
 // ================================================= style 定義部分 === //

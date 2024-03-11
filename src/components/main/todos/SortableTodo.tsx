@@ -23,23 +23,32 @@ import { TodoHeader } from './Header';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrashCan } from '@fortawesome/free-solid-svg-icons';
 
+import { TouchStartArgType, TouchMoveArgType, TouchEndArgType } from './EachTodos';
 
 
-const TOUCH_MOVE_DELAY = 8;
 
 const contentWidth = getPx($contentWidth);
-const deleteBtnWidth = !(contentWidth instanceof Error) ? contentWidth * .2 : 0;
+const deleteBtnWidth = !(contentWidth instanceof Error) ? contentWidth * .5 : 0;
 
 
 // === component 定義部分 ============================================= //
 interface PropsType {
   todo: TodoType;
   todosId: number;
+  handleTouchStart: (args: TouchStartArgType) => void;
+  handleTouchMove: (args: TouchMoveArgType) => void;
+  handleTouchEnd: (args: TouchEndArgType) => void;
 }
 
 export const SortableTodo = (props: PropsType) => {
   // currentTodo"s"Id と currentTodo""Id があるので注意
-  const { todo: currentTodo, todosId: currentTodosId } = props;
+  const {
+    todo: currentTodo,
+    todosId: currentTodosId,
+    handleTouchStart,
+    handleTouchMove,
+    handleTouchEnd,
+  } = props;
   const {
     id: currentTodoId,
     main,
@@ -47,9 +56,10 @@ export const SortableTodo = (props: PropsType) => {
     completed: isCompleted,
     ...rest
   } = currentTodo;
-
-  const { allTodos, dispatchAllTodosChange } = useContext(AllTodosAdminContext);
-
+  const {
+    allTodos,
+    dispatchAllTodosChange
+  } = useContext(AllTodosAdminContext);
   const {
     attributes,
     listeners,
@@ -58,13 +68,10 @@ export const SortableTodo = (props: PropsType) => {
     transition,
     isDragging
   } = useSortable({id: currentTodoId});
-
-
   const style = {
     transform: CSS.Transform.toString(transform),
     transition,
   };
-
 
   const idxOfCurrentTodos = allTodos.findIndex(todos => todos.id === currentTodosId);
   // todo のプロパティを編集して allTodos を更新する関数
@@ -83,76 +90,63 @@ export const SortableTodo = (props: PropsType) => {
     }
   };
 
-  // li毎に関数定義されてしまうから、ここら辺の処理はEachTodosに移動した方がよさそう、それかメモ化？
   // --- li を左にスワイプして右に delete btn を表示 ------------------------------- //
-  const containerRef = useRef<HTMLDivElement | null>(null);
+  // パフォーマンスが気になれば、親コンポーネントに移動、またはメモ化。
+  const containerRef = useRef<HTMLDivElement | null>(null)
   const [startX, setStartX] = useState<number | undefined>(undefined);
   const [startY, setStartY] = useState<number | undefined>(undefined);
+  const [isSlided, setIsSlided] = useState<boolean>(false);
+  const [translateX, setTranslateX] = useState<number>(0);
 
-  // --- TouchStart ---
-  const handleTouchStart = (e: TouchEvent) => {
-    setStartX(e.touches[0].clientX);
-    setStartY(e.touches[0].clientY);
-    if (containerRef.current) { containerRef.current.style.overflow = 'scroll'; }
+
+  // --- TouchStart ---------
+  const executeHandleTouchStart = (e: React.TouchEvent<HTMLLIElement>) => {
+    handleTouchStart({e, setStartX, setStartY});
   };
 
-  // --- TouchMove ---
-  let allowed:    boolean = false,
-      rejected: boolean = false;
-  // 初回でallowがtrueになるか、rejectがtrueになるかの二択、ともにtrueにはなり得ない。
-  const handleTouchMove = (e: TouchEvent) => {
-    if (rejected || allowed) { return }
+  // --- TouchMove ---------
+  let allowed: boolean = false, rejected: boolean = false; // 初回で (allow = true) Or (reject = true) の二択、ともにtrueにはなり得ない
+  const executeHandleTouchMove = (e: React.TouchEvent<HTMLLIElement>) => {
+    if (rejected) { return }
     if (!(startX && startY && containerRef.current)) { return } // null check
 
-    // 以下、初回のみ判定し、次回以降は早期リターン
-
     // スワイプ中の符号を含む変位
-    const DisplacementX = e.touches[0].clientX - startX;
-    const DisplacementY = e.touches[0].clientY - startY;
-    // 傾きの絶対値
-    const gradient = Math.abs(DisplacementY / DisplacementX);
+    const displacementX = e.touches[0].clientX - startX;
+    const displacementY = e.touches[0].clientY - startY;
 
-    if (gradient > 1/ 2) {
-      // 「単なる垂直方向のページスクロール」と判定
-      console.log('rejected');
-      rejected = true;
-      containerRef.current.style.overflow = 'hidden';
-    } else {
-      // 「削除ボタン非/表示のためのアクション」と判定
-      console.log('allowed');
-      allowed = true;
-    }
-  };
-
-  // --- TouchEnd ---
-  const handleTouchEnd = (e: TouchEvent) => {
-    if (!(startX && containerRef.current)) { return }
-
-    const which = (e.changedTouches[0].clientX - startX > 0) ? 'right' : 'left';
-    if (which === 'left') {
-      if (e.changedTouches[0].clientX - startX < -deleteBtnWidth * .5) {
-        containerRef.current.scrollTo({left: deleteBtnWidth, behavior: 'instant'});
+    // 初回のみの処理
+    if (!(allowed || rejected)) { // この条件で初回のみ判定できる
+      const gradient = Math.abs(displacementY / displacementX); // 傾きの絶対値
+      if (gradient > 1/ 2) {
+        // 「単なる垂直方向のページスクロール」と判定
+        rejected = true;
+        return;
       } else {
-        containerRef.current.scrollTo({left: 0, behavior: 'instant'});
+        // 「削除ボタン非/表示のためのアクション」と判定
+        allowed = true;
       }
     }
 
-    if (which === 'right') {
-      if (e.changedTouches[0].clientX - startX < deleteBtnWidth * .5) {
-        containerRef.current.scrollTo({left: deleteBtnWidth, behavior: 'instant'});
-      } else {
-        containerRef.current.scrollTo({left: 0, behavior: 'instant'});
-      }
-
-    }
-
-    // initialize;
-    allowed = false;
-    rejected = false;
-    setStartX(undefined);
-    setStartY(undefined);
-    containerRef.current.style.overflow = 'hidden';
+    handleTouchMove({displacementX, setTranslateX, isSlided});
   };
+
+  // --- TouchEnd ---------
+  const executeHandleTouchEnd = (e: React.TouchEvent<HTMLLIElement>) => {
+    if (!(startX && containerRef.current)) { return } // null check
+    handleTouchEnd({e, startX, setStartX, setStartY, containerRef, setTranslateX, setIsSlided});
+    allowed = rejected = false; // initialize
+  };
+
+  // 本コンポーネント外からslide状態を解除する必要あり、（タブ切り替えのタイミングなど）
+  // const slideToClose = () => {
+  //   if (containerRef.current) containerRef.current.style.transition = `transform ${ DURATION }ms`;
+  //   setTimeout(() => {
+  //     if (containerRef.current) containerRef.current.style.transition = 'none';
+  //   }, DURATION);
+
+  //   setTranslateX(0);
+  //   setIsSlided(false);
+  // }
 
   // ------------------------------- li を左にスワイプして右に delete btn を表示 --- //
 
@@ -160,21 +154,22 @@ export const SortableTodo = (props: PropsType) => {
   return (
     <StyledLi
       key={ currentTodoId }
-      $isCompleted={ isCompleted }
-      $isDragging={ isDragging }
-      ref={e => {setNodeRef(e)}}
+      ref={setNodeRef}
       style={style}
       {...attributes}
+      onTouchStart={ executeHandleTouchStart }
+      onTouchMove={ executeHandleTouchMove }
+      onTouchEnd={ executeHandleTouchEnd }
+      $translateX={ translateX }
+      $isDragging={ isDragging }
     >
       <div
-        className='scroll-container'
+        className='container'
         ref={containerRef}
-        onTouchStart={ handleTouchStart }
-        onTouchMove={ handleTouchMove }
-        onTouchEnd={ handleTouchEnd }
       >
-        <div className="todo-container">
+        <div className="contents">
           <TodoHeader
+            isCompleted={ isCompleted }
             sortable={ true }
             listeners={ listeners }
             main={main}
@@ -183,12 +178,12 @@ export const SortableTodo = (props: PropsType) => {
 
           <Detail {...rest} />
         </div>
-        <button className="btn-delete">
-          <FontAwesomeIcon icon={faTrashCan}/>
-        </button>
+        <div className='btns-container'>
+          <button className="btn-delete">
+            <FontAwesomeIcon icon={faTrashCan}/>
+          </button>
+        </div>
       </div>
-
-
     </StyledLi>
   )
 };
@@ -196,49 +191,31 @@ export const SortableTodo = (props: PropsType) => {
 
 
 // === style 定義部分 ================================================= //
-const StyledLi = styled.li<{ $isCompleted: boolean; $isDragging: boolean; }>`
+const StyledLi = styled.li<{ $isDragging: boolean; $translateX: number; }>`
   opacity: ${ props => props.$isDragging ? .5 : 1 };
   color: pink;
-
-  .scroll-container {
-    width: 100%;
-    display: flex;
-    overflow: hidden;
-    -ms-overflow-style: none;
-    scrollbar-width: none;
-  }
-  :-webkit-scrollbar {
+  overflow-x: hidden;
+  width: 100%;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+  &:-webkit-scrollbar {
     display: none;
   }
 
-  .todo-container {
-    min-width: 100%;
-  }
-  .btn-delete {
-    min-width: ${`${deleteBtnWidth}px`};
-    background: #999;
-    z-index: 100;
-  }
-
-  .gripper {
-    touch-action: none;
-    padding: 0 .8rem;
-    cursor: grab;
-  }
-
-  header {
+  .container {
     display: flex;
-  }
+    transform: ${ props => `translateX(${ props.$translateX }px)` };
+  
+    .contents {
+      min-width: 100%;
+    }
 
-  h4 {
-    text-decoration: ${ props => props.$isCompleted ? 'line-through' : '' };
-  }
-  .icon-expired {
-    color: red;
-  }
-
-  .detail-container {
-
+    .btns-container {
+      min-width: ${`${deleteBtnWidth}px`};
+      background: #999;
+      z-index: 100;
+      display: flex;
+    }
   }
 `;
 // ================================================= style 定義部分 === //

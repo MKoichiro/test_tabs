@@ -6,16 +6,20 @@ module.exports = {
   entry: './src/index.tsx',
   module: {
     rules: [
-      {
-        test: /\.tsx?$/,
-      },
+      // {
+      //   test: /\.tsx?$/,
+      // },
       {
         loader: 'ts-loader',
         test: /\.tsx?$/,
         options: {
           configFile: 'tsconfig.json'
         }
-      }
+      },
+      { // easymdeでのみ使用
+        test: /\.css$/,
+        use: ["style-loader", "css-loader"],
+      },
     ]
   },
   devServer: {

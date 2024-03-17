@@ -1,5 +1,7 @@
-import React, { createContext, useReducer } from 'react';
+import React, { createContext, useReducer, useRef, useState } from 'react';
 import { TodosType } from './types/Todos';
+import SimpleMDE from 'easymde';
+
 
 const TODOS_KEY = 'all_todos';
 localStorage.getItem(TODOS_KEY);
@@ -27,8 +29,8 @@ const storedAllTodos: TodosType[] = [
         priority: 'not set',
         archived: false,
         main: '今日やること',
-        detail: 'aiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこ',
-				open: false,
+        detail: 'aiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこ',
+				open: true,
       },
       {
         id: 2,
@@ -87,7 +89,7 @@ const storedAllTodos: TodosType[] = [
         archived: false,
         main: '昨日やる予定だったこと',
         detail: 'さしすせそとたちつてと',
-				open: true,
+				open: false,
       },
       {
         id: 6,
@@ -117,7 +119,7 @@ const storedAllTodos: TodosType[] = [
         priority: 'not set',
         archived: false,
         main: '今日やること',
-        detail: 'aiueoとかきくけこ',
+        detail: '# aiueoとかきくけこ',
 				open: true,
       },
     ],
@@ -619,6 +621,81 @@ const AllTodosAdminProvider = ({ children }: { children: React.ReactNode }) => {
     </AllTodosAdminContext.Provider>
   );
 };
+
+
+// Context
+interface MdeAdminContextType {
+  mdeRef: React.MutableRefObject<any> | null;
+  modalRef: React.MutableRefObject<HTMLDivElement | null> | null;
+  maskRef: React.MutableRefObject<HTMLDivElement | null> | null;
+  inEditing: boolean;
+  setInEditing: (inEditing: boolean) => void;
+  targetTodoIdx: number;
+  setTargetTodoIdx: (idx: number) => void;
+  handleModalClose: () => void;
+  updateEditorOverflow: () => void;
+}
+export const MdeAdminContext = createContext<MdeAdminContextType>({
+  mdeRef: null,
+  modalRef: null,
+  maskRef: null,
+  inEditing: false,
+  setInEditing: () => {},
+  targetTodoIdx: 0,
+  setTargetTodoIdx: () => {},
+  handleModalClose: () => {},
+  updateEditorOverflow: () => {},
+});
+
+export const MdeAdminProvider = ({ children }: { children: React.ReactNode }) => {
+  const mdeRef = useRef<any>(null);
+  const modalRef = useRef<HTMLDivElement | null>(null);
+  const maskRef = useRef<HTMLDivElement | null>(null);
+  const [inEditing, setInEditing] = useState(false);
+  const [targetTodoIdx, setTargetTodoIdx] = useState<number>(0);
+
+  const preventScroll = (e: MouseEvent) => e.preventDefault();
+  const reviveScroll = (e: WheelEvent) => e.stopPropagation();
+
+  const getCodemirror = () => mdeRef?.current.codemirror.display.wrapper;
+  const handleModalClose = () => {
+    // close mde modal: net process
+    setInEditing(false);
+    maskRef.current?.removeEventListener('wheel', preventScroll);
+    modalRef.current?.removeEventListener('wheel', preventScroll);
+    getCodemirror().removeEventListener('wheel', reviveScroll);
+  };
+
+  const updateEditorOverflow = () => {
+    const editorHeight = mdeRef?.current.codemirror.getScrollInfo().height;
+    const maxHeight    = innerHeight * 35 / 100;
+    const diff         = editorHeight - maxHeight;
+    const newOverflow  = Boolean(Math.abs(diff) > 3);
+
+    const codemirrorDiv = mdeRef?.current.codemirror.display.wrapper;
+    if (newOverflow) {
+      codemirrorDiv.addEventListener('wheel', reviveScroll, { passive: false });
+    }
+    if (inEditing === false) { return }
+    maskRef.current?.addEventListener('wheel', preventScroll, { passive: false });
+    modalRef.current?.addEventListener('wheel', preventScroll, { passive: false });
+  };
+
+
+  const value = {
+    mdeRef,
+    modalRef,
+    maskRef,
+    inEditing,
+    setInEditing,
+    targetTodoIdx,
+    setTargetTodoIdx,
+    handleModalClose,
+    updateEditorOverflow,
+  };
+
+  return <MdeAdminContext.Provider value={value}>{children}</MdeAdminContext.Provider>
+}
 
 
 export default AllTodosAdminProvider;

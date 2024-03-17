@@ -14,17 +14,16 @@ import styled from 'styled-components';
 import { TodoType } from '../../../types/Todos';
 import { $contentWidth, getPx } from '../../../Providers';
 import { AllTodosAdminContext } from "../../../Providers";
-/* dnd-kit */
-import { useSortable } from '@dnd-kit/sortable';
-import { CSS } from '@dnd-kit/utilities';
+import { TouchStartArgType, TouchMoveArgType, TouchEndArgType } from './EachTodos';
+/* font awesome */
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faTrashCan, faCircleInfo, faCheck } from '@fortawesome/free-solid-svg-icons';
 /* children components */
 import { Detail } from './Detail';
 import { TodoHeader } from './Header';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTrashCan } from '@fortawesome/free-solid-svg-icons';
-
-import { TouchStartArgType, TouchMoveArgType, TouchEndArgType } from './EachTodos';
-
+/* dnd-kit */
+import { useSortable } from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
 
 
 const contentWidth = getPx($contentWidth);
@@ -57,6 +56,7 @@ export const SortableTodo = (props: PropsType) => {
     ...rest
   } = currentTodo;
   const {
+    activeIndex,
     allTodos,
     dispatchAllTodosChange
   } = useContext(AllTodosAdminContext);
@@ -73,25 +73,34 @@ export const SortableTodo = (props: PropsType) => {
     transition,
   };
 
-  const idxOfCurrentTodos = allTodos.findIndex(todos => todos.id === currentTodosId);
-  // todo のプロパティを編集して allTodos を更新する関数
-  const handleTodoPropsEdit = (propName: string) => {
-    const idxOfCurrentTodo = allTodos[idxOfCurrentTodos].todos.findIndex(todo => todo.id === currentTodo.id);
+
+  // const activeIndex = allTodos.findIndex(todos => todos.id === currentTodosId); // activeIndexと同じでは？
+  const todoIdx = allTodos[activeIndex].todos.findIndex(todo => todo.id === currentTodo.id);
+
+  const handleTodoPropsEdit = (propName: string, newValue?: string) => {
+    // todo のプロパティを編集して allTodos を更新する関数
     const newAllTodos = [...allTodos];
     switch (propName) {
       case 'open':
-        newAllTodos[idxOfCurrentTodos].todos[idxOfCurrentTodo].open = !currentTodo.open;
+        newAllTodos[activeIndex].todos[todoIdx].open = !currentTodo.open;
         dispatchAllTodosChange({ type: 'update_all_todos', newAllTodos });
         break;
       case 'archived':
-        newAllTodos[idxOfCurrentTodos].todos[idxOfCurrentTodo].archived = true;
+        newAllTodos[activeIndex].todos[todoIdx].archived = true;
+        dispatchAllTodosChange({ type: 'update_all_todos', newAllTodos });
+        break;
+      case 'status':
+        newAllTodos[activeIndex].todos[todoIdx].status = 'COMPLETED';
+        dispatchAllTodosChange({ type: 'update_all_todos', newAllTodos });
+        break;
+      case 'main':
+        newValue && (newAllTodos[activeIndex].todos[todoIdx].main = newValue);
         dispatchAllTodosChange({ type: 'update_all_todos', newAllTodos });
         break;
     }
   };
 
   // --- li を左にスワイプして右に delete btn を表示 ------------------------------- //
-  // パフォーマンスが気になれば、親コンポーネントに移動、またはメモ化。
   const containerRef = useRef<HTMLDivElement | null>(null)
   const [startX, setStartX] = useState<number | undefined>(undefined);
   const [startY, setStartY] = useState<number | undefined>(undefined);
@@ -148,6 +157,10 @@ export const SortableTodo = (props: PropsType) => {
   //   setIsSlided(false);
   // }
 
+  const showInfo = () => {
+
+  };
+
   // ------------------------------- li を左にスワイプして右に delete btn を表示 --- //
 
 
@@ -174,24 +187,43 @@ export const SortableTodo = (props: PropsType) => {
             listeners={ listeners }
             main={main}
             isExpired={ isExpired }
-            onBtnsClick={ handleTodoPropsEdit } />
+            handleTodoPropsEdit={ handleTodoPropsEdit } />
 
-          <Detail {...rest} />
+          <Detail
+            ref={containerRef}
+            todoIdx={todoIdx}
+            {...rest} />
         </div>
         <div className='btns-container'>
-          <button className="btn-delete">
+          <button
+            className="btn-info"
+            onClick={ showInfo }
+          >
+            <FontAwesomeIcon icon={faCircleInfo}/>
+          </button>
+          <button
+            className="btn-check"
+            onClick={ () => handleTodoPropsEdit('status') }
+          >
+            <FontAwesomeIcon icon={faCheck}/>
+          </button>
+          <button
+            className="btn-delete"
+            onClick={ () => handleTodoPropsEdit('archived') }
+          >
             <FontAwesomeIcon icon={faTrashCan}/>
           </button>
         </div>
       </div>
     </StyledLi>
-  )
+  );
 };
 // ============================================= component 定義部分 === //
 
 
 // === style 定義部分 ================================================= //
 const StyledLi = styled.li<{ $isDragging: boolean; $translateX: number; }>`
+  margin: 1.6rem 0;
   opacity: ${ props => props.$isDragging ? .5 : 1 };
   color: pink;
   overflow-x: hidden;
@@ -211,10 +243,23 @@ const StyledLi = styled.li<{ $isDragging: boolean; $translateX: number; }>`
     }
 
     .btns-container {
-      min-width: ${`${deleteBtnWidth}px`};
-      background: #999;
+      min-width: ${`${ deleteBtnWidth }px`};
       z-index: 100;
       display: flex;
+      button {
+        flex: 1;
+        font-size: 2rem;
+      }
+      .btn-info {
+        background: pink;
+      }
+      .btn-check {
+        background: skyblue;
+      }
+      .btn-delete {
+        background: #999;
+      }
+
     }
   }
 `;

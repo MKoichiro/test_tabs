@@ -88,8 +88,8 @@ export const CreateNewTodo = () => {
       get expired() { return (!this.completed && this.deadline !== 'not set') && Date.now() > this.deadline.date.getTime(); },
       priority: data.priority || 'not set',
       archived: false,
-      main: data.title,
-      detail: data.detail,
+      main: data.title || '',
+      detail: data.detail || '',
       open: true,
     };
 

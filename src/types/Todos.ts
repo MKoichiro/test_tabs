@@ -30,8 +30,8 @@ export interface TodoType {
   status: StatusType;
   priority: PriorityType;
 	archived: boolean;
-	main?: string;
-	detail?: string; 
+	main: string;
+	detail: string;
 	open: boolean;
 }
 export interface TodosType {

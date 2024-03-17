@@ -10,6 +10,10 @@ import { StyledHeader as Header } from './header/Header';
 import { StyledMain as Main } from './main/Main';
 import { StyledFooter as Footer } from './footer/Footer';
 
+import Modal from 'react-modal';
+
+Modal.setAppElement('#root');
+
 const App = () => {
   return (
     <>

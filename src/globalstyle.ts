@@ -17,6 +17,7 @@ const GlobalStyle = createGlobalStyle`
     }
 
   }
+  
 
   * { box-sizing: border-box }
     
@@ -42,6 +43,7 @@ const GlobalStyle = createGlobalStyle`
   a, button,
   ol, ul, li { padding: 0; margin: 0; }
 
+
   button {
     color: #444;
     background: none;
@@ -60,7 +62,7 @@ const GlobalStyle = createGlobalStyle`
     text-decoration: none;
   }
 
-  li {
+  ol, ul {
     list-style-type: none;
   }
 

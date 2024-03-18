@@ -9,7 +9,7 @@ import { StyledTabsContainer as TabsContainer } from './tabs/Tabs';
 import { AllTodos } from './todos/AllTodos';
 import { CreateNewTodo } from './CreateNewTodo';
 import { EditCategories } from './edit_categories_modal/EditCategoriesModal';
-import { MdeAdminProvider } from '../../Providers';
+import { MdeProvider } from '../../providers/MdeProvider';
 
 
 // === component 定義部分 ============================================= //
@@ -24,9 +24,7 @@ const Main: FC<MainProps> = (props) => {
 			<h1 children="Main" />
 			<section className="todos-display-container">
 				<TabsContainer />
-				<MdeAdminProvider>
-					<AllTodos />
-				</MdeAdminProvider>
+				<AllTodos />
 			</section>
 			<section className="form-create-new-todos-container">
 				<CreateNewTodo />				{/* = form */}

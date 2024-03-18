@@ -11,7 +11,7 @@
 import React, { useContext, useState } from 'react';
 import styled from 'styled-components';
 /* common: others */
-import { AllTodosAdminContext } from '../../../Providers';
+import { AllTodosContext } from '../../../providers/AllTodosProvider';
 /* children components */
 import { SortableCategory } from './SortableCategory';
 import { Category } from './Category';
@@ -38,7 +38,7 @@ import { arrayMove,
 
 // === component 定義部分 ============================================= //
 export const Categories = () => {
-  const { allTodos, dispatchAllTodosChange } = useContext(AllTodosAdminContext);
+  const { allTodos, dispatchAllTodosChange } = useContext(AllTodosContext);
 
   // dnd-kit/sortable 関連
   // sensor 登録

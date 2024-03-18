@@ -1,5 +1,5 @@
 import { createGlobalStyle } from "styled-components";
-import { $contentWidth } from "./Providers";
+import { $contentsWidth } from "./data/styleMagics";
 
 
 const GlobalStyle = createGlobalStyle`
@@ -9,10 +9,10 @@ const GlobalStyle = createGlobalStyle`
     --eng-ff-1:                            Arial, 'Helvetica Neue', Helvetica, sans-serif;
     --eng-ff-2: 'Times NewRoman', 'Times', Arial, 'Helvetica Neue', Helvetica, sans-serif;
     --eng-ff-3: 'Economica'              , Arial, 'Helvetica Neue', Helvetica, sans-serif;
-    --contents-width: ${`${$contentWidth.pc}vw`};
+    --contents-width: ${`${$contentsWidth.pc}vw`};
     --border-weight: .15rem;
     @media (width < 600px) {
-      --contents-width: ${`${$contentWidth.sp}vw`};
+      --contents-width: ${`${$contentsWidth.sp}vw`};
       --border-weight: .1rem;
     }
 

@@ -11,8 +11,8 @@ import React, { useContext, forwardRef, Ref, RefObject } from 'react';
 import styled from 'styled-components';
 /* common: others */
 import { TodosType } from '../../../types/Todos';
-import { AllTodosAdminContext } from '../../../Providers';
-import { $contentWidth, getPx } from '../../../Providers';
+import { AllTodosContext } from '../../../providers/AllTodosProvider';
+import { convertVwToPx, getCurrentContentsVw } from '../../../utils/converters';
 
 
 // === component 定義部分 ============================================= //
@@ -24,24 +24,23 @@ interface PropsType {
 
 export const Tab = forwardRef((props: PropsType, liRef: Ref<HTMLLIElement>) => {
   const { todos, index, containerRef } = props;
-  const { allTodos, dispatchAllTodosChange } = useContext(AllTodosAdminContext);
+  const { allTodos, dispatchAllTodosChange } = useContext(AllTodosContext);
 
 
 
   const handleContainerScroll = () => {
     // null check
     const container = containerRef.current;
-    const currentContentWidth = getPx($contentWidth);
     if (!liRef) {     console.error('li 要素が見つかりません。'); return; }
     if (!container) { console.error('tab ul が見つかりません。'); return; }
 
+    const currentContentWidth = convertVwToPx(getCurrentContentsVw());
+
     // get scroll coordinate
-    if (!(currentContentWidth instanceof Error)) {
-      const inActiveTabWidth = currentContentWidth * .15;
-      const scroll = inActiveTabWidth * index;
-      // execute scroll
-      container.scrollTo({ left: scroll, behavior: 'smooth' });
-    }
+    const inActiveTabWidth = currentContentWidth * .15;
+    const scroll = inActiveTabWidth * index;
+    // execute scroll
+    container.scrollTo({ left: scroll, behavior: 'smooth' });
   };
 
   const toggleActive = () => {

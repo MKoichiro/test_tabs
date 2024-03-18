@@ -11,7 +11,7 @@ import React, { useContext, useRef } from 'react';
 import styled from 'styled-components';
 /* common: others */
 import { TodoType, TodosType, PriorityType, StatusType } from '../../types/Todos';
-import { AllTodosAdminContext } from '../../Providers';
+import { AllTodosContext } from '../../providers/AllTodosProvider';
 /* react-hook-form */
 import { useForm } from 'react-hook-form';
 
@@ -30,7 +30,7 @@ type DeadlineType = { date: Date; use_time: boolean } | 'not set';
 
 
 export const CreateNewTodo = () => {
-  const { activeIndex, allTodos, dispatchAllTodosChange } = useContext(AllTodosAdminContext);
+  const { activeIndex, allTodos, dispatchAllTodosChange } = useContext(AllTodosContext);
 
   // react-hook-form
   const { register, handleSubmit, formState: { errors } } = useForm({ mode: 'onChange' });

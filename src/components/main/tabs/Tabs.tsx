@@ -9,7 +9,7 @@
 import React, { FC, useRef, useContext } from 'react';
 import styled from 'styled-components';
 /* common: others */
-import { AllTodosAdminContext } from '../../../Providers';
+import { AllTodosContext } from '../../../providers/AllTodosProvider';
 /* children components */
 import { Tab } from './Tab';
 
@@ -20,7 +20,7 @@ interface TabsProps {
 }
 const Tabs: FC<TabsProps> = (props) => {
   const { className } = props;
-  const { allTodos } = useContext(AllTodosAdminContext);
+  const { allTodos } = useContext(AllTodosContext);
 
   const containerRef = useRef<HTMLUListElement | null>(null);
   const liRefs       = useRef<(HTMLLIElement | null)[]>([]);

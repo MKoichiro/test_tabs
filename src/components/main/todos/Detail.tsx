@@ -12,7 +12,7 @@ import React, { useContext, useLayoutEffect, useEffect, useRef, useState, Legacy
 import styled from 'styled-components';
 /* common: others */
 import { PriorityType, StatusType } from '../../../types/Todos';
-import { MdeAdminContext } from '../../../Providers';
+import { MdeContext } from '../../../providers/MdeProvider';
 import DOMPurify from 'dompurify';
 const marked = require('marked');
 
@@ -33,8 +33,7 @@ interface PropsType {
   open: boolean;
 }
 
-
-  export const Detail = React.forwardRef((props: PropsType, containerRef: LegacyRef<HTMLDivElement> | undefined) => {
+export const Detail = React.forwardRef((props: PropsType, containerRef: LegacyRef<HTMLDivElement> | undefined) => {
   const infoRef = useRef<HTMLElement | null>(null);
   const [height, setHeight] = useState<number | null>(null); 
   const heightGetterRef = useRef<HTMLDivElement | null>(null);
@@ -71,44 +70,15 @@ interface PropsType {
   };
 
   const {
-    mdeRef,
-    modalRef,
-    maskRef,
     inEditing,
-    setInEditing,
-    setTargetTodoIdx,
-    handleModalClose,
+    handleModalOpen,
     ...rest
-  } = useContext(MdeAdminContext);
+  } = useContext(MdeContext);
 
-  const handleOutsideClick = (e: MouseEvent) => {
-    if ((e.target as Element).closest('.mde-modal-contents')) { return }
-    handleModalClose();
-  };
 
-  const toggleMode = () => {
-    // close mde modal: 正味の処理内容は handleOutsideClick 関数内
-    if (inEditing) {
-      document.removeEventListener('mousedown', handleOutsideClick);
-      return;
-    }
-
-    // open mde modal
-    if (!inEditing) {
-      console.log('pass');
-      setInEditing(true);
-      if (todoIdx || todoIdx === 0) { setTargetTodoIdx(todoIdx) }
-
-      // scroll 位置を制御: 該当 todo の頭が画面内の先頭に来るように
-      const targetDiv = (containerRef as RefObject<HTMLDivElement | null>).current;
-      if (targetDiv) {
-        const innerY = targetDiv.getBoundingClientRect().top;
-        const targetY = innerY + scrollY;
-        scrollTo({top: targetY, behavior: 'smooth'});
-      }
-
-      document.addEventListener('mousedown', handleOutsideClick);
-    }
+  const executeModalOpen = () => {
+    if (inEditing) { return }
+    handleModalOpen(todoIdx, containerRef);
   };
 
 
@@ -125,7 +95,7 @@ interface PropsType {
       >
         <section
           className="detail-container"
-          onDoubleClick={ toggleMode }
+          onDoubleClick={ executeModalOpen }
         >
           <div
             dangerouslySetInnerHTML={{

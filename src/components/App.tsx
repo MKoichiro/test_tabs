@@ -2,7 +2,6 @@
 
 /* react関連 */
 import React from 'react';
-import TabAdminProvider from '../Providers';
 
 
 /* 各 Component */
@@ -11,18 +10,17 @@ import { StyledMain as Main } from './main/Main';
 import { StyledFooter as Footer } from './footer/Footer';
 
 import Modal from 'react-modal';
+import { Providers } from '../providers/Providers';
 
 Modal.setAppElement('#root');
 
 const App = () => {
   return (
-    <>
-			<TabAdminProvider>
-				<Header />
-				<Main />
-				<Footer />
-			</TabAdminProvider>
-	  </>
+		<Providers>
+			<Header />
+			<Main />
+			<Footer />
+		</Providers>
   );
 };
 

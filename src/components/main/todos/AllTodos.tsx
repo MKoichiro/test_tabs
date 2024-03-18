@@ -7,10 +7,13 @@
 */
 
 /* common: essential */
-import React, { useContext, useEffect, useMemo, useLayoutEffect, useRef } from 'react';
+import React, { useContext, useMemo } from 'react';
 import styled from 'styled-components';
 /* common: others */
-import { AllTodosAdminContext, MdeAdminContext } from '../../../Providers';
+import { AllTodosContext } from '../../../providers/AllTodosProvider';
+import { MdeContext } from '../../../providers/MdeProvider';
+/* utils */
+import { convertRemToPx } from '../../../utils/converters';
 /* children components */
 import { EachTodos } from './EachTodos';
 /* easymde */
@@ -29,7 +32,7 @@ export const AllTodos = () => {
     activeIndex,
     allTodos,
     dispatchAllTodosChange
-  } = useContext(AllTodosAdminContext);
+  } = useContext(AllTodosContext);
 
   const todosLis = allTodos.map((todos, i) => {
     return (
@@ -40,117 +43,17 @@ export const AllTodos = () => {
   });
 
   const {
-    mdeRef,
-    modalRef,
-    maskRef,
+    refs,
     inEditing,
-    setInEditing,
     targetTodoIdx,
-    handleModalClose,
     updateEditorOverflow,
+    toolbarOptions,
+    getEditorValue,
+    handleChange,
     ...rest
-  } = useContext(MdeAdminContext);
-
-  const value = [...allTodos][activeIndex].todos[targetTodoIdx].detail;
+  } = useContext(MdeContext);
 
 
-  const handleChange = (value: string) => {
-    // update: allTodos
-    const newAllTodos = [...allTodos];
-    newAllTodos[activeIndex].todos[targetTodoIdx].detail = value;
-    dispatchAllTodosChange({ type: 'update_all_todos', newAllTodos });
-
-    // update: hasEditorOverflow
-    updateEditorOverflow();
-  };
-
-  useEffect(() => {
-    if (inEditing === false) { return }
-    // focus を当てる
-    mdeRef?.current.codemirror.focus();
-    // cursor を文末に移動
-    const doc    = mdeRef?.current.codemirror.getDoc();
-    const cursor = doc.getCursor();
-    const line   = doc.getLine(cursor.line);
-    doc.setCursor({ line: cursor.line, ch: line.length });
-    // overflow を判定
-    updateEditorOverflow();
-
-    // if (innerWidth < 600) {
-    //   mdeRef?.current && mdeRef?.current.codemirror.getWrapperElement().requestFullscreen();
-    // }
-  }, [inEditing]);
-
-
-
-  // カスタムボタンを作成
-  const customBtns = {
-    'underline' : {
-      name: "underline",
-      action: (editor: any) => {
-        // 現在の選択範囲を取得
-        const selection = editor.codemirror.getSelection();
-        // 選択範囲を<u></u>で囲む
-        editor.codemirror.replaceSelection(`<u>${selection}</u>`);
-      },
-      className: "fa fa-underline",
-      title: "Underline",
-    },
-    'submit' : {
-      name: 'submit',
-      action: () => {
-        console.log(targetTodoIdx); // 今のところ不具合を起こすものではないが、なぜかいつもここで0になっている。
-        handleModalClose();
-      },
-      className: "fa fa-paper-plane",
-      title: 'Submiti',
-    }
-  };
-
-  // ツールバーに表示するボタン
-  const toolbarOptions = [
-    'bold',                         // 太字
-    'italic',                       // 斜体
-    customBtns['underline'],        // 下線
-    'strikethrough',                // 取り消し線
-    'quote',                        // 引用符
-    '|',
-    'heading-bigger',               // 見出し(一段階大きく)
-    // 'heading',                     // 見出し(h1)
-    'heading-1',                    // 見出し(h1)(アイコン違い、どちらかを使う)
-    'heading-2',                    // 見出し(h2)
-    'heading-3',                   // 見出し(h3)
-    'heading-smaller',              // 見出し(一段階小さく)
-    '|',
-    'ordered-list',                 // <ol/>
-    'unordered-list',               // <ul/>
-    'code',                         // <code/>
-    'link',                         // <a/>
-    'horizontal-rule',              // 水平区切り線
-    // 'clean-block',                 // blockの初期化?
-    // 'image',                       // <img/>
-    '|',
-    'preview',                      // プレビューに切り替え
-    'fullscreen',                   // 全画面表示
-    'side-by-side',                 // 全画面かつプレビューを右に表示
-    '|',
-    'undo',                         // undo
-    'redo',                         // redo
-    '|',
-    customBtns['submit'],
-  ];
-
-  const convertRemToPx = (remValue: number): number => {
-    let pxValue: number;
-    if (innerWidth > 1024) {
-      pxValue = remValue * (10 * 1.00);
-    } else if (innerWidth > 600) {
-      pxValue = remValue * (10 * 0.50);
-    } else {
-      pxValue = remValue * (10 * 0.35);
-    }
-    return pxValue;
-  };
 
   let maxHeight: string, minHeight: string;
   if (innerWidth > 600) {
@@ -172,6 +75,33 @@ export const AllTodos = () => {
 
   // const simpleMdeRef = useRef<SimpleMDE | null>(null);
 
+  // const [lastWindowHeight, setLastWindowHeight] = useState(window.innerHeight);
+
+  // useEffect(() => {
+  //   const handleResize = () => {
+  //     const currentWindowHeight = window.innerHeight;
+
+  //     if (lastWindowHeight - currentWindowHeight > 100) {
+  //       console.log('keyboard displayed');
+  //       // キーボードが表示されたときの処理
+  //       // 例：fixed要素のスタイルを変更する
+  //     } else if (currentWindowHeight - lastWindowHeight > 100) {
+  //       console.log('keyboard hidden');
+  //       // キーボードが非表示になったときの処理
+  //       // 例：fixed要素のスタイルを元に戻す
+  //     }
+
+  //     setLastWindowHeight(currentWindowHeight);
+  //   };
+
+  //   window.addEventListener('resize', handleResize);
+
+  //   // クリーンアップ関数
+  //   return () => {
+  //     window.removeEventListener('resize', handleResize);
+  //   };
+  // }, [lastWindowHeight]);
+
 
 
   return (
@@ -180,23 +110,22 @@ export const AllTodos = () => {
 
         <div
           className='mde-modal'
-          ref={modalRef}
+          ref={refs.modal}
         >
           <form
             className="mde-modal-contents"
             onSubmit={e => e.preventDefault()}
           >
             <SimpleMdeReact
-              getMdeInstance={(instance: any) => { mdeRef && (mdeRef.current = instance) }}
+              getMdeInstance={(instance: any) => { refs.mde && (refs.mde.current = instance) }}
               options={options}
-              value={value}
-              // ref={simpleMdeRef}
+              value={getEditorValue()}
               onChange={handleChange} />
           </form>
         </div>
 
         {inEditing && (
-          <div className='mask' ref={maskRef} />
+          <div className='mask' ref={refs.mask} />
         )}
       
     </StyledDiv>

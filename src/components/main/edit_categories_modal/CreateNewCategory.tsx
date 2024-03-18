@@ -11,7 +11,7 @@ import React, { useContext, useRef } from 'react';
 import styled from 'styled-components';
 /* common: others */
 import { TodoType, TodosType } from '../../../types/Todos';
-import { AllTodosAdminContext } from '../../../Providers';
+import { AllTodosContext } from '../../../providers/AllTodosProvider';
 /* react-hook-form */
 import { useForm } from 'react-hook-form';
 
@@ -36,7 +36,7 @@ interface DataType {
 }
 export const CreateNewCategory = () => {
 
-  const { allTodos, dispatchAllTodosChange } = useContext(AllTodosAdminContext);
+  const { allTodos, dispatchAllTodosChange } = useContext(AllTodosContext);
 
   const { register, handleSubmit, formState: { errors } } = useForm<DataType>({ mode: 'onChange' });
   const { ref: refForName, ...restForName } = register('category_name', NAME_VALIDATION);

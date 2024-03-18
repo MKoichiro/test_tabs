@@ -11,7 +11,9 @@ import React, { FC, useContext, useState } from "react";
 import styled from "styled-components";
 /* common: others */
 import { TodosType } from "../../../types/Todos";
-import { AllTodosAdminContext } from "../../../Providers";
+import { AllTodosContext } from "../../../providers/AllTodosProvider";
+/* utils */
+import { convertVwToPx, getCurrentContentsVw } from "../../../utils/converters";
 /* children components */
 import { Todo } from "./Todo";
 /* dnd-kit */
@@ -35,10 +37,9 @@ import {
   sortableKeyboardCoordinates,
   verticalListSortingStrategy } from "@dnd-kit/sortable";
 
-import { $contentWidth, getPx } from '../../../Providers';
 
-const contentWidth = getPx($contentWidth);
-const deleteBtnWidth = !(contentWidth instanceof Error) ? contentWidth * .5 : 0;
+const contentWidth = convertVwToPx(getCurrentContentsVw());
+const deleteBtnWidth = contentWidth * .5;
 
 
 // === component 定義部分 ============================================= //
@@ -70,7 +71,7 @@ interface PropsType {
 export const EachTodos: FC<PropsType> = (props) => {
   const { todosData, index } = props;
   const todos = todosData.todos;
-  const { allTodos, dispatchAllTodosChange } = useContext(AllTodosAdminContext);
+  const { allTodos, dispatchAllTodosChange } = useContext(AllTodosContext);
 
   // --- dnd-kit/sortable 関連 -------------------------------------- //
   // sensor 登録

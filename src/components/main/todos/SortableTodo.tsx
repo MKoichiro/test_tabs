@@ -8,13 +8,15 @@
 
 
 /* common: essential */
-import React, { useContext, useState, TouchEvent, useEffect, useRef } from 'react';
+import React, { useContext, useState, useRef, TouchEvent } from 'react';
 import styled from 'styled-components';
-/* common: others */
+/* providers */
+import { AllTodosContext } from "../../../providers/AllTodosProvider";
+/* types */
 import { TodoType } from '../../../types/Todos';
-import { $contentWidth, getPx } from '../../../Providers';
-import { AllTodosAdminContext } from "../../../Providers";
 import { TouchStartArgType, TouchMoveArgType, TouchEndArgType } from './EachTodos';
+/* utils */
+import { convertVwToPx, getCurrentContentsVw } from '../../../utils/converters';
 /* font awesome */
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrashCan, faCircleInfo, faCheck } from '@fortawesome/free-solid-svg-icons';
@@ -26,8 +28,8 @@ import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 
 
-const contentWidth = getPx($contentWidth);
-const deleteBtnWidth = !(contentWidth instanceof Error) ? contentWidth * .5 : 0;
+const contentsWidth = convertVwToPx(getCurrentContentsVw());
+const deleteBtnWidth = contentsWidth * .5;
 
 
 // === component 定義部分 ============================================= //
@@ -59,7 +61,7 @@ export const SortableTodo = (props: PropsType) => {
     activeIndex,
     allTodos,
     dispatchAllTodosChange
-  } = useContext(AllTodosAdminContext);
+  } = useContext(AllTodosContext);
   const {
     attributes,
     listeners,
@@ -102,20 +104,20 @@ export const SortableTodo = (props: PropsType) => {
 
   // --- li を左にスワイプして右に delete btn を表示 ------------------------------- //
   const containerRef = useRef<HTMLDivElement | null>(null)
-  const [startX, setStartX] = useState<number | undefined>(undefined);
-  const [startY, setStartY] = useState<number | undefined>(undefined);
-  const [isSlided, setIsSlided] = useState<boolean>(false);
-  const [translateX, setTranslateX] = useState<number>(0);
+  const [startX,     setStartX    ] = useState<number | undefined>(undefined);
+  const [startY,     setStartY    ] = useState<number | undefined>(undefined);
+  const [isSlided,   setIsSlided  ] = useState(false);
+  const [translateX, setTranslateX] = useState(0);
 
 
   // --- TouchStart ---------
-  const executeHandleTouchStart = (e: React.TouchEvent<HTMLLIElement>) => {
+  const executeHandleTouchStart = (e: TouchEvent<HTMLLIElement>) => {
     handleTouchStart({e, setStartX, setStartY});
   };
 
   // --- TouchMove ---------
   let allowed: boolean = false, rejected: boolean = false; // 初回で (allow = true) Or (reject = true) の二択、ともにtrueにはなり得ない
-  const executeHandleTouchMove = (e: React.TouchEvent<HTMLLIElement>) => {
+  const executeHandleTouchMove = (e: TouchEvent<HTMLLIElement>) => {
     if (rejected) { return }
     if (!(startX && startY && containerRef.current)) { return } // null check
 
@@ -140,7 +142,7 @@ export const SortableTodo = (props: PropsType) => {
   };
 
   // --- TouchEnd ---------
-  const executeHandleTouchEnd = (e: React.TouchEvent<HTMLLIElement>) => {
+  const executeHandleTouchEnd = (e: TouchEvent<HTMLLIElement>) => {
     if (!(startX && containerRef.current)) { return } // null check
     handleTouchEnd({e, startX, setStartX, setStartY, containerRef, setTranslateX, setIsSlided});
     allowed = rejected = false; // initialize

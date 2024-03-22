@@ -127,7 +127,7 @@ export const MdeProvider = ({ children }: { children: ReactNode }) => {
     customBtns['submit'],     // 変更内容を反映してエディタを閉じる
   ];
   const maxHeight = `${innerHeight * (50 / 100) - convertRemToPx(3.0 + 1.8)}px`;
-  const defaultOptions = {
+  const defaultOptions: Options = {
     autofocus: true,
     maxHeight: maxHeight,
     toolbar: toolbarOptions,

@@ -6,10 +6,9 @@ import React, { FC } from 'react';
 import styled from 'styled-components';
 
 import { StyledTabsContainer as TabsContainer } from './tabs/Tabs';
-import { AllTodos } from './todos/AllTodos';
+import { AllTodosContainer } from './todos/AllTodosContainer';
 import { CreateNewTodo } from './CreateNewTodo';
 import { EditCategories } from './edit_categories_modal/EditCategoriesModal';
-import { MdeProvider } from '../../providers/MdeProvider';
 
 
 // === component 定義部分 ============================================= //
@@ -24,13 +23,13 @@ const Main: FC<MainProps> = (props) => {
 			<h1 children="Main" />
 			<section className="todos-display-container">
 				<TabsContainer />
-				<AllTodos />
+				<AllTodosContainer />
 			</section>
 			<section className="form-create-new-todos-container">
 				<CreateNewTodo />				{/* = form */}
 			</section>
 			<section className="edit-categories-modal">
-				<EditCategories />	{/* = div */}
+				<EditCategories />			{/* = div */}
 			</section>
 		</main>
 	);

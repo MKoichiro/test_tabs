@@ -7,13 +7,12 @@
 */
 
 /* common: essential */
-import React, { useContext, useMemo } from 'react';
+import React, { useContext } from 'react';
 import styled from 'styled-components';
-/* common: others */
+/* contexts */
 import { AllTodosContext } from '../../../providers/AllTodosProvider';
 import { MdeContext } from '../../../providers/MdeProvider';
 /* utils */
-import { convertRemToPx } from '../../../utils/converters';
 /* children components */
 import { EachTodos } from './EachTodos';
 /* easymde */
@@ -31,7 +30,6 @@ export const AllTodos = () => {
   const {
     activeIndex,
     allTodos,
-    dispatchAllTodosChange
   } = useContext(AllTodosContext);
 
   const todosLis = allTodos.map((todos, i) => {
@@ -45,67 +43,22 @@ export const AllTodos = () => {
   const {
     refs,
     inEditing,
-    targetTodoIdx,
-    updateEditorOverflow,
-    toolbarOptions,
     getEditorValue,
     handleChange,
+    options,
+    viewportHeight,
+    hasEditorOverflow,
     ...rest
   } = useContext(MdeContext);
 
 
-
-  let maxHeight: string, minHeight: string;
-  if (innerWidth > 600) {
-    maxHeight = `${innerHeight * (50 / 100) - convertRemToPx(3.0 + 1.8)}px`;
-    minHeight = '';
-  } else {
-    maxHeight = `50dvh`;
-    minHeight = '';
-  }
-
-  const options = useMemo(() => {
-    return {
-      autofocus: true,
-      maxHeight: maxHeight,
-      // minHeight: '30vh',
-      toolbar: toolbarOptions,
-    } as SimpleMDE.Options
-  }, []);
-
-  // const simpleMdeRef = useRef<SimpleMDE | null>(null);
-
-  // const [lastWindowHeight, setLastWindowHeight] = useState(window.innerHeight);
-
-  // useEffect(() => {
-  //   const handleResize = () => {
-  //     const currentWindowHeight = window.innerHeight;
-
-  //     if (lastWindowHeight - currentWindowHeight > 100) {
-  //       console.log('keyboard displayed');
-  //       // キーボードが表示されたときの処理
-  //       // 例：fixed要素のスタイルを変更する
-  //     } else if (currentWindowHeight - lastWindowHeight > 100) {
-  //       console.log('keyboard hidden');
-  //       // キーボードが非表示になったときの処理
-  //       // 例：fixed要素のスタイルを元に戻す
-  //     }
-
-  //     setLastWindowHeight(currentWindowHeight);
-  //   };
-
-  //   window.addEventListener('resize', handleResize);
-
-  //   // クリーンアップ関数
-  //   return () => {
-  //     window.removeEventListener('resize', handleResize);
-  //   };
-  // }, [lastWindowHeight]);
-
-
-
   return (
-    <StyledDiv $activeIndex={ activeIndex } $inEditing={ inEditing } >
+    <StyledDiv
+      $activeIndex={ activeIndex }
+      $inEditing={ inEditing }
+      $viewportHeight={viewportHeight}
+      $hasEditorOverflow={hasEditorOverflow}
+    >
       <ul children={ todosLis } />
 
         <div
@@ -135,7 +88,7 @@ export const AllTodos = () => {
 
 
 // === style 定義部分 ================================================= //
-const StyledDiv = styled.div<{ $activeIndex: number; $inEditing: boolean; }>`
+const StyledDiv = styled.div<{ $activeIndex: number; $inEditing: boolean; /* $isKeyBoardDisplayed: boolean; */ $viewportHeight: number | undefined; $hasEditorOverflow: boolean}>`
   overflow-x: hidden;
 
   .mask {
@@ -156,26 +109,31 @@ const StyledDiv = styled.div<{ $activeIndex: number; $inEditing: boolean; }>`
     width: var(--contents-width);
     height: 50vh;
     @media (width < 600px) {
-      top: ${ props => props.$inEditing ? '0' : '100dvh' };
+      top: ${ props => props.$inEditing ? '0' : '100vh' };
+      bottom: auto;
       right: 0;
-      bottom: ${ props => props.$inEditing ? '-50dvh' :'50dvh' };
       left: 0;
-      height: auto;
+      height: ${ props => props.$inEditing ? `${props.$viewportHeight}px` :'' };
       width: auto;
+      transition: opacity 750ms;
     }
 
     .EasyMDEContainer {
-
       display: flex;
       flex-direction: column-reverse;
 
+      .CodeMirror-scroll {
+        touch-action: ${ props => props.$hasEditorOverflow ? '': 'none' };
+      }
+
       .editor-toolbar {
         padding: 0 .8rem;
-        height: 3.0rem;
+        min-height: 3.0rem;
 
         display: flex;
         align-items: center;
         overflow-x: auto;
+
         scrollbar-width: none;
         -ms-scrollbar: none;
         ::-webkit-scrollbar {
@@ -221,10 +179,6 @@ const StyledDiv = styled.div<{ $activeIndex: number; $inEditing: boolean; }>`
         justify-content: flex-end;
       }
     }
-
-
-
-
   }
 
 

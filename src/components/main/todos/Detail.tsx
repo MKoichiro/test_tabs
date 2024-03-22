@@ -51,7 +51,6 @@ export const Detail = React.forwardRef((props: PropsType, containerRef: LegacyRe
   } = props;
 
   useLayoutEffect(() => {
-    console.log('executed');
     if (heightGetterRef.current) {
       const newHeight = heightGetterRef.current.getBoundingClientRect().height;
       setHeight(newHeight);
@@ -77,7 +76,6 @@ export const Detail = React.forwardRef((props: PropsType, containerRef: LegacyRe
 
 
   const executeModalOpen = () => {
-    if (inEditing) { return }
     handleModalOpen(todoIdx, containerRef);
   };
 

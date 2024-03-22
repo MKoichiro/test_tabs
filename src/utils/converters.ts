@@ -1,13 +1,16 @@
 import { $contentsWidth } from "../data/styleMagics";
 
-export const convertRemToPx = (remValue: number): number => {
+const rootFontSize = parseFloat(getComputedStyle(document.documentElement).fontSize);
+console.log(rootFontSize);
+
+export const convertRemToPx = (remValue: number, baseFontSize = rootFontSize): number => {
   let pxValue: number;
   if (innerWidth > 1024) {
-    pxValue = remValue * (10 * 1.00);
+    pxValue = remValue * baseFontSize * (62.5 / 100);
   } else if (innerWidth > 600) {
-    pxValue = remValue * (10 * 0.50);
+    pxValue = remValue * baseFontSize * (50.0 / 100);
   } else {
-    pxValue = remValue * (10 * 0.35);
+    pxValue = remValue * baseFontSize * (35.0 / 100);
   }
   return pxValue;
 };

@@ -6,7 +6,7 @@ import React, { FC } from 'react';
 import styled from 'styled-components';
 
 import { StyledTabsContainer as TabsContainer } from './tabs/Tabs';
-import { AllTodosContainer } from './todos/AllTodosContainer';
+import { AllTodosContainer } from './all_todos/AllTodosContainer';
 import { CreateNewTodo } from './CreateNewTodo';
 import { EditCategories } from './edit_categories_modal/EditCategoriesModal';
 

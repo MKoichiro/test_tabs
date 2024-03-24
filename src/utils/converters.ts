@@ -1,7 +1,6 @@
 import { $contentsWidth } from "../data/styleMagics";
 
 const rootFontSize = parseFloat(getComputedStyle(document.documentElement).fontSize);
-console.log(rootFontSize);
 
 export const convertRemToPx = (remValue: number, baseFontSize = rootFontSize): number => {
   let pxValue: number;

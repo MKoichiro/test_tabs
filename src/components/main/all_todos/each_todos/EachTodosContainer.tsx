@@ -7,13 +7,14 @@
 
 
 /* common: essential */
-import React, { FC } from "react";
+import React, { FC, useContext, useEffect, useState } from "react";
 import styled from "styled-components";
 /* common: others */
 import { TodosType } from "../../../../types/Todos";
 /* children components */
 import { EachTodos } from "./EachTodos";
-import { CardsContainer } from "./CardsContainer";
+import { CardsContainer } from "./CardsModal";
+import { AllTodosContext } from "../../../../providers/AllTodosProvider";
 
 
 // === component 定義部分 ============================================= //
@@ -23,10 +24,22 @@ interface PropsType {
 }
 
 export const EachTodosContainer: FC<PropsType> = (props) => {
+  const { index } = props;
+  const { activeIndex } = useContext(AllTodosContext);
+  const [isActive, setIsActive] = useState(false);
+
+  useEffect(() => {
+    if (index === activeIndex) {
+      setIsActive(true);
+    } else {
+      setIsActive(false);
+    }
+  }, [index, activeIndex]);
+
   return (
     <StyledDiv>
       <EachTodos { ...props } />
-      <CardsContainer />
+      { isActive && <CardsContainer { ...props }/> }
     </StyledDiv>
   );
 };

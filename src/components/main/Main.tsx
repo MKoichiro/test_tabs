@@ -5,10 +5,9 @@ import React, { FC } from 'react';
 /* styled-components 関連 */
 import styled from 'styled-components';
 
-import { StyledTabsContainer as TabsContainer } from './tabs/Tabs';
+import { TabsContainer } from './tabs/TabsContainer';
 import { AllTodosContainer } from './all_todos/AllTodosContainer';
 import { CreateNewTodo } from './CreateNewTodo';
-import { EditCategories } from './edit_categories_modal/EditCategoriesModal';
 
 
 // === component 定義部分 ============================================= //
@@ -27,9 +26,6 @@ const Main: FC<MainProps> = (props) => {
 			</section>
 			<section className="form-create-new-todos-container">
 				<CreateNewTodo />				{/* = form */}
-			</section>
-			<section className="edit-categories-modal">
-				<EditCategories />			{/* = div */}
 			</section>
 		</main>
 	);

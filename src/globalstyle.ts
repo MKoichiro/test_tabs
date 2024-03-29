@@ -16,6 +16,11 @@ const GlobalStyle = createGlobalStyle`
       --border-weight: .1rem;
     }
 
+    --fs-form: 2rem;
+    @media (width < 600px) {
+      --fs-form: 16px;
+    }
+
   }
   
 

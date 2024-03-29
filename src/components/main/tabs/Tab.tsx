@@ -34,7 +34,8 @@ export const Tab = forwardRef((props: PropsType, liRef: Ref<HTMLLIElement>) => {
     if (!liRef) {     console.error('li 要素が見つかりません。'); return; }
     if (!container) { console.error('tab ul が見つかりません。'); return; }
 
-    const currentContentWidth = convertVwToPx(getCurrentContentsVw());
+    // const currentContentWidth = convertVwToPx(getCurrentContentsVw());
+    const currentContentWidth = convertVwToPx(62);
 
     // get scroll coordinate
     const inActiveTabWidth = currentContentWidth * .15;

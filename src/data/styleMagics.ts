@@ -1,3 +1,6 @@
+// プロジェクト全体のcssでのみ使いたい場合はglobalStyles.tsに記述
+// ここには、プロジェクト全体のcssとcomponentでも参照したいものを定義
+
 export interface ContentsWidthType {
   pc: number;
   tb: number;

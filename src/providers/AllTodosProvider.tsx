@@ -1,4 +1,4 @@
-import React, { createContext, useReducer } from 'react';
+import React, { ReactNode, createContext, useReducer } from 'react';
 import { TodosType } from '../types/Todos';
 import { storedActiveIndex, storedAllTodos } from '../data/allTodos';
 
@@ -61,7 +61,7 @@ const initialState: StateType = {
   activeIndex: storedActiveIndex,
   allTodos: storedAllTodos,
 }
-export const AllTodosProvider = ({ children }: { children: React.ReactNode }) => {
+export const AllTodosProvider = ({ children }: { children: ReactNode }) => {
   const [state, dispatch] = useReducer(reducer, initialState);
 
   return (

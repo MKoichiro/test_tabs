@@ -23,7 +23,6 @@ interface EditCategoriesModalProps {
   className?: string;
 }
 
-// memo: fowardRefできるのは一つまでらしい。InperactiveHandleなるもので解決可能っぽい。
 export const EditCategoriesModal: FC<EditCategoriesModalProps> = (props) => {
   const { className } = props;
 

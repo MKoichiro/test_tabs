@@ -284,7 +284,7 @@ export const storedAllTodos: TodosType[] = [
 		active: false,
     created_date: new Date('2024/01/24'),
     updated_date: new Date('2024/01/25'),
-    archived: false,
+    archived: true,
     category_name: 'category-4',
     get next_assigning_id() { return this.todos.reduce((store, todo) => Math.max(store, todo.id), 0) + 1; },
     todos: [
@@ -390,7 +390,7 @@ export const storedAllTodos: TodosType[] = [
 		active: false,
     created_date: new Date('2024/01/24'),
     updated_date: new Date('2024/01/25'),
-    archived: false,
+    archived: true,
     category_name: 'category-6',
     get next_assigning_id() { return this.todos.reduce((store, todo) => Math.max(store, todo.id), 0) + 1; },
     todos: [
@@ -443,7 +443,7 @@ export const storedAllTodos: TodosType[] = [
 		active: false,
     created_date: new Date('2024/01/24'),
     updated_date: new Date('2024/01/25'),
-    archived: false,
+    archived: true,
     category_name: 'category-7',
     get next_assigning_id() { return this.todos.reduce((store, todo) => Math.max(store, todo.id), 0) + 1; },
     todos: [

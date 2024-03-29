@@ -13,8 +13,9 @@ import styled from 'styled-components';
 /* common: others */
 import { AllTodosContext } from '../../../../providers/AllTodosProvider';
 /* children components */
-import { SortableCategory } from './SortableCategory';
-import { Category } from './Category';
+import { ActiveCategory } from './category/ActiveCategory';
+import { ArchivedCategory } from './category/ArchivedCategory';
+import { GhostCategory } from './category/GhostCategory';
 /* dnd-kit */
 import {
   DndContext,
@@ -34,6 +35,8 @@ import { arrayMove,
   sortableKeyboardCoordinates,
   verticalListSortingStrategy
 } from '@dnd-kit/sortable';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faArchive } from '@fortawesome/free-solid-svg-icons';
 
 
 // === component 定義部分 ============================================= //
@@ -73,46 +76,82 @@ export const Categories = () => {
   };
   // dnd-kit/sortable 関連
 
+  // allTodosをarchivedの真偽で二つの配列に分割
+  const clone = [...allTodos];
+  const activeTodos  = clone.filter(todos => todos.archived === false);
+  const archivedTodos = clone.filter(todos => todos.archived === true);
+
 
   return (
-    <StyledUl $isDragging={isDragging}>
+    <StyledDiv $isDragging={isDragging}>
+      <ul >
 
-      <DndContext
-        sensors={ sensors }
-        collisionDetection={ closestCenter }
-        onDragStart={ handleDragStart }
-        onDragEnd={ handleDragEnd }
-      >
-
-        <SortableContext
-          items={ allTodos }
-          strategy={ verticalListSortingStrategy }
+        <DndContext
+          sensors={sensors}
+          collisionDetection={closestCenter}
+          onDragStart={handleDragStart}
+          onDragEnd={handleDragEnd}
         >
 
-          {/* ul内に収まってドロップ位置を示唆するゴースト要素 */}
-          { allTodos.map(todos => <SortableCategory key={ todos.id } todos={ todos } />) }
+          <SortableContext
+            items={allTodos}
+            strategy={verticalListSortingStrategy}
+          >
 
-        </SortableContext>
+            {/* ul内に収まってドロップ位置を示唆する要素 */}
+            {activeTodos.map(todos => <ActiveCategory key={todos.id} activeTodos={todos} />)}
 
-        <DragOverlay>
+          </SortableContext>
 
-          {/* カーソルやタッチ位置に追従する要素 */}
-          { activeId ? <Category todos={ allTodos.filter(todos => todos.id === activeId)[0] } /> : null }
 
-        </DragOverlay>
 
-      </DndContext>
+          <DragOverlay>
 
-    </StyledUl>
+            {/* カーソルやタッチ位置に追従するゴースト要素 */}
+            {activeId ? <GhostCategory todos={allTodos.filter(todos => todos.id === activeId)[0]} /> : null}
+
+          </DragOverlay>
+
+        </DndContext>
+
+      </ul>
+
+
+      <span className='separater'>
+          <FontAwesomeIcon icon={faArchive} />
+      </span>
+      <ul className='archived-categories-container'>
+        {archivedTodos.map(todos => <ArchivedCategory key={todos.id} archivedTodos={todos} />)}
+      </ul>
+    </StyledDiv>
+
   );
 };
 // ============================================= component 定義部分 === //
 
 
 // === style 定義部分 ================================================= //
-const StyledUl = styled.ul<{$isDragging: boolean;}>`
-  --fs-category-name: 2rem; // font-sizeはGhostとPointerFollowingで一致させる
+interface StyledDivType {
+  $isDragging: boolean;
+}
+const StyledDiv = styled.div<StyledDivType>`
+  --fs-category-name: 2rem;
   font-size: var(--fs-category-name);
-  /* touch-action: none; */
+
+  /* .archived-categories-container { */
+    .separater {
+      opacity: .5;
+      display: flex;
+      align-items: center;
+      &::before, &::after {
+        content: '';
+        display: block;
+        flex: 1;
+        background: #000;
+        height: .15rem;
+        margin: 1.6rem;
+      }
+    }
+  /* } */
 `;
 // ================================================= style 定義部分 === //

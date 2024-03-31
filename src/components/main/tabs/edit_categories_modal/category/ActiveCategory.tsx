@@ -7,74 +7,55 @@
 */
 
 
-/* common: essential */
-import React, { ChangeEvent, FC, FormEvent, useContext, useEffect, useRef, useState } from 'react';
+/* essential */
+import React, { FC } from 'react';
 import styled from 'styled-components';
-/* common: others */
+/* types */
 import { TodosType } from '../../../../../types/Todos';
+/* styles */
+import { categoryCommonStyles, CategoryCommonStylesType } from './CategoryCommonStyles';
+/* utils */
+import { convertVwToPx } from '../../../../../utils/converters';
 /* material icons */
 import { DragIndicator } from '@mui/icons-material';
+/* font awesome */
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faArchive } from '@fortawesome/free-solid-svg-icons';
 /* dnd-kit */
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import { AllTodosContext } from '../../../../../providers/AllTodosProvider';
-import { categoryCommonStyles, CategoryCommonStylesType } from './CategoryCommonStyles';
-
-// === logic 部分 ===================================================== //
-const useEditableCategory = (thisTodos: TodosType) => {
-  const { allTodos, dispatchAllTodosChange } = useContext(AllTodosContext);
-  const [inEditing, setInEditing] = useState(false);
-  const inputRef = useRef<HTMLInputElement | null>(null)
-
-  // form 要素の イベントハンドラ
-  const handleSubmit = (e: FormEvent) => {
-    e.preventDefault();
-    setInEditing(false);
-  };
-
-  // p 要素のイベントハンドラ
-  const handleDoubleClick = () => {
-    if (!inEditing) {
-      setInEditing(true);
-    }
-  };
-
-  // input 要素のイベントハンドラ
-  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const categoryIdx  = allTodos.findIndex(todos => todos.id === thisTodos.id);
-    const newAllTodos = [...allTodos];
-    newAllTodos[categoryIdx].category_name = e.target.value;
-    dispatchAllTodosChange({type: 'update_all_todos', newAllTodos});
-  };
-  const handleBlur = () => {
-    setInEditing(false);
-  };
-  useEffect(() => {
-    if (inEditing && inputRef.current) {
-      inputRef.current.focus();
-    }
-  }, [inEditing]);
-
-  return { inEditing, inputRef, handleSubmit, handleDoubleClick, handleChange, handleBlur };
-}
-// ===================================================== logic 部分 === //
+/* functions: slidable */
+import { Slidable, SlidableMain, SlidableHidden } from '../../../../../functions/slidable/Components';
+import { SlidableParamsType } from '../../../../../functions/slidable/Types';
+/* functions: immediateEditable */
+import { useImmediateEditable } from '../../../../../functions/immediateEditable/Hooks';
 
 
 // === component 定義部分 ============================================= //
+const btnsContainerWidthVw = 10;
+const btnsContainerWidthPx = convertVwToPx(btnsContainerWidthVw);
+// slidable 関連
+const slidableParams: SlidableParamsType = {
+  SLIDABLE_LENGTH:                btnsContainerWidthPx,
+  GRADIENT_THRESHOLD:                            1 / 2,
+  TOGGLE_THRESHOLD:           btnsContainerWidthPx / 2,
+  COMPLEMENT_ANIME_DURATION:                       300,
+};
+
 interface ActiveCategoryType {
   activeTodos: TodosType;
 }
-
 export const ActiveCategory: FC<ActiveCategoryType> = (props) => {
   const { activeTodos } = props;
-  const { inEditing, inputRef, handleDoubleClick, handleSubmit, handleChange, handleBlur } = useEditableCategory(activeTodos);
 
-  // dnd-ki関連
+  const { inEditing, inputRef, handleDoubleClick, handleSubmit, handleChange, handleBlur } = useImmediateEditable(activeTodos);
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: activeTodos.id });
+
   const style = {
     transform: CSS.Transform.toString(transform),
     transition,
   };
+
 
   return (
     <StyledLi
@@ -84,20 +65,33 @@ export const ActiveCategory: FC<ActiveCategoryType> = (props) => {
       $inEditing={inEditing}
       { ...attributes }
     >
-      <span className='gripper' { ...listeners } >
-        <DragIndicator />
-      </span>
-      <div className='category-name-container'>
-        <p children={ activeTodos.category_name } onDoubleClick={handleDoubleClick} />
-        <form onSubmit={handleSubmit}>
-          <input
-            type='text'
-            ref={inputRef}
-            value={activeTodos.category_name}
-            onChange={handleChange}
-            onBlur={handleBlur} />
-        </form>
-      </div>
+
+      <Slidable slidableParams={slidableParams}>
+
+        <SlidableMain className='slidable-main-contents'>
+          <span className='gripper' { ...listeners } >
+            <DragIndicator />
+          </span>
+          <div className='category-name-container'>
+            <p children={ activeTodos.category_name } onDoubleClick={handleDoubleClick} />
+            <form onSubmit={handleSubmit}>
+              <input
+                type='text'
+                ref={inputRef}
+                value={activeTodos.category_name}
+                onChange={handleChange}
+                onBlur={handleBlur} />
+            </form>
+          </div>
+        </SlidableMain>
+
+        <SlidableHidden className='slidable-hidden-contents' slidableLength={slidableParams.SLIDABLE_LENGTH}>
+          <button>
+            <FontAwesomeIcon icon={faArchive} />
+          </button>
+        </SlidableHidden>
+
+      </Slidable>
     </StyledLi>
   )
 };
@@ -106,30 +100,45 @@ export const ActiveCategory: FC<ActiveCategoryType> = (props) => {
 
 // === style 定義部分 ================================================= //
 const StyledLi = styled.li<CategoryCommonStylesType>`
-  ${ categoryCommonStyles }
+  touch-action: auto;
 
-  opacity: ${ props => props.$isDragging ? .5 : 1 };
-  .gripper {
-    touch-action: none;
-    cursor: grab;
-  }
+  .slidable-main-contents {
+    ${ categoryCommonStyles }
 
-  .category-name-container {
-    border-bottom: ${ props => props.$inEditing ? '2px solid #000' : '2px solid transparent' };
-    p {
-      display: ${ props => props.$inEditing ? 'none' : 'block' };
+
+    opacity: ${ props => props.$isDragging ? .5 : 1 };
+    .gripper {
+      touch-action: none;
+      cursor: grab;
     }
-    form {
-      display: ${ props => props.$inEditing ? 'block' : 'none' };
-      input {
-        width: 100%;
-        outline: none;
-        border: none;
-        border-radius: 0;
-        background: none;
+
+    .category-name-container {
+      border-bottom: ${ props => props.$inEditing ? '2px solid #000' : '2px solid transparent' };
+      p {
+        display: ${ props => props.$inEditing ? 'none' : 'block' };
+      }
+      form {
+        display: ${ props => props.$inEditing ? 'block' : 'none' };
+        input {
+          width: 100%;
+          outline: none;
+          border: none;
+          border-radius: 0;
+          background: none;
+        }
       }
     }
   }
+  .slidable-hidden-contents {
+    background: violet;
+    display: flex;
+    align-items: center;
+    button {
+      display: block;
+      flex: 1;
+    }
+  }
+
 
 `;
 // ================================================= style 定義部分 === //

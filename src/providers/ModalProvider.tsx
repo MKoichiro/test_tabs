@@ -124,7 +124,7 @@ export const Modal: FC<ModalProps> = (props) => {
     <StyledDialog
       ref={modalRef}
       className={className}
-      isOpen={isOpen}
+      $isOpen={isOpen}
     >
       {children}
       <div className='modal-mask' ref={ maskRef } onClick={handleMaskClick}/>
@@ -133,7 +133,7 @@ export const Modal: FC<ModalProps> = (props) => {
 };
 
 
-const StyledDialog = styled.dialog<{isOpen: boolean;}>`
+const StyledDialog = styled.dialog<{$isOpen: boolean;}>`
   // resetと最低限modalたらしめるstyle
   touch-action: none;
   color: inherit;
@@ -144,9 +144,6 @@ const StyledDialog = styled.dialog<{isOpen: boolean;}>`
   .modal-mask {
     position: fixed;
     top: 0; left: 0; right: 0; height: 100lvh;
-    pointer-events: ${ props => props.isOpen ? 'auto' : 'none' };
+    pointer-events: ${ props => props.$isOpen ? 'auto' : 'none' };
   }
 `;
-
-
-

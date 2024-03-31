@@ -119,7 +119,7 @@ export const SortableTodo = (props: PropsType) => {
   let allowed: boolean = false, rejected: boolean = false; // 初回で (allow = true) Or (reject = true) の二択、ともにtrueにはなり得ない
   const executeHandleTouchMove = (e: TouchEvent<HTMLLIElement>) => {
     if (rejected) { return }
-    if (!(startX && startY && containerRef.current)) { return } // null check
+    if (!(startX && startY)) { return } // null check
 
     // スワイプ中の符号を含む変位
     const displacementX = e.touches[0].clientX - startX;

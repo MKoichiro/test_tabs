@@ -83,9 +83,8 @@ export const Categories = () => {
 
 
   return (
-    <StyledDiv $isDragging={isDragging}>
+    <StyledDiv>
       <ul >
-
         <DndContext
           sensors={sensors}
           collisionDetection={closestCenter}
@@ -93,27 +92,20 @@ export const Categories = () => {
           onDragEnd={handleDragEnd}
         >
 
+          {/* ul内に収まってドロップ位置を示唆する要素 */}
           <SortableContext
             items={allTodos}
             strategy={verticalListSortingStrategy}
           >
-
-            {/* ul内に収まってドロップ位置を示唆する要素 */}
             {activeTodos.map(todos => <ActiveCategory key={todos.id} activeTodos={todos} />)}
-
           </SortableContext>
 
-
-
+          {/* カーソルやタッチ位置に追従するゴースト要素 */}
           <DragOverlay>
-
-            {/* カーソルやタッチ位置に追従するゴースト要素 */}
             {activeId ? <GhostCategory todos={allTodos.filter(todos => todos.id === activeId)[0]} /> : null}
-
           </DragOverlay>
 
         </DndContext>
-
       </ul>
 
 
@@ -131,27 +123,22 @@ export const Categories = () => {
 
 
 // === style 定義部分 ================================================= //
-interface StyledDivType {
-  $isDragging: boolean;
-}
-const StyledDiv = styled.div<StyledDivType>`
+const StyledDiv = styled.div`
   --fs-category-name: 2rem;
   font-size: var(--fs-category-name);
 
-  /* .archived-categories-container { */
-    .separater {
-      opacity: .5;
-      display: flex;
-      align-items: center;
-      &::before, &::after {
-        content: '';
-        display: block;
-        flex: 1;
-        background: #000;
-        height: .15rem;
-        margin: 1.6rem;
-      }
+  .separater {
+    opacity: .5;
+    display: flex;
+    align-items: center;
+    &::before, &::after {
+      content: '';
+      display: block;
+      flex: 1;
+      background: #000;
+      height: .15rem;
+      margin: 1.6rem;
     }
-  /* } */
+  }
 `;
 // ================================================= style 定義部分 === //

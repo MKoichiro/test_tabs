@@ -4,10 +4,10 @@ const statusLiterals = [
 	'In Progress...',
 	'Aborted',
 	'Pending',
-	'not set'
+	'---'
 ] as const;
 const priorityLiterals = [
-	'not set',
+	'---',
 	'Highest',
 	'High',
 	'Medium',
@@ -20,11 +20,14 @@ export type StatusType = typeof statusLiterals[number];
 export type PriorityType = typeof priorityLiterals[number];
 
 
+/**
+ * Represents a todo item.
+ */
 export interface TodoType {
   id: number;
 	created_date: Date;
 	updated_date: Date;
-  deadline: { date: Date; use_time: boolean; } | 'not set';
+  deadline: { date: Date; use_time: boolean; } | '---';
   expired: boolean;
 	completed: boolean;
   status: StatusType;

@@ -26,7 +26,7 @@ interface DataType {
   status?: StatusType;
 }
 
-type DeadlineType = { date: Date; use_time: boolean } | 'not set';
+type DeadlineType = { date: Date; use_time: boolean } | '---';
 
 
 export const CreateNewTodo = () => {
@@ -56,8 +56,8 @@ export const CreateNewTodo = () => {
     detailRef.current   && (detailRef.current.value   = '');
     dateRef.current     && (dateRef.current.value     = '');
     timeRef.current     && (timeRef.current.value     = '');
-    priorityRef.current && (priorityRef.current.value = 'not set');
-    statusRef.current   && (statusRef.current.value   = 'not set');
+    priorityRef.current && (priorityRef.current.value = '---');
+    statusRef.current   && (statusRef.current.value   = '---');
     // focus を title にリセット
     titleRef.current && titleRef.current.focus();
   }
@@ -71,7 +71,7 @@ export const CreateNewTodo = () => {
       else      { return { date: new Date(`${ date } 23:59:59`), use_time: false, }               } // 年月日: 有り,   時刻: 無し
     } else {
       if (time) { return { date: new Date(`${ now.toDateString() } ${ time }`), use_time: true, } } // 年月日: 無し,   時刻: 有り
-      else      { return 'not set'                                                                } // 年月日: 無し,   時刻: 無し
+      else      { return '---'                                                                } // 年月日: 無し,   時刻: 無し
     }
   }
 
@@ -82,11 +82,11 @@ export const CreateNewTodo = () => {
       id: currentAllTodos[activeIndex].next_assigning_id,
       created_date: now,
       updated_date: now,
-      status: data.status || 'not set',
+      status: data.status || '---',
       get completed() { return data.status === 'COMPLETED' },
       deadline: deadlineFormatted,
-      get expired() { return (!this.completed && this.deadline !== 'not set') && Date.now() > this.deadline.date.getTime(); },
-      priority: data.priority || 'not set',
+      get expired() { return (!this.completed && this.deadline !== '---') && Date.now() > this.deadline.date.getTime(); },
+      priority: data.priority || '---',
       archived: false,
       main: data.title || '',
       detail: data.detail || '',
@@ -194,11 +194,11 @@ export const CreateNewTodo = () => {
           <div className='input-and-error'>
             <select
               id="priority"
-              defaultValue="not set"
+              defaultValue="---"
               { ...restForPriority }
               ref={ (e) => { refForPriority(e); priorityRef.current = e; } }
             >
-              <option value="not set" > not set </option>
+              <option value="---" > --- </option>
               <option value="Highest" > Highest </option>
               <option value="High"    > High    </option>
               <option value="Medium"  > Medium  </option>
@@ -217,11 +217,11 @@ export const CreateNewTodo = () => {
           <div className='input-and-error'>
             <select
               id="status"
-              defaultValue="not set"
+              defaultValue="---"
               { ...restForStatus }
               ref={ (e) => { refForStatus(e); statusRef.current = e; } }
             >
-              <option value="not set"         > not set         </option>
+              <option value="---"         > ---         </option>
               <option value="Not Started"     > Not Started     </option>
               <option value="In Progress..."  > In Progress...  </option>
               <option value="COMPLETED"       > COMPLETED       </option>

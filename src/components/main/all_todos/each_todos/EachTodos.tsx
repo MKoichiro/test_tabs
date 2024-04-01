@@ -14,10 +14,10 @@ import { AllTodosContext } from "../../../../providers/AllTodosProvider";
 /* utils */
 import { convertVwToPx, getCurrentContentsVw } from "../../../../utils/converters";
 /* children components */
-import { Todo } from "./Todo";
+import { Todo } from "./GhostTodo";
 /* dnd-kit */
 import { createPortal } from "react-dom";
-import { SortableTodo } from "./SortableTodo";
+import { SortableTodo } from "./ActiveTodo";
 import {
   DndContext,
   DragEndEvent,
@@ -195,6 +195,5 @@ export const EachTodos: FC<PropsType> = (props) => {
 }
 // === style 定義部分 ================================================= //
 const StyledUl = styled.ul`
-  background: green;
 `;
 // ================================================= style 定義部分 === //

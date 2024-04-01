@@ -13,7 +13,7 @@ import styled from "styled-components";
 import { TodosType } from "../../../../types/Todos";
 /* children components */
 import { EachTodos } from "./EachTodos";
-import { CardsContainer } from "./CardsModal";
+import { CardsContainer } from "./card_view/CardsModal";
 import { AllTodosContext } from "../../../../providers/AllTodosProvider";
 
 

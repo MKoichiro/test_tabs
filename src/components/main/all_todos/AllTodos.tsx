@@ -13,13 +13,18 @@ import styled from 'styled-components';
 import { AllTodosContext } from '../../../providers/AllTodosProvider';
 /* child components */
 import { EachTodosContainer } from './each_todos/EachTodosContainer';
+import { UserContext } from '../../../providers/UserProvider';
 
 // === component 定義部分 ============================================= //
 export const AllTodos = () => {
   const { activeIndex, allTodos } = useContext(AllTodosContext);
+  // const { user } = useContext(UserContext);
+  // const categories = user?.categories;
+  // console.log('categories: ', categories);
 
   return (
     <StyledUl $activeIndex={ activeIndex }>
+
       { allTodos.map((todos, i) => {
         return (
           <li key={ todos.id }>

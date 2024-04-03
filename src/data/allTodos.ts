@@ -4,6 +4,7 @@ const TODOS_KEY = 'all_todos';
 localStorage.getItem(TODOS_KEY);
 export const storedActiveIndex = 0;
 
+
 export const storedAllTodos: TodosType[] = [
   {
     id: 1,

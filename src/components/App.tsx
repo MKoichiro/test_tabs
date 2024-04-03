@@ -2,6 +2,7 @@
 
 /* react関連 */
 import React from 'react';
+import '../data/entity';
 
 
 /* 各 Component */
@@ -9,18 +10,20 @@ import { StyledHeader as Header } from './header/Header';
 import { StyledMain as Main } from './main/Main';
 import { StyledFooter as Footer } from './footer/Footer';
 
-import Modal from 'react-modal';
+// import Modal from 'react-modal';
 import { Providers } from '../providers/Providers';
-
-Modal.setAppElement('#root');
+import { UserProvider } from '../providers/UserProvider';
+// Modal.setAppElement('#root');
 
 const App = () => {
   return (
+		<UserProvider>
 		<Providers>
 			<Header />
 			<Main />
 			<Footer />
 		</Providers>
+		</UserProvider>
   );
 };
 

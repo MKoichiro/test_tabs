@@ -14,27 +14,29 @@ import { TodosType } from "../../../../types/Todos";
 /* children components */
 import { EachTodos } from "./EachTodos";
 import { CardsContainer } from "./card_view/CardsModal";
-import { AllTodosContext } from "../../../../providers/AllTodosProvider";
+// import { AllTodosContext } from "../../../../providers/AllTodosProvider";
+import { CategoriesContext } from "../../../../providers/CategoriesProvider";
+import { CategoryType } from "../../../../types/Categories";
 
 
 // === component 定義部分 ============================================= //
 interface PropsType {
-  todosData: TodosType;
+  category: CategoryType;
   index: number;
 }
 
 export const EachTodosContainer: FC<PropsType> = (props) => {
   const { index } = props;
-  const { activeIndex } = useContext(AllTodosContext);
+  const { activeIdx } = useContext(CategoriesContext);
   const [isActive, setIsActive] = useState(false);
 
   useEffect(() => {
-    if (index === activeIndex) {
+    if (index === activeIdx) {
       setIsActive(true);
     } else {
       setIsActive(false);
     }
-  }, [index, activeIndex]);
+  }, [index, activeIdx]);
 
   return (
     <StyledDiv>

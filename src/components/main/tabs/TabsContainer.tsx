@@ -6,10 +6,11 @@
 */
 
 /* common: essential */
-import React, { FC, useRef, useContext, useState, useCallback, useReducer, MutableRefObject, ReactNode, createContext, Dispatch, useEffect } from 'react';
+import React, { FC, useRef, useContext } from 'react';
 import styled from 'styled-components';
 /* common: others */
-import { AllTodosContext } from '../../../providers/AllTodosProvider';
+// import { AllTodosContext } from '../../../providers/AllTodosProvider';
+import { CategoriesContext } from '../../../providers/CategoriesProvider';
 /* children components */
 import { Tab } from './Tab';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -28,7 +29,8 @@ interface TabsProps {
 
 export const TabsContainer: FC<TabsProps> = (props) => {
   const { className } = props;
-  const { allTodos  } = useContext(AllTodosContext);
+  // const { allTodos  } = useContext(AllTodosContext);
+  const { categories } = useContext(CategoriesContext);
 
   const containerRef = useRef<HTMLUListElement | null>(null);
   const liRefs       = useRef<(HTMLLIElement | null)[]>([]);
@@ -45,12 +47,12 @@ export const TabsContainer: FC<TabsProps> = (props) => {
         className = { className    }
         ref       = { containerRef }
       >
-        { allTodos.map((todos, i) => {
+        { categories.map((category, i) => {
 
           return (
             <Tab
-              key={                           todos.id }
-              todos={                            todos }
+              key={                           category.id }
+              // categories={                            categories }
               ref={    e => { liRefs.current[i] = e; } }
               containerRef={              containerRef }
               index={                                i } />

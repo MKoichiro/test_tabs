@@ -1,10 +1,10 @@
 import React, { FC, useRef, useState } from 'react';
 import styled from 'styled-components';
-import { TodosType } from '../../../../../types/Todos';
 import { CardsCarousel } from './CardsCarousel';
+import { CategoryType } from '../../../../../types/Categories';
 
 interface PropsType {
-  todosData: TodosType;
+  category: CategoryType;
   index: number;
 }
 export const CardsContainer: FC<PropsType> = (props) => {

@@ -10,21 +10,23 @@
 import React, { useContext, forwardRef, Ref, RefObject } from 'react';
 import styled from 'styled-components';
 /* common: others */
-import { TodosType } from '../../../types/Todos';
-import { AllTodosContext } from '../../../providers/AllTodosProvider';
-import { convertVwToPx, getCurrentContentsVw } from '../../../utils/converters';
+// import { AllTodosContext } from '../../../providers/AllTodosProvider';
+import { convertVwToPx } from '../../../utils/converters';
+import { CategoriesContext } from '../../../providers/CategoriesProvider';
 
 
 // === component 定義部分 ============================================= //
 interface PropsType {
-  todos: TodosType;
+
   index: number;
   containerRef: RefObject<HTMLUListElement | null>;
 }
 
 export const Tab = forwardRef((props: PropsType, liRef: Ref<HTMLLIElement>) => {
-  const { todos, index, containerRef } = props;
-  const { allTodos, dispatchAllTodosChange } = useContext(AllTodosContext);
+  const { index, containerRef } = props;
+  const { categories, dispatchCategoriesChange } = useContext(CategoriesContext);
+  const category = categories[index];
+
 
 
 
@@ -34,7 +36,6 @@ export const Tab = forwardRef((props: PropsType, liRef: Ref<HTMLLIElement>) => {
     if (!liRef) {     console.error('li 要素が見つかりません。'); return; }
     if (!container) { console.error('tab ul が見つかりません。'); return; }
 
-    // const currentContentWidth = convertVwToPx(getCurrentContentsVw());
     const currentContentWidth = convertVwToPx(62);
 
     // get scroll coordinate
@@ -46,21 +47,21 @@ export const Tab = forwardRef((props: PropsType, liRef: Ref<HTMLLIElement>) => {
 
   const toggleActive = () => {
     handleContainerScroll();
-    dispatchAllTodosChange({ type: 'switch_tab', newActiveIndex: index });
+    dispatchCategoriesChange({ type: 'switch_tab', newActiveIdx: index });
   };
 
 
   return (
     <StyledLi
-      key={           todos.id }
-      $isActive={ todos.active }
+      key={           category.id }
+      $isActive={ category.isActive }
       ref={              liRef }
     >
       <button
-        children={ todos.category_name }
+        children={ category.name }
         onClick={         toggleActive } />
 
-      { (index !== allTodos.length - 1) && <span className="separater" /> }
+      { (index !== categories.length - 1) && <span className="separater" /> }
     </StyledLi>
   )
 });

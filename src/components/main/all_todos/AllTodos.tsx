@@ -10,25 +10,21 @@
 import React, { useContext } from 'react';
 import styled from 'styled-components';
 /* contexts */
-import { AllTodosContext } from '../../../providers/AllTodosProvider';
+import { CategoriesContext } from '../../../providers/CategoriesProvider';
 /* child components */
 import { EachTodosContainer } from './each_todos/EachTodosContainer';
-import { UserContext } from '../../../providers/UserProvider';
 
 // === component 定義部分 ============================================= //
 export const AllTodos = () => {
-  const { activeIndex, allTodos } = useContext(AllTodosContext);
-  // const { user } = useContext(UserContext);
-  // const categories = user?.categories;
-  // console.log('categories: ', categories);
+  const { activeIdx, categories } = useContext(CategoriesContext);
 
   return (
-    <StyledUl $activeIndex={ activeIndex }>
+    <StyledUl $activeIndex={ activeIdx }>
 
-      { allTodos.map((todos, i) => {
+      { categories.map((category, i) => {
         return (
-          <li key={ todos.id }>
-            <EachTodosContainer todosData={ todos } index={ i } />
+          <li key={ category.id }>
+            <EachTodosContainer category={ category } index={ i } />
           </li>
         );
       }) }

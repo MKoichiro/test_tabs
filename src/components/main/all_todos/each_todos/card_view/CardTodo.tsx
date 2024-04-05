@@ -1,17 +1,18 @@
 import React, { FC, useEffect, useState } from 'react'
 import styled from 'styled-components'
-import { TodoType } from '../../../../../types/Todos'
+import { TodoType } from '../../../../../types/Categories';
+// import { TodoType } from '../../../../../types/Todos'
 
 
 
 interface PropsType {
-  todoData: TodoType;
+  todo: TodoType;
   index: number;
   cardActiveIdx: number;
   updateCardActiveIdx: (newIdx: number) => void;
 }
 export const CardTodo: FC<PropsType> = (props) => {
-  const {todoData, index, cardActiveIdx, updateCardActiveIdx} = props;
+  const {todo, index, cardActiveIdx, updateCardActiveIdx} = props;
   const [isActive, setIsActive] = useState(false);
 
   useEffect(() => {
@@ -33,7 +34,7 @@ export const CardTodo: FC<PropsType> = (props) => {
       <section className='contents-wrapper'>
         <header>
           <h3>
-            { todoData.main }
+            { todo.title }
           </h3>
         </header>
 
@@ -47,7 +48,7 @@ export const CardTodo: FC<PropsType> = (props) => {
 
         <div className='detail-container'>
           <p>
-            { todoData.detail }
+            { todo.detail }
           </p>
         </div>
 

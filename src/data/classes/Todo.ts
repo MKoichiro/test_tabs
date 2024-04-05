@@ -1,6 +1,6 @@
 import DOMPurify from 'dompurify';
 const marked = require('marked');
-import { useDebugMode } from '../../utils/adminDebug';
+import { isDebugMode } from '../../utils/adminDebugMode';
 import { notSet, DeadlineType, StatusType, PriorityType, priorityFormats } from '../types/type';
 import { generateUUID } from '../../utils/generateUUID';
 import { user } from '../entity';
@@ -78,7 +78,7 @@ export class Todo {
       detail   && (this.#detail   =   detail);
     }
 
-    if (useDebugMode && debugProps) {
+    if (isDebugMode && debugProps) {
       const { createdDate, updatedDate, isArchived, isOpen } = debugProps;
       createdDate && (this.#createdDate = createdDate);
       updatedDate && (this.#updatedDate = updatedDate);

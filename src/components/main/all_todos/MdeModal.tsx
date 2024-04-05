@@ -9,19 +9,25 @@
 import React, { useContext } from 'react';
 import styled from 'styled-components';
 /* contexts */
-import { AllTodosContext } from '../../../providers/AllTodosProvider';
+// import { AllTodosContext } from '../../../providers/AllTodosProvider';
 import { MdeContext } from '../../../providers/MdeProvider';
 /* utils */
 /* child components */
 /* easymde */
 import SimpleMdeReact from 'react-simplemde-editor';
 import "easymde/dist/easymde.min.css";
+import { Categories } from '../tabs/edit_categories_modal/Categories';
+import { CategoriesContext } from '../../../providers/CategoriesProvider';
 
 export const MdeModal = () => {
+  // const {
+  //   activeIndex,
+  //   allTodos,
+  // } = useContext(AllTodosContext);
   const {
-    activeIndex,
-    allTodos,
-  } = useContext(AllTodosContext);
+    activeIdx,
+    categories,
+  } = useContext(CategoriesContext)
 
   const {
     refs,
@@ -38,7 +44,7 @@ export const MdeModal = () => {
     <>
       <StyledDiv
         // className="mde-modal"
-        $activeIndex={ activeIndex }
+        $activeIndex={ activeIdx }
         $inEditing={ inEditing }
         $viewportHeight={viewportHeight}
         $hasEditorOverflow={hasEditorOverflow}

@@ -1,6 +1,6 @@
 import { Todo, TodoConstructProps } from './Todo';
 import { generateUUID } from '../../utils/generateUUID';
-import { useDebugMode } from '../../utils/adminDebug';
+import { isDebugMode } from '../../utils/adminDebugMode';
 import { CreateTodoArgs } from './Todo';
 import { user } from '../entity';
 
@@ -63,7 +63,7 @@ export class Category {
     }
 
     // For Debug: 生成時に一部のプロパティの設定を可能に。
-    if (useDebugMode && debugProps) {
+    if (isDebugMode && debugProps) {
       const { createdDate, updatedDate, todos, isArchived } = debugProps;
       createdDate && (this.#createdDate = createdDate);
       updatedDate && (this.#updatedDate = updatedDate);

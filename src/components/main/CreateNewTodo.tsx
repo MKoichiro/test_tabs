@@ -7,234 +7,205 @@
 
 
 /* common: essential */
-import React, { useContext, useRef } from 'react';
+import React, { FC, useContext, useRef } from 'react';
 import styled from 'styled-components';
 /* common: others */
-import { TodoType, TodosType, PriorityType, StatusType } from '../../types/Todos';
-import { AllTodosContext } from '../../providers/AllTodosProvider';
+import { PriorityType, StatusType, DeadlineType, TodoType, priorityLiterals, statusLiterals } from '../../types/Categories';
 /* react-hook-form */
 import { useForm } from 'react-hook-form';
+import { CategoriesContext } from '../../providers/CategoriesProvider';
+import { generateUUID } from '../../utils/generateUUID';
+import { FormParts } from './FormParts';
+
+interface InputDataType {
+  title?:              string;
+  detail?:             string;
+  deadlineDate?:         Date;
+  deadlineTime?:         Date;
+  priority?:     PriorityType;
+  status?:         StatusType;
+}
+
+// categories に追加する todo の deadline プロパティに渡す値を整形
+const deadlineFormatter = (dateInput: Date | undefined, timeInput: Date | undefined): DeadlineType => {
+  const now = new Date();
+  let deadline: Date;
+
+  if (timeInput) {
+
+    if (dateInput) { deadline = new Date(`${ dateInput } ${ timeInput }`); } // 年月日: 有り,   時刻: 有り
+    else { deadline = new Date(`${ now.toDateString() } ${ timeInput }`);  } // 年月日: 無し,   時刻: 有り
+    return { date: deadline, use_time: true }
+
+  } else  if (dateInput) {
+      deadline = new Date(`${ dateInput } 23:59:59`);
+      return { date: deadline, use_time: false }                             // 年月日: 有り,   時刻: 無し
+  }
+
+  return '---';                                                              // 年月日: 無し,   時刻: 無し
+};
 
 
 // === component 定義部分 ============================================= //
-interface DataType {
-  title?: string;
-  detail?: string;
-  deadline_date?: Date;
-  deadline_time?: Date;
-  priority?: PriorityType;
-  status?: StatusType;
+interface CreateNewTodoType {
 }
+export const CreateNewTodo: FC<CreateNewTodoType> = (props) => {
+  const {} = props;
+  const { dispatchCategoriesChange, deadlineFormatters } = useContext(CategoriesContext);
+  const { convertToStoredFormat: deadlineFormatter } = deadlineFormatters;
 
-type DeadlineType = { date: Date; use_time: boolean } | '---';
-
-
-export const CreateNewTodo = () => {
-  const { activeIndex, allTodos, dispatchAllTodosChange } = useContext(AllTodosContext);
-
-  // react-hook-form
+  // --- react-hook-form --------------------------------------------------------------- //
   const { register, handleSubmit, formState: { errors } } = useForm({ mode: 'onChange' });
   // set up element refs
-  const { ref: refForTitle,    ...restForTitle    } = register('title');
-  const { ref: refForDetail,   ...restForDetail   } = register('detail');
-  const { ref: refForDate,     ...restForDate     } = register('deadline_date');
-  const { ref: refForTime,     ...restForTime     } = register('deadline_time');
-  const { ref: refForPriority, ...restForPriority } = register('priority');
-  const { ref: refForStatus,   ...restForStatus   } = register('status');
   const titleRef    = useRef<HTMLInputElement    | null>(null);
   const detailRef   = useRef<HTMLTextAreaElement | null>(null);
   const dateRef     = useRef<HTMLInputElement    | null>(null);
   const timeRef     = useRef<HTMLInputElement    | null>(null);
   const priorityRef = useRef<HTMLSelectElement   | null>(null);
   const statusRef   = useRef<HTMLSelectElement   | null>(null);
+  // --------------------------------------------------------------- react-hook-form --- //
 
-  // --- executeSubmit で実行する関数 ------------------------------------------------------ //
+
+  // --- executeSubmit の helper 関数 ------------------------------------------------------ //
   // 1. form を初期化
   const formInitializer = () => {
     // 各項目の入力内容をクリア
-    titleRef.current    && (titleRef.current.value    = '');
-    detailRef.current   && (detailRef.current.value   = '');
-    dateRef.current     && (dateRef.current.value     = '');
-    timeRef.current     && (timeRef.current.value     = '');
+    titleRef.current    && (titleRef.current.value    =    '');
+    detailRef.current   && (detailRef.current.value   =    '');
+    dateRef.current     && (dateRef.current.value     =    '');
+    timeRef.current     && (timeRef.current.value     =    '');
     priorityRef.current && (priorityRef.current.value = '---');
     statusRef.current   && (statusRef.current.value   = '---');
     // focus を title にリセット
     titleRef.current && titleRef.current.focus();
   }
 
-  // 2. deadline プロパティに渡す値を整形
-  const formatDeadline = (data: DataType, now: Date): DeadlineType => {
-    const date = data.deadline_date;
-    const time = data.deadline_time;
-    if (date) {
-      if (time) { return { date: new Date(`${ date } ${ time }`), use_time: true }                } // 年月日: 有り,   時刻: 有り
-      else      { return { date: new Date(`${ date } 23:59:59`), use_time: false, }               } // 年月日: 有り,   時刻: 無し
-    } else {
-      if (time) { return { date: new Date(`${ now.toDateString() } ${ time }`), use_time: true, } } // 年月日: 無し,   時刻: 有り
-      else      { return '---'                                                                } // 年月日: 無し,   時刻: 無し
-    }
-  }
-
-  // 3. newTodo を allTodos に追加, dispatch して変更を実装
-  const updateAllTodos = (data: DataType, now: Date, deadlineFormatted: DeadlineType) => {
-    const currentAllTodos: TodosType[] = [...allTodos];
+  // 2. newTodo を categories に追加
+  const addNewTodo = (inputData: InputDataType) => {
     const newTodo: TodoType = {
-      id: currentAllTodos[activeIndex].next_assigning_id,
-      created_date: now,
-      updated_date: now,
-      status: data.status || '---',
-      get completed() { return data.status === 'COMPLETED' },
-      deadline: deadlineFormatted,
-      get expired() { return (!this.completed && this.deadline !== '---') && Date.now() > this.deadline.date.getTime(); },
-      priority: data.priority || '---',
-      archived: false,
-      main: data.title || '',
-      detail: data.detail || '',
-      open: true,
+      id:                                                               generateUUID(),
+      createdDate:                                                          new Date(),
+      updatedDate:                                                          new Date(),
+      status:                                                inputData.status || '---',
+      deadline:      deadlineFormatter(inputData.deadlineDate, inputData.deadlineTime),
+      priority:                                            inputData.priority || '---',
+      isArchived:                                                                false,
+      title:                                                     inputData.title || '',
+      detail:                                                   inputData.detail || '',
+      isOpen:                                                                     true,
     };
-
-    currentAllTodos[activeIndex].todos.push(newTodo);
-    const newAllTodos: TodosType[] = currentAllTodos;
-    dispatchAllTodosChange({ type: 'update_all_todos', newAllTodos });
-  };
-  // ------------------------------------------------------ executeSubmit で実行する関数 --- //
+    dispatchCategoriesChange({ type: 'add_new_todo', newTodo });
+  }
+  // ------------------------------------------------------ executeSubmit の helper 関数 --- //
 
   // --------------------------------------------------------------------- submit で実行 --- //
-  const executeSubmit = (data: DataType) => {
-    const now = new Date;
-    const deadlineFormatted: DeadlineType = formatDeadline(data, now);  // deadline を整形
-    formInitializer();                              // form の初期化
-    updateAllTodos(data, now, deadlineFormatted);   // newAllTodos を作成
+  const executeSubmit = (inputData: InputDataType) => {
+    formInitializer();                              // 1. form の初期化
+    addNewTodo(inputData);                          // 2. newTodo を categories に追加
   };
   // --- submit で実行 --------------------------------------------------------------------- //
 
+  const priorityValues: PriorityType[] = priorityLiterals;
+  const statusValues:     StatusType[] =   statusLiterals;
 
 
   return (
     <StyledForm onSubmit={ handleSubmit(executeSubmit) }>
       <fieldset>
-        <legend>CREATE NEW TODO</legend>
+        <legend className='form-legend'>
+          CREATE NEW TODO
+        </legend>
 
-        <div className="container title-container">
-          <label htmlFor="title">
-            <span className="input-feature optional">optional</span>
-            <span>Title:</span>
-          </label>
-          <div className='input-and-error'>
-            <input
-              type="text"
-              id="title"
-              { ...restForTitle }
-              // name="title" {...rest} 内で設定される
-              ref={ (e) => { refForTitle(e); titleRef.current = e; }} />
-            <p>error message</p>
-          </div>
-        </div>
+        <fieldset className="child-field">
+          <legend className='child-legend'>
+              Main:
+          </legend>
+          <div className='parts-container title-detail'>
+            <FormParts
+              className    = {    'parts title' }
+              partsFor     = {    'title' }
+              as           = {    'input' }
+              feature      = { 'optional' }
+              register     = {   register }
+              partsRef     = {   titleRef }
+              defaultValue = {         '' }
+              inputType    = {     'text' }
+              placeholder  = {    'Title' } />
 
-        <div className="container detail-container">
-          <label htmlFor="detail">
-            <span className="input-feature optional">optional</span>
-            <span>Detail:</span>
-          </label>
-          <div className='input-and-error'>
-            <textarea
-              id="detail"
-              { ...restForDetail }
-              ref={ (e) => { refForDetail(e); detailRef.current = e; } } />
-            <p>error message</p>
-          </div>
-        </div>
-
-        <div className="outer-container deadline-container">
-
-          <header>Deadline:</header>
-
-          <div className='inner-container'>
-            <div className="deadline-date-container">
-              <label htmlFor="deadline_date">
-                <span className="input-feature optional">optional</span>
-                <span>Date:</span>
-              </label>
-              <div className='input-and-error'>
-                <input
-                  type="date"
-                  id="deadline_date"
-                  defaultValue=""
-                  { ...restForDate }
-                  ref={ (e) => { refForDate(e); dateRef.current = e; } } />
-                <p>error message</p>
-              </div>
-            </div>
-
-            <div className="deadline-time-container">
-              <label htmlFor="deadline_time">
-                <span className="input-feature optional">optional</span>
-                <span>Time:</span>
-              </label>
-              <div className='input-and-error'>
-                <input
-                  type="time"
-                  id="deadline_time"
-                  defaultValue=""
-                  { ...restForTime }
-                  ref={ (e) => { refForTime(e); timeRef.current = e; } } />
-                <p>error message</p>
-              </div>
-
-            </div>
+            <FormParts
+              className    = {   'parts detail' }
+              partsFor     = {   'detail' }
+              as           = { 'textarea' }
+              feature      = { 'optional' }
+              register     = {   register }
+              partsRef     = {  detailRef }
+              defaultValue = {         '' }
+              placeholder  = {   'Detail' } />
           </div>
 
-        </div>
+        </fieldset>
 
-        <div className="container priority-container">
-          <label htmlFor="priority">
-            <span className="input-feature optional">optional</span>
-            <span>Priority:</span>
-          </label>
-          <div className='input-and-error'>
-            <select
-              id="priority"
-              defaultValue="---"
-              { ...restForPriority }
-              ref={ (e) => { refForPriority(e); priorityRef.current = e; } }
-            >
-              <option value="---" > --- </option>
-              <option value="Highest" > Highest </option>
-              <option value="High"    > High    </option>
-              <option value="Medium"  > Medium  </option>
-              <option value="Low"     > Low     </option>
-              <option value="Lowest"  > Lowest  </option>
-            </select>
-            <p>error message</p>
+
+        <fieldset className="child-field">
+          <legend className='child-legend'>
+            Deadline:
+          </legend>
+          <div className='parts-container date-time'>
+            <FormParts
+              className    = {     'parts date' }
+              partsFor     = {     'date' }
+              as           = {    'input' }
+              feature      = { 'optional' }
+              register     = {   register }
+              partsRef     = {    dateRef }
+              defaultValue = {         '' }
+              inputType    = {     'date' } />
+            <span className='form-separater'></span>
+            <FormParts
+              className    = {     'parts time' }
+              partsFor     = {     'time' }
+              as           = {    'input' }
+              feature      = { 'optional' }
+              register     = {   register }
+              partsRef     = {    timeRef }
+              defaultValue = {         '' }
+              inputType    = {     'time' } />
           </div>
-        </div>
 
-        <div className="container status-container">
-          <label htmlFor="status">
-            <span className="input-feature optional">optional</span>
-            <span>Status:</span>
-          </label>
-          <div className='input-and-error'>
-            <select
-              id="status"
-              defaultValue="---"
-              { ...restForStatus }
-              ref={ (e) => { refForStatus(e); statusRef.current = e; } }
-            >
-              <option value="---"         > ---         </option>
-              <option value="Not Started"     > Not Started     </option>
-              <option value="In Progress..."  > In Progress...  </option>
-              <option value="COMPLETED"       > COMPLETED       </option>
-              <option value="Aborted"         > Aborted         </option>
-              <option value="Pending"         > Pending         </option>
-            </select>
-            <p>error message</p>
+        </fieldset>
+
+        <fieldset className="child-field">
+          <legend className='child-legend'>
+            Others:
+          </legend>
+          <div className='parts-container status-priority'>
+            <FormParts
+              className     = {     'parts status' }
+              partsFor      = {     'status' }
+              as            = {     'select' }
+              feature       = {   'optional' }
+              register      = {     register }
+              partsRef      = {    statusRef }
+              defaultValue  = {        '---' }
+              selectOptions = { statusValues } />
+            <span className='form-separater'></span>
+            <FormParts
+              className     = {     'parts priority' }
+              partsFor      = {     'priority' }
+              as            = {       'select' }
+              feature       = {     'optional' }
+              register      = {       register }
+              partsRef      = {    priorityRef }
+              defaultValue  = {          '---' }
+              selectOptions = { priorityValues } />
           </div>
-        </div>
+        </fieldset>
 
-        <button >
-          test
-        </button>
+        <div className="btn-submit-container">
+          <button>
+            Submit
+          </button>
+        </div>
       </fieldset>
     </StyledForm>
   );
@@ -244,73 +215,142 @@ export const CreateNewTodo = () => {
 
 // === style 定義部分 ================================================= //
 const StyledForm = styled.form`
-  height: 500px;
-  background: cyan;
 
+  /* reset */
   fieldset {
-    // reset
     border: none;
     padding: 0;
+    margin: 0;
+  }
+  input, textarea, select {
+    border: none;
+    border-radius: 0;
+    outline: none;
+    padding: .4rem .8rem;
+    font-size: 1.8rem;
+    @media (width < 600px) {
+      font-size: 16px;
+    }
+  }
 
-    legend {
+  /* height: 500px; */
+  /* background: cyan; */
+
+  fieldset {
+    margin: 0 .8rem;
+
+    .form-legend {
       font-size: 2rem;
     }
 
-    .container,
-    .outer-container { 
-      margin-top: 3.2rem;
-      label {
+    .child-field {
+      margin-top: 1.6rem;
+      .child-legend {
+        font-size: 1.8rem;
+        margin-bottom: .8rem;
+      }
+
+
+      /* common */
+      .parts-container {
         display: flex;
-        gap: .8rem;
-        height: fit-content;
-        .input-feature {
-          background: pink;
-        }
-      }
-
-      .input-and-error {
-        flex: 1;
-        p {
-          margin-left: auto;
-          width: fit-content;
-        }
-      }
-
-    }
-
-    .container {
-      display: flex;
-      label {
-        width: 15%;
-      }
-      .input-and-error {
-        input,
-        textarea {
-          width: 100%;
-        }
-        select {
-          width: 15%;
-        }
-      }
-    }
-
-    .outer-container {
-      .inner-container {
-        display: flex;
-        gap: 3.2rem;
-        .deadline-date-container,
-        .deadline-time-container {
+        .parts {
           display: flex;
-          flex: 1;
+          gap: .8rem;
+          /* align-items: center; */
+
           label {
-            width: 30%;
-          }
-          .input-and-error {
-            input {
-              width: 37%;
+            display: flex;
+            height: fit-content;
+            gap: .4rem;
+            .feature {
+              font-size: .8em;
+              padding: 0 .6rem;
+              background: lightgray;
+            }
+            .label-txt {
+              flex: 1;
+              display: flex;
+              justify-content: space-between;
+              &::after {
+                content: ':';
+              }
+              font-size: 1.8rem;
+              @media (width < 600px) {
+                font-size: 16px;
+              }
             }
           }
+
+          .input-error {
+            input, textarea, select {
+              width: 100%;
+            }
+            .error-message {
+              text-align: right;
+            }
+
+          }
         }
+      }
+
+      /* each */
+      /* .parts-container for title-detail */
+      .title-detail {
+        gap: .8rem;
+        flex-direction: column;
+        /* label : input = 2 : 6 + 1 + 2 + 6 (=15) */
+        .parts {
+          label        { flex: 2; }
+          .input-error { flex: 15; }
+        }
+
+      }
+      /* .parts-container for date-time, status-priority */
+      .date-time, .status-priority {
+        flex-direction: row;
+        /* label : input : separater : label : input = 2 : 6 : 1 : 2 : 6 */
+        .parts {
+          flex: 8; // 2 + 6
+          label        { flex: 2; }
+          .input-error { flex: 6; }
+        }
+        .form-separater {
+          flex: 1;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          &::before {
+            content: '';
+            display: block;
+            height: 80%;
+            border-left: .2rem solid black;
+          }
+
+        }
+        @media (width < 600px) {
+          flex-direction: column;
+          gap: .8rem;
+          .parts {
+            label        { flex: 2; }
+            .input-error { flex: 6; }
+          }
+          .form-separater {
+            display: none;
+          }
+        }
+
+      }
+    }
+
+
+    
+
+    .btn-submit-container {
+      margin-top: 2.4rem;
+      button {
+        display: block;
+        margin-left: auto;
       }
     }
 

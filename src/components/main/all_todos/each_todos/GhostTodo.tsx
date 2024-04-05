@@ -11,7 +11,7 @@
 import React, { LegacyRef, forwardRef } from 'react';
 import styled from 'styled-components';
 /* common: others */
-import { TodoType } from '../../../../types/Todos';
+import { TodoType } from '../../../../types/Categories';
 /* children components */
 import { TodoDetail } from './TodoDetail';
 import { TodoHeader } from './TodoHeader';
@@ -20,7 +20,7 @@ import { TodoHeader } from './TodoHeader';
 // === component 定義部分 ============================================= //
 interface PropsType {
   todo: TodoType;
-  todosId: number;
+  categoryId: string;
 }
 
 export const Todo = forwardRef(({...props}: PropsType, ref: LegacyRef<HTMLDivElement> | undefined) => {

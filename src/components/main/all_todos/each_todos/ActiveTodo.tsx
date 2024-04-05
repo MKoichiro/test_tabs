@@ -15,9 +15,8 @@
 import React, { useContext, useState, useRef, TouchEvent } from 'react';
 import styled from 'styled-components';
 /* providers */
-import { AllTodosContext } from "../../../../providers/AllTodosProvider";
 /* types */
-import { TodoType } from '../../../../types/Todos';
+import { TodoType } from '../../../../types/Categories';
 import { TouchStartArgType, TouchMoveArgType, TouchEndArgType } from './EachTodos';
 /* utils */
 import { convertVwToPx, getCurrentContentsVw } from '../../../../utils/converters';
@@ -30,6 +29,7 @@ import { TodoHeader } from './TodoHeader';
 /* dnd-kit */
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
+import { CategoriesContext } from '../../../../providers/CategoriesProvider';
 
 
 const contentsWidth = convertVwToPx(getCurrentContentsVw());
@@ -39,34 +39,28 @@ const deleteBtnWidth = contentsWidth * .5;
 // === component 定義部分 ============================================= //
 interface PropsType {
   todo: TodoType;
-  todosId: number;
+  liIdx: number;
   handleTouchStart: (args: TouchStartArgType) => void;
   handleTouchMove: (args: TouchMoveArgType) => void;
   handleTouchEnd: (args: TouchEndArgType) => void;
 }
 
-export const SortableTodo = (props: PropsType) => {
-  // currentTodo"s"Id と currentTodo""Id があるので注意
+export const ActiveTodo = (props: PropsType) => {
   const {
-    todo: currentTodo,
-    todosId: currentTodosId,
+    todo,
+    liIdx,
     handleTouchStart,
     handleTouchMove,
     handleTouchEnd,
   } = props;
+  const currentId = todo.id;
   const {
-    id: currentTodoId,
-    main,
-    expired: isExpired,
-    completed: isCompleted,
-    open: isOpen,
-    ...rest
-  } = currentTodo;
-  const {
-    activeIndex,
-    allTodos,
-    dispatchAllTodosChange
-  } = useContext(AllTodosContext);
+    activeIdx,
+    categories,
+    dispatchCategoriesChange,
+  } = useContext(CategoriesContext);
+
+  // dnd-kit
   const {
     attributes,
     listeners,
@@ -74,34 +68,35 @@ export const SortableTodo = (props: PropsType) => {
     transform,
     transition,
     isDragging
-  } = useSortable({id: currentTodoId});
+  } = useSortable({id: currentId});
   const style = {
     transform: CSS.Transform.toString(transform),
     transition,
   };
 
 
-  const todoIdx = allTodos[activeIndex].todos.findIndex(todo => todo.id === currentTodo.id);
+
+  // const todoIdx = categories[activeIdx].todos.findIndex(todo => todo.id === currentId);
 
   const handleTodoPropsEdit = (propName: string, newValue?: string) => {
-    // todo のプロパティを編集して allTodos を更新する関数
-    const newAllTodos = [...allTodos];
+    // todo のプロパティを編集して categories を更新する関数
+    const newCategories = [...categories];
     switch (propName) {
       case 'open':
-        newAllTodos[activeIndex].todos[todoIdx].open = !currentTodo.open;
-        dispatchAllTodosChange({ type: 'update_all_todos', newAllTodos });
+        newCategories[activeIdx].todos[liIdx].isOpen = !todo.isOpen;
+        dispatchCategoriesChange({ type: 'update_categories', newCategories });
         break;
       case 'archived':
-        newAllTodos[activeIndex].todos[todoIdx].archived = true;
-        dispatchAllTodosChange({ type: 'update_all_todos', newAllTodos });
+        newCategories[activeIdx].todos[liIdx].isArchived = true;
+        dispatchCategoriesChange({ type: 'update_categories', newCategories });
         break;
       case 'status':
-        newAllTodos[activeIndex].todos[todoIdx].status = 'COMPLETED';
-        dispatchAllTodosChange({ type: 'update_all_todos', newAllTodos });
+        newCategories[activeIdx].todos[liIdx].status = 'completed';
+        dispatchCategoriesChange({ type: 'update_categories', newCategories });
         break;
       case 'main':
-        newValue && (newAllTodos[activeIndex].todos[todoIdx].main = newValue);
-        dispatchAllTodosChange({ type: 'update_all_todos', newAllTodos });
+        newValue && (newCategories[activeIdx].todos[liIdx].title = newValue);
+        dispatchCategoriesChange({ type: 'update_categories', newCategories });
         break;
     }
   };
@@ -162,7 +157,7 @@ export const SortableTodo = (props: PropsType) => {
 
   return (
     <StyledLi
-      key={ currentTodoId }
+      key={ currentId }
       ref={setNodeRef}
       style={style}
       {...attributes}
@@ -180,13 +175,13 @@ export const SortableTodo = (props: PropsType) => {
           <TodoHeader
             sortable={ true }
             listeners={ listeners }
-            todo={ currentTodo }
+            todo={ todo }
             handleTodoPropsEdit={ handleTodoPropsEdit } />
 
           <TodoDetail
             ref={containerRef}
-            todoIdx={todoIdx}
-            todo={ currentTodo } />
+            liIdx={liIdx}
+            todo={ todo } />
         </div>
         <div className='btns-container'>
           <button

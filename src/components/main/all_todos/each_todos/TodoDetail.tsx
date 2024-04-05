@@ -12,49 +12,46 @@ import React, { useContext, useLayoutEffect, useRef, useState, LegacyRef } from 
 import styled from 'styled-components';
 /* common: others */
 import { MdeContext } from '../../../../providers/MdeProvider';
-import DOMPurify from 'dompurify';
-const marked = require('marked');
-import { TodoType } from '../../../../types/Todos';
+import { TodoType } from '../../../../types/Categories';
 import { InfoTable } from './InfoTable';
+import { CategoriesContext } from '../../../../providers/CategoriesProvider';
 
 
 const isDev = (process.env.NODE_ENV === 'development');
 
+// useUnsettledHeightAcc: 内容物の高さが可変のアコーディオンを実装するためのカスタムフック
+//                        open/close 状態を保持する isOpen state は保守性のため外部で定義して渡す。
+//                        また、内容物の文字列が変更された時にも高さを再取得する必要があるため、
+//                        state 管理されたテキストコンテンツを changeableTxtContentsState を引数で渡す必要がある。
+const useUnsettledHeightAcc = (isOpen: boolean, changeableTxtContentsState: string) => {
+  const [height, setHeight] = useState<number | null>(null);
 
-// === component 定義部分 ============================================= //
-interface PropsType { 
-  todoIdx?: number;
-  todo: TodoType;
-}
-
-export const TodoDetail = React.forwardRef((props: PropsType, containerRef: LegacyRef<HTMLDivElement> | undefined) => {
-  // const infoRef = useRef<HTMLElement | null>(null);
-  const [height, setHeight] = useState<number | null>(null); 
   const heightGetterRef = useRef<HTMLDivElement | null>(null);
-
-  const { todoIdx, todo } = props;
-  const {
-    detail,
-    open: isOpen,
-  } = todo;
-
   useLayoutEffect(() => {
     if (heightGetterRef.current) {
       const newHeight = heightGetterRef.current.getBoundingClientRect().height;
       setHeight(newHeight);
     }
-  }, [isOpen, detail]);
+  }, [isOpen, changeableTxtContentsState]);
+  return { height, heightGetterRef };
+};
 
 
-  const {
-    inEditing,
-    handleModalOpen,
-    ...rest
-  } = useContext(MdeContext);
+// === component 定義部分 ============================================= //
+interface PropsType { 
+  liIdx?: number;
+  todo: TodoType;
+}
 
+export const TodoDetail = React.forwardRef((props: PropsType, containerRef: LegacyRef<HTMLDivElement> | undefined) => {
+  const { liIdx, todo } = props;
+  const { detail, isOpen } = todo;
+  const { getSanitizedDetail } = useContext(CategoriesContext);
+  const { height, heightGetterRef } = useUnsettledHeightAcc(isOpen, detail);
+  const { inEditing, handleModalOpen } = useContext(MdeContext);
 
   const executeModalOpen = () => {
-    handleModalOpen(todoIdx, containerRef);
+    handleModalOpen(liIdx, containerRef);
   };
 
 
@@ -75,7 +72,7 @@ export const TodoDetail = React.forwardRef((props: PropsType, containerRef: Lega
         >
           <div
             dangerouslySetInnerHTML={{
-              __html: DOMPurify.sanitize(marked.parse(detail)),
+              __html: getSanitizedDetail(todo),
             }} />
         </section>
 
@@ -90,8 +87,6 @@ export const TodoDetail = React.forwardRef((props: PropsType, containerRef: Lega
 
 // === style 定義部分 ================================================= //
 const StyledSection = styled.section<{ $isOpen: boolean; $height: number | null; $inEditing: boolean; }>`
-  /* background: ${ isDev ? '#990' : '' }; */
-  /* △ only dev env △ */
 
   height: ${ props => props.$isOpen ? `${ props.$height }px` : '0' };
   transition: height 500ms;

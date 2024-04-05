@@ -1,46 +1,59 @@
-import React, { FC } from 'react';
+import React, { FC, useContext } from 'react';
 import styled from 'styled-components';
-import { TodoType } from '../../../../types/Todos';
+import { TodoType } from '../../../../types/Categories';
+import { CategoriesContext } from '../../../../providers/CategoriesProvider';
 
 const isDev = (process.env.NODE_ENV === 'development');
+
+const useFormattedInfoEmitter = (todo: TodoType) => {
+  const { checkIsCompleted, checkIsExpired, deadlineFormatters, getFormattedDate } = useContext(CategoriesContext);
+  const { convertToDisplayFormat: getFormattedDeadline } = deadlineFormatters;
+  // need to format
+  const isExpired            = checkIsExpired(todo);
+  const isCompleted          = checkIsCompleted(todo);
+  const formattedDeadline    = getFormattedDeadline(todo);
+  const formattedCreatedDate = getFormattedDate(todo.createdDate);
+  const formattedUpdatedDate = getFormattedDate(todo.updatedDate);
+  // others
+  const { id, status, priority, isArchived, isOpen } = todo;
+
+  return {
+    id,
+    isExpired,
+    isCompleted,
+    deadline: formattedDeadline,
+    createdDate: formattedCreatedDate,
+    updatedDate: formattedUpdatedDate,
+    status,
+    priority,
+    isArchived,
+    isOpen,
+  };
+
+}
 
 // === component 定義部分 ============================================= //
 interface InfoTableType {
   todo: TodoType;
 }
 export const InfoTable: FC<InfoTableType> = (props) => {
-
   const {
-    // some other props,
-    todo: {
-      id,
-      completed,
-      expired,
-      created_date,
-      updated_date,
-      status,
-      priority,
-      archived,
-      deadline,
-      open: isOpen,
-    },
+    todo,
   } = props;
 
-  // deadline プロパティを表示形式に整形する関数
-  const getDeadline = () => {
-    if (deadline === '---') { return deadline }
+  const {
+    id,
+    isExpired,
+    isCompleted,
+    deadline,
+    createdDate,
+    updatedDate,
+    status,
+    priority,
+    isArchived,
+    isOpen,
+  } = useFormattedInfoEmitter(todo);
 
-    const date    = deadline.date.toLocaleDateString();
-    const hours   = deadline.date.getHours();
-    const minutes = String(deadline.date.getMinutes()).padStart(2, '0');
-    const dateFormatted = deadline.use_time ? `${ date } ${ hours }:${ minutes }` : `${ date }`;
-    return dateFormatted;
-  };
-
-  
-  const getFormatted = () => {
-
-  }
 
   return (
     <StyledTable $isDev={ isDev }>
@@ -64,18 +77,18 @@ export const InfoTable: FC<InfoTableType> = (props) => {
         </thead>
         <tbody className='info-values-container'>
           <tr className='info-values'>
-            <td className='info-value' children={                     getDeadline() } />
-            <td className='info-value' children={ created_date.toLocaleDateString() } />
-            <td className='info-value' children={ updated_date.toLocaleDateString() } />
-            <td className='info-value' children={                            status } />
-            <td className='info-value' children={                          priority } />
+            <td className='info-value' children={    deadline } />
+            <td className='info-value' children={ createdDate } />
+            <td className='info-value' children={ updatedDate } />
+            <td className='info-value' children={      status } />
+            <td className='info-value' children={    priority } />
             { isDev && (
               <>
-                <td className='dev-td info-value' children={  String(archived) } />
-                <td className='dev-td info-value' children={    String(isOpen) } />
-                <td className='dev-td info-value' children={   String(expired) } />
-                <td className='dev-td info-value' children={        String(id) } />
-                <td className='dev-td info-value' children={ String(completed) } />
+                <td className='dev-td info-value' children={  String(isArchived) } />
+                <td className='dev-td info-value' children={      String(isOpen) } />
+                <td className='dev-td info-value' children={   String(isExpired) } />
+                <td className='dev-td info-value' children={          String(id) } />
+                <td className='dev-td info-value' children={ String(isCompleted) } />
               </>
             ) }
           </tr>

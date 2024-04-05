@@ -7,7 +7,7 @@
 */
 
 /* common: essential */
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useContext, useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
 /* font awesome */
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -17,7 +17,8 @@ import { faTrashCan } from '@fortawesome/free-regular-svg-icons';
 import { DragIndicator } from '@mui/icons-material';
 /* dnd-kit */
 import { SyntheticListenerMap } from '@dnd-kit/core/dist/hooks/utilities';
-import { TodoType } from '../../../../types/Todos';
+import { TodoType } from '../../../../types/Categories';
+import { CategoriesContext } from '../../../../providers/CategoriesProvider';
 
 
 // === component 定義部分 ============================================= //
@@ -30,11 +31,20 @@ interface PropsType {
 
 export const TodoHeader = (props: PropsType) => {
   const {
-    todo: { main, completed: isCompleted, expired: isExpired, open: isOpen },
+    todo,
     sortable,
     handleTodoPropsEdit,
     listeners
   } = props;
+
+  const {
+    checkIsCompleted,
+    checkIsExpired
+  } = useContext(CategoriesContext);
+
+  const { title, isOpen } = todo;
+  const isExpired = checkIsExpired(props.todo);
+  const isCompleted = checkIsCompleted(props.todo);
 
 
   const inputRef = useRef<HTMLInputElement | null>(null);
@@ -43,7 +53,6 @@ export const TodoHeader = (props: PropsType) => {
 
   const handleClickOutside = (e: MouseEvent) => {
     if (!(e.target as Element).closest('.main-container')) {
-      console.log('You clicked outside of me!');
       setInEditing(false);
     }
   }
@@ -82,7 +91,6 @@ export const TodoHeader = (props: PropsType) => {
       <span className="gripper" {...listeners}>
         <DragIndicator />
       </span>
-      {/* <input type="checkbox" /> */}
 
       { isExpired && (
         <span className="icon-expired">
@@ -94,24 +102,18 @@ export const TodoHeader = (props: PropsType) => {
         className='main-container'
         onDoubleClick={ toggleMode }
       >
-        <h4 children={main} />
+        <h4 children={title} />
         {sortable && (
           <form onSubmit={ handleSubmit }>
-            <input type="text" ref={ inputRef } defaultValue={main}/>
+            <input type="text" ref={ inputRef } defaultValue={title}/>
           </form>
         )}
       </div>
 
       <div className="btn-container">
-        {/* <button onClick={() => executeTodoPropsEdit('archived')}>
-          <FontAwesomeIcon icon={faTrashCan} />
-        </button> */}
         <button className='btn-toggle-detail' onClick={() => executeTodoPropsEdit('open')}>
           <FontAwesomeIcon icon={faChevronUp} />
         </button>
-        {/* <button onClick={() => executeTodoPropsEdit('open')}>
-          <FontAwesomeIcon icon={faGear} />
-        </button> */}
       </div>
     </StyledHeader>
   )

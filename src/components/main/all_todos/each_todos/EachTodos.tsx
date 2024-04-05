@@ -9,15 +9,15 @@
 import React, { FC, useContext, useState } from "react";
 import styled from "styled-components";
 /* common: others */
-import { TodosType } from "../../../../types/Todos";
-import { AllTodosContext } from "../../../../providers/AllTodosProvider";
+
+import { CategoriesContext } from "../../../../providers/CategoriesProvider";
 /* utils */
 import { convertVwToPx, getCurrentContentsVw } from "../../../../utils/converters";
 /* children components */
 import { Todo } from "./GhostTodo";
 /* dnd-kit */
 import { createPortal } from "react-dom";
-import { SortableTodo } from "./ActiveTodo";
+import { ActiveTodo } from "./ActiveTodo";
 import {
   DndContext,
   DragEndEvent,
@@ -35,6 +35,7 @@ import {
   arrayMove,
   sortableKeyboardCoordinates,
   verticalListSortingStrategy } from "@dnd-kit/sortable";
+import { CategoryType } from "../../../../types/Categories";
 
 
 const contentWidth = convertVwToPx(getCurrentContentsVw());
@@ -63,14 +64,15 @@ export interface TouchEndArgType {
 }
 
 interface PropsType {
-  todosData: TodosType;
+  category: CategoryType;
   index: number;
 }
 
 export const EachTodos: FC<PropsType> = (props) => {
-  const { todosData, index } = props;
-  const todos = todosData.todos;
-  const { allTodos, dispatchAllTodosChange } = useContext(AllTodosContext);
+  const { category, index } = props;
+  const todos = category.todos;
+  // const { allTodos, dispatchAllTodosChange } = useContext(AllTodosContext);
+  const { categories, dispatchCategoriesChange } = useContext(CategoriesContext);
 
   // --- dnd-kit/sortable 関連 -------------------------------------- //
   // sensor 登録
@@ -97,9 +99,9 @@ export const EachTodos: FC<PropsType> = (props) => {
       const oldIndex = todos.findIndex(todo => todo.id === active.id);
       const newIndex = todos.findIndex(todo => todo.id === over?.id);
       const newTodo = arrayMove(todos, oldIndex, newIndex);
-      const newAllTodos = [...allTodos];
-      newAllTodos[index].todos = newTodo;
-      dispatchAllTodosChange({ type: 'update_all_todos', newAllTodos });
+      const newCategories = [...categories];
+      newCategories[index].todos = newTodo;
+      dispatchCategoriesChange({ type: 'update_categories', newCategories });
     }
     setActiveId(null);
   };
@@ -169,11 +171,11 @@ export const EachTodos: FC<PropsType> = (props) => {
           items={ todos }
           strategy={verticalListSortingStrategy}
         >
-          { todos.map(todo => !todo.archived &&
-            <SortableTodo
+          { todos.map((todo, i) => !todo.isArchived &&
+            <ActiveTodo
               key={ todo.id }
+              liIdx={ i }
               todo={ todo }
-              todosId={ todosData.id }
               handleTouchStart={handleTouchStart}
               handleTouchMove={handleTouchMove}
               handleTouchEnd={handleTouchEnd} />
@@ -185,7 +187,7 @@ export const EachTodos: FC<PropsType> = (props) => {
             transform が body 基準になるのでカーソルからずれなくなる。 */}
         {createPortal(
           <DragOverlay>
-            { activeId ? <Todo todo={ todos.filter(todo => todo.id === activeId )[0] } todosId={ todosData.id } /> : null }
+            { activeId ? <Todo todo={ todos.filter(todo => todo.id === activeId )[0] } categoryId={ category.id } /> : null }
           </DragOverlay>,
           document.body,
         )}

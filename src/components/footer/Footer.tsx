@@ -1,29 +1,35 @@
 /* Footer Component */
 
-/* react 関連 */
-import React, { useState, useRef } from 'react'; // 他の hooks も必要に応じてここでimport
-/* styled-components 関連 */
-import styled, { css } from 'styled-components';
-/* 子Component があれば */
-// import MyComponent from './components/XXX/YYY';
+/* --- react/styled-components --- */
+import React, { FC } from 'react';
+import styled from 'styled-components';
+/* --- child components ---------- */
+
+
+// === 型定義部分 ===================================================== //
+// - component props
+interface FooterType {}
+// - others
+// ===================================================== 型定義部分 === //
 
 
 // === component 定義部分 ============================================= //
-const Footer = () => {
-	// ここにいろいろ書く
+export const Footer: FC<FooterType> = (props) => {
+	const {} = props;
 	return (
-		<h1 children="Footer" />
+    <StyledFooter>
+  		<h1 children="Footer" />
+    </StyledFooter>
 	);
 };
 // ============================================= component 定義部分 === //
 
+
 // === style 定義部分 ================================================= //
-const StyledFooter = styled(Footer)`
+const StyledFooter = styled.footer`
   h1 {
     background: pink;
     color: red;
   }
 `;
 // ================================================= style 定義部分 === //
-
-export {StyledFooter};

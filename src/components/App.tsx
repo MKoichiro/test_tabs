@@ -6,9 +6,9 @@ import '../data/entity';
 
 
 /* 各 Component */
-import { StyledHeader as Header } from './header/Header';
+import { Header } from './header/Header';
 import { StyledMain as Main } from './main/Main';
-import { StyledFooter as Footer } from './footer/Footer';
+import { Footer } from './footer/Footer';
 
 // import Modal from 'react-modal';
 import { Providers } from '../providers/Providers';

@@ -1,0 +1,58 @@
+/* --- react/styled-components --- */
+import React, { FC } from 'react;
+import styled from 'styled-components;
+/* --- child components ---------- */
+/* --- providers/contexts -------- */
+/* --- types --------------------- */
+/* --- utils --------------------- */
+/* --- hooks --------------------- */
+/* --- settings ------------------ */
+/* --- font awesome -------------- */
+/* --- material icons ------------ */
+/* --- react-hook-form ----------- */
+/* --- easymde ------------------- */
+/* --- dnd-kit ------------------- */
+/* --- others -------------------- */
+/* --- temporarily unsed --------- */
+
+
+// === 型定義部分 ===================================================== //
+// - component props
+// - others
+// ===================================================== 型定義部分 === //
+
+
+// === component 定義部分 ============================================= //
+
+  // --- react-hook-form ---------------------------------------- //
+  // ---------------------------------------- react-hook-form --- //
+
+// ============================================= component 定義部分 === //
+
+
+// === style 定義部分 ================================================= //
+// ================================================= style 定義部分 === //
+
+
+
+# 展望
+- all tabの実装
+- gomi箱 tabの実装
+- 各todoの詳細をスタックビュー
+- スワイプして削除
+- kanban viewの実装
+- locationの実装
+- googleカレンダーとの連携
+- dnd-kit todo部分に
+- form 履歴から入力
+- dnd-kit sort
+- 見出しは常に一定の"# 見出し"に相当するスタイルで、detailはマークダウン記法をサポートする。
+- SortableTodoコンポーネントの外からもslide状態を解除する必要あり、（タブ切り替えのタイミングなど）
+- mde modalを開いた直後にredoできないように
+import highlightjs from "highlight.js";
+import "highlight.js/styles/github.css";は使ってない。
+
+
+# 疑問
+- import type {} from ...とは
+- export declear function ...とは

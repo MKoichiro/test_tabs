@@ -1,31 +1,34 @@
 /* Header Component */
 
-/* react 関連 */
-import React, { useState, useRef } from 'react'; // 他の hooks も必要に応じてここでimport
-/* styled-components 関連 */
-import styled, { css } from 'styled-components';
-/* 子Component があれば */
-// import MyComponent from './components/XXX/YYY';
+/* --- react/styled-components --- */
+import React, { FC } from 'react';
+import styled from 'styled-components';
+/* --- child components ---------- */
+
+
+
+// === 型定義部分 ===================================================== //
+// - component props
+interface HeaderType {}
+// - others
+// ===================================================== 型定義部分 === //
 
 
 // === component 定義部分 ============================================= //
-const Header = () => {
-	
-	// ここにいろいろ書く
+export const Header: FC<HeaderType> = (props) => {
+	const {} = props;
 
 	return (
-		<h1 children="Header" />
+		<StyledHeader>
+			<h1 children="Header" />
+		</StyledHeader>
 	);
 };
 // ============================================= component 定義部分 === //
 
 // === style 定義部分 ================================================= //
-const StyledHeader = styled(Header)`
+const StyledHeader = styled.header`
 	h1 {
-		background: pink;
-		color: red;
 	}
 `;
 // ================================================= style 定義部分 === //
-
-export {StyledHeader};

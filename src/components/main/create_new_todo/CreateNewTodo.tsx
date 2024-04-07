@@ -10,12 +10,12 @@
 import React, { FC, useContext, useRef } from 'react';
 import styled from 'styled-components';
 /* common: others */
-import { PriorityType, StatusType, DeadlineType, TodoType, priorityLiterals, statusLiterals } from '../../types/Categories';
+import { PriorityType, StatusType, DeadlineType, TodoType, priorityLiterals, statusLiterals } from '../../../types/Categories';
 /* react-hook-form */
 import { useForm } from 'react-hook-form';
-import { CategoriesContext } from '../../providers/CategoriesProvider';
-import { generateUUID } from '../../utils/generateUUID';
-import { FormParts } from './FormParts';
+import { CategoriesContext } from '../../../providers/CategoriesProvider';
+import { generateUUID } from '../../../utils/generateUUID';
+import { FormParts } from '../FormParts';
 
 interface InputDataType {
   title?:              string;

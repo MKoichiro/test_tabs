@@ -1,5 +1,5 @@
 /*
-  [AllTodos Component]
+  [Categories Component]
     element: div
     description:
       全 category の全 todos を表示する todos dir のトップコンポーネント
@@ -11,15 +11,15 @@ import React from 'react';
 import styled from 'styled-components';
 /* child components */
 import { MdeModal } from './MdeModal';
-import { AllTodos } from './AllTodos';
+import { Categories } from './Categories';
 
 
 // === component 定義部分 ============================================= //
-export const AllTodosContainer = () => {
+export const CategoriesContainer = () => {
 
   return (
     <StyledDiv>
-      <AllTodos />
+      <Categories />
       <MdeModal />
     </StyledDiv>
   );

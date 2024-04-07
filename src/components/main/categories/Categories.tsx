@@ -12,10 +12,10 @@ import styled from 'styled-components';
 /* contexts */
 import { CategoriesContext } from '../../../providers/CategoriesProvider';
 /* child components */
-import { EachTodosContainer } from './each_todos/EachTodosContainer';
+import { EachTodosContainer } from './category/EachTodosContainer';
 
 // === component 定義部分 ============================================= //
-export const AllTodos = () => {
+export const Categories = () => {
   const { activeIdx, categories } = useContext(CategoriesContext);
 
   return (

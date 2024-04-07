@@ -1,3 +1,44 @@
+/**
+# "AAA.tsx"
+
+## RENDER AS:
+- ``` <example/> ```
+
+## DEPENDENCIES:
+| type     | name                                            | role       |
+| ---------| ----------------------------------------------- | ---------- |
+| PARENT 1 | BBB.tsx                                         | 機能や役割 |
+| CHILD  1 | CCC.tsx                                         | 機能や役割 |
+| CHILD  2 | DDD.tsx                                         | 機能や役割 |
+| PACKAGE  | importしているpackage名                         | 機能や役割 |
+| PROVIDER | importしているprovider名                        | 機能や役割 |
+| SETTING  | importしているsetting file名                    | 機能や役割 |
+| UTILS    | ultils ディレクトリからimportしているファイル名 | 機能や役割 |
+| TYPES    | 外部からimportしている型名                      | 機能や役割 |
+
+## FEATURES:
+- conponent
+
+## DESCRIPTION:
+- コンポーネントが提供する機能や役割を箇条書きで記述する。
+
+## PROPS:
+| name        | type | role                     |
+| ----------- | ---- | ------------------------ |
+| propsの名前 | 型   | 役割などの一言程度の説明 |
+
+## STATES:
+| name        | type | role                     |
+| ----------- | ---- | ------------------------ |
+| stateの名前 | 型   | 役割などの一言程度の説明 |
+
+## FUTURE TASKS:
+- 今後の展望や修正点を箇条書きで記述する。
+
+## COPILOT
+- copilotからの提案をここに箇条書きで記述する。
+*/
+
 
 /* --- react/styled-components --- */
 import React, { FC, useContext } from 'react';
@@ -6,8 +47,8 @@ import styled from 'styled-components';
 import { CategoriesContext } from '../../../../../providers/CategoriesProvider';
 /* --- types --------------------- */
 import { TodoType } from '../../../../../types/Categories';
-
-const isDev = (process.env.NODE_ENV === 'development');
+/* --- dev ----------------------- */
+import { isDebugMode } from '../../../../../utils/adminDebugMode';
 
 
 
@@ -39,16 +80,17 @@ const useFormattedInfoEmitter = (todo: TodoType) => {
 };
 
 
-// === 型定義部分 ===================================================== //
-// - component props
+// === TYPE =========================================================== //
+// - PROPS
 interface InfoTableType {
   todo: TodoType;
 }
-// - others
-// ===================================================== 型定義部分 === //
+// - STYLE
+// - OTHERS
+// =========================================================== TYPE === //
 
 
-// === component 定義部分 ============================================= //
+// === COMPONENT ====================================================== //
 export const InfoTable: FC<InfoTableType> = (props) => {
   const {
     todo,
@@ -69,7 +111,7 @@ export const InfoTable: FC<InfoTableType> = (props) => {
 
 
   return (
-    <StyledTable $isDev={ isDev }>
+    <StyledTable $isDev={ isDebugMode }>
         <thead className='info-heads-container'>
           <tr className='info-heads'>
             <th className='info-head' children='deadline' />
@@ -77,7 +119,7 @@ export const InfoTable: FC<InfoTableType> = (props) => {
             <th className='info-head' children='updated'  />
             <th className='info-head' children='status'   />
             <th className='info-head' children='priority' />
-            { isDev && (
+            { isDebugMode && (
               <>
                 <th className='dev-th info-head' children='archived'  />
                 <th className='dev-th info-head' children='open'      />
@@ -95,7 +137,7 @@ export const InfoTable: FC<InfoTableType> = (props) => {
             <td className='info-value' children={ updatedDate } />
             <td className='info-value' children={      status } />
             <td className='info-value' children={    priority } />
-            { isDev && (
+            { isDebugMode && (
               <>
                 <td className='dev-td info-value' children={  String(isArchived) } />
                 <td className='dev-td info-value' children={      String(isOpen) } />
@@ -109,10 +151,10 @@ export const InfoTable: FC<InfoTableType> = (props) => {
       </StyledTable>
   )
 }
-// ============================================= component 定義部分 === //
+// ====================================================== COMPONENT === //
 
 
-// === style 定義部分 ================================================= //
+// === STYLE ========================================================= //
 const StyledTable = styled.table<{ $isDev: boolean }>`
   /* margin: 0 1.6rem; */
   margin-left: auto;
@@ -157,9 +199,5 @@ const StyledTable = styled.table<{ $isDev: boolean }>`
       }
     }
   }
-
-
-
-
 `;
-// ================================================= style 定義部分 === //
+// ========================================================= STYLE === //

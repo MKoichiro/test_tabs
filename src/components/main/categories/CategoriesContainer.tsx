@@ -5,11 +5,11 @@
 - ``` <div/> ```
 
 ## DEPENDENCIES:
-| type              | name           | role                                                              |
-| ----------------- | -------------- | ----------------------------------------------------------------- |
-| PARENT COMPONENTS | Main.tsx       |                                                                   |
-| CHILD COMPONENT 1 | Categories.tsx | Category がアイテムのカルーセルコンテナ                           |
-| CHILD COMPONENT 2 | MdeModal.tsx   | detail を Markdown 形式で編集させるための editor を表示する modal |
+| type     | name           | role                                                              |
+| -------- | -------------- | ----------------------------------------------------------------- |
+| PARENT 1 | Main.tsx       |                                                                   |
+| CHILD 1  | Categories.tsx | Category がアイテムのカルーセルコンテナ                           |
+| CHILD 2  | MdeModal.tsx   | detail を Markdown 形式で編集させるための editor を表示する modal |
 
 ## FEATURES:
 - component
@@ -36,16 +36,19 @@ import styled from 'styled-components';
 /* --- child components ---------- */
 import { Categories } from './Categories';
 // import { MdeModal } from './MdeModal';
+/* --- dev ----------------------- */
+import { isDebugMode } from '../../../utils/adminDebugMode';
 
 
-// === 型定義部分 ===================================================== //
-// - component props
+// === TYPE =========================================================== //
+// - PROPS
 interface CategoriesContainerType {}
-// - others
-// ===================================================== 型定義部分 === //
+// - STYLE
+// - OTHERS
+// =========================================================== TYPE === //
 
 
-// === component 定義部分 ============================================= //
+// === COMPONENT ====================================================== //
 export const CategoriesContainer: FC<CategoriesContainerType> = (props) => {
   const {} = props;
 
@@ -56,11 +59,11 @@ export const CategoriesContainer: FC<CategoriesContainerType> = (props) => {
     </StyledDiv>
   );
 };
-// ============================================= component 定義部分 === //
+// ====================================================== COMPONENT === //
 
 
-// === style 定義部分 ================================================= //
+// === STYLE ========================================================= //
 const StyledDiv = styled.div`
   overflow-x: hidden;
 `;
-// ================================================= style 定義部分 === //
+// ========================================================= STYLE === //

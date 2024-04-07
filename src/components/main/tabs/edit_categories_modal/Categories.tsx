@@ -1,23 +1,55 @@
-/*
-  [Categories Component]
-    element: ul
-    description:
-      edit categories modal 内で、現在の category 一覧をリスト表示している
-      各リストアイテムの category は dnd-kit で並び替え可能にしている
+/**
+# "AAA.tsx"
+
+## RENDER AS:
+- ``` <example/> ```
+
+## DEPENDENCIES:
+| type     | name                                            | role       |
+| ---------| ----------------------------------------------- | ---------- |
+| PARENT 1 | BBB.tsx                                         | 機能や役割 |
+| CHILD  1 | CCC.tsx                                         | 機能や役割 |
+| CHILD  2 | DDD.tsx                                         | 機能や役割 |
+| PACKAGE  | importしているpackage名                         | 機能や役割 |
+| PROVIDER | importしているprovider名                        | 機能や役割 |
+| SETTING  | importしているsetting file名                    | 機能や役割 |
+| UTILS    | ultils ディレクトリからimportしているファイル名 | 機能や役割 |
+| TYPES    | 外部からimportしている型名                      | 機能や役割 |
+
+## FEATURES:
+- conponent
+
+## DESCRIPTION:
+- コンポーネントが提供する機能や役割を箇条書きで記述する。
+
+## PROPS:
+| name        | type | role                     |
+| ----------- | ---- | ------------------------ |
+| propsの名前 | 型   | 役割などの一言程度の説明 |
+
+## STATES:
+| name        | type | role                     |
+| ----------- | ---- | ------------------------ |
+| stateの名前 | 型   | 役割などの一言程度の説明 |
+
+## FUTURE TASKS:
+- 今後の展望や修正点を箇条書きで記述する。
+
+## COPILOT
+- copilotからの提案をここに箇条書きで記述する。
 */
 
 
-/* common: essential */
-import React, { useContext, useState } from 'react';
+/* --- react/styled-components --- */
+import React, { FC, useContext, useState } from 'react';
 import styled from 'styled-components';
-/* common: others */
-// import { AllTodosContext } from '../../../../providers/AllTodosProvider';
-import { CategoriesContext } from '../../../../providers/CategoriesProvider';
-/* children components */
+/* --- child components ---------- */
 import { ActiveCategory } from './category/ActiveCategory';
 import { ArchivedCategory } from './category/ArchivedCategory';
 import { GhostCategory } from './category/GhostCategory';
-/* dnd-kit */
+/* --- providers/contexts -------- */
+import { CategoriesContext } from '../../../../providers/CategoriesProvider';
+/* --- dnd-kit ------------------- */
 import {
   DndContext,
   closestCenter,
@@ -38,10 +70,22 @@ import { arrayMove,
 } from '@dnd-kit/sortable';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArchive } from '@fortawesome/free-solid-svg-icons';
+/* --- dev ----------------------- */
+import { isDebugMode } from '../../../../utils/adminDebugMode';
 
 
-// === component 定義部分 ============================================= //
-export const Categories = () => {
+// === TYPE =========================================================== //
+// - PROPS
+interface CategoriesType {}
+// - STYLE
+// - OTHERS
+// =========================================================== TYPE === //
+
+
+// === COMPONENT ====================================================== //
+export const Categories: FC<CategoriesType> = (props) => {
+  const {} = props;
+
   const { categories, dispatchCategoriesChange } = useContext(CategoriesContext);
 
   const [isDragging, setIsDragging] = useState(false);
@@ -120,10 +164,10 @@ export const Categories = () => {
 
   );
 };
-// ============================================= component 定義部分 === //
+// ====================================================== COMPONENT === //
 
 
-// === style 定義部分 ================================================= //
+// === STYLE ========================================================= //
 const StyledDiv = styled.div`
   --fs-category-name: 2rem;
   font-size: var(--fs-category-name);
@@ -142,4 +186,4 @@ const StyledDiv = styled.div`
     }
   }
 `;
-// ================================================= style 定義部分 === //
+// ========================================================= STYLE === //

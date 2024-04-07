@@ -1,3 +1,45 @@
+/**
+# "AAA.tsx"
+
+## RENDER AS:
+- ``` <example/> ```
+
+## DEPENDENCIES:
+| type     | name                                            | role       |
+| ---------| ----------------------------------------------- | ---------- |
+| PARENT 1 | BBB.tsx                                         | 機能や役割 |
+| CHILD  1 | CCC.tsx                                         | 機能や役割 |
+| CHILD  2 | DDD.tsx                                         | 機能や役割 |
+| PACKAGE  | importしているpackage名                         | 機能や役割 |
+| PROVIDER | importしているprovider名                        | 機能や役割 |
+| SETTING  | importしているsetting file名                    | 機能や役割 |
+| UTILS    | ultils ディレクトリからimportしているファイル名 | 機能や役割 |
+| TYPES    | 外部からimportしている型名                      | 機能や役割 |
+
+## FEATURES:
+- conponent
+
+## DESCRIPTION:
+- コンポーネントが提供する機能や役割を箇条書きで記述する。
+
+## PROPS:
+| name        | type | role                     |
+| ----------- | ---- | ------------------------ |
+| propsの名前 | 型   | 役割などの一言程度の説明 |
+
+## STATES:
+| name        | type | role                     |
+| ----------- | ---- | ------------------------ |
+| stateの名前 | 型   | 役割などの一言程度の説明 |
+
+## FUTURE TASKS:
+- 今後の展望や修正点を箇条書きで記述する。
+
+## COPILOT
+- copilotからの提案をここに箇条書きで記述する。
+*/
+
+
 /* --- react/styled-components --- */
 import React, { useContext, forwardRef, Ref, RefObject } from 'react';
 import styled from 'styled-components';
@@ -5,18 +47,22 @@ import styled from 'styled-components';
 import { CategoriesContext } from '../../../providers/CategoriesProvider';
 /* --- utils --------------------- */
 import { convertVwToPx } from '../../../utils/converters';
+/* --- dev ----------------------- */
+import { isDebugMode } from '../../../utils/adminDebugMode';
 
 
-// === 型定義部分 ===================================================== //
-// - component props
+// === TYPE =========================================================== //
+// - PROPS
 interface PropsType {
   index: number;
   containerRef: RefObject<HTMLUListElement | null>;
 }
-// - others
-// ===================================================== 型定義部分 === //
+// - STYLE
+// - OTHERS
+// =========================================================== TYPE === //
 
-// === component 定義部分 ============================================= //
+
+// === COMPONENT ====================================================== //
 export const Tab = forwardRef((props: PropsType, liRef: Ref<HTMLLIElement>) => {
   const { index, containerRef } = props;
   const { categories, dispatchCategoriesChange } = useContext(CategoriesContext);
@@ -58,10 +104,10 @@ export const Tab = forwardRef((props: PropsType, liRef: Ref<HTMLLIElement>) => {
     </StyledLi>
   )
 });
-// ============================================= component 定義部分 === //
+// ====================================================== COMPONENT === //
 
 
-// === style 定義部分 ================================================= //
+// === STYLE ========================================================= //
 interface StylePropsType {
   $isActive: boolean;
 }
@@ -106,4 +152,4 @@ const StyledLi = styled.li<StylePropsType>`
     background: #fff;
   }
 `;
-// ================================================= style 定義部分 === //
+// ========================================================= STYLE === //

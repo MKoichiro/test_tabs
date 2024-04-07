@@ -1,19 +1,75 @@
-import React, { FC, useRef, useState } from 'react'
+/**
+# "AAA.tsx"
+
+## RENDER AS:
+- ``` <example/> ```
+
+## DEPENDENCIES:
+| type     | name                                            | role       |
+| ---------| ----------------------------------------------- | ---------- |
+| PARENT 1 | BBB.tsx                                         | 機能や役割 |
+| CHILD  1 | CCC.tsx                                         | 機能や役割 |
+| CHILD  2 | DDD.tsx                                         | 機能や役割 |
+| PACKAGE  | importしているpackage名                         | 機能や役割 |
+| PROVIDER | importしているprovider名                        | 機能や役割 |
+| SETTING  | importしているsetting file名                    | 機能や役割 |
+| UTILS    | ultils ディレクトリからimportしているファイル名 | 機能や役割 |
+| TYPES    | 外部からimportしている型名                      | 機能や役割 |
+
+## FEATURES:
+- conponent
+
+## DESCRIPTION:
+- コンポーネントが提供する機能や役割を箇条書きで記述する。
+
+## PROPS:
+| name        | type | role                     |
+| ----------- | ---- | ------------------------ |
+| propsの名前 | 型   | 役割などの一言程度の説明 |
+
+## STATES:
+| name        | type | role                     |
+| ----------- | ---- | ------------------------ |
+| stateの名前 | 型   | 役割などの一言程度の説明 |
+
+## FUTURE TASKS:
+- 今後の展望や修正点を箇条書きで記述する。
+
+## COPILOT
+- copilotからの提案をここに箇条書きで記述する。
+*/
+
+
+/* --- react/styled-components --- */
+import React, { FC, useRef, useState } from 'react';
 import styled from 'styled-components';
+/* --- child components ---------- */
 import { CardTodo } from './CardTodo';
-import { convertVwToPx } from '../../../../../utils/converters';
+/* --- types --------------------- */
 import { CategoryType } from '../../../../../types/Categories';
+/* --- utils --------------------- */
+import { convertVwToPx } from '../../../../../utils/converters';
+/* --- dev ----------------------- */
+import { isDebugMode } from '../../../../../utils/adminDebugMode';
 
 const carouselGap_vw = 5;
 const carouselPadding_vw = carouselGap_vw * 2;
 const activeWidth_vw = 80;
 const inactiveWidth_vw = activeWidth_vw / 2;
 
+// === TYPE =========================================================== //
+// - PROPS
 interface PropsType {
   category: CategoryType;
   index: number;
   isOpen: boolean;
 }
+// - STYLE
+// - OTHERS
+// =========================================================== TYPE === //
+
+
+// === COMPONENT ====================================================== //
 export const CardsCarousel: FC<PropsType> = (props) => {
   const { category, isOpen } = props;
   const [cardActiveIdx, setCardActiveIdx] = useState(0);
@@ -59,7 +115,10 @@ export const CardsCarousel: FC<PropsType> = (props) => {
     </StyledUl>
   );
 };
+// ====================================================== COMPONENT === //
 
+
+// === STYLE ========================================================= //
 const StyledUl = styled.ul<{$cardActiveIdx: number}>`
   --gap: ${`${carouselGap_vw}vw`};
   background: transparent;
@@ -70,3 +129,4 @@ const StyledUl = styled.ul<{$cardActiveIdx: number}>`
   overflow-x: auto;
   height: 100%;
 `;
+// ========================================================= STYLE === //

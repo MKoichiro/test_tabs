@@ -1,0 +1,34 @@
+/* --- react/styled-components --- */
+import React, { FC } from 'react;
+import styled from 'styled-components;
+
+/* --- child components ---------- */
+
+/* --- providers/contexts -------- */
+
+/* --- types --------------------- */
+
+/* --- utils --------------------- */
+
+/* --- hooks --------------------- */
+
+/* --- styles -------------------- */
+
+/* --- settings ------------------ */
+
+/* --- font awesome -------------- */
+
+/* --- material icons ------------ */
+
+/* --- react-hook-form ----------- */
+
+/* --- easymde ------------------- */
+
+/* --- dnd-kit ------------------- */
+
+/* --- others -------------------- */
+
+/* --- temporarily unused -------- */
+
+/* --- dev ----------------------- */
+import { isDebugMode }

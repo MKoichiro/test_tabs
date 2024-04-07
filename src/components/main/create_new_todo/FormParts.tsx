@@ -8,11 +8,11 @@
 - component
 
 ## DEPENDENCIES:
-| type              | name                                         | role                 |
-| ----------------- | -------------------------------------------- | -------------------- |
-| PARENT COMPONENTS | CreateNewTodo.tsx                            |                      |
-| CHILD COMPONENTS  | null                                         |                      |
-| TYPES             | StatusLiteralsType <br> PriorityLiteralsType | selectOptions に使用 |
+| type     | name                                         | role                 |
+| -------- | -------------------------------------------- | -------------------- |
+| PARENT 1 | CreateNewTodo.tsx                            |                      |
+| CHILD 1  | null                                         |                      |
+| TYPES    | StatusLiteralsType <br> PriorityLiteralsType | selectOptions に使用 |
 
 ## DESCRIPTION:
 - このコンポーネントは、スタイリングされた div 要素を提供します。
@@ -50,10 +50,12 @@ import styled from 'styled-components';
 import { StatusLiteralsType, PriorityLiteralsType } from '../../../types/Categories';
 /* --- react-hook-form ----------- */ /* の型 */
 import { FieldValues, UseFormRegister } from 'react-hook-form';
+/* --- dev ----------------------- */
+import { isDebugMode } from '../../../utils/adminDebugMode';
 
 
-// === 型定義部分 ===================================================== //
-// - component props
+// === TYPE =========================================================== //
+// - PROPS
 interface FormPartsType {
   className: string;
   partsFor: string;
@@ -68,13 +70,12 @@ interface FormPartsType {
   placeholder?: string;
   selectOptions?: StatusLiteralsType | PriorityLiteralsType;
 }
+// - STYLE
+// - OTHERS
+// =========================================================== TYPE === //
 
-// - others
-// ===================================================== 型定義部分 === //
 
-
-// === component 定義部分 ============================================= //
-
+// === COMPONENT ====================================================== //
 export const FormParts:FC<FormPartsType> = (props) => {
   const {
     // 必須
@@ -154,10 +155,10 @@ export const FormParts:FC<FormPartsType> = (props) => {
   )
 };
 
-// ============================================= component 定義部分 === //
+// ====================================================== COMPONENT === //
 
 
-// === style 定義部分 ================================================= //
+// === STYLE ========================================================= //
 const StyledDiv = styled.div`
 
 
@@ -172,4 +173,4 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 }
   
 `;
-// ================================================= style 定義部分 === //
+// ========================================================= STYLE === //

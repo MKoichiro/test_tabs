@@ -1,23 +1,65 @@
-/*
-  [CreateNewCategory]
-    element: form
-    description:
-      edit categories modal 内で新たな category を追加するためのフォームを提供している
+/**
+# "AAA.tsx"
+
+## RENDER AS:
+- ``` <example/> ```
+
+## DEPENDENCIES:
+| type     | name                                            | role       |
+| ---------| ----------------------------------------------- | ---------- |
+| PARENT 1 | BBB.tsx                                         | 機能や役割 |
+| CHILD  1 | CCC.tsx                                         | 機能や役割 |
+| CHILD  2 | DDD.tsx                                         | 機能や役割 |
+| PACKAGE  | importしているpackage名                         | 機能や役割 |
+| PROVIDER | importしているprovider名                        | 機能や役割 |
+| SETTING  | importしているsetting file名                    | 機能や役割 |
+| UTILS    | ultils ディレクトリからimportしているファイル名 | 機能や役割 |
+| TYPES    | 外部からimportしている型名                      | 機能や役割 |
+
+## FEATURES:
+- conponent
+
+## DESCRIPTION:
+- コンポーネントが提供する機能や役割を箇条書きで記述する。
+
+## PROPS:
+| name        | type | role                     |
+| ----------- | ---- | ------------------------ |
+| propsの名前 | 型   | 役割などの一言程度の説明 |
+
+## STATES:
+| name        | type | role                     |
+| ----------- | ---- | ------------------------ |
+| stateの名前 | 型   | 役割などの一言程度の説明 |
+
+## FUTURE TASKS:
+- 今後の展望や修正点を箇条書きで記述する。
+
+## COPILOT
+- copilotからの提案をここに箇条書きで記述する。
 */
 
 
-/* common: essential */
-import React, { useContext, useRef } from 'react';
+/* --- react/styled-components --- */
+import React, { FC, useContext, useRef } from 'react';
 import styled from 'styled-components';
-/* common: others */
+/* --- providers/contexts -------- */
 import { CategoriesContext } from '../../../../providers/CategoriesProvider';
+/* --- types --------------------- */
 import { TodoType, CategoryType, notSet } from '../../../../types/Categories';
-/* react-hook-form */
+/* --- react-hook-form ----------- */
 import { useForm } from 'react-hook-form';
+/* --- utils --------------------- */
 import { generateUUID } from '../../../../utils/generateUUID';
+/* --- dev ----------------------- */
+import { isDebugMode } from '../../../../utils/adminDebugMode';
 
 
-// === component 定義部分 ============================================= //
+// === TYPE =========================================================== //
+// - PROPS
+interface CreateNewCategoryType {}
+// - STYLE
+// - OTHERS
 // 新規カテゴリーにデフォルトで入れるtodoの見出し及びコメント
 const TEMPLATE_MESSAGE = {
   title: 'template message of main',
@@ -35,7 +77,12 @@ const NAME_VALIDATION = {
 interface DataType {
   category_name: string;
 }
-export const CreateNewCategory = () => {
+// =========================================================== TYPE === //
+
+
+// === COMPONENT ====================================================== //
+export const CreateNewCategory: FC<CreateNewCategoryType> = (props) => {
+  const {} = props;
 
   const { categories, dispatchCategoriesChange } = useContext(CategoriesContext);
 
@@ -116,10 +163,10 @@ export const CreateNewCategory = () => {
     </StyledForm>
   )
 }
-// ============================================= component 定義部分 === //
+// ====================================================== COMPONENT === //
 
 
-// === style 定義部分 ================================================= //
+// === STYLE ========================================================= //
 const StyledForm = styled.form`
 
   fieldset {
@@ -196,4 +243,4 @@ const StyledForm = styled.form`
 
   }
 `;
-// ================================================= style 定義部分 === //
+// ========================================================= STYLE === //

@@ -1,16 +1,74 @@
+/**
+# "AAA.tsx"
 
-import React, { useContext } from 'react';
+## RENDER AS:
+- ``` <example/> ```
+
+## DEPENDENCIES:
+| type     | name                                            | role       |
+| ---------| ----------------------------------------------- | ---------- |
+| PARENT 1 | BBB.tsx                                         | 機能や役割 |
+| CHILD  1 | CCC.tsx                                         | 機能や役割 |
+| CHILD  2 | DDD.tsx                                         | 機能や役割 |
+| PACKAGE  | importしているpackage名                         | 機能や役割 |
+| PROVIDER | importしているprovider名                        | 機能や役割 |
+| SETTING  | importしているsetting file名                    | 機能や役割 |
+| UTILS    | ultils ディレクトリからimportしているファイル名 | 機能や役割 |
+| TYPES    | 外部からimportしている型名                      | 機能や役割 |
+
+## FEATURES:
+- conponent
+
+## DESCRIPTION:
+- コンポーネントが提供する機能や役割を箇条書きで記述する。
+
+## PROPS:
+| name        | type | role                     |
+| ----------- | ---- | ------------------------ |
+| propsの名前 | 型   | 役割などの一言程度の説明 |
+
+## STATES:
+| name        | type | role                     |
+| ----------- | ---- | ------------------------ |
+| stateの名前 | 型   | 役割などの一言程度の説明 |
+
+## FUTURE TASKS:
+- 今後の展望や修正点を箇条書きで記述する。
+
+## COPILOT
+- copilotからの提案をここに箇条書きで記述する。
+*/
+
+
+/* --- react/styled-components --- */
+import React, { FC, useContext } from 'react';
 import styled from 'styled-components';
+/* --- providers/contexts -------- */
+import { CategoriesContext } from '../../../providers/CategoriesProvider';
 import { MdeContext } from '../../../providers/MdeProvider';
-/* utils */
-/* child components */
-/* easymde */
+/* --- easymde ------------------- */
 import SimpleMdeReact from 'react-simplemde-editor';
 import "easymde/dist/easymde.min.css";
-import { Categories } from '../tabs/edit_categories_modal/Categories';
-import { CategoriesContext } from '../../../providers/CategoriesProvider';
 
-export const MdeModal = () => {
+
+// === TYPE =========================================================== //
+// - PROPS
+interface MdeModalType {}
+// - STAYLE
+interface StyleType {
+  $activeIndex: number;
+  $inEditing: boolean;
+  $viewportHeight: number | undefined;
+  $hasEditorOverflow: boolean;
+}
+// - OTHERS
+// =========================================================== TYPE === //
+
+
+// === COMPONENT ====================================================== //
+export const MdeModal: FC<MdeModalType> = (props) => {
+  const {} = props;
+
   const {
     activeIdx,
     categories,
@@ -30,7 +88,6 @@ export const MdeModal = () => {
   return (
     <>
       <StyledDiv
-        // className="mde-modal"
         $activeIndex={ activeIdx }
         $inEditing={ inEditing }
         $viewportHeight={viewportHeight}
@@ -55,15 +112,11 @@ export const MdeModal = () => {
       )}
     </>
   );
-}
+};
+// ====================================================== COMPONENT === //
 
 
-interface StyleType {
-  $activeIndex: number;
-  $inEditing: boolean;
-  $viewportHeight: number | undefined;
-  $hasEditorOverflow: boolean;
-}
+// === STYLE ========================================================= //
 const StyledDiv = styled.div<StyleType>`
   position: fixed;
   z-index: 10;
@@ -152,3 +205,4 @@ const StyledMask = styled.div`
     touch-action: none;
   /* } */
 `;
+// ========================================================= STYLE === //

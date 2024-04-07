@@ -1,3 +1,45 @@
+/**
+# "AAA.tsx"
+
+## RENDER AS:
+- ``` <example/> ```
+
+## DEPENDENCIES:
+| type     | name                                            | role       |
+| ---------| ----------------------------------------------- | ---------- |
+| PARENT 1 | BBB.tsx                                         | 機能や役割 |
+| CHILD  1 | CCC.tsx                                         | 機能や役割 |
+| CHILD  2 | DDD.tsx                                         | 機能や役割 |
+| PACKAGE  | importしているpackage名                         | 機能や役割 |
+| PROVIDER | importしているprovider名                        | 機能や役割 |
+| SETTING  | importしているsetting file名                    | 機能や役割 |
+| UTILS    | ultils ディレクトリからimportしているファイル名 | 機能や役割 |
+| TYPES    | 外部からimportしている型名                      | 機能や役割 |
+
+## FEATURES:
+- conponent
+
+## DESCRIPTION:
+- コンポーネントが提供する機能や役割を箇条書きで記述する。
+
+## PROPS:
+| name        | type | role                     |
+| ----------- | ---- | ------------------------ |
+| propsの名前 | 型   | 役割などの一言程度の説明 |
+
+## STATES:
+| name        | type | role                     |
+| ----------- | ---- | ------------------------ |
+| stateの名前 | 型   | 役割などの一言程度の説明 |
+
+## FUTURE TASKS:
+- 今後の展望や修正点を箇条書きで記述する。
+
+## COPILOT
+- copilotからの提案をここに箇条書きで記述する。
+*/
+
+
 /* --- react/styled-components --- */
 import React, { FC, useContext, useState, useRef, TouchEvent } from 'react';
 import styled from 'styled-components';
@@ -16,13 +58,15 @@ import { faTrashCan, faCircleInfo, faCheck } from '@fortawesome/free-solid-svg-i
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { CategoriesContext } from '../../../../../providers/CategoriesProvider';
+/* --- dev ----------------------- */
+import { isDebugMode } from '../../../../../utils/adminDebugMode';
 
 
 const contentsWidth = convertVwToPx(getCurrentContentsVw());
 const deleteBtnWidth = contentsWidth * .5;
 
-// === 型定義部分 ===================================================== //
-// - component props
+// === TYPE =========================================================== //
+// - PROPS
 interface PropsType {
   todo: TodoType;
   liIdx: number;
@@ -30,11 +74,12 @@ interface PropsType {
   handleTouchMove: (args: TouchMoveArgType) => void;
   handleTouchEnd: (args: TouchEndArgType) => void;
 }
-// - others
-// ===================================================== 型定義部分 === //
+// - STYLE
+// - OTHERS
+// =========================================================== TYPE === //
 
 
-// === component 定義部分 ============================================= //
+// === COMPONENT ====================================================== //
 export const ActiveTodo: FC<PropsType> = (props) => {
   const {
     todo,
@@ -196,10 +241,10 @@ export const ActiveTodo: FC<PropsType> = (props) => {
     </StyledLi>
   );
 };
-// ============================================= component 定義部分 === //
+// ====================================================== COMPONENT === //
 
 
-// === style 定義部分 ================================================= //
+// === STYLE ========================================================= //
 const StyledLi = styled.li<{ $isDragging: boolean; $translateX: number; }>`
   background: #efefef;
 
@@ -247,4 +292,4 @@ const StyledLi = styled.li<{ $isDragging: boolean; $translateX: number; }>`
     }
   }
 `;
-// ================================================= style 定義部分 === //
+// ========================================================= STYLE === //

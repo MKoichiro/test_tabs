@@ -5,10 +5,10 @@
 - ``` <ul/> ```
 
 ## DEPENDENCIES:
-| type              | name                    | role                 |
-| ----------------- | ----------------------- | -------------------- |
-| PARENT COMPONENTS | CategoriesContainer.tsx | カテゴリ一覧を表示   |
-| CHILD COMPONENT 1 | CategoryContainer.tsx   | 個々のカテゴリを表示 |
+| type     | name                    | role                 |
+| -------- | ----------------------- | -------------------- |
+| PARENT 1 | CategoriesContainer.tsx | カテゴリ一覧を表示   |
+| CHILD 1  | CategoryContainer.tsx   | 個々のカテゴリを表示 |
 
 ## FEATURES:
 - compenet
@@ -37,16 +37,19 @@ import styled from 'styled-components';
 import { CategoriesContext } from '../../../providers/CategoriesProvider';
 /* --- child components ---------- */
 import { CategoryContainer } from './category/CategoryContainer';
+/* --- dev ----------------------- */
+import { isDebugMode } from '../../../utils/adminDebugMode';
 
 
-// === 型定義部分 ===================================================== //
-// - component props
+// === TYPE =========================================================== //
+// - PROPS
 interface CategoriesType {}
-// - others
-// ===================================================== 型定義部分 === //
+// - STYLE
+// - OTHERS
+// =========================================================== TYPE === //
 
 
-// === component 定義部分 ============================================= //
+// === COMPONENT ====================================================== //
 export const Categories: FC<CategoriesType> = (props) => {
   const {} = props;
   const { activeIdx, categories } = useContext(CategoriesContext);
@@ -64,10 +67,10 @@ export const Categories: FC<CategoriesType> = (props) => {
     </StyledUl>
   )
 };
-// ============================================= component 定義部分 === //
+// ====================================================== COMPONENT === //
 
 
-// === style 定義部分 ================================================= //
+// === STYLE ========================================================= //
 const StyledUl = styled.ul<{ $activeIndex: number }>`
   display: flex;
   transition: transform 750ms;
@@ -77,4 +80,4 @@ const StyledUl = styled.ul<{ $activeIndex: number }>`
     background: pink;
   }
 `;
-// ================================================= style 定義部分 === //
+// ========================================================= STYLE === //

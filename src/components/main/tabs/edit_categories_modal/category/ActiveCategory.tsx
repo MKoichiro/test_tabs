@@ -1,37 +1,72 @@
-/*
-  [SortableCategory Component]
-    element: li
-    description:
-      Category Componentと比較して、内部的にはこちらが実体だが、
-      外見上は drop 位置を示唆するゴースト要素
+/**
+# "AAA.tsx"
+
+## RENDER AS:
+- ``` <example/> ```
+
+## DEPENDENCIES:
+| type     | name                                            | role       |
+| ---------| ----------------------------------------------- | ---------- |
+| PARENT 1 | BBB.tsx                                         | 機能や役割 |
+| CHILD  1 | CCC.tsx                                         | 機能や役割 |
+| CHILD  2 | DDD.tsx                                         | 機能や役割 |
+| PACKAGE  | importしているpackage名                         | 機能や役割 |
+| PROVIDER | importしているprovider名                        | 機能や役割 |
+| SETTING  | importしているsetting file名                    | 機能や役割 |
+| UTILS    | ultils ディレクトリからimportしているファイル名 | 機能や役割 |
+| TYPES    | 外部からimportしている型名                      | 機能や役割 |
+
+## FEATURES:
+- conponent
+
+## DESCRIPTION:
+- コンポーネントが提供する機能や役割を箇条書きで記述する。
+
+## PROPS:
+| name        | type | role                     |
+| ----------- | ---- | ------------------------ |
+| propsの名前 | 型   | 役割などの一言程度の説明 |
+
+## STATES:
+| name        | type | role                     |
+| ----------- | ---- | ------------------------ |
+| stateの名前 | 型   | 役割などの一言程度の説明 |
+
+## FUTURE TASKS:
+- 今後の展望や修正点を箇条書きで記述する。
+
+## COPILOT
+- copilotからの提案をここに箇条書きで記述する。
 */
 
 
-/* essential */
+/* --- react/styled-components --- */
 import React, { FC } from 'react';
 import styled from 'styled-components';
-/* types */
+/* --- types --------------------- */
 import { CategoryType } from '../../../../../types/Categories';
-/* styles */
+/* --- styles -------------------- */
 import { categoryCommonStyles, CategoryCommonStylesType } from './CategoryCommonStyles';
-/* utils */
+/* --- utils --------------------- */
 import { convertVwToPx } from '../../../../../utils/converters';
-/* material icons */
-import { DragIndicator } from '@mui/icons-material';
-/* font awesome */
+/* --- font awesome -------------- */
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArchive } from '@fortawesome/free-solid-svg-icons';
-/* dnd-kit */
+/* --- material icons ------------ */
+import { DragIndicator } from '@mui/icons-material';
+/* --- dnd-kit ------------------- */
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-/* functions: slidable */
+/* --- hooks --------------------- */
+/* slidable */
 import { Slidable, SlidableMain, SlidableHidden } from '../../../../../functions/slidable/Components';
 import { SlidableParamsType } from '../../../../../functions/slidable/Types';
-/* functions: immediateEditable */
+/* immediateEditable */
 import { useImmediateEditable } from '../../../../../functions/immediateEditable/Hooks';
+/* --- dev ----------------------- */
+import { isDebugMode } from '../../../../../utils/adminDebugMode';
 
 
-// === component 定義部分 ============================================= //
 const btnsContainerWidthVw = 10;
 const btnsContainerWidthPx = convertVwToPx(btnsContainerWidthVw);
 // slidable 関連
@@ -42,9 +77,18 @@ const slidableParams: SlidableParamsType = {
   COMPLEMENT_ANIME_DURATION:                       300,
 };
 
+
+// === TYPE =========================================================== //
+// - PROPS
 interface ActiveCategoryType {
   activeCategory: CategoryType;
 }
+// - STYLE
+// - OTHERS
+// =========================================================== TYPE === //
+
+
+// === COMPONENT ====================================================== //
 export const ActiveCategory: FC<ActiveCategoryType> = (props) => {
   const { activeCategory } = props;
 
@@ -95,10 +139,10 @@ export const ActiveCategory: FC<ActiveCategoryType> = (props) => {
     </StyledLi>
   )
 };
-// ============================================= component 定義部分 === //
+// ====================================================== COMPONENT === //
 
 
-// === style 定義部分 ================================================= //
+// === STYLE ========================================================= //
 const StyledLi = styled.li<CategoryCommonStylesType>`
   touch-action: auto;
 
@@ -138,7 +182,5 @@ const StyledLi = styled.li<CategoryCommonStylesType>`
       flex: 1;
     }
   }
-
-
 `;
-// ================================================= style 定義部分 === //
+// ========================================================= STYLE === //

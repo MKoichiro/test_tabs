@@ -5,14 +5,14 @@
 - ``` <form/> ```
 
 ## DEPENDENCIES:
-| type              | name               | role                                                       |
-| ----------------- | ------------------ | ---------------------------------------------------------- |
-| PARENT COMPONENTS | Main.tsx           | 特になし                                                   |
-| CHILD COMPONENTS  | FormParts.tsx      | フォームの各部品を提供                                     |
-| PACKAGE           | react-hook-form    | フォームの状態管理                                         |
-| PROVIDER          | CategoriesProvider | カテゴリー情報の提供                                       |
-| SETTING           | FormSetting.tsx    | フォームのデフォルト値、プレースホルダー、選択肢などの設定 |
-| UTILS             | generateUUID       | 確率的に一意な値を提供。新しい todo の id に使用           |
+| type     | name               | role                                                       |
+| -------- | ------------------ | ---------------------------------------------------------- |
+| PARENT 1 | Main.tsx           | 特になし                                                   |
+| CHILD 1  | FormParts.tsx      | フォームの各部品を提供                                     |
+| PACKAGE  | react-hook-form    | フォームの状態管理                                         |
+| PROVIDER | CategoriesProvider | カテゴリー情報の提供                                       |
+| SETTING  | FormSetting.tsx    | フォームのデフォルト値、プレースホルダー、選択肢などの設定 |
+| UTILS    | generateUUID       | 確率的に一意な値を提供。新しい todo の id に使用           |
 
 ## FEATURES:
 - component
@@ -24,10 +24,10 @@
 - また、フォームのデフォルト値、プレースホルダー、選択肢などは、FormSetting.tsx で定義されています。
 
 ## PROPS:
-- このコンポーネントは props を受け取りません。
+- null
 
 ## STATES:
-- このコンポーネントで新たに定義された state はありません。
+- null
 
 ## FUTURE TASKS:
 - フォームのバリデーションを強化する。
@@ -54,13 +54,15 @@ import { generateUUID } from '../../../utils/generateUUID';
 import { useForm } from 'react-hook-form';
 /* --- settings ------------------ */
 import { defaultValues, statusOptions, priorityOptions, placeholders } from './FormSetting';
+/* --- dev ----------------------- */
+import { isDebugMode } from '../../../utils/adminDebugMode';
 
-// === 型定義部分 ===================================================== //
-// - component props
-interface CreateNewTodoType {
-}
 
-// - others
+// === TYPE =========================================================== //
+// - PROPS
+interface CreateNewTodoType {}
+// - STYLE
+// - OTHERS
 interface InputDataType {
   title?:                    string;
   detail?:                   string;
@@ -69,10 +71,10 @@ interface InputDataType {
   status?:          StatusUnionType;
   priority?:      PriorityUnionType;
 }
-// ===================================================== 型定義部分 === //
+// =========================================================== TYPE === //
 
 
-// === component 定義部分 ============================================= //
+// === COMPONENT ====================================================== //
 
 export const CreateNewTodo: FC<CreateNewTodoType> = (props) => {
   const {} = props;
@@ -131,8 +133,6 @@ export const CreateNewTodo: FC<CreateNewTodoType> = (props) => {
   };
   // ------------------------------------------ submit で実行 --- //
 
-
-  
 
 
   return (
@@ -240,10 +240,10 @@ export const CreateNewTodo: FC<CreateNewTodoType> = (props) => {
     </StyledForm>
   );
 };
-// ============================================= component 定義部分 === //
+// ====================================================== COMPONENT === //
 
 
-// === style 定義部分 ================================================= //
+// === STYLE ========================================================= //
 const StyledForm = styled.form`
 
   /* reset */
@@ -386,4 +386,4 @@ const StyledForm = styled.form`
 
   }
 `;
-// ================================================= style 定義部分 === //
+// ========================================================= STYLE === //

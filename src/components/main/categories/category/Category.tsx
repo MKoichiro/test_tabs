@@ -1,3 +1,43 @@
+/**
+# "AAA.tsx"
+
+## RENDER AS:
+- ``` <example/> ```
+
+## DEPENDENCIES:
+| type     | name                                            | role       |
+| ---------| ----------------------------------------------- | ---------- |
+| PARENT 1 | BBB.tsx                                         | 機能や役割 |
+| CHILD  1 | CCC.tsx                                         | 機能や役割 |
+| CHILD  2 | DDD.tsx                                         | 機能や役割 |
+| PACKAGE  | importしているpackage名                         | 機能や役割 |
+| PROVIDER | importしているprovider名                        | 機能や役割 |
+| SETTING  | importしているsetting file名                    | 機能や役割 |
+| UTILS    | ultils ディレクトリからimportしているファイル名 | 機能や役割 |
+| TYPES    | 外部からimportしている型名                      | 機能や役割 |
+
+## FEATURES:
+- conponent
+
+## DESCRIPTION:
+- コンポーネントが提供する機能や役割を箇条書きで記述する。
+
+## PROPS:
+| name        | type | role                     |
+| ----------- | ---- | ------------------------ |
+| propsの名前 | 型   | 役割などの一言程度の説明 |
+
+## STATES:
+| name        | type | role                     |
+| ----------- | ---- | ------------------------ |
+| stateの名前 | 型   | 役割などの一言程度の説明 |
+
+## FUTURE TASKS:
+- 今後の展望や修正点を箇条書きで記述する。
+
+## COPILOT
+- copilotからの提案をここに箇条書きで記述する。
+*/
 
 
 /* --- react/styled-components --- */
@@ -31,13 +71,22 @@ import {
   arrayMove,
   sortableKeyboardCoordinates,
   verticalListSortingStrategy } from "@dnd-kit/sortable";
+/* --- dev ----------------------- */
+import { isDebugMode } from "../../../../utils/adminDebugMode";
 
 
 const contentWidth = convertVwToPx(getCurrentContentsVw());
 const deleteBtnWidth = contentWidth * .5;
 
 
-// === component 定義部分 ============================================= //
+// === TYPE =========================================================== //
+// - PROPS
+interface PropsType {
+  category: CategoryType;
+  index: number;
+}
+// - STYLE
+// - OTHERS
 export interface TouchStartArgType {
   e: React.TouchEvent<HTMLLIElement>;
   setStartX: (x: number | undefined) => void;
@@ -57,18 +106,16 @@ export interface TouchEndArgType {
   setTranslateX: (x: number) => void;
   setIsSlided: (isSlided: boolean) => void;
 }
+// =========================================================== TYPE === //
 
-interface PropsType {
-  category: CategoryType;
-  index: number;
-}
 
+// === COMPONENT ====================================================== //
 export const Category: FC<PropsType> = (props) => {
   const { category, index } = props;
   const todos = category.todos;
   const { categories, dispatchCategoriesChange } = useContext(CategoriesContext);
 
-  // --- dnd-kit/sortable 関連 -------------------------------------- //
+  // --- dnd-kit ------------------------------------------------ //
   // sensor 登録
   const sensors = useSensors(
     useSensor(PointerSensor),
@@ -99,10 +146,10 @@ export const Category: FC<PropsType> = (props) => {
     }
     setActiveId(null);
   };
-  // -------------------------------------- dnd-kit/sortable 関連 --- //
+  // ------------------------------------------------ dnd-kit --- //
 
 
-  // --- swipe して delete btn 関連 --------------------------------- //
+  // --- swipe して delete btn ---------------------------------- //
   // 子の SortableLi の中で定義しても良いが、li の数が無限に増えうるので親で定義しておく。
 
   // --- TouchStart ---------
@@ -152,7 +199,9 @@ export const Category: FC<PropsType> = (props) => {
     setStartX(undefined);
     setStartY(undefined);
   };
-  // --------------------------------- swipe して delete btn 関連 --- //
+  // ---------------------------------- swipe して delete btn --- //
+
+
   return (
     <StyledUl>
       <DndContext
@@ -189,10 +238,10 @@ export const Category: FC<PropsType> = (props) => {
     </StyledUl>
   )
 };
-// ============================================= component 定義部分 === //
+// ====================================================== COMPONENT === //
 
 
-// === style 定義部分 ================================================= //
+// === STYLE ========================================================= //
 const StyledUl = styled.ul`
 `;
-// ================================================= style 定義部分 === //
+// ========================================================= STYLE === //

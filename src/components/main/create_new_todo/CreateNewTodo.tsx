@@ -1,60 +1,85 @@
 /*
-  [CreateNewTodo Component]
-    element: form
-    description:
-      active な category に新たなtodoを追加するためのフォームを提供している
+# "CreateNewTodo.tsx"
+
+## RENDER AS:
+- ``` <form/> ```
+
+## DEPENDENCIES:
+| type              | name               | role                                                       |
+| ----------------- | ------------------ | ---------------------------------------------------------- |
+| PARENT COMPONENTS | Main.tsx           | 特になし                                                   |
+| CHILD COMPONENTS  | FormParts.tsx      | フォームの各部品を提供                                     |
+| PACKAGE           | react-hook-form    | フォームの状態管理                                         |
+| PROVIDER          | CategoriesProvider | カテゴリー情報の提供                                       |
+| SETTING           | FormSetting.tsx    | フォームのデフォルト値、プレースホルダー、選択肢などの設定 |
+| UTILS             | generateUUID       | 確率的に一意な値を提供。新しい todo の id に使用           |
+
+## FEATURES:
+- component
+
+## DESCRIPTION:
+- このコンポーネントは、active な category に新しい todo を作成するためのフォームを提供します。
+- フォームには、タイトル(title)、詳細(detail)、期限日(deadline: date)、期限時間(deadline: time)、進捗状況(status)、優先度(priority)を入力するフィールドがあります。
+- 各フィールドは、FormParts コンポーネントを使用している。
+- また、フォームのデフォルト値、プレースホルダー、選択肢などは、FormSetting.tsx で定義されています。
+
+## PROPS:
+- このコンポーネントは props を受け取りません。
+
+## STATES:
+- このコンポーネントで新たに定義された state はありません。
+
+## FUTURE TASKS:
+- フォームのバリデーションを強化する。
+- error message を表示する。
+- フォームのUIを改善する。
+
+## COPILOT:
+- useRefを使用している部分を、react-hook-formのregisterを使用するようにリファクタリングすることを提案します。これにより、フォームの状態管理をよりシンプルにできます。
+- useContextを使用している部分を、カスタムフックを使用するようにリファクタリングすることを提案します。これにより、コンポーネントの再利用性とテストの容易性が向上します。
 */
 
-
-/* common: essential */
+/* --- react/styled-components --- */
 import React, { FC, useContext, useRef } from 'react';
 import styled from 'styled-components';
-/* common: others */
-import { PriorityType, StatusType, DeadlineType, TodoType, priorityLiterals, statusLiterals } from '../../../types/Categories';
-/* react-hook-form */
-import { useForm } from 'react-hook-form';
+/* --- child components ---------- */
+import { FormParts } from './FormParts';
+/* --- providers/contexts -------- */
 import { CategoriesContext } from '../../../providers/CategoriesProvider';
+/* --- types --------------------- */
+import { StatusUnionType, PriorityUnionType, TodoType } from '../../../types/Categories';
+/* --- utils --------------------- */
 import { generateUUID } from '../../../utils/generateUUID';
-import { FormParts } from '../FormParts';
+/* --- react-hook-form ----------- */
+import { useForm } from 'react-hook-form';
+/* --- settings ------------------ */
+import { defaultValues, statusOptions, priorityOptions, placeholders } from './FormSetting';
 
-interface InputDataType {
-  title?:              string;
-  detail?:             string;
-  deadlineDate?:         Date;
-  deadlineTime?:         Date;
-  priority?:     PriorityType;
-  status?:         StatusType;
+// === 型定義部分 ===================================================== //
+// - component props
+interface CreateNewTodoType {
 }
 
-// categories に追加する todo の deadline プロパティに渡す値を整形
-const deadlineFormatter = (dateInput: Date | undefined, timeInput: Date | undefined): DeadlineType => {
-  const now = new Date();
-  let deadline: Date;
-
-  if (timeInput) {
-
-    if (dateInput) { deadline = new Date(`${ dateInput } ${ timeInput }`); } // 年月日: 有り,   時刻: 有り
-    else { deadline = new Date(`${ now.toDateString() } ${ timeInput }`);  } // 年月日: 無し,   時刻: 有り
-    return { date: deadline, use_time: true }
-
-  } else  if (dateInput) {
-      deadline = new Date(`${ dateInput } 23:59:59`);
-      return { date: deadline, use_time: false }                             // 年月日: 有り,   時刻: 無し
-  }
-
-  return '---';                                                              // 年月日: 無し,   時刻: 無し
-};
+// - others
+interface InputDataType {
+  title?:                    string;
+  detail?:                   string;
+  deadlineDate?:               Date;
+  deadlineTime?:               Date;
+  status?:          StatusUnionType;
+  priority?:      PriorityUnionType;
+}
+// ===================================================== 型定義部分 === //
 
 
 // === component 定義部分 ============================================= //
-interface CreateNewTodoType {
-}
+
 export const CreateNewTodo: FC<CreateNewTodoType> = (props) => {
   const {} = props;
   const { dispatchCategoriesChange, deadlineFormatters } = useContext(CategoriesContext);
   const { convertToStoredFormat: deadlineFormatter } = deadlineFormatters;
 
-  // --- react-hook-form --------------------------------------------------------------- //
+  // --- react-hook-form ---------------------------------------- //
   const { register, handleSubmit, formState: { errors } } = useForm({ mode: 'onChange' });
   // set up element refs
   const titleRef    = useRef<HTMLInputElement    | null>(null);
@@ -63,10 +88,10 @@ export const CreateNewTodo: FC<CreateNewTodoType> = (props) => {
   const timeRef     = useRef<HTMLInputElement    | null>(null);
   const priorityRef = useRef<HTMLSelectElement   | null>(null);
   const statusRef   = useRef<HTMLSelectElement   | null>(null);
-  // --------------------------------------------------------------- react-hook-form --- //
+  // ---------------------------------------- react-hook-form --- //
 
 
-  // --- executeSubmit の helper 関数 ------------------------------------------------------ //
+  // --- executeSubmit の helper 関数 --------------------------- //
   // 1. form を初期化
   const formInitializer = () => {
     // 各項目の入力内容をクリア
@@ -82,31 +107,32 @@ export const CreateNewTodo: FC<CreateNewTodoType> = (props) => {
 
   // 2. newTodo を categories に追加
   const addNewTodo = (inputData: InputDataType) => {
+    const formattedDeadline = deadlineFormatter(inputData.deadlineDate, inputData.deadlineTime);
     const newTodo: TodoType = {
-      id:                                                               generateUUID(),
-      createdDate:                                                          new Date(),
-      updatedDate:                                                          new Date(),
-      status:                                                inputData.status || '---',
-      deadline:      deadlineFormatter(inputData.deadlineDate, inputData.deadlineTime),
-      priority:                                            inputData.priority || '---',
-      isArchived:                                                                false,
-      title:                                                     inputData.title || '',
-      detail:                                                   inputData.detail || '',
-      isOpen:                                                                     true,
+      id:                       generateUUID(),
+      createdDate:                  new Date(),
+      updatedDate:                  new Date(),
+      status:        inputData.status || '---',
+      deadline:              formattedDeadline,
+      priority:    inputData.priority || '---',
+      isArchived:                        false,
+      title:             inputData.title || '',
+      detail:           inputData.detail || '',
+      isOpen:                             true,
     };
     dispatchCategoriesChange({ type: 'add_new_todo', newTodo });
   }
-  // ------------------------------------------------------ executeSubmit の helper 関数 --- //
+  // --------------------------- executeSubmit の helper 関数 --- //
 
-  // --------------------------------------------------------------------- submit で実行 --- //
+  // --- submit で実行 ------------------------------------------ //
   const executeSubmit = (inputData: InputDataType) => {
-    formInitializer();                              // 1. form の初期化
-    addNewTodo(inputData);                          // 2. newTodo を categories に追加
+    formInitializer();      // 1. form の初期化
+    addNewTodo(inputData);  // 2. newTodo を categories に追加
   };
-  // --- submit で実行 --------------------------------------------------------------------- //
+  // ------------------------------------------ submit で実行 --- //
 
-  const priorityValues: PriorityType[] = priorityLiterals;
-  const statusValues:     StatusType[] =   statusLiterals;
+
+  
 
 
   return (
@@ -122,25 +148,25 @@ export const CreateNewTodo: FC<CreateNewTodoType> = (props) => {
           </legend>
           <div className='parts-container title-detail'>
             <FormParts
-              className    = {    'parts title' }
-              partsFor     = {    'title' }
-              as           = {    'input' }
-              feature      = { 'optional' }
-              register     = {   register }
-              partsRef     = {   titleRef }
-              defaultValue = {         '' }
-              inputType    = {     'text' }
-              placeholder  = {    'Title' } />
+              className    = {       'parts title' }
+              partsFor     = {             'title' }
+              as           = {             'input' }
+              feature      = {          'optional' }
+              register     = {            register }
+              partsRef     = {            titleRef }
+              defaultValue = { defaultValues.title }
+              inputType    = {              'text' }
+              placeholder  = {  placeholders.title } />
 
             <FormParts
-              className    = {   'parts detail' }
-              partsFor     = {   'detail' }
-              as           = { 'textarea' }
-              feature      = { 'optional' }
-              register     = {   register }
-              partsRef     = {  detailRef }
-              defaultValue = {         '' }
-              placeholder  = {   'Detail' } />
+              className    = {       'parts detail' }
+              partsFor     = {             'detail' }
+              as           = {           'textarea' }
+              feature      = {           'optional' }
+              register     = {             register }
+              partsRef     = {            detailRef }
+              defaultValue = { defaultValues.detail }
+              placeholder  = {  placeholders.detail } />
           </div>
 
         </fieldset>
@@ -152,24 +178,26 @@ export const CreateNewTodo: FC<CreateNewTodoType> = (props) => {
           </legend>
           <div className='parts-container date-time'>
             <FormParts
-              className    = {     'parts date' }
-              partsFor     = {     'date' }
-              as           = {    'input' }
-              feature      = { 'optional' }
-              register     = {   register }
-              partsRef     = {    dateRef }
-              defaultValue = {         '' }
-              inputType    = {     'date' } />
+              className    = {       'parts date' }
+              partsFor     = {             'date' }
+              as           = {            'input' }
+              feature      = {         'optional' }
+              register     = {           register }
+              partsRef     = {            dateRef }
+              defaultValue = { defaultValues.date }
+              inputType    = {             'date' }
+              placeholder  = {  placeholders.date } />
             <span className='form-separater'></span>
             <FormParts
-              className    = {     'parts time' }
-              partsFor     = {     'time' }
-              as           = {    'input' }
-              feature      = { 'optional' }
-              register     = {   register }
-              partsRef     = {    timeRef }
-              defaultValue = {         '' }
-              inputType    = {     'time' } />
+              className    = {       'parts time' }
+              partsFor     = {             'time' }
+              as           = {            'input' }
+              feature      = {         'optional' }
+              register     = {           register }
+              partsRef     = {            timeRef }
+              defaultValue = { defaultValues.time }
+              inputType    = {             'time' }
+              placeholder  = {  placeholders.time } />
           </div>
 
         </fieldset>
@@ -180,24 +208,26 @@ export const CreateNewTodo: FC<CreateNewTodoType> = (props) => {
           </legend>
           <div className='parts-container status-priority'>
             <FormParts
-              className     = {     'parts status' }
-              partsFor      = {     'status' }
-              as            = {     'select' }
-              feature       = {   'optional' }
-              register      = {     register }
-              partsRef      = {    statusRef }
-              defaultValue  = {        '---' }
-              selectOptions = { statusValues } />
+              className     = {      'parts status' }
+              partsFor      = {            'status' }
+              as            = {            'select' }
+              feature       = {          'optional' }
+              register      = {            register }
+              partsRef      = {           statusRef }
+              defaultValue  = {               '---' }
+              selectOptions = {       statusOptions }
+              placeholder   = { placeholders.status } />
             <span className='form-separater'></span>
             <FormParts
-              className     = {     'parts priority' }
-              partsFor      = {     'priority' }
-              as            = {       'select' }
-              feature       = {     'optional' }
-              register      = {       register }
-              partsRef      = {    priorityRef }
-              defaultValue  = {          '---' }
-              selectOptions = { priorityValues } />
+              className     = {      'parts priority' }
+              partsFor      = {            'priority' }
+              as            = {              'select' }
+              feature       = {            'optional' }
+              register      = {              register }
+              partsRef      = {           priorityRef }
+              defaultValue  = {                 '---' }
+              selectOptions = {       priorityOptions }
+              placeholder   = { placeholders.priority } />
           </div>
         </fieldset>
 
@@ -232,9 +262,9 @@ const StyledForm = styled.form`
       font-size: 16px;
     }
   }
+  /* reset */
 
-  /* height: 500px; */
-  /* background: cyan; */
+
 
   fieldset {
     margin: 0 .8rem;

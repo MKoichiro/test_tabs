@@ -17,8 +17,8 @@ import { faTrashCan } from '@fortawesome/free-regular-svg-icons';
 import { DragIndicator } from '@mui/icons-material';
 /* dnd-kit */
 import { SyntheticListenerMap } from '@dnd-kit/core/dist/hooks/utilities';
-import { TodoType } from '../../../../types/Categories';
-import { CategoriesContext } from '../../../../providers/CategoriesProvider';
+import { TodoType } from '../../../../../types/Categories';
+import { CategoriesContext } from '../../../../../providers/CategoriesProvider';
 
 
 // === component 定義部分 ============================================= //

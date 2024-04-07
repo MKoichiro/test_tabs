@@ -11,7 +11,8 @@
 import React, { useContext, useState } from 'react';
 import styled from 'styled-components';
 /* common: others */
-import { AllTodosContext } from '../../../../providers/AllTodosProvider';
+// import { AllTodosContext } from '../../../../providers/AllTodosProvider';
+import { CategoriesContext } from '../../../../providers/CategoriesProvider';
 /* children components */
 import { ActiveCategory } from './category/ActiveCategory';
 import { ArchivedCategory } from './category/ArchivedCategory';
@@ -41,7 +42,7 @@ import { faArchive } from '@fortawesome/free-solid-svg-icons';
 
 // === component 定義部分 ============================================= //
 export const Categories = () => {
-  const { allTodos, dispatchAllTodosChange } = useContext(AllTodosContext);
+  const { categories, dispatchCategoriesChange } = useContext(CategoriesContext);
 
   const [isDragging, setIsDragging] = useState(false);
 
@@ -65,11 +66,11 @@ export const Categories = () => {
   const handleDragEnd = (e: DragEndEvent) => {
     const { active, over } = e;
     if (active.id !== over?.id) {
-      const oldIndex = allTodos.findIndex(todos => todos.id === active.id);
-      const newIndex = allTodos.findIndex(todos => todos.id === over?.id);
-      const newAllTodos = arrayMove(allTodos, oldIndex, newIndex);
-      dispatchAllTodosChange({ type: 'update_all_todos', newAllTodos });
-      dispatchAllTodosChange({ type: 'switch_tab', newActiveIndex: newIndex });
+      const oldIndex = categories.findIndex(categories => categories.id === active.id);
+      const newIndex = categories.findIndex(categories => categories.id === over?.id);
+      const newCategories = arrayMove(categories, oldIndex, newIndex);
+      dispatchCategoriesChange({ type: 'update_categories', newCategories });
+      dispatchCategoriesChange({ type: 'switch_tab', newActiveIdx: newIndex });
     }
     setActiveId(null);
     setIsDragging(false);
@@ -77,9 +78,9 @@ export const Categories = () => {
   // dnd-kit/sortable 関連
 
   // allTodosをarchivedの真偽で二つの配列に分割
-  const clone = [...allTodos];
-  const activeTodos  = clone.filter(todos => todos.archived === false);
-  const archivedTodos = clone.filter(todos => todos.archived === true);
+  const clone = [...categories];
+  const activeCategories  = clone.filter(category => category.isArchived === false);
+  const archivedCategories = clone.filter(category => category.isArchived === true);
 
 
   return (
@@ -94,15 +95,15 @@ export const Categories = () => {
 
           {/* ul内に収まってドロップ位置を示唆する要素 */}
           <SortableContext
-            items={allTodos}
+            items={categories}
             strategy={verticalListSortingStrategy}
           >
-            {activeTodos.map(todos => <ActiveCategory key={todos.id} activeTodos={todos} />)}
+            {activeCategories.map(category => <ActiveCategory key={category.id} activeCategory={category} />)}
           </SortableContext>
 
           {/* カーソルやタッチ位置に追従するゴースト要素 */}
           <DragOverlay>
-            {activeId ? <GhostCategory todos={allTodos.filter(todos => todos.id === activeId)[0]} /> : null}
+            {activeId ? <GhostCategory category={categories.filter(category => category.id === activeId)[0]} /> : null}
           </DragOverlay>
 
         </DndContext>
@@ -113,7 +114,7 @@ export const Categories = () => {
           <FontAwesomeIcon icon={faArchive} />
       </span>
       <ul className='archived-categories-container'>
-        {archivedTodos.map(todos => <ArchivedCategory key={todos.id} archivedTodos={todos} />)}
+        {archivedCategories.map(category => <ArchivedCategory key={category.id} archivedCategory={category} />)}
       </ul>
     </StyledDiv>
 

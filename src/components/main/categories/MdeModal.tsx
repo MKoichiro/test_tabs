@@ -1,15 +1,6 @@
-/*
-  [Test Component]
-    element: div
-    description:
-      hogehogehogehogehogehogehogehoge
-*/
-
 
 import React, { useContext } from 'react';
 import styled from 'styled-components';
-/* contexts */
-// import { AllTodosContext } from '../../../providers/AllTodosProvider';
 import { MdeContext } from '../../../providers/MdeProvider';
 /* utils */
 /* child components */
@@ -20,10 +11,6 @@ import { Categories } from '../tabs/edit_categories_modal/Categories';
 import { CategoriesContext } from '../../../providers/CategoriesProvider';
 
 export const MdeModal = () => {
-  // const {
-  //   activeIndex,
-  //   allTodos,
-  // } = useContext(AllTodosContext);
   const {
     activeIdx,
     categories,

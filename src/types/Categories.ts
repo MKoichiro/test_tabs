@@ -1,25 +1,32 @@
+type NotSetType = '---';
+export const notSet: NotSetType = '---';
+
+
 export const statusLiterals = [
-	'---',
+	notSet,
 	'Not Started',
 	'completed',
 	'In Progress...',
 	'Aborted',
 	'Pending',
-];
+] as const;
 export const priorityLiterals = [
-	'---',
+	notSet,
 	'Highest',
 	'High',
 	'Medium',
 	'Low',
 	'Lowest',
-];
+] as const;
+export type StatusLiteralsType = typeof statusLiterals;
+export type PriorityLiteralsType = typeof priorityLiterals;
+
 
 // statusLiterals, priorityLiterals から Union 型を生成
-export type StatusType = typeof statusLiterals[number];
-export type PriorityType = typeof priorityLiterals[number];
+export type StatusUnionType = typeof statusLiterals[number];
+export type PriorityUnionType = typeof priorityLiterals[number];
 
-export type DeadlineType = { date: Date; use_time: boolean; } | '---';
+export type DeadlineType = { date: Date; use_time: boolean; } | NotSetType;
 
 
 
@@ -31,8 +38,8 @@ export interface TodoType {
 	createdDate: Date;
 	updatedDate: Date;
   deadline: DeadlineType;
-  status: StatusType;
-  priority: PriorityType;
+  status: StatusUnionType;
+  priority: PriorityUnionType;
 	isArchived: boolean;
 	title: string;
 	detail: string;
@@ -46,6 +53,5 @@ export interface CategoryType {
 	updatedDate: Date;
 	isArchived: boolean;
 	name: string;
-  // next_assigning_id: number;
 	todos: TodoType[];
 }

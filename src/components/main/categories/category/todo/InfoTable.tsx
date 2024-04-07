@@ -1,7 +1,7 @@
 import React, { FC, useContext } from 'react';
 import styled from 'styled-components';
-import { TodoType } from '../../../../types/Categories';
-import { CategoriesContext } from '../../../../providers/CategoriesProvider';
+import { TodoType } from '../../../../../types/Categories';
+import { CategoriesContext } from '../../../../../providers/CategoriesProvider';
 
 const isDev = (process.env.NODE_ENV === 'development');
 

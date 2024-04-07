@@ -11,10 +11,10 @@
 import React, { useContext, useLayoutEffect, useRef, useState, LegacyRef } from 'react';
 import styled from 'styled-components';
 /* common: others */
-import { MdeContext } from '../../../../providers/MdeProvider';
-import { TodoType } from '../../../../types/Categories';
+import { MdeContext } from '../../../../../providers/MdeProvider';
+import { TodoType } from '../../../../../types/Categories';
 import { InfoTable } from './InfoTable';
-import { CategoriesContext } from '../../../../providers/CategoriesProvider';
+import { CategoriesContext } from '../../../../../providers/CategoriesProvider';
 
 
 const isDev = (process.env.NODE_ENV === 'development');

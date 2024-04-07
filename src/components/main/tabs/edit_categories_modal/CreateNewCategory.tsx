@@ -10,16 +10,17 @@
 import React, { useContext, useRef } from 'react';
 import styled from 'styled-components';
 /* common: others */
-import { TodoType, TodosType } from '../../../../types/Todos';
-import { AllTodosContext } from '../../../../providers/AllTodosProvider';
+import { CategoriesContext } from '../../../../providers/CategoriesProvider';
+import { TodoType, CategoryType, notSet } from '../../../../types/Categories';
 /* react-hook-form */
 import { useForm } from 'react-hook-form';
+import { generateUUID } from '../../../../utils/generateUUID';
 
 
 // === component 定義部分 ============================================= //
 // 新規カテゴリーにデフォルトで入れるtodoの見出し及びコメント
 const TEMPLATE_MESSAGE = {
-  main: 'template message of main',
+  title: 'template message of main',
   detail: 'template message of detail',
 }
 // バリデーションエラーメッセージ
@@ -36,43 +37,40 @@ interface DataType {
 }
 export const CreateNewCategory = () => {
 
-  const { allTodos, dispatchAllTodosChange } = useContext(AllTodosContext);
+  const { categories, dispatchCategoriesChange } = useContext(CategoriesContext);
 
   const { register, handleSubmit, formState: { errors } } = useForm<DataType>({ mode: 'onChange' });
   const { ref: refForName, ...restForName } = register('category_name', NAME_VALIDATION);
   const nameRef = useRef<HTMLInputElement | null>(null);
 
 
-  const updateAllTodos = (data: DataType, now: Date) => {
+  const updateCategories = (data: DataType, now: Date) => {
     const templateTodo: TodoType = {
-      id: 1,
-      created_date: now,
-      updated_date: now,
-      deadline: '---',
-      get expired() { return (!this.completed && this.deadline !== '---') && Date.now() > this.deadline.date.getTime(); },
-      get completed() { return this.status === 'COMPLETED' },
-      status: '---',
-      priority: '---',
-      archived: false,
-      main: TEMPLATE_MESSAGE.main,
+      id: generateUUID(),
+      createdDate: now,
+      updatedDate: now,
+      deadline: notSet,
+      status: notSet,
+      priority: notSet,
+      isArchived: false,
+      title: TEMPLATE_MESSAGE.title,
       detail: TEMPLATE_MESSAGE.detail,
-      open: true,
+      isOpen: true,
     };
 
-    const newTodos: TodosType = {
-      id: allTodos.reduce((store, todos) => Math.max(store, todos.id), 0) + 1,
-      active: false,
-      created_date: now,
-      updated_date: now,
-      archived: false,
-      category_name: data.category_name,
-      get next_assigning_id() { return this.todos.reduce((store, todo) => Math.max(store, todo.id), 0) + 1; },
+    const newTodos: CategoryType = {
+      id: generateUUID(),
+      isActive: false,
+      createdDate: now,
+      updatedDate: now,
+      isArchived: false,
+      name: data.category_name,
       todos: [templateTodo],
     };
 
-    const newAllTodos: TodosType[] = [...allTodos];
-    newAllTodos.push(newTodos);
-    dispatchAllTodosChange({ type: 'update_all_todos', newAllTodos });
+    const newCategories: CategoryType[] = [...categories];
+    newCategories.push(newTodos);
+    dispatchCategoriesChange({ type: 'update_categories', newCategories });
   };
 
   const formInitializer = () => {
@@ -85,8 +83,8 @@ export const CreateNewCategory = () => {
   const executeSubmit = (data: DataType) => {
     const now = new Date;
     formInitializer();
-    updateAllTodos(data, now);
-    dispatchAllTodosChange({ type: 'switch_tab', newActiveIndex: allTodos.length });
+    updateCategories(data, now);
+    dispatchCategoriesChange({ type: 'switch_tab', newActiveIdx: categories.length });
   };
 
   return (

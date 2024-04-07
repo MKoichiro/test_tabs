@@ -14,21 +14,22 @@ import styled from 'styled-components';
 import { TodosType } from '../../../../../types/Todos';
 import { DragIndicator } from '@mui/icons-material';
 import { categoryCommonStyles, CategoryCommonStylesType } from './CategoryCommonStyles';
+import { CategoryType } from '../../../../../types/Categories';
 
 
 // === component 定義部分 ============================================= //
 interface GhostCategoryType {
-  todos: TodosType;
+  category: CategoryType;
 }
 
 export const GhostCategory = forwardRef(({ ...props }: GhostCategoryType, ref: LegacyRef<HTMLDivElement> | undefined) => {
-  const { todos } = props;
+  const { category } = props;
   return (
     <StyledDiv ref={ ref }>
       <span className="gripper">
         <DragIndicator />
       </span>
-      <p children={ todos.category_name } />
+      <p children={ category.name } />
     </StyledDiv>
   );
 });

@@ -1,10 +1,10 @@
 import { useContext, useState, useRef, FormEvent, ChangeEvent, useEffect } from 'react';
-import { TodosType } from '../../types/Todos';
-import { AllTodosContext } from '../../providers/AllTodosProvider';
+import { CategoriesContext } from '../../providers/CategoriesProvider';
+import { CategoryType } from '../../types/Categories';
 
 
-export const useImmediateEditable = (thisTodos: TodosType) => {
-  const { allTodos, dispatchAllTodosChange } = useContext(AllTodosContext);
+export const useImmediateEditable = (thisCategory: CategoryType) => {
+  const  { categories, dispatchCategoriesChange } = useContext(CategoriesContext);
   const [inEditing, setInEditing] = useState(false);
   const inputRef = useRef<HTMLInputElement | null>(null)
 
@@ -23,10 +23,10 @@ export const useImmediateEditable = (thisTodos: TodosType) => {
 
   // onChange, onBlur: bind to <input>
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const categoryIdx = allTodos.findIndex(todos => todos.id === thisTodos.id);
-    const newAllTodos = [...allTodos];
-    newAllTodos[categoryIdx].category_name = e.target.value;
-    dispatchAllTodosChange({type: 'update_all_todos', newAllTodos});
+    const categoryIdx = categories.findIndex(category => category.id === thisCategory.id);
+    const newCategories = [...categories];
+    newCategories[categoryIdx].name = e.target.value;
+    dispatchCategoriesChange({type: 'update_categories', newCategories});
   };
   const handleBlur = () => {
     setInEditing(false);

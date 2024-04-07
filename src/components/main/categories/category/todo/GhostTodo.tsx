@@ -11,7 +11,7 @@
 import React, { LegacyRef, forwardRef } from 'react';
 import styled from 'styled-components';
 /* common: others */
-import { TodoType } from '../../../../types/Categories';
+import { TodoType } from '../../../../../types/Categories';
 /* children components */
 import { TodoDetail } from './TodoDetail';
 import { TodoHeader } from './TodoHeader';

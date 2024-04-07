@@ -11,7 +11,7 @@
 import React, { FC } from 'react';
 import styled from 'styled-components';
 /* types */
-import { TodosType } from '../../../../../types/Todos';
+import { CategoryType } from '../../../../../types/Categories';
 /* styles */
 import { categoryCommonStyles, CategoryCommonStylesType } from './CategoryCommonStyles';
 /* utils */
@@ -43,13 +43,13 @@ const slidableParams: SlidableParamsType = {
 };
 
 interface ActiveCategoryType {
-  activeTodos: TodosType;
+  activeCategory: CategoryType;
 }
 export const ActiveCategory: FC<ActiveCategoryType> = (props) => {
-  const { activeTodos } = props;
+  const { activeCategory } = props;
 
-  const { inEditing, inputRef, handleDoubleClick, handleSubmit, handleChange, handleBlur } = useImmediateEditable(activeTodos);
-  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: activeTodos.id });
+  const { inEditing, inputRef, handleDoubleClick, handleSubmit, handleChange, handleBlur } = useImmediateEditable(activeCategory);
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: activeCategory.id });
 
   const style = {
     transform: CSS.Transform.toString(transform),
@@ -73,12 +73,12 @@ export const ActiveCategory: FC<ActiveCategoryType> = (props) => {
             <DragIndicator />
           </span>
           <div className='category-name-container'>
-            <p children={ activeTodos.category_name } onDoubleClick={handleDoubleClick} />
+            <p children={ activeCategory.name } onDoubleClick={handleDoubleClick} />
             <form onSubmit={handleSubmit}>
               <input
                 type='text'
                 ref={inputRef}
-                value={activeTodos.category_name}
+                value={activeCategory.name}
                 onChange={handleChange}
                 onBlur={handleBlur} />
             </form>

@@ -2,18 +2,19 @@ import React, { FC } from 'react';
 import styled from 'styled-components';
 import { TodosType } from '../../../../../types/Todos';
 import { categoryCommonStyles, CategoryCommonStylesType } from './CategoryCommonStyles';
+import { CategoryType } from '../../../../../types/Categories';
 
 
 // === component 定義部分 ============================================= //
 interface ArchivedCategoryType {
-  archivedTodos: TodosType;
+  archivedCategory: CategoryType;
 }
 export const ArchivedCategory: FC<ArchivedCategoryType> = (props) => {
-  const { archivedTodos } = props;
+  const { archivedCategory } = props;
   return (
     <StyledLi>
       <div className='category-name-container'>
-        <p children={ archivedTodos.category_name } />
+        <p children={ archivedCategory.name } />
       </div>
     </StyledLi>
   );

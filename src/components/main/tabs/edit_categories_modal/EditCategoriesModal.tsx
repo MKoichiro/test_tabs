@@ -8,7 +8,7 @@
 
 
 /* common: essential */
-import React, { FC, useContext} from 'react';
+import React, { FC, useContext } from 'react';
 import styled from 'styled-components';
 /* font awesome */
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';

@@ -1,6 +1,6 @@
 import React, { LegacyRef, RefObject, MutableRefObject, ReactNode, createContext, useEffect, useRef, useState, useCallback, useContext } from 'react';
 import SimpleMDE, { ToolbarIcon, Options } from 'easymde';
-import { AllTodosContext } from './AllTodosProvider';
+import { CategoriesContext } from './CategoriesProvider';
 import { convertRemToPx } from '../utils/converters';
 
 
@@ -134,7 +134,7 @@ export const MdeProvider = ({ children }: { children: ReactNode }) => {
   };
 
 
-  const { activeIndex, allTodos, dispatchAllTodosChange } = useContext(AllTodosContext);
+  const { activeIdx, categories, dispatchCategoriesChange } = useContext(CategoriesContext);
   const mdeRef   = useRef<SimpleMDE      | null>(null);
   const modalRef = useRef<HTMLDivElement | null>(null);
   const maskRef  = useRef<HTMLDivElement | null>(null);
@@ -191,14 +191,14 @@ export const MdeProvider = ({ children }: { children: ReactNode }) => {
     document.removeEventListener('mousedown', handleOutsideClick);
   };
 
-  const targetTodos = [...allTodos][activeIndex].todos;
+  const targetTodos = [...categories][activeIdx].todos;
   const getEditorValue = (): string => {
     if (!(typeof targetTodoIdx === 'number')) {
-      console.error(`targetTodoIdxが${targetTodoIdx}です。 [AllTodos.tsx, handleChange()]`);
+      console.error(`targetTodoIdxが${targetTodoIdx}です。 [MdeProvider.tsx, handleChange()]`);
       return '';
     }
     if (!(0 <= targetTodoIdx && targetTodoIdx < targetTodos.length)) {
-      console.error(`targetTodoIdxが無効な値です。（targetTodoIdx: ${targetTodoIdx}) [AllTodos.tsx, getEditorValue()]`);
+      console.error(`targetTodoIdxが無効な値です。（targetTodoIdx: ${targetTodoIdx}) [MdeProvider.tsx, getEditorValue()]`);
       return '';
     }
     return targetTodos[targetTodoIdx].detail;
@@ -206,17 +206,17 @@ export const MdeProvider = ({ children }: { children: ReactNode }) => {
 
   const handleChange = (value: string) => {
     if (!(typeof targetTodoIdx === 'number')) {
-      console.error(`targetTodoIdxが${targetTodoIdx}です。 [AllTodos.tsx, handleChange()]`);
+      console.error(`targetTodoIdxが${targetTodoIdx}です。 [MdeProvider.tsx, handleChange()]`);
       return;
     }
     if (!(0 <= targetTodoIdx && targetTodoIdx < targetTodos.length)) {
-      console.error(`targetTodoIdxが無効な値です。（targetTodoIdx: ${targetTodoIdx}) [AllTodos.tsx, getEditorValue()]`);
+      console.error(`targetTodoIdxが無効な値です。（targetTodoIdx: ${targetTodoIdx}) [MdeProvider.tsx, getEditorValue()]`);
       return;
     }
-    // update: allTodos
-    const newAllTodos = [...allTodos];
-    newAllTodos[activeIndex].todos[targetTodoIdx].detail = value;
-    dispatchAllTodosChange({ type: 'update_all_todos', newAllTodos });
+    // update: categories
+    const newCategories = [...categories];
+    newCategories[activeIdx].todos[targetTodoIdx].detail = value;
+    dispatchCategoriesChange({ type: 'update_categories', newCategories });
     // update: hasEditorOverflow
     updateEditorOverflow();
   };
@@ -245,9 +245,9 @@ export const MdeProvider = ({ children }: { children: ReactNode }) => {
 
   useEffect(() => {
       if (inEditing === false) { return }
-      if (!maskRef.current) { console.error('maskRef.currentがfalsyです。[Providers.tsx, useEffect()]'); return }
-      if (!modalRef.current) { console.error('modalRef.currentがfalsyです。[Providers.tsx, useEffect()]'); return }
-      if (!mdeRef.current) { console.error('mdeRef.currentがfalsyです。[Providers.tsx, useEffect()]'); return }
+      if (!maskRef.current) { console.error('maskRef.currentがfalsyです。[MdeProvider.tsx, useEffect()]'); return }
+      if (!modalRef.current) { console.error('modalRef.currentがfalsyです。[MdeProvider.tsx, useEffect()]'); return }
+      if (!mdeRef.current) { console.error('mdeRef.currentがfalsyです。[MdeProvider.tsx, useEffect()]'); return }
 
       maskRef.current.addEventListener('wheel', preventScroll, { passive: false });
       modalRef.current.addEventListener('wheel', preventScroll, { passive: false });

@@ -6,26 +6,27 @@
 */
 
 
-/* common: essential */
+/* --- react/styled-components --- */
 import React, { FC, useContext, useEffect, useState } from "react";
 import styled from "styled-components";
-/* common: others */
-import { TodosType } from "../../../../types/Todos";
-/* children components */
-import { EachTodos } from "./EachTodos";
+/* --- child components ---------- */
+import { Category } from "./Category";
 import { CardsContainer } from "./card_view/CardsModal";
-// import { AllTodosContext } from "../../../../providers/AllTodosProvider";
 import { CategoriesContext } from "../../../../providers/CategoriesProvider";
 import { CategoryType } from "../../../../types/Categories";
 
-
-// === component 定義部分 ============================================= //
+// === 型定義部分 ===================================================== //
+// - component props
 interface PropsType {
   category: CategoryType;
   index: number;
 }
+// - others
+// ===================================================== 型定義部分 === //
 
-export const EachTodosContainer: FC<PropsType> = (props) => {
+
+// === component 定義部分 ============================================= //
+export const CategoryContainer: FC<PropsType> = (props) => {
   const { index } = props;
   const { activeIdx } = useContext(CategoriesContext);
   const [isActive, setIsActive] = useState(false);
@@ -40,8 +41,10 @@ export const EachTodosContainer: FC<PropsType> = (props) => {
 
   return (
     <StyledDiv>
-      <EachTodos { ...props } />
-      { isActive && <CardsContainer { ...props }/> }
+      <Category { ...props } />
+      { isActive && 
+        ( <CardsContainer { ...props }/> )
+      }
     </StyledDiv>
   );
 };

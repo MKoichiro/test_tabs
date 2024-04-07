@@ -16,10 +16,10 @@ import React, { useContext, useState, useRef, TouchEvent } from 'react';
 import styled from 'styled-components';
 /* providers */
 /* types */
-import { TodoType } from '../../../../types/Categories';
-import { TouchStartArgType, TouchMoveArgType, TouchEndArgType } from './EachTodos';
+import { TodoType } from '../../../../../types/Categories';
+import { TouchStartArgType, TouchMoveArgType, TouchEndArgType } from '../Category';
 /* utils */
-import { convertVwToPx, getCurrentContentsVw } from '../../../../utils/converters';
+import { convertVwToPx, getCurrentContentsVw } from '../../../../../utils/converters';
 /* font awesome */
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrashCan, faCircleInfo, faCheck } from '@fortawesome/free-solid-svg-icons';
@@ -29,7 +29,7 @@ import { TodoHeader } from './TodoHeader';
 /* dnd-kit */
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import { CategoriesContext } from '../../../../providers/CategoriesProvider';
+import { CategoriesContext } from '../../../../../providers/CategoriesProvider';
 
 
 const contentsWidth = convertVwToPx(getCurrentContentsVw());

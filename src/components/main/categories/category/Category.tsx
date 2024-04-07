@@ -1,23 +1,19 @@
-/*
-  EachTodos Component:
-    element: ul
-    description:
-      category 毎の todos を表示している
-*/
 
-/* common: essential */
+
+/* --- react/styled-components --- */
 import React, { FC, useContext, useState } from "react";
 import styled from "styled-components";
-/* common: others */
-
+/* --- child components ---------- */
+import { Todo } from "./todo/GhostTodo";
+/* --- providers/contexts -------- */
 import { CategoriesContext } from "../../../../providers/CategoriesProvider";
-/* utils */
+/* --- types --------------------- */
+import { CategoryType } from "../../../../types/Categories";
+/* --- utils --------------------- */
 import { convertVwToPx, getCurrentContentsVw } from "../../../../utils/converters";
-/* children components */
-import { Todo } from "./GhostTodo";
-/* dnd-kit */
+/* --- dnd-kit ------------------- */
 import { createPortal } from "react-dom";
-import { ActiveTodo } from "./ActiveTodo";
+import { ActiveTodo } from "./todo/ActiveTodo";
 import {
   DndContext,
   DragEndEvent,
@@ -35,7 +31,6 @@ import {
   arrayMove,
   sortableKeyboardCoordinates,
   verticalListSortingStrategy } from "@dnd-kit/sortable";
-import { CategoryType } from "../../../../types/Categories";
 
 
 const contentWidth = convertVwToPx(getCurrentContentsVw());
@@ -68,10 +63,9 @@ interface PropsType {
   index: number;
 }
 
-export const EachTodos: FC<PropsType> = (props) => {
+export const Category: FC<PropsType> = (props) => {
   const { category, index } = props;
   const todos = category.todos;
-  // const { allTodos, dispatchAllTodosChange } = useContext(AllTodosContext);
   const { categories, dispatchCategoriesChange } = useContext(CategoriesContext);
 
   // --- dnd-kit/sortable 関連 -------------------------------------- //
@@ -194,7 +188,10 @@ export const EachTodos: FC<PropsType> = (props) => {
       </DndContext>
     </StyledUl>
   )
-}
+};
+// ============================================= component 定義部分 === //
+
+
 // === style 定義部分 ================================================= //
 const StyledUl = styled.ul`
 `;

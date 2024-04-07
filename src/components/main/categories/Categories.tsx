@@ -1,21 +1,54 @@
 /*
-  [Test Component]
-    element: div
-    description:
-      hogehogehogehogehogehogehogehoge
+# "Categories.tsx"
+
+## RENDER AS:
+- ``` <ul/> ```
+
+## DEPENDENCIES:
+| type              | name                    | role                 |
+| ----------------- | ----------------------- | -------------------- |
+| PARENT COMPONENTS | CategoriesContainer.tsx | カテゴリ一覧を表示   |
+| CHILD COMPONENT 1 | CategoryContainer.tsx   | 個々のカテゴリを表示 |
+
+## FEATURES:
+- compenet
+
+## DESCRIPTION:
+- Categories の carousel コンテナ。
+
+## PROPS:
+- null
+
+## STATES:
+- null
+
+## FUTURE TASKS:
+- null
+
+## COPILOT
+- このコンポーネントは現状のままで問題ないと思われます。必要に応じて更新してください。
 */
 
 
-/* common: essential */
-import React, { useContext } from 'react';
+/* --- react/styled-components --- */
+import React, { FC, useContext } from 'react';
 import styled from 'styled-components';
-/* contexts */
+/* --- providers/contexts -------- */
 import { CategoriesContext } from '../../../providers/CategoriesProvider';
-/* child components */
-import { EachTodosContainer } from './category/EachTodosContainer';
+/* --- child components ---------- */
+import { CategoryContainer } from './category/CategoryContainer';
+
+
+// === 型定義部分 ===================================================== //
+// - component props
+interface CategoriesType {}
+// - others
+// ===================================================== 型定義部分 === //
+
 
 // === component 定義部分 ============================================= //
-export const Categories = () => {
+export const Categories: FC<CategoriesType> = (props) => {
+  const {} = props;
   const { activeIdx, categories } = useContext(CategoriesContext);
 
   return (
@@ -24,7 +57,7 @@ export const Categories = () => {
       { categories.map((category, i) => {
         return (
           <li key={ category.id }>
-            <EachTodosContainer category={ category } index={ i } />
+            <CategoryContainer category={ category } index={ i } />
           </li>
         );
       }) }

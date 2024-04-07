@@ -1,32 +1,18 @@
-/*
-  [SortableTodo Component]
-    element: li
-    description:
-      Todo Componentと比較して、内部的にはこちらが実体だが、
-      外見上は drop 位置を示唆するゴースト要素
-*/
-
-// 今後の実装課題
-// - useSlidable を使って、スライド可能な要素にする
-// - dnd sort する時には一時的に展開状態のTodoを閉じる
-// - 展開時に簡易的にtable形式で詳細を表示する
-
-/* common: essential */
-import React, { useContext, useState, useRef, TouchEvent } from 'react';
+/* --- react/styled-components --- */
+import React, { FC, useContext, useState, useRef, TouchEvent } from 'react';
 import styled from 'styled-components';
-/* providers */
-/* types */
-import { TodoType } from '../../../../../types/Categories';
-import { TouchStartArgType, TouchMoveArgType, TouchEndArgType } from '../Category';
-/* utils */
-import { convertVwToPx, getCurrentContentsVw } from '../../../../../utils/converters';
-/* font awesome */
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTrashCan, faCircleInfo, faCheck } from '@fortawesome/free-solid-svg-icons';
-/* children components */
+/* --- child components ---------- */
 import { TodoDetail } from './TodoDetail';
 import { TodoHeader } from './TodoHeader';
-/* dnd-kit */
+/* --- types --------------------- */
+import { TodoType } from '../../../../../types/Categories';
+import { TouchStartArgType, TouchMoveArgType, TouchEndArgType } from '../Category';
+/* --- utils --------------------- */
+import { convertVwToPx, getCurrentContentsVw } from '../../../../../utils/converters';
+/* --- font awesome -------------- */
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faTrashCan, faCircleInfo, faCheck } from '@fortawesome/free-solid-svg-icons';
+/* --- dnd-kit ------------------- */
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { CategoriesContext } from '../../../../../providers/CategoriesProvider';
@@ -35,8 +21,8 @@ import { CategoriesContext } from '../../../../../providers/CategoriesProvider';
 const contentsWidth = convertVwToPx(getCurrentContentsVw());
 const deleteBtnWidth = contentsWidth * .5;
 
-
-// === component 定義部分 ============================================= //
+// === 型定義部分 ===================================================== //
+// - component props
 interface PropsType {
   todo: TodoType;
   liIdx: number;
@@ -44,8 +30,12 @@ interface PropsType {
   handleTouchMove: (args: TouchMoveArgType) => void;
   handleTouchEnd: (args: TouchEndArgType) => void;
 }
+// - others
+// ===================================================== 型定義部分 === //
 
-export const ActiveTodo = (props: PropsType) => {
+
+// === component 定義部分 ============================================= //
+export const ActiveTodo: FC<PropsType> = (props) => {
   const {
     todo,
     liIdx,
@@ -76,7 +66,6 @@ export const ActiveTodo = (props: PropsType) => {
 
 
 
-  // const todoIdx = categories[activeIdx].todos.findIndex(todo => todo.id === currentId);
 
   const handleTodoPropsEdit = (propName: string, newValue?: string) => {
     // todo のプロパティを編集して categories を更新する関数

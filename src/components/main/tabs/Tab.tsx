@@ -1,33 +1,26 @@
-/*
-  [Tab Component]
-    element: li
-    description:
-      category を切り替える tab menu の各 tab 要素
-*/
-
-
-/* common: required */
+/* --- react/styled-components --- */
 import React, { useContext, forwardRef, Ref, RefObject } from 'react';
 import styled from 'styled-components';
-/* common: others */
-// import { AllTodosContext } from '../../../providers/AllTodosProvider';
-import { convertVwToPx } from '../../../utils/converters';
+/* --- providers/contexts -------- */
 import { CategoriesContext } from '../../../providers/CategoriesProvider';
+/* --- utils --------------------- */
+import { convertVwToPx } from '../../../utils/converters';
 
 
-// === component 定義部分 ============================================= //
+// === 型定義部分 ===================================================== //
+// - component props
 interface PropsType {
-
   index: number;
   containerRef: RefObject<HTMLUListElement | null>;
 }
+// - others
+// ===================================================== 型定義部分 === //
 
+// === component 定義部分 ============================================= //
 export const Tab = forwardRef((props: PropsType, liRef: Ref<HTMLLIElement>) => {
   const { index, containerRef } = props;
   const { categories, dispatchCategoriesChange } = useContext(CategoriesContext);
   const category = categories[index];
-
-
 
 
   const handleContainerScroll = () => {
@@ -66,7 +59,6 @@ export const Tab = forwardRef((props: PropsType, liRef: Ref<HTMLLIElement>) => {
   )
 });
 // ============================================= component 定義部分 === //
-
 
 
 // === style 定義部分 ================================================= //

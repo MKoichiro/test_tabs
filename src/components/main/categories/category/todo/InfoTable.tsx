@@ -1,9 +1,15 @@
+
+/* --- react/styled-components --- */
 import React, { FC, useContext } from 'react';
 import styled from 'styled-components';
-import { TodoType } from '../../../../../types/Categories';
+/* --- providers/contexts -------- */
 import { CategoriesContext } from '../../../../../providers/CategoriesProvider';
+/* --- types --------------------- */
+import { TodoType } from '../../../../../types/Categories';
 
 const isDev = (process.env.NODE_ENV === 'development');
+
+
 
 const useFormattedInfoEmitter = (todo: TodoType) => {
   const { checkIsCompleted, checkIsExpired, deadlineFormatters, getFormattedDate } = useContext(CategoriesContext);
@@ -30,12 +36,19 @@ const useFormattedInfoEmitter = (todo: TodoType) => {
     isOpen,
   };
 
-}
+};
 
-// === component 定義部分 ============================================= //
+
+// === 型定義部分 ===================================================== //
+// - component props
 interface InfoTableType {
   todo: TodoType;
 }
+// - others
+// ===================================================== 型定義部分 === //
+
+
+// === component 定義部分 ============================================= //
 export const InfoTable: FC<InfoTableType> = (props) => {
   const {
     todo,

@@ -1,23 +1,15 @@
-/*
-  [Detail Components]
-    elemnt: section
-    description:
-      todos の detail とその他プロパティを表示する component
-      SortableTodo と Todo の 2 箇所で呼び出される
-*/
-
-
-/* common: essential */
-import React, { useContext, useLayoutEffect, useRef, useState, LegacyRef } from 'react';
+/* --- react/styled-components --- */
+import React, { useContext, useLayoutEffect, useRef, useState, LegacyRef, forwardRef } from 'react';
 import styled from 'styled-components';
-/* common: others */
-import { MdeContext } from '../../../../../providers/MdeProvider';
-import { TodoType } from '../../../../../types/Categories';
+/* --- child components ---------- */
 import { InfoTable } from './InfoTable';
+/* --- providers/contexts -------- */
+// import { MdeContext } from '../../../../../providers/MdeProvider';
 import { CategoriesContext } from '../../../../../providers/CategoriesProvider';
+/* --- types --------------------- */
+import { TodoType } from '../../../../../types/Categories';
 
 
-const isDev = (process.env.NODE_ENV === 'development');
 
 // useUnsettledHeightAcc: 内容物の高さが可変のアコーディオンを実装するためのカスタムフック
 //                        open/close 状態を保持する isOpen state は保守性のため外部で定義して渡す。
@@ -37,21 +29,26 @@ const useUnsettledHeightAcc = (isOpen: boolean, changeableTxtContentsState: stri
 };
 
 
-// === component 定義部分 ============================================= //
+// === 型定義部分 ===================================================== //
+// - component props
 interface PropsType { 
   liIdx?: number;
   todo: TodoType;
 }
+// - others
+// ===================================================== 型定義部分 === //
 
-export const TodoDetail = React.forwardRef((props: PropsType, containerRef: LegacyRef<HTMLDivElement> | undefined) => {
+
+// === component 定義部分 ============================================= //
+export const TodoDetail = forwardRef((props: PropsType, containerRef: LegacyRef<HTMLDivElement> | undefined) => {
   const { liIdx, todo } = props;
   const { detail, isOpen } = todo;
   const { getSanitizedDetail } = useContext(CategoriesContext);
   const { height, heightGetterRef } = useUnsettledHeightAcc(isOpen, detail);
-  const { inEditing, handleModalOpen } = useContext(MdeContext);
+  // const { inEditing, handleModalOpen } = useContext(MdeContext);
 
   const executeModalOpen = () => {
-    handleModalOpen(liIdx, containerRef);
+    // handleModalOpen(liIdx, containerRef);
   };
 
 
@@ -60,7 +57,7 @@ export const TodoDetail = React.forwardRef((props: PropsType, containerRef: Lega
     <StyledSection
       $isOpen={ isOpen }
       $height={ height }
-      $inEditing={ inEditing }
+      // $inEditing={ inEditing }
     >
       <div
         className="children-height-getter"
@@ -86,7 +83,7 @@ export const TodoDetail = React.forwardRef((props: PropsType, containerRef: Lega
 
 
 // === style 定義部分 ================================================= //
-const StyledSection = styled.section<{ $isOpen: boolean; $height: number | null; $inEditing: boolean; }>`
+const StyledSection = styled.section<{ $isOpen: boolean; $height: number | null; /* $inEditing: boolean; */ }>`
 
   height: ${ props => props.$isOpen ? `${ props.$height }px` : '0' };
   transition: height 500ms;

@@ -1,28 +1,26 @@
-/*
-  [Todo Component]
-    element: div
-    description:
-      ul 内に収まって drop 先を示唆するSortableTodo Component に対して、
-      これは drag 中にカーソルに追従する、（外見上、）実体となるコピー要素
-*/
 
 
-/* common: essential */
+/* --- react/styled-components --- */
 import React, { LegacyRef, forwardRef } from 'react';
 import styled from 'styled-components';
-/* common: others */
-import { TodoType } from '../../../../../types/Categories';
-/* children components */
+/* --- child components ---------- */
 import { TodoDetail } from './TodoDetail';
 import { TodoHeader } from './TodoHeader';
+/* --- types --------------------- */
+import { TodoType } from '../../../../../types/Categories';
 
 
-// === component 定義部分 ============================================= //
+// === 型定義部分 ===================================================== //
+// - component props
 interface PropsType {
   todo: TodoType;
   categoryId: string;
 }
+// - others
+// ===================================================== 型定義部分 === //
 
+
+// === component 定義部分 ============================================= //
 export const Todo = forwardRef(({...props}: PropsType, ref: LegacyRef<HTMLDivElement> | undefined) => {
   const { todo } = props;
   

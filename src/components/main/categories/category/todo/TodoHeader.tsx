@@ -1,35 +1,36 @@
-/*
-  [(/todos/)Header Component]
-    element: header
-    description:
-      todo の見出し部分を表示する component
-      SortableTodo と Todo の 2 箇所で呼び出される
-*/
 
-/* common: essential */
-import React, { useContext, useEffect, useRef, useState } from 'react'
+
+/* --- react/styled-components --- */
+import React, { FC, useContext, useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
-/* font awesome */
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faChevronUp, faCircleExclamation, faGear } from '@fortawesome/free-solid-svg-icons';
-import { faTrashCan } from '@fortawesome/free-regular-svg-icons';
-/* material icons */
-import { DragIndicator } from '@mui/icons-material';
-/* dnd-kit */
-import { SyntheticListenerMap } from '@dnd-kit/core/dist/hooks/utilities';
-import { TodoType } from '../../../../../types/Categories';
+/* --- providers/contexts -------- */
 import { CategoriesContext } from '../../../../../providers/CategoriesProvider';
+/* --- types --------------------- */
+import { TodoType } from '../../../../../types/Categories';
+/* --- font awesome -------------- */
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faChevronUp, faCircleExclamation } from '@fortawesome/free-solid-svg-icons';
+/* --- material icons ------------ */
+import { DragIndicator } from '@mui/icons-material';
+/* --- dnd-kit ------------------- */
+import { SyntheticListenerMap } from '@dnd-kit/core/dist/hooks/utilities';
 
 
-// === component 定義部分 ============================================= //
-interface PropsType {
+
+// === 型定義部分 ===================================================== //
+// - component props
+interface TodoHeaderType {
   todo: TodoType;
   sortable: boolean;
   handleTodoPropsEdit?: (propName: string, newValue?: string) => void;
   listeners?: SyntheticListenerMap;
 }
+// - others
+// ===================================================== 型定義部分 === //
 
-export const TodoHeader = (props: PropsType) => {
+
+// === component 定義部分 ============================================= //
+export const TodoHeader: FC<TodoHeaderType> = (props) => {
   const {
     todo,
     sortable,

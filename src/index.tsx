@@ -8,7 +8,7 @@ import { createRoot } from 'react-dom/client';  // 現状createRootはreact-dom/
 import GlobalStyle from './globalStyle';
 
 /* App Component */
-import App from './components/App';
+import { App } from './components/App';
 
 // rootを取得
 const rootDiv = document.querySelector('#root');

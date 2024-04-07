@@ -1,19 +1,26 @@
 /* プレエントリポイント: components フォルダ内をいったんまとめる */
 
-/* react関連 */
+/* --- react/styled-components --- */
 import React from 'react';
-
-
-/* 各 Component */
+/* --- child components ---------- */
 import { Header } from './header/Header';
 import { Main } from './main/Main';
 import { Footer } from './footer/Footer';
-
-// import Modal from 'react-modal';
+/* --- providers/contexts -------- */
 import { Providers } from '../providers/Providers';
+/* --- temporarily unsed --------- */
+// import Modal from 'react-modal';
 // Modal.setAppElement('#root');
 
-const App = () => {
+
+// === 型定義部分 ===================================================== //
+// - component props
+// - others
+// ===================================================== 型定義部分 === //
+
+
+// === component 定義部分 ============================================= //
+export const App = () => {
   return (
 		<Providers>
 			<Header />
@@ -22,5 +29,8 @@ const App = () => {
 		</Providers>
   );
 };
+// ============================================= component 定義部分 === //
 
-export default App;
+
+// === style 定義部分 ================================================= //
+// ================================================= style 定義部分 === //

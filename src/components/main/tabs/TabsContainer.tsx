@@ -1,35 +1,29 @@
-/*
-  [Tabs Component]
-    element: ul (→ 今後 nav に変更する)
-    description:
-      category を切り替える tab menu を提供している
-*/
-
-/* common: essential */
+/* --- react/styled-components --- */
 import React, { FC, useRef, useContext } from 'react';
 import styled from 'styled-components';
-/* common: others */
-// import { AllTodosContext } from '../../../providers/AllTodosProvider';
+/* --- providers/contexts -------- */
 import { CategoriesContext } from '../../../providers/CategoriesProvider';
-/* children components */
-import { Tab } from './Tab';
+import { ModalContext } from '../../../providers/ModalProvider';
+/* --- font awesome -------------- */
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPen } from '@fortawesome/free-solid-svg-icons';
+/* --- child components ---------- */
+import { Tab } from './Tab';
 import { EditCategoriesModal } from './edit_categories_modal/EditCategoriesModal';
-import { ModalContext } from '../../../providers/ModalProvider';
 
 
-// === component 定義部分 ============================================= //
+// === 型定義部分 ===================================================== //
+// - component props
 interface TabsProps {
 	className?: string;
 }
+// - others
+// ===================================================== 型定義部分 === //
 
 
-
-
+// === component 定義部分 ============================================= //
 export const TabsContainer: FC<TabsProps> = (props) => {
   const { className } = props;
-  // const { allTodos  } = useContext(AllTodosContext);
   const { categories } = useContext(CategoriesContext);
 
   const containerRef = useRef<HTMLUListElement | null>(null);
@@ -52,7 +46,6 @@ export const TabsContainer: FC<TabsProps> = (props) => {
           return (
             <Tab
               key={                           category.id }
-              // categories={                            categories }
               ref={    e => { liRefs.current[i] = e; } }
               containerRef={              containerRef }
               index={                                i } />

@@ -105,5 +105,11 @@
     /* Completeness */
     // "skipDefaultLibCheck": true,                      /* Skip type checking .d.ts files that are included with TypeScript. */
     "skipLibCheck": true                                 /* Skip type checking all .d.ts files. */
-  }
+  },
+  
+  // + 2024/04/09
+  "exclude": [
+    "src/**/*_ignore.*", // blah_ignore.(extension) を TypeScript の compile から除外
+  ]
+
 }

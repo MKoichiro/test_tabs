@@ -6,12 +6,10 @@ module.exports = {
   entry: './src/index.tsx',
   module: {
     rules: [
-      // {
-      //   test: /\.tsx?$/,
-      // },
       {
         loader: 'ts-loader',
         test: /\.tsx?$/,
+        exclude: /_ignore\.\w+$/,   // blah_ignore.extensionsをbundleから除外
         options: {
           configFile: 'tsconfig.json'
         }
@@ -30,7 +28,7 @@ module.exports = {
     open: true,
   },
   resolve: {
-    extensions: ['.tsx', '.ts', '.js' ]
+    extensions: ['.tsx', '.ts', '.js', 'jsx']
   },
   output: {
     filename: 'js/bundle.js',

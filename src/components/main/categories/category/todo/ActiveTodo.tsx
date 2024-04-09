@@ -41,14 +41,17 @@
 
 
 /* --- react/styled-components --- */
-import React, { FC, useContext, useState, useRef, TouchEvent } from 'react';
+import React, { FC, useContext, useRef } from 'react';
 import styled from 'styled-components';
 /* --- child components ---------- */
 import { TodoDetail } from './TodoDetail';
 import { TodoHeader } from './TodoHeader';
+// slidable
+import { Slidable, SlidableMain, SlidableHidden } from '../../../../../functions/slidable/Components';
 /* --- types --------------------- */
 import { TodoType } from '../../../../../types/Categories';
-import { TouchStartArgType, TouchMoveArgType, TouchEndArgType } from '../Category';
+// slidable
+import { SlidableParamsType } from '../../../../../functions/slidable/Types';
 /* --- utils --------------------- */
 import { convertVwToPx, getCurrentContentsVw } from '../../../../../utils/converters';
 /* --- font awesome -------------- */
@@ -62,17 +65,28 @@ import { CategoriesContext } from '../../../../../providers/CategoriesProvider';
 import { isDebugMode } from '../../../../../utils/adminDebugMode';
 
 
+
+
+
+// === CONSTANT Against RENDERING ===================================== //
 const contentsWidth = convertVwToPx(getCurrentContentsVw());
 const deleteBtnWidth = contentsWidth * .5;
+
+// slidable
+const slidableParams: SlidableParamsType = {
+  SLIDABLE_LENGTH: deleteBtnWidth,
+  GRADIENT_THRESHOLD: .5,
+  TOGGLE_THRESHOLD: .2,
+  COMPLEMENT_ANIME_DURATION: 200,
+};
+// ===================================== CONSTANT Against RENDERING === //
+
 
 // === TYPE =========================================================== //
 // - PROPS
 interface PropsType {
   todo: TodoType;
   liIdx: number;
-  handleTouchStart: (args: TouchStartArgType) => void;
-  handleTouchMove: (args: TouchMoveArgType) => void;
-  handleTouchEnd: (args: TouchEndArgType) => void;
 }
 // - STYLE
 // - OTHERS
@@ -81,21 +95,13 @@ interface PropsType {
 
 // === COMPONENT ====================================================== //
 export const ActiveTodo: FC<PropsType> = (props) => {
-  const {
-    todo,
-    liIdx,
-    handleTouchStart,
-    handleTouchMove,
-    handleTouchEnd,
-  } = props;
-  const currentId = todo.id;
-  const {
-    activeIdx,
-    categories,
-    dispatchCategoriesChange,
-  } = useContext(CategoriesContext);
 
-  // dnd-kit
+  const { todo, liIdx } = props;
+  const currentId = todo.id;
+
+  const { dispatchCategoriesChange } = useContext(CategoriesContext);
+
+  // --- dnd-kit ------------------------------------------------ //
   const {
     attributes,
     listeners,
@@ -108,85 +114,13 @@ export const ActiveTodo: FC<PropsType> = (props) => {
     transform: CSS.Transform.toString(transform),
     transition,
   };
+  // ------------------------------------------------ dnd-kit --- //
 
-
-
-
-  const handleTodoPropsEdit = (propName: string, newValue?: string) => {
-    // todo のプロパティを編集して categories を更新する関数
-    const newCategories = [...categories];
-    switch (propName) {
-      case 'open':
-        newCategories[activeIdx].todos[liIdx].isOpen = !todo.isOpen;
-        dispatchCategoriesChange({ type: 'update_categories', newCategories });
-        break;
-      case 'archived':
-        newCategories[activeIdx].todos[liIdx].isArchived = true;
-        dispatchCategoriesChange({ type: 'update_categories', newCategories });
-        break;
-      case 'status':
-        newCategories[activeIdx].todos[liIdx].status = 'completed';
-        dispatchCategoriesChange({ type: 'update_categories', newCategories });
-        break;
-      case 'main':
-        newValue && (newCategories[activeIdx].todos[liIdx].title = newValue);
-        dispatchCategoriesChange({ type: 'update_categories', newCategories });
-        break;
-    }
-  };
-
-  // --- li を左にスワイプして右に delete btn を表示 ------------------------------- //
-  const containerRef = useRef<HTMLDivElement | null>(null)
-  const [startX,     setStartX    ] = useState<number | undefined>(undefined);
-  const [startY,     setStartY    ] = useState<number | undefined>(undefined);
-  const [isSlided,   setIsSlided  ] = useState(false);
-  const [translateX, setTranslateX] = useState(0);
-
-
-  // --- TouchStart ---------
-  const executeHandleTouchStart = (e: TouchEvent<HTMLLIElement>) => {
-    handleTouchStart({e, setStartX, setStartY});
-  };
-
-  // --- TouchMove ---------
-  let allowed: boolean = false, rejected: boolean = false; // 初回で (allow = true) Or (reject = true) の二択、ともにtrueにはなり得ない
-  const executeHandleTouchMove = (e: TouchEvent<HTMLLIElement>) => {
-    if (rejected) { return }
-    if (!(startX && startY)) { return } // null check
-
-    // スワイプ中の符号を含む変位
-    const displacementX = e.touches[0].clientX - startX;
-    const displacementY = e.touches[0].clientY - startY;
-
-    // 初回のみの処理
-    if (!(allowed || rejected)) { // この条件で初回のみ判定できる
-      const gradient = Math.abs(displacementY / displacementX); // 傾きの絶対値
-      if (gradient > 1/ 2) {
-        // 「単なる垂直方向のページスクロール」と判定
-        rejected = true;
-        return;
-      } else {
-        // 「削除ボタン非/表示のためのアクション」と判定
-        allowed = true;
-      }
-    }
-
-    handleTouchMove({displacementX, setTranslateX, isSlided});
-  };
-
-  // --- TouchEnd ---------
-  const executeHandleTouchEnd = (e: TouchEvent<HTMLLIElement>) => {
-    if (!(startX && containerRef.current)) { return } // null check
-    handleTouchEnd({e, startX, setStartX, setStartY, containerRef, setTranslateX, setIsSlided});
-    allowed = rejected = false; // initialize
-  };
-
-
-  const showInfo = () => {
+  // 今後
+  const containerRef = useRef<HTMLDivElement | null>(null);
+  const showCardsModal = () => {
     // card view modal を展開する処理
   };
-
-  // ------------------------------- li を左にスワイプして右に delete btn を表示 --- //
 
 
   return (
@@ -195,49 +129,44 @@ export const ActiveTodo: FC<PropsType> = (props) => {
       ref={setNodeRef}
       style={style}
       {...attributes}
-      onTouchStart={ executeHandleTouchStart }
-      onTouchMove={ executeHandleTouchMove }
-      onTouchEnd={ executeHandleTouchEnd }
-      $translateX={ translateX }
       $isDragging={ isDragging }
     >
-      <div
-        className='container'
-        ref={containerRef}
-      >
-        <div className="contents">
+
+      <Slidable slidableParams={slidableParams}>
+      
+        <SlidableMain className='slidable-main-contents' >
           <TodoHeader
-            sortable={ true }
+            attributes={ 'active' }
             listeners={ listeners }
-            todo={ todo }
-            handleTodoPropsEdit={ handleTodoPropsEdit } />
+            todo={ todo } />
 
           <TodoDetail
-            ref={containerRef}
+            // ref={containerRef}
             liIdx={liIdx}
             todo={ todo } />
-        </div>
-        <div className='btns-container'>
+        </SlidableMain>
+
+        <SlidableHidden className='btns-container' slidableLength={slidableParams.SLIDABLE_LENGTH}>
           <button
             className="btn-info"
-            onClick={ showInfo }
+            onClick={ showCardsModal }
           >
             <FontAwesomeIcon icon={faCircleInfo}/>
           </button>
           <button
             className="btn-check"
-            onClick={ () => handleTodoPropsEdit('status') }
+            onClick={ () => dispatchCategoriesChange({ type: 'change_todo_status', todoId: currentId, newStatus: 'completed' }) }
           >
             <FontAwesomeIcon icon={faCheck}/>
           </button>
           <button
             className="btn-delete"
-            onClick={ () => handleTodoPropsEdit('archived') }
+            onClick={ () => dispatchCategoriesChange({ type: 'archive_todo', todoId: currentId }) }
           >
             <FontAwesomeIcon icon={faTrashCan}/>
           </button>
-        </div>
-      </div>
+        </SlidableHidden>
+      </Slidable>
     </StyledLi>
   );
 };
@@ -245,7 +174,7 @@ export const ActiveTodo: FC<PropsType> = (props) => {
 
 
 // === STYLE ========================================================= //
-const StyledLi = styled.li<{ $isDragging: boolean; $translateX: number; }>`
+const StyledLi = styled.li<{ $isDragging: boolean; }>`
   background: #efefef;
 
   border-radius: .4rem;
@@ -263,33 +192,24 @@ const StyledLi = styled.li<{ $isDragging: boolean; $translateX: number; }>`
     display: none;
   }
 
-  .container {
+
+  .btns-container {
+    z-index: 100;
     display: flex;
-    transform: ${ props => `translateX(${ props.$translateX }px)` };
-  
-    .contents {
-      min-width: 100%;
+    button {
+      flex: 1;
+      font-size: 2rem;
+    }
+    .btn-info {
+      background: pink;
+    }
+    .btn-check {
+      background: skyblue;
+    }
+    .btn-delete {
+      background: #999;
     }
 
-    .btns-container {
-      min-width: ${`${ deleteBtnWidth }px`};
-      z-index: 100;
-      display: flex;
-      button {
-        flex: 1;
-        font-size: 2rem;
-      }
-      .btn-info {
-        background: pink;
-      }
-      .btn-check {
-        background: skyblue;
-      }
-      .btn-delete {
-        background: #999;
-      }
-
-    }
   }
 `;
 // ========================================================= STYLE === //

@@ -41,12 +41,14 @@
 
 
 /* --- react/styled-components --- */
-import React, { FC, useContext, useEffect, useRef, useState } from 'react'
+import React, { FC, useContext } from 'react'
 import styled from 'styled-components'
 /* --- providers/contexts -------- */
 import { CategoriesContext } from '../../../../../providers/CategoriesProvider';
 /* --- types --------------------- */
 import { TodoType } from '../../../../../types/Categories';
+/* --- hooks --------------------- */
+import { useImmediateEditable } from '../../../../../functions/immediateEditable/Hooks';
 /* --- font awesome -------------- */
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronUp, faCircleExclamation } from '@fortawesome/free-solid-svg-icons';
@@ -61,103 +63,95 @@ import { isDebugMode } from '../../../../../utils/adminDebugMode';
 // === TYPE =========================================================== //
 // - PROPS
 interface TodoHeaderType {
-  todo: TodoType;
-  sortable: boolean;
-  handleTodoPropsEdit?: (propName: string, newValue?: string) => void;
-  listeners?: SyntheticListenerMap;
+  todo:                              TodoType;
+  attributes: 'active' | 'ghost' | 'archived'; // 3種類の親要素で、表示内容を変える
+  listeners?:            SyntheticListenerMap;
 }
 // - STYLE
+interface StyledHeaderType {
+  $isCompleted: boolean;
+  $inEditing:   boolean;
+  $isOpen:      boolean;
+}
 // - OTHERS
 // =========================================================== TYPE === //
 
 
 // === COMPONENT ====================================================== //
 export const TodoHeader: FC<TodoHeaderType> = (props) => {
-  const {
-    todo,
-    sortable,
-    handleTodoPropsEdit,
-    listeners
-  } = props;
+  const { todo, attributes, listeners } = props;
 
-  const {
-    checkIsCompleted,
-    checkIsExpired
-  } = useContext(CategoriesContext);
+  const { dispatchCategoriesChange, checkIsCompleted, checkIsExpired } = useContext(CategoriesContext);
 
+  // 'double clickで編集' の hooks
+  const { inEditing, inputRef, handleDoubleClick, handleSubmit, handleChange, handleBlur } = useImmediateEditable('todo', todo);
+
+  // todo の各 property を取得
   const { title, isOpen } = todo;
-  const isExpired = checkIsExpired(props.todo);
-  const isCompleted = checkIsCompleted(props.todo);
+  const isExpired   = checkIsExpired(todo);
+  const isCompleted = checkIsCompleted(todo);
 
-
-  const inputRef = useRef<HTMLInputElement | null>(null);
-  const [inEditing, setInEditing] = useState(false);
-
-
-  const handleClickOutside = (e: MouseEvent) => {
-    if (!(e.target as Element).closest('.main-container')) {
-      setInEditing(false);
-    }
-  }
-  const toggleMode = () => {
-    if (inEditing) {
-      document.removeEventListener('mousedown', handleClickOutside);
-    } else {
-      setInEditing(true);
-      document.addEventListener('mousedown', handleClickOutside);
-    }
-  };
-  useEffect(() => {
-    if (inEditing && inputRef.current) { inputRef.current.focus(); }
-  }, [inEditing]);
-
-  const executeTodoPropsEdit = (propName: string) => {
-    if (sortable) { handleTodoPropsEdit && handleTodoPropsEdit(propName) }
-  }
-
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setInEditing(false);
-    document.removeEventListener('mousedown', handleClickOutside);
-    const value = inputRef.current?.value;
-    handleTodoPropsEdit && handleTodoPropsEdit('main', value);
-    console.log(value);
+  // 'isOpen' property の編集を実行 → detail の表示/非表示を切り替える
+  const toggleOpen = () => {
+    isOpen
+    ? dispatchCategoriesChange({ type: 'todo_close', todoId: todo.id })
+    : dispatchCategoriesChange({ type: 'todo_open',  todoId: todo.id });
   };
 
 
   return (
     <StyledHeader
-      $isCompleted={ isCompleted }
-      $inEditing={ inEditing }
-      $isOpen={ isOpen }
+      $isCompleted = { isCompleted }
+      $inEditing   = {   inEditing }
+      $isOpen      = {      isOpen }
     >
+      {/* 1. グリップ可能を示す、six-dots icon */}
       <span className="gripper" {...listeners}>
         <DragIndicator />
       </span>
 
+      {/* 2. 期限切れアイコン */}
       { isExpired && (
         <span className="icon-expired">
           <FontAwesomeIcon icon={ faCircleExclamation } /> 
         </span>
       ) }
 
-      <div
-        className='main-container'
-        onDoubleClick={ toggleMode }
-      >
-        <h4 children={title} />
-        {sortable && (
-          <form onSubmit={ handleSubmit }>
-            <input type="text" ref={ inputRef } defaultValue={title}/>
-          </form>
-        )}
-      </div>
+      {/* 3.1 Active要素なら、編集フォームを提供。 */}
+      { (attributes === 'active') && (
+            <div
+              className='main-container'
+              onDoubleClick={ handleDoubleClick}
+            >
+              <h4 children={title} />
+                <form onSubmit={ handleSubmit }>
+                  <input
+                    type="text"
+                    ref={ inputRef }
+                    defaultValue={ title }
+                    onChange={ handleChange }
+                    onBlur={ handleBlur } />
+                </form>
+            </div>
+      ) }
 
+      {/* 3.2 Ghost要素、Archived要素には、編集フォームは不要。 */}
+      { (attributes !== 'active') && (
+        <div className='main-container'>
+          <h4 children={title} />
+        </div>
+      ) }
+
+      {/* 4. detail 開閉ボタン */}
       <div className="btn-container">
-        <button className='btn-toggle-detail' onClick={() => executeTodoPropsEdit('open')}>
+        <button
+          className='btn-toggle-detail'
+          onClick={ (attributes !== 'ghost') ? (() => toggleOpen()) : undefined } // Ghost要素に、detail開閉機能は不要。
+        >
           <FontAwesomeIcon icon={faChevronUp} />
         </button>
       </div>
+
     </StyledHeader>
   )
 };
@@ -165,10 +159,7 @@ export const TodoHeader: FC<TodoHeaderType> = (props) => {
 
 
 // === STYLE ========================================================= //
-const StyledHeader = styled.header<{ $isCompleted: boolean; $inEditing: boolean; $isOpen: boolean; }>`
-
-  /* background: #eee; */
-
+const StyledHeader = styled.header<StyledHeaderType>`
 
 
   display: flex;
@@ -249,3 +240,24 @@ const StyledHeader = styled.header<{ $isCompleted: boolean; $inEditing: boolean;
 
 `;
 // ========================================================= STYLE === //
+
+
+// memo: オブジェクトマッピング
+
+  // const toggleOpen = () => {
+  //   isOpen
+  //   ? dispatchCategoriesChange({ type: 'todo_close', todoId: todo.id })
+  //   : dispatchCategoriesChange({ type: 'todo_open',  todoId: todo.id });
+  // };
+
+// の部分は、オブジェクトマッピングを使うと、以下のように書き換えることもできる。
+// const actionTypeMap = {
+//   true: 'todo_close',
+//   false: 'todo_open',
+// };
+// const toggleOpen = () => {
+//   dispatchCategoriesChange({ type: actionTypeMap[isOpen], todoId: todo.id });
+// };
+// と書くこともできると、copilotが提案している。
+// 多分今回の場合は得られる恩恵が少ないので、そのままで良い。
+// ただ、後で調べること。

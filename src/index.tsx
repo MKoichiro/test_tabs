@@ -41,7 +41,7 @@
 
 
 /* --- react/styled-components --- */
-import React from 'react';
+import React, { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';  // 現状createRootはreact-dom/clientから取得
 /* --- styles -------------------- */
 import GlobalStyle from './globalStyle';
@@ -59,10 +59,10 @@ if (rootDiv) {
 
  root.render(
   <>
-    <React.StrictMode>
+    <StrictMode>
       <GlobalStyle />          {/* 共通スタイルの読み込み */}
       <App />                  {/* プレエントリの読み込み */}
-    </React.StrictMode>
+    </StrictMode>
   </>
 
  );

@@ -92,7 +92,7 @@ interface ActiveCategoryType {
 export const ActiveCategory: FC<ActiveCategoryType> = (props) => {
   const { activeCategory } = props;
 
-  const { inEditing, inputRef, handleDoubleClick, handleSubmit, handleChange, handleBlur } = useImmediateEditable(activeCategory);
+  const { inEditing, inputRef, handleDoubleClick, handleSubmit, handleChange, handleBlur } = useImmediateEditable('category', activeCategory);
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: activeCategory.id });
 
   const style = {

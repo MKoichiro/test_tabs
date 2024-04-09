@@ -55,7 +55,7 @@ import { isDebugMode } from '../../../../../utils/adminDebugMode';
 
 
 // useUnsettledHeightAcc: 内容物の高さが可変のアコーディオンを実装するためのカスタムフック
-//                        open/close 状態を保持する isOpen state は保守性のため外部で定義して渡す。
+//                        open/close 状態を保持する isOpen state は保守性のため(今後、外部でも使用することも考えられるため)、外部で定義して渡す。
 //                        また、内容物の文字列が変更された時にも高さを再取得する必要があるため、
 //                        state 管理されたテキストコンテンツを changeableTxtContentsState を引数で渡す必要がある。
 const useUnsettledHeightAcc = (isOpen: boolean, changeableTxtContentsState: string) => {

@@ -90,7 +90,7 @@ export const Categories: FC<CategoriesType> = (props) => {
 
   const [isDragging, setIsDragging] = useState(false);
 
-  // dnd-kit/sortable 関連
+  // dnd-kit
   // sensor 登録
   const sensors = useSensors(
     useSensor(PointerSensor),
@@ -119,9 +119,9 @@ export const Categories: FC<CategoriesType> = (props) => {
     setActiveId(null);
     setIsDragging(false);
   };
-  // dnd-kit/sortable 関連
+  // dnd-kit
 
-  // allTodosをarchivedの真偽で二つの配列に分割
+  // categories を isArchivedの真偽で二つの配列に分割
   const clone = [...categories];
   const activeCategories  = clone.filter(category => category.isArchived === false);
   const archivedCategories = clone.filter(category => category.isArchived === true);

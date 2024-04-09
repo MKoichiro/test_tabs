@@ -1,9 +1,10 @@
 import React, { ReactNode, createContext, useReducer } from 'react';
 import { storedActiveIdx, storedCategories } from '../data/categories';
-import { CategoryType, TodoType, DeadlineType } from '../types/Categories';
+import { CategoryType, TodoType, DeadlineType, notSet } from '../types/Categories';
 import DOMPurify from 'dompurify';
 import { generateUUID } from '../utils/generateUUID';
 import { isDebugMode } from '../utils/adminDebugMode';
+import { StatusUnionType } from '../types/Categories';
 const marked = require('marked');
 
 // Context
@@ -26,11 +27,11 @@ export const CategoriesContext = createContext<CategoriesContextType>({
   dispatchCategoriesChange: () => {},
   checkIsCompleted: () => false,
   checkIsExpired: () => false,
-  getFormattedDate: () => '---',
+  getFormattedDate: () => notSet,
   getSanitizedDetail: () => '',
   deadlineFormatters: {
-    convertToStoredFormat: () => '---',
-    convertToDisplayFormat: () => '---',
+    convertToStoredFormat: () => notSet,
+    convertToDisplayFormat: () => notSet,
   },
 });
 
@@ -40,7 +41,7 @@ const checkIsCompleted = (todo: TodoType) => {
 };
 const checkIsExpired = (todo: TodoType) => {
   const deadline = todo.deadline;
-  if (!checkIsCompleted(todo) && deadline !== '---') {
+  if (!checkIsCompleted(todo) && deadline !== notSet) {
     return Date.now() > deadline.date.getTime();
   }
   return false;
@@ -72,11 +73,11 @@ const convertToStoredFormat = (dateInput: Date | undefined, timeInput: Date | un
       return { date: deadline, use_time: false }                             // 年月日: 有り,   時刻: 無し
   }
 
-  return '---';                                                              // 年月日: 無し,   時刻: 無し
+  return notSet;                                                             // 年月日: 無し,   時刻: 無し
 };
 const convertToDisplayFormat = (todo: TodoType) => {
   const deadline = todo.deadline;
-  if (deadline === '---') return '---';
+  if (deadline === notSet) return notSet;
 
   const date = deadline.date;
   if (deadline.use_time) {
@@ -116,10 +117,32 @@ type ActionType =
     newTodo: TodoType;
   }
   | {
-    type: 'test';
-    arg1: string;
-    arg2: number;
-};
+    type: 'update_todo';
+    newTodo: TodoType;
+  }
+  | {
+    type: 'todo_open';
+    todoId: string;
+  }
+  | {
+    type: 'todo_close';
+    todoId: string;
+  }
+  | {
+    type: 'change_todo_status';
+    todoId: string;
+    newStatus: StatusUnionType;
+  }
+  | {
+    type: 'archive_todo';
+    todoId: string;
+  }
+  | {
+    type: 'delete_todo';
+    todoId: string;
+  };
+
+
 const reducer = (state: StateType, action: ActionType): StateType => {
   switch (action.type) {
 
@@ -138,11 +161,90 @@ const reducer = (state: StateType, action: ActionType): StateType => {
         return newState;
     }
 
-    case 'add_new_todo': {
+    // これは汎用的なメソッド。
+    // 基本的にはこれより下のメソッドを使った方が、
+    // newCategoriesを作って渡す手間がいらないので、記述が簡潔になる。
+    case 'update_todo': {
+      const newTodo = action.newTodo;
+      // take a deep copy of state.categories
+      const newCategories = state.categories.map(category => ({
+        ...category,
+        todos: category.todos.map(todo => ({ ...todo }))
+      }));
+      const category = newCategories[state.activeIdx];
+      const todoIdx = category.todos.findIndex(todo => todo.id === newTodo.id);
+      newCategories[state.activeIdx].todos[todoIdx] = newTodo;
+      return { ...state, categories: newCategories };
+    }
+
+    case 'todo_open': {
+      const todoId = action.todoId;
+      // take a deep copy of state.categories
+      const newCategories = state.categories.map(category => ({
+        ...category,
+        todos: category.todos.map(todo => ({ ...todo }))
+      }));
+      const category = newCategories[state.activeIdx];
+      const todoIdx = category.todos.findIndex(todo => todo.id === todoId);
+      newCategories[state.activeIdx].todos[todoIdx].isOpen = true;
+      return { ...state, categories: newCategories };
+    }
+    
+    case 'todo_close': {
+      const todoId = action.todoId;
+      // take a deep copy of state.categories
+      const newCategories = state.categories.map(category => ({
+        ...category,
+        todos: category.todos.map(todo => ({ ...todo }))
+      }));
+      const category = newCategories[state.activeIdx];
+      const todoIdx = category.todos.findIndex(todo => todo.id === todoId);
+      newCategories[state.activeIdx].todos[todoIdx].isOpen = false;
+      return { ...state, categories: newCategories };
+    }
+
+    case 'change_todo_status': {
+      const todoId = action.todoId;
+      const newStatus = action.newStatus;
+      const newCategories = state.categories.map(category => ({
+        ...category,
+        todos: category.todos.map(todo => ({ ...todo }))
+      }));
+      const category = newCategories[state.activeIdx];
+      const todoIdx = category.todos.findIndex(todo => todo.id === todoId);
+      newCategories[state.activeIdx].todos[todoIdx].status = newStatus;
+      return { ...state, categories: newCategories };
+    }
+
+    case 'archive_todo': {
+      const todoId = action.todoId;
+      const newCategories = state.categories.map(category => ({
+        ...category,
+        todos: category.todos.map(todo => ({ ...todo }))
+      }));
+      const category = newCategories[state.activeIdx];
+      const todoIdx = category.todos.findIndex(todo => todo.id === todoId);
+      newCategories[state.activeIdx].todos[todoIdx].isArchived = true;
+      return { ...state, categories: newCategories };
+    }
+
+    case 'delete_todo': {
+      const todoId = action.todoId;
+      const newCategories = state.categories.map(category => ({
+        ...category,
+        todos: category.todos.map(todo => ({ ...todo }))
+      }));
+      const category = newCategories[state.activeIdx];
+      const newTodos = category.todos.filter(todo => todo.id !== todoId); // delete logic: 渡された todo 以外で新しい配列を作成
+      newCategories[state.activeIdx].todos = newTodos;
+      return { ...state, categories: newCategories };
+    }
+
+    case 'add_new_todo': {  // 動作に不具合は無いが、これは純粋な関数ではないので、後で修正が必要。
       const newTodo = action.newTodo;
 
       if (isDebugMode) {
-        // strict モードの場合、二度呼び出されてしまうので、重複を防ぐ。
+        // strict モードの場合、二度呼び出されてしまうので、重複を防ぐ。→二度呼び出しても同一の結果を返すように設計を変更すべき。
         const category = state.categories[state.activeIdx];
         const isDuplicate = category.todos.find(todo => todo.id === newTodo.id);
         if (isDuplicate) return state;
@@ -153,9 +255,6 @@ const reducer = (state: StateType, action: ActionType): StateType => {
       return { ...state, categories: newCategories };
     }
 
-    case 'test': {
-      return state;
-    }
   }
 };
 
@@ -172,7 +271,6 @@ export const CategoriesProvider = ({ children }: { children: ReactNode }) => {
     dispatchCategoriesChange: dispatch,
     checkIsCompleted,
     checkIsExpired,
-    // getFormattedDeadline,
     getFormattedDate,
     getSanitizedDetail,
     deadlineFormatters,
@@ -185,3 +283,19 @@ export const CategoriesProvider = ({ children }: { children: ReactNode }) => {
     </CategoriesContext.Provider>
   );
 };
+
+
+// memo: reducer関数
+// reducer関数の処理には3つの制約があるらしい。(これを破っても動くこともあるが、推奨されない)
+// 1. 同じ入力に対して常に同じ結果を起こす'純粋な関数'にする。
+//    例えば、'toggle_isOpen'のようなaction名で、true/falseを切り替えるような処理は、純粋な関数とは言えない。
+//    回避策としては、'todo_open'と'todo_close'のように、それぞれのactionを分けることで、純粋な関数にすることができる。
+
+// 2. '副作用'を持つことができない。
+//    useReducerで扱っているstateは、変更すべきでない。
+
+// 3. stateを直接変更してはいけない。
+//   今回の場合、const newCategories = [...state.categories]; として、新しい配列を作成したと思い満足してしまいそうになるが、
+//   実はjsの仕様上、配列の中身にオブジェクトが入っている場合、オブジェクトのプロパティはその参照がコピーされるだけで、中身はコピーされない。
+//   そのため、オブジェクトのプロパティを変更すると、元のstateも直接変更することになる。
+//   そのため、map関数を使って、"deep copy"を行う必要がある。

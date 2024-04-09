@@ -71,10 +71,10 @@ export const Todo = forwardRef(({...props}: PropsType, ref: LegacyRef<HTMLDivEle
     <StyledDiv ref={ref}>
 
       <TodoHeader
-        sortable={false}
-        todo={todo} />
+        attributes={ 'ghost' }
+        todo={ todo } />
 
-      <TodoDetail todo={todo} />
+      <TodoDetail todo={ todo } />
     </StyledDiv>
   );
 });

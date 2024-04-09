@@ -1,16 +1,56 @@
+/*
+# Slidable Components
+
+### <Slidabele/>
+  - render as: div > div
+  - description: スライド可能なコンテナを提供するコンポーネント。
+### <SlidableMain/>
+  - render as: div
+  - description: 通常時に表示させたいコンテナの子要素。
+### <SlidableHidden/>
+  - render as: div
+  - description: スライドで横から表示させたいコンテナの子要素。
+  
+### USAGE:
+```
+<StyledLi key={  }>
+
+    <Slidable slidableParams={slidableParams}>
+    
+        <SlidableMain className='slidable-main-contents' >
+          <div>
+            something you want to show.
+          </div>
+        </SlidableMain>
+
+        <SlidableHidden className='btns-container' slidableLength={slidableParams.SLIDABLE_LENGTH}>
+          <button>
+            some btns you want to show when slided.
+          </button>
+        </SlidableHidden>
+
+    </Slidable>
+
+</StyledLi>
+```
+*/
+
+
+/* --- react/styled-components --- */
 import React, { FC } from 'react';
 import styled from 'styled-components';
+/* --- hooks --------------------- */
 import { useSlidable } from './Hooks';
+/* --- types --------------------- */
 import { SlidableType, SlidableMainType, SlidableHiddenType } from './Types';
 
 
-// === component 定義部分 ============================================= //
+
+// === COMPONENT ====================================================== //
+// 1. Slidable
 export const Slidable: FC<SlidableType> = (props) => {
-  const {
-    children,
-    className,
-    slidableParams
-  } = props;
+
+  const { children, className, slidableParams } = props;
 
   const {
     handleTouchStart,
@@ -27,46 +67,44 @@ export const Slidable: FC<SlidableType> = (props) => {
       onTouchMove   = {   handleTouchMove }
       onTouchEnd    = {    handleTouchEnd }
     >
-      <StyledSlidableContainer
-        className   = {     className }
-        ref         = {  containerRef }
-        $translateX = {    translateX }
-        children    = {      children } />
+
+        <StyledSlidableContainer
+          className   = {     className }
+          ref         = {  containerRef }
+          $translateX = {    translateX }
+          children    = {      children } />
+
     </StyledSlidable>
   );
 };
 
+// 2. SlidableMain
 export const SlidableMain: FC<SlidableMainType> = (props) => {
-  const {
-    children,
-    className
-  } = props;
+
+  const { children, className } = props;
 
   return (
     <StyledSlidableMain
-      className ={ className }
-      children  ={ children } />
+      className = { className }
+      children  = { children  } />
   );
 };
 
+// 3. SlidableHidden
 export const SlidableHidden: FC<SlidableHiddenType> = (props) => {
-  const {
-    children,
-    className,
-    slidableLength
-  } = props;
+  const { children, className, slidableLength } = props;
 
   return (
     <StyledSlidableHidden
-    className       = {       className }
-    $slidableLength = {  slidableLength }
-    children        = {        children } />
+      className       = {       className }
+      $slidableLength = {  slidableLength }
+      children        = {        children } />
   );
 };
-// ============================================= component 定義部分 === //
+// ====================================================== COMPONENT === //
 
 
-// === style 定義部分 ================================================= //
+// === STYLE ========================================================= //
 // for "Slidable"
 const StyledSlidable = styled.div`
   overflow-x: hidden;
@@ -85,4 +123,4 @@ const StyledSlidableMain = styled.div`
 const StyledSlidableHidden = styled.div<{ $slidableLength: number }>`
   min-width: ${props => props.$slidableLength}px;
 `;
-// ================================================= style 定義部分 === //
+// ========================================================= STYLE === //

@@ -1,8 +1,7 @@
 // 未使用
 
 import React, { createContext, useReducer, useState } from 'react';
-import { TodosType } from '../types/Todos';
-// import { storedActiveIndex, storedAllTodos } from '../data/allTodos';
+import { CategoryType } from '../types/Categories';
 
 interface CardViewContextType {
 

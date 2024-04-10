@@ -63,6 +63,8 @@ import { CSS } from '@dnd-kit/utilities';
 import { CategoriesContext } from '../../../../../providers/CategoriesProvider';
 /* --- dev ----------------------- */
 import { isDebugMode } from '../../../../../utils/adminDebugMode';
+import { CardViewContext } from '../../../../../providers/CardViewProvider';
+import { set } from 'react-hook-form';
 
 
 
@@ -102,7 +104,11 @@ export const ActiveTodo: FC<PropsType> = (props) => {
   const { todo, liIdx } = props;
   const currentId = todo.id;
 
+  // contexts
   const { dispatchCategoriesChange } = useContext(CategoriesContext);
+  const { dialogRef, isOpen, setIsOpen, setActiveIdx, cardViewOpen } = useContext(CardViewContext);
+
+
 
   // --- dnd-kit ------------------------------------------------ //
   const {
@@ -122,10 +128,10 @@ export const ActiveTodo: FC<PropsType> = (props) => {
   // detail の double click で mde modal を開くときに自動 scroll 先となる ref
   const liRef = useRef<HTMLElement | null>(null);
 
-  // handler
-  // 未実装
-  const showCardsModal = () => {
-    // card view modal を展開する処理
+  // handlers
+  const handleInfoBtnClick = () => {
+    setActiveIdx(liIdx);
+    cardViewOpen(liIdx);
   };
   const handleCompleteBtnClick = () => {
     dispatchCategoriesChange({ type: 'change_todo_status', todoId: currentId, newStatus: 'completed' });
@@ -169,7 +175,7 @@ export const ActiveTodo: FC<PropsType> = (props) => {
                 {/* 1. cards modal を表示する */}
                 <button
                   className = {                             'btn-info' }
-                  onClick   = {                         showCardsModal }
+                  onClick   = {                     handleInfoBtnClick }
                   children  = { <FontAwesomeIcon icon={faCircleInfo}/> } />
 
                 {/* 2. todo を完了済み(completed)にする */}

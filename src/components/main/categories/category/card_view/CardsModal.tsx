@@ -41,7 +41,7 @@
 
 
 /* --- react/styled-components --- */
-import React, { FC, useRef, useState } from 'react';
+import React, { FC, useContext, useRef, useState } from 'react';
 import styled from 'styled-components';
 /* --- child components ---------- */
 import { CardsCarousel } from './CardsCarousel';
@@ -49,6 +49,7 @@ import { CardsCarousel } from './CardsCarousel';
 import { CategoryType } from '../../../../../types/Categories';
 /* --- dev ----------------------- */
 import { isDebugMode } from '../../../../../utils/adminDebugMode';
+import { CardViewContext } from '../../../../../providers/CardViewProvider';
 
 // === TYPE =========================================================== //
 // - PROPS
@@ -62,21 +63,13 @@ interface PropsType {
 
 // === COMPONENT ====================================================== //
 export const CardsContainer: FC<PropsType> = (props) => {
-  const dialogRef = useRef<HTMLDialogElement | null>(null);
-  const [isOpen, setIsOpen] = useState(false);
-
-  const handleClick = () => {
-    if (!dialogRef.current) { return }
-    dialogRef.current.showModal();
-    setIsOpen(true);
-  };
+  const { dialogRef } = useContext(CardViewContext);
 
   return (
     <>
       <StyledDialog ref={dialogRef}>
-        <CardsCarousel {...props} isOpen={isOpen}/>
+        <CardsCarousel {...props} />
       </StyledDialog>
-      <button onClick={handleClick}>open</button>
     </>
   );
 };

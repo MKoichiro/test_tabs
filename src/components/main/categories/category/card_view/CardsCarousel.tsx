@@ -41,7 +41,7 @@
 
 
 /* --- react/styled-components --- */
-import React, { FC, useRef, useState } from 'react';
+import React, { FC, useContext, useRef, useState } from 'react';
 import styled from 'styled-components';
 /* --- child components ---------- */
 import { CardTodo } from './CardTodo';
@@ -51,18 +51,17 @@ import { CategoryType } from '../../../../../types/Categories';
 import { convertVwToPx } from '../../../../../utils/converters';
 /* --- dev ----------------------- */
 import { isDebugMode } from '../../../../../utils/adminDebugMode';
+import { CardViewContext } from '../../../../../providers/CardViewProvider';
+// import { useCardView } from '../../../../../providers/CardViewProvider';
 
 const carouselGap_vw = 5;
-const carouselPadding_vw = carouselGap_vw * 2;
 const activeWidth_vw = 80;
-const inactiveWidth_vw = activeWidth_vw / 2;
 
 // === TYPE =========================================================== //
 // - PROPS
 interface PropsType {
   category: CategoryType;
   index: number;
-  isOpen: boolean;
 }
 // - STYLE
 // - OTHERS
@@ -72,42 +71,34 @@ interface PropsType {
 // === COMPONENT ====================================================== //
 export const CardsCarousel: FC<PropsType> = (props) => {
   const { category } = props;
-  const [cardActiveIdx, setCardActiveIdx] = useState(0);
-  const ulRef = useRef<HTMLUListElement | null>(null)
+  // const [cardActiveIdx, setCardActiveIdx] = useState(0);
+  // const ulRef = useRef<HTMLUListElement | null>(null);
+  const cardViewProps = {
+    // carouselContainerRef: ulRef,
+    carouselGap_vw,
+    activeWidth_vw,
+    inactiveMagnification: 1 / 2
+  };
+  const { registerContainer, setActiveIdx, handleScroll, carouselContainerRef } = useContext(CardViewContext);
+  const { adjustedPadding_vw } = registerContainer(cardViewProps);
+
   const updateCardActiveIdx = (newIdx: number) => {
-    setCardActiveIdx(newIdx);
-    handleScroll(newIdx);
+    setActiveIdx(newIdx);
+    handleScroll(newIdx, 'smooth');
   };
   const todosFormatted = category.todos; // archiveしたものを削除または最後尾にした配列を渡すべき
 
-  const gap           = convertVwToPx(carouselGap_vw);
-  const padding       = convertVwToPx(carouselPadding_vw);
-  const inactiveWidth = convertVwToPx(inactiveWidth_vw);
-
-  const handleScroll = (n: number) => {
-    if (!ulRef.current) { return }
-
-    let Xn: number;
-    switch (n) {
-      case 0:   Xn = 0;                                                                 break;
-      default:  Xn = padding + (inactiveWidth + gap)*(n - 1) + (inactiveWidth - gap);   break;
-    }
-
-    ulRef.current.scrollTo({ left: Xn, behavior: 'smooth' });
-  };
-
-
   return (
     <StyledUl
-      // $cardActiveIdx={ cardActiveIdx }
-      ref={ulRef}
+      ref={carouselContainerRef}
+      $padding={adjustedPadding_vw}
     >
       { todosFormatted.map((todo, i) => (
           <CardTodo
             key={ todo.id }
             todo={todo}
             index={ i }
-            cardActiveIdx={ cardActiveIdx }
+            // cardActiveIdx={ activeIdx }
             updateCardActiveIdx={updateCardActiveIdx} />
        )
       ) }
@@ -118,10 +109,10 @@ export const CardsCarousel: FC<PropsType> = (props) => {
 
 
 // === STYLE ========================================================= //
-const StyledUl = styled.ul`
+const StyledUl = styled.ul<{ $padding: string }>`
   --gap: ${`${carouselGap_vw}vw`};
   background: transparent;
-  padding: 0 calc(var(--gap) * 2);
+  padding: ${props => props.$padding};
   gap: var(--gap);
   display: flex;
   align-items: center;

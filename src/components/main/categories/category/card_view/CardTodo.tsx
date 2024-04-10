@@ -40,12 +40,14 @@
 */
 
 /* --- react/styled-components --- */
-import React, { FC, useEffect, useState } from 'react'
+import React, { FC, useContext, useEffect, useState } from 'react'
 import styled from 'styled-components'
 /* --- types --------------------- */
 import { TodoType } from '../../../../../types/Categories';
 /* --- dev ----------------------- */
 import { isDebugMode } from '../../../../../utils/adminDebugMode';
+import { use } from 'marked';
+import { CardViewContext } from '../../../../../providers/CardViewProvider';
 
 
 // === TYPE =========================================================== //
@@ -53,7 +55,7 @@ import { isDebugMode } from '../../../../../utils/adminDebugMode';
 interface PropsType {
   todo: TodoType;
   index: number;
-  cardActiveIdx: number;
+  // cardActiveIdx: number;
   updateCardActiveIdx: (newIdx: number) => void;
 }
 // - STYLE
@@ -63,16 +65,16 @@ interface PropsType {
 
 // === COMPONENT ====================================================== //
 export const CardTodo: FC<PropsType> = (props) => {
-  const {todo, index, cardActiveIdx, updateCardActiveIdx} = props;
+  const {todo, index, updateCardActiveIdx} = props;
   const [isActive, setIsActive] = useState(false);
+  const {activeIdx} = useContext(CardViewContext)
 
   useEffect(() => {
-    setIsActive(index === cardActiveIdx);
-  }, [cardActiveIdx]);
+    setIsActive(index === activeIdx);
+  }, [activeIdx]);
 
   const handleClick = () => {
     updateCardActiveIdx(index);
-
   };
 
   return (

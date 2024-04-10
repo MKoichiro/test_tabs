@@ -41,15 +41,17 @@
 
 
 /* --- react/styled-components --- */
-import React, { useContext, useLayoutEffect, useRef, useState, LegacyRef, forwardRef } from 'react';
+import React, { useContext, useLayoutEffect, useRef, useState, forwardRef } from 'react';
 import styled from 'styled-components';
 /* --- child components ---------- */
 import { InfoTable } from './InfoTable';
 /* --- providers/contexts -------- */
-// import { MdeContext } from '../../../../../providers/MdeProvider';
+import { MdeContext } from '../../../../../providers/MdeProvider';
 import { CategoriesContext } from '../../../../../providers/CategoriesProvider';
 /* --- types --------------------- */
 import { TodoType } from '../../../../../types/Categories';
+/* --- utils --------------------- */
+import { scrollToRef } from '../../../../../utils/scroll';
 /* --- dev ----------------------- */
 import { isDebugMode } from '../../../../../utils/adminDebugMode';
 
@@ -74,50 +76,60 @@ const useUnsettledHeightAcc = (isOpen: boolean, changeableTxtContentsState: stri
 
 // === TYPE =========================================================== //
 // - PROPS
-interface PropsType { 
+interface TodoDetailType {
   liIdx?: number;
   todo: TodoType;
 }
 // - STYLE
+interface StyledSectionType {
+  $isOpen: boolean;
+  $height: number | null;
+  $inEditing: boolean;
+}
 // - OTHERS
 // =========================================================== TYPE === //
 
 
 // === COMPONENT ====================================================== //
-export const TodoDetail = forwardRef((props: PropsType, containerRef: LegacyRef<HTMLDivElement> | undefined) => {
+export const TodoDetail = forwardRef<HTMLElement, TodoDetailType>((props, ref) => {
   const { liIdx, todo } = props;
+
+  const { getSanitizedDetail         } = useContext(CategoriesContext);
+  const { inEditing, handleModalOpen } = useContext(MdeContext);
+
   const { detail, isOpen } = todo;
-  const { getSanitizedDetail } = useContext(CategoriesContext);
   const { height, heightGetterRef } = useUnsettledHeightAcc(isOpen, detail);
-  // const { inEditing, handleModalOpen } = useContext(MdeContext);
+
 
   const executeModalOpen = () => {
-    // handleModalOpen(liIdx, containerRef);
-  };
+    handleModalOpen(liIdx);
 
+    if (innerWidth > 600) {
+      scrollToRef(ref);
+    }
+  };
 
 
   return (
     <StyledSection
       $isOpen={ isOpen }
       $height={ height }
-      // $inEditing={ inEditing }
+      $inEditing={ inEditing }
     >
       <div
         className="children-height-getter"
         ref={ heightGetterRef }
       >
-        <section
-          className="detail-container"
-          onDoubleClick={ executeModalOpen }
-        >
-          <div
-            dangerouslySetInnerHTML={{
-              __html: getSanitizedDetail(todo),
-            }} />
-        </section>
+          <section
+            className="detail-container"
+            onDoubleClick={ executeModalOpen }
+          >
+              <div
+                dangerouslySetInnerHTML={{
+                  __html: getSanitizedDetail(todo) }} />
+          </section>
 
-        <InfoTable todo={ todo } />
+          <InfoTable todo={ todo } />
       </div>
 
     </StyledSection>
@@ -127,7 +139,7 @@ export const TodoDetail = forwardRef((props: PropsType, containerRef: LegacyRef<
 
 
 // === STYLE ========================================================= //
-const StyledSection = styled.section<{ $isOpen: boolean; $height: number | null; /* $inEditing: boolean; */ }>`
+const StyledSection = styled.section<StyledSectionType>`
 
   height: ${ props => props.$isOpen ? `${ props.$height }px` : '0' };
   transition: height 500ms;
@@ -186,7 +198,6 @@ const StyledSection = styled.section<{ $isOpen: boolean; $height: number | null;
       > div {
         padding-left: 1.6rem;
         border-left: .15rem solid #777;
-
       }
     }
 

@@ -69,10 +69,7 @@ interface StyleType {
 export const MdeModal: FC<MdeModalType> = (props) => {
   const {} = props;
 
-  const {
-    activeIdx,
-    categories,
-  } = useContext(CategoriesContext)
+  const { activeIdx } = useContext(CategoriesContext)
 
   const {
     refs,
@@ -82,7 +79,6 @@ export const MdeModal: FC<MdeModalType> = (props) => {
     options,
     viewportHeight,
     hasEditorOverflow,
-    ...rest
   } = useContext(MdeContext);
 
   return (

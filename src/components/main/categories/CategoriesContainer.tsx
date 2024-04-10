@@ -35,7 +35,7 @@ import React, { FC } from 'react';
 import styled from 'styled-components';
 /* --- child components ---------- */
 import { Categories } from './Categories';
-// import { MdeModal } from './MdeModal';
+import { MdeModal } from './MdeModal';
 /* --- dev ----------------------- */
 import { isDebugMode } from '../../../utils/adminDebugMode';
 
@@ -55,7 +55,7 @@ export const CategoriesContainer: FC<CategoriesContainerType> = (props) => {
   return (
     <StyledDiv>
       <Categories />
-      {/* <MdeModal /> */}
+      <MdeModal />
     </StyledDiv>
   );
 };

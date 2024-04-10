@@ -41,7 +41,7 @@
 
 
 /* --- react/styled-components --- */
-import React, { FC, useContext, useRef } from 'react';
+import React, { FC, RefObject, useContext, useRef } from 'react';
 import styled from 'styled-components';
 /* --- child components ---------- */
 import { TodoDetail } from './TodoDetail';
@@ -89,6 +89,9 @@ interface PropsType {
   liIdx: number;
 }
 // - STYLE
+interface StyledLiType {
+  $isDragging: boolean;
+}
 // - OTHERS
 // =========================================================== TYPE === //
 
@@ -116,57 +119,73 @@ export const ActiveTodo: FC<PropsType> = (props) => {
   };
   // ------------------------------------------------ dnd-kit --- //
 
-  // 今後
-  const containerRef = useRef<HTMLDivElement | null>(null);
+  // detail の double click で mde modal を開くときに自動 scroll 先となる ref
+  const liRef = useRef<HTMLElement | null>(null);
+
+  // handler
+  // 未実装
   const showCardsModal = () => {
     // card view modal を展開する処理
   };
+  const handleCompleteBtnClick = () => {
+    dispatchCategoriesChange({ type: 'change_todo_status', todoId: currentId, newStatus: 'completed' });
+  }
+  const handleArchiveBtnClick = () => {
+    dispatchCategoriesChange({ type: 'archive_todo', todoId: currentId });
+  }
 
 
   return (
     <StyledLi
-      key={ currentId }
-      ref={setNodeRef}
-      style={style}
+      key         = {                                  currentId }
+      style       = {                                      style }
+      $isDragging = {                                 isDragging }
+      ref         = { e => { setNodeRef(e); liRef.current = e; } }
       {...attributes}
-      $isDragging={ isDragging }
     >
 
-      <Slidable slidableParams={slidableParams}>
-      
-        <SlidableMain className='slidable-main-contents' >
-          <TodoHeader
-            attributes={ 'active' }
-            listeners={ listeners }
-            todo={ todo } />
+        {/* slidable: li内をスライド可能にするためのコンテナ */}
+        <Slidable slidableParams={slidableParams}>
+        
+            {/* slidable: 通常時に表示されている要素 */}
+            <SlidableMain className='slidable-main-contents'>
 
-          <TodoDetail
-            // ref={containerRef}
-            liIdx={liIdx}
-            todo={ todo } />
-        </SlidableMain>
+                <TodoHeader
+                  attributes = {  'active' }
+                  listeners  = { listeners }
+                  todo       = {      todo } />
 
-        <SlidableHidden className='btns-container' slidableLength={slidableParams.SLIDABLE_LENGTH}>
-          <button
-            className="btn-info"
-            onClick={ showCardsModal }
-          >
-            <FontAwesomeIcon icon={faCircleInfo}/>
-          </button>
-          <button
-            className="btn-check"
-            onClick={ () => dispatchCategoriesChange({ type: 'change_todo_status', todoId: currentId, newStatus: 'completed' }) }
-          >
-            <FontAwesomeIcon icon={faCheck}/>
-          </button>
-          <button
-            className="btn-delete"
-            onClick={ () => dispatchCategoriesChange({ type: 'archive_todo', todoId: currentId }) }
-          >
-            <FontAwesomeIcon icon={faTrashCan}/>
-          </button>
-        </SlidableHidden>
-      </Slidable>
+                <TodoDetail
+                  ref   = { liRef }
+                  liIdx = { liIdx }
+                  todo  = { todo  } />
+
+            </SlidableMain>
+
+
+            {/* slidable: スライドで右から出てくる要素 */}
+            <SlidableHidden className='btns-container' slidableLength={slidableParams.SLIDABLE_LENGTH}>
+
+                {/* 1. cards modal を表示する */}
+                <button
+                  className = {                             'btn-info' }
+                  onClick   = {                         showCardsModal }
+                  children  = { <FontAwesomeIcon icon={faCircleInfo}/> } />
+
+                {/* 2. todo を完了済み(completed)にする */}
+                <button
+                  className = {                       'btn-check' }
+                  onClick   = {            handleCompleteBtnClick }
+                  children  = { <FontAwesomeIcon icon={faCheck}/> } />
+
+                {/* 3. todo をアーカイブ(isArchived === true に)する */}
+                <button
+                  className = {                         'btn-delete' }
+                  onClick   = {                handleArchiveBtnClick }
+                  children  = { <FontAwesomeIcon icon={faTrashCan}/> } />
+
+            </SlidableHidden>
+        </Slidable>
     </StyledLi>
   );
 };
@@ -174,7 +193,7 @@ export const ActiveTodo: FC<PropsType> = (props) => {
 
 
 // === STYLE ========================================================= //
-const StyledLi = styled.li<{ $isDragging: boolean; }>`
+const StyledLi = styled.li<StyledLiType>`
   background: #efefef;
 
   border-radius: .4rem;

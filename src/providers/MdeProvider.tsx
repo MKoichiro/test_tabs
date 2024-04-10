@@ -3,37 +3,36 @@ import SimpleMDE, { ToolbarIcon, Options } from 'easymde';
 import { CategoriesContext } from './CategoriesProvider';
 import { convertRemToPx } from '../utils/converters';
 
+import { isDebugMode } from '../utils/adminDebugMode';
 
-
-const isDev = (process.env.NODE_ENV === 'development');
 
 
 type ToolbarButton =
-    'bold'
-    | 'italic'
-    | 'quote'
-    | 'unordered-list'
-    | 'ordered-list'
-    | 'link'
-    | 'image'
-    | 'strikethrough'
-    | 'code'
-    | 'table'
-    | 'redo'
-    | 'heading'
-    | 'undo'
-    | 'heading-bigger'
-    | 'heading-smaller'
-    | 'heading-1'
-    | 'heading-2'
-    | 'heading-3'
-    | 'clean-block'
-    | 'horizontal-rule'
-    | 'preview'
-    | 'side-by-side'
-    | 'fullscreen'
-    | 'guide'
-    | '|';
+  'bold'
+  | 'italic'
+  | 'quote'
+  | 'unordered-list'
+  | 'ordered-list'
+  | 'link'
+  | 'image'
+  | 'strikethrough'
+  | 'code'
+  | 'table'
+  | 'redo'
+  | 'heading'
+  | 'undo'
+  | 'heading-bigger'
+  | 'heading-smaller'
+  | 'heading-1'
+  | 'heading-2'
+  | 'heading-3'
+  | 'clean-block'
+  | 'horizontal-rule'
+  | 'preview'
+  | 'side-by-side'
+  | 'fullscreen'
+  | 'guide'
+  | '|';
 
 // Context
 interface MdeContextType {
@@ -43,7 +42,7 @@ interface MdeContextType {
     mask: MutableRefObject<HTMLDivElement | null> | null;
   };
   inEditing: boolean;
-  handleModalOpen: (todoIdx: number | undefined, containerRef: LegacyRef<HTMLDivElement> | undefined) => void;
+  handleModalOpen: (todoIdx: number | undefined) => void;
   getEditorValue: () => string;
   handleChange: (value: string) => void;
   options: Options | undefined;
@@ -158,29 +157,19 @@ export const MdeProvider = ({ children }: { children: ReactNode }) => {
   };
 
   // --- handleModalOpen ---
-  const handleModalOpen = (todoIdx: number | undefined, containerRef: LegacyRef<HTMLDivElement> | undefined) => {
+  const handleModalOpen = (todoIdx: number | undefined) => {
     if (inEditing) { return }
     if (typeof todoIdx !== 'number') { console.error('targetTodoIdxがundefinedです。 [Mde.tsx handleModalOpen()]'); return }
     setInEditing(true);
     setTargetTodoIdx(todoIdx);
     document.addEventListener('mousedown', handleOutsideClick);
-
-
-    if (innerWidth < 600) { return }
-    // scroll 位置を制御: 編集する todo の頭が画面内の先頭に来るように
-    const targetDiv = (containerRef as RefObject<HTMLDivElement | null>).current;
-    if (!targetDiv) { console.error('scroll先の要素(targetDiv)が見つかりません。 [Detail.tsx, controllScrollPos()]'); return }
-
-    const innerY  = targetDiv.getBoundingClientRect().top;
-    const targetY = innerY + scrollY;
-    scrollTo({ top: targetY, behavior: 'smooth' });
   };
   // --- handleModalOpen ---
 
   const handleModalClose = () => {
     const codemirrorElm = getCodemirror()?.getWrapperElement();
-    if (!maskRef.current) { console.error('maskRef.currentがfalsyです。[Providers.tsx, handleModalClose()]'); return }
-    if (!modalRef.current) { console.error('modalRef.currentがfalsyです。[Providers.tsx, handleModalClose()]'); return }
+    if (!maskRef.current) { console.error('maskRef.currentがfalsyです。[MdeProvider.tsx, handleModalClose()]'); return }
+    if (!modalRef.current) { console.error('modalRef.currentがfalsyです。[MdeProvider.tsx, handleModalClose()]'); return }
 
     // initialize states & event listener
     setInEditing(false);

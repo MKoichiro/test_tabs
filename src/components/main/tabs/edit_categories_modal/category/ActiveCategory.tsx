@@ -67,6 +67,7 @@ import { useImmediateEditable } from '../../../../../functions/immediateEditable
 import { isDebugMode } from '../../../../../utils/adminDebugMode';
 
 
+// === CONSTANT Against RENDERING ===================================== //
 const btnsContainerWidthVw = 10;
 const btnsContainerWidthPx = convertVwToPx(btnsContainerWidthVw);
 // slidable 関連
@@ -76,6 +77,7 @@ const slidableParams: SlidableParamsType = {
   TOGGLE_THRESHOLD:           btnsContainerWidthPx / 2,
   COMPLEMENT_ANIME_DURATION:                       300,
 };
+// ===================================== CONSTANT Against RENDERING === //
 
 
 // === TYPE =========================================================== //
@@ -103,30 +105,32 @@ export const ActiveCategory: FC<ActiveCategoryType> = (props) => {
 
   return (
     <StyledLi
-      ref={ setNodeRef }
-      style={ style }
-      $isDragging={ isDragging }
-      $inEditing={inEditing}
+      ref         = { setNodeRef }
+      style       = { style      }
+      $inEditing  = { inEditing  }
+      $isDragging = { isDragging }
       { ...attributes }
     >
 
-      <Slidable slidableParams={slidableParams}>
+      <Slidable slidableParams={ slidableParams }>
 
         <SlidableMain className='slidable-main-contents'>
-          <span className='gripper' { ...listeners } >
-            <DragIndicator />
-          </span>
-          <div className='category-name-container'>
-            <p children={ activeCategory.name } onDoubleClick={handleDoubleClick} />
-            <form onSubmit={handleSubmit}>
-              <input
-                type='text'
-                ref={inputRef}
-                value={activeCategory.name}
-                onChange={handleChange}
-                onBlur={handleBlur} />
-            </form>
-          </div>
+            <span className='gripper' { ...listeners } >
+              <DragIndicator />
+            </span>
+            <div className='category-name-container'>
+                <p onDoubleClick={ handleDoubleClick }>
+                  { activeCategory.name }
+                </p>
+                <form onSubmit={ handleSubmit }>
+                  <input
+                    type     = { 'text'               }
+                    ref      = { inputRef             }
+                    value    = { activeCategory.name  }
+                    onChange = { handleChange         }
+                    onBlur   = { handleBlur           } />
+                </form>
+            </div>
         </SlidableMain>
 
         <SlidableHidden className='slidable-hidden-contents' slidableLength={slidableParams.SLIDABLE_LENGTH}>

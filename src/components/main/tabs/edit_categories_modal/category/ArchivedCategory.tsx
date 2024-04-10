@@ -67,7 +67,9 @@ export const ArchivedCategory: FC<ArchivedCategoryType> = (props) => {
   return (
     <StyledLi>
       <div className='category-name-container'>
-        <p children={ archivedCategory.name } />
+        <p>
+          { archivedCategory.name }
+        </p>
       </div>
     </StyledLi>
   );

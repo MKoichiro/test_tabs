@@ -144,7 +144,7 @@ export const CreateNewTodo: FC<CreateNewTodoType> = (props) => {
 
         <fieldset className="child-field">
           <legend className='child-legend'>
-              Main:
+              Main
           </legend>
           <div className='parts-container title-detail'>
             <FormParts
@@ -174,7 +174,7 @@ export const CreateNewTodo: FC<CreateNewTodoType> = (props) => {
 
         <fieldset className="child-field">
           <legend className='child-legend'>
-            Deadline:
+            Deadline
           </legend>
           <div className='parts-container date-time'>
             <FormParts
@@ -204,7 +204,7 @@ export const CreateNewTodo: FC<CreateNewTodoType> = (props) => {
 
         <fieldset className="child-field">
           <legend className='child-legend'>
-            Others:
+            Others
           </legend>
           <div className='parts-container status-priority'>
             <FormParts
@@ -278,6 +278,10 @@ const StyledForm = styled.form`
       .child-legend {
         font-size: 1.8rem;
         margin-bottom: .8rem;
+        &::after {
+          content: ':';
+
+        }
       }
 
 

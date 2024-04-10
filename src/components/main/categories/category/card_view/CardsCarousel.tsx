@@ -71,7 +71,7 @@ interface PropsType {
 
 // === COMPONENT ====================================================== //
 export const CardsCarousel: FC<PropsType> = (props) => {
-  const { category, isOpen } = props;
+  const { category } = props;
   const [cardActiveIdx, setCardActiveIdx] = useState(0);
   const ulRef = useRef<HTMLUListElement | null>(null)
   const updateCardActiveIdx = (newIdx: number) => {
@@ -79,7 +79,6 @@ export const CardsCarousel: FC<PropsType> = (props) => {
     handleScroll(newIdx);
   };
   const todosFormatted = category.todos; // archiveしたものを削除または最後尾にした配列を渡すべき
-
 
   const gap           = convertVwToPx(carouselGap_vw);
   const padding       = convertVwToPx(carouselPadding_vw);
@@ -100,7 +99,7 @@ export const CardsCarousel: FC<PropsType> = (props) => {
 
   return (
     <StyledUl
-      $cardActiveIdx={ cardActiveIdx }
+      // $cardActiveIdx={ cardActiveIdx }
       ref={ulRef}
     >
       { todosFormatted.map((todo, i) => (
@@ -119,7 +118,7 @@ export const CardsCarousel: FC<PropsType> = (props) => {
 
 
 // === STYLE ========================================================= //
-const StyledUl = styled.ul<{$cardActiveIdx: number}>`
+const StyledUl = styled.ul`
   --gap: ${`${carouselGap_vw}vw`};
   background: transparent;
   padding: 0 calc(var(--gap) * 2);

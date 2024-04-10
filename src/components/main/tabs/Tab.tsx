@@ -41,7 +41,7 @@
 
 
 /* --- react/styled-components --- */
-import React, { useContext, forwardRef, Ref, RefObject } from 'react';
+import React, { useContext, forwardRef, Ref, RefObject, FC } from 'react';
 import styled from 'styled-components';
 /* --- providers/contexts -------- */
 import { CategoriesContext } from '../../../providers/CategoriesProvider';
@@ -53,28 +53,40 @@ import { isDebugMode } from '../../../utils/adminDebugMode';
 
 // === TYPE =========================================================== //
 // - PROPS
-interface PropsType {
+interface TabType {
   index: number;
-  containerRef: RefObject<HTMLUListElement | null>;
+  ulRef: RefObject<HTMLUListElement>;
 }
 // - STYLE
+interface StylePropsType {
+  $isActive: boolean;
+}
 // - OTHERS
 // =========================================================== TYPE === //
 
 
 // === COMPONENT ====================================================== //
-export const Tab = forwardRef((props: PropsType, liRef: Ref<HTMLLIElement>) => {
-  const { index, containerRef } = props;
+export const Tab: FC<TabType> = (props) => {
+  const { index, ulRef } = props;
+
+  // contexts
   const { categories, dispatchCategoriesChange } = useContext(CategoriesContext);
+
+  // constants/variables
   const category = categories[index];
 
+  // handlers
+  const toggleActive = () => {
+    handleContainerScroll();
+    dispatchCategoriesChange({ type: 'switch_tab', newActiveIdx: index });
+  };
 
+  // helpers
   const handleContainerScroll = () => {
     // null check
-    const container = containerRef.current;
-    if (!liRef) {     console.error('li 要素が見つかりません。'); return; }
-    if (!container) { console.error('tab ul が見つかりません。'); return; }
+    if (!ulRef.current) { console.error('tab ul が見つかりません。'); return; }
 
+    const container = ulRef.current;
     const currentContentWidth = convertVwToPx(62);
 
     // get scroll coordinate
@@ -84,33 +96,25 @@ export const Tab = forwardRef((props: PropsType, liRef: Ref<HTMLLIElement>) => {
     container.scrollTo({ left: scroll, behavior: 'smooth' });
   };
 
-  const toggleActive = () => {
-    handleContainerScroll();
-    dispatchCategoriesChange({ type: 'switch_tab', newActiveIdx: index });
-  };
-
 
   return (
     <StyledLi
-      key={           category.id }
-      $isActive={ category.isActive }
-      ref={              liRef }
+      key       = {       category.id }
+      $isActive = { category.isActive }
     >
       <button
-        children={ category.name }
-        onClick={         toggleActive } />
+        children = { category.name }
+        onClick = {   toggleActive } />
 
       { (index !== categories.length - 1) && <span className="separater" /> }
     </StyledLi>
   )
-});
+};
 // ====================================================== COMPONENT === //
 
 
 // === STYLE ========================================================= //
-interface StylePropsType {
-  $isActive: boolean;
-}
+
 
 const StyledLi = styled.li<StylePropsType>`
     & {

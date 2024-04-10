@@ -1,6 +1,7 @@
 import React, { FC, ReactNode } from "react";
 import { MdeProvider } from "./MdeProvider";
 import { ModalProvider } from "./ModalProvider";
+import { CardViewProvider } from "./CardViewProvider";
 import { Categories } from "../components/main/tabs/edit_categories_modal/Categories";
 import { CategoriesProvider } from "./CategoriesProvider";
 
@@ -14,12 +15,13 @@ export const Providers: FC<ProvidersProps> = (props) => {
 
   return (
       <CategoriesProvider>
-      <MdeProvider>
-        <ModalProvider>
-          {children}
-        </ModalProvider>
-      </MdeProvider>
+        <CardViewProvider>
+          <MdeProvider>
+            <ModalProvider>
+              {children}
+            </ModalProvider>
+          </MdeProvider>
+        </CardViewProvider>
       </CategoriesProvider>
   );
-
 };

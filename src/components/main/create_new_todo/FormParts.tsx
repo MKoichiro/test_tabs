@@ -78,30 +78,23 @@ interface FormPartsType {
 // === COMPONENT ====================================================== //
 export const FormParts:FC<FormPartsType> = (props) => {
   const {
-    // 必須
-    className,
+    className,        // ↓ essentials
     partsFor,
     as,
     feature,
-    // react-hook-form
-    register,
+    register,         // ↓ react-hook-form
     partsRef,
-    // input/textarea/selectなどに渡すもの
-    defaultValue,
+    defaultValue,     // ↓ input/textarea/selectなどに渡すもの
     inputType,
     placeholder,
     selectOptions,
   } = props;
+
   const { ref, ...rest } = register(partsFor); // 第二引数でrequired などを設定することもできる
 
-
-
-  const htmlFor = partsFor;
-  const id = partsFor;
-
+  const htmlFor  = partsFor;
+  const id       = partsFor;
   const labelTxt = partsFor.charAt(0).toUpperCase() + partsFor.slice(1); // 例: 'Title', ::after で ':' を付与
-
-
 
   return (
     <StyledDiv className={className}>

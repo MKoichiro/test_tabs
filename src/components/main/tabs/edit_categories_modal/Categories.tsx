@@ -88,25 +88,26 @@ export const Categories: FC<CategoriesType> = (props) => {
 
   const { categories, dispatchCategoriesChange } = useContext(CategoriesContext);
 
-  const [isDragging, setIsDragging] = useState(false);
-
-  // dnd-kit
-  // sensor 登録
+  
+  // --- dnd-kit ------------------------------------------------ //
+  // sensors
   const sensors = useSensors(
     useSensor(PointerSensor),
     useSensor(TouchSensor),
     useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates })
   );
 
-  //
-  const [ activeId, setActiveId ] = useState<UniqueIdentifier | null>(null);
+  // states
+  const [isDragging, setIsDragging] = useState(false);
+  const [activeId,     setActiveId] = useState<UniqueIdentifier | null>(null);
+
+  // handlers
   const handleDragStart = (e: DragStartEvent) => {
     const { active } = e;
     setActiveId(active.id);
     setIsDragging(true);
   };
 
-  //
   const handleDragEnd = (e: DragEndEvent) => {
     const { active, over } = e;
     if (active.id !== over?.id) {
@@ -119,11 +120,11 @@ export const Categories: FC<CategoriesType> = (props) => {
     setActiveId(null);
     setIsDragging(false);
   };
-  // dnd-kit
+  // ------------------------------------------------ dnd-kit --- //
 
   // categories を isArchivedの真偽で二つの配列に分割
   const clone = [...categories];
-  const activeCategories  = clone.filter(category => category.isArchived === false);
+  const activeCategories   = clone.filter(category => category.isArchived === false);
   const archivedCategories = clone.filter(category => category.isArchived === true);
 
 
@@ -131,23 +132,23 @@ export const Categories: FC<CategoriesType> = (props) => {
     <StyledDiv>
       <ul >
         <DndContext
-          sensors={sensors}
-          collisionDetection={closestCenter}
-          onDragStart={handleDragStart}
-          onDragEnd={handleDragEnd}
+          sensors             = { sensors         }
+          collisionDetection  = { closestCenter   }
+          onDragStart         = { handleDragStart }
+          onDragEnd           = { handleDragEnd   }
         >
 
-          {/* ul内に収まってドロップ位置を示唆する要素 */}
+          {/* ActiveCategory: 常時表示、ul内に収まってドロップ位置を示唆する要素 */}
           <SortableContext
-            items={categories}
-            strategy={verticalListSortingStrategy}
+            items    = { categories                  }
+            strategy = { verticalListSortingStrategy }
           >
-            {activeCategories.map(category => <ActiveCategory key={category.id} activeCategory={category} />)}
+            { activeCategories.map(category => <ActiveCategory key={category.id} activeCategory={category} />) }
           </SortableContext>
 
-          {/* カーソルやタッチ位置に追従するゴースト要素 */}
+          {/* GhosetCategory: drag中のみ表示、カーソルやタッチ位置に追従するゴースト要素 */}
           <DragOverlay>
-            {activeId ? <GhostCategory category={categories.filter(category => category.id === activeId)[0]} /> : null}
+            { activeId ? <GhostCategory category={categories.filter(category => category.id === activeId)[0]} /> : null }
           </DragOverlay>
 
         </DndContext>
@@ -158,7 +159,8 @@ export const Categories: FC<CategoriesType> = (props) => {
           <FontAwesomeIcon icon={faArchive} />
       </span>
       <ul className='archived-categories-container'>
-        {archivedCategories.map(category => <ArchivedCategory key={category.id} archivedCategory={category} />)}
+        {/* ArchivedCategory:  */}
+        { archivedCategories.map(category => <ArchivedCategory key={category.id} archivedCategory={category} />) }
       </ul>
     </StyledDiv>
 

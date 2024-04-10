@@ -102,7 +102,6 @@ export const MdeModal: FC<MdeModalType> = (props) => {
         </form>
       </StyledDiv>
 
-
       {inEditing && (
         <StyledMask className='mask' ref={refs.mask} />
       )}

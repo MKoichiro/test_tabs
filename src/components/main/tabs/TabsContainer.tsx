@@ -69,12 +69,15 @@ interface TabsProps {
 // === COMPONENT ====================================================== //
 export const TabsContainer: FC<TabsProps> = (props) => {
   const { className } = props;
-  const { categories } = useContext(CategoriesContext);
 
-  const containerRef = useRef<HTMLUListElement | null>(null);
-  const liRefs       = useRef<(HTMLLIElement | null)[]>([]);
-
+  // contexts
+  const {   categories } = useContext(CategoriesContext);
   const { dispatchOpen } = useContext(ModalContext);
+
+  // register refs
+  const ulRef = useRef<HTMLUListElement | null>(null);
+
+  // handlers
   const handleOpenBtnClick = () => {
     dispatchOpen();
   };
@@ -83,26 +86,27 @@ export const TabsContainer: FC<TabsProps> = (props) => {
 	return (
     <StyledNav>
       <ul
-        className = { className    }
-        ref       = { containerRef }
+        className = { className }
+        ref       = {     ulRef }
       >
         { categories.map((category, i) => {
-
           return (
             <Tab
-              key={                           category.id }
-              ref={    e => { liRefs.current[i] = e; } }
-              containerRef={              containerRef }
-              index={                                i } />
-          )
-          }) }
+              key   = { category.id }
+              ulRef = {       ulRef }
+              index = {           i } />
+          )}
+        ) }
       </ul>
-      <span/>
+
+      <span className='separater-tabs'/>
+
       <button onClick={handleOpenBtnClick}>
         <FontAwesomeIcon icon={faPen} />
       </button>
 
       <EditCategoriesModal/>
+
     </StyledNav>
 
 	);
@@ -128,7 +132,7 @@ const StyledNav = styled.nav`
     scrollbar-width: none;
     ::-webkit-scrollbar { display: none; };
   }
-  >span {
+  .separater-tabs {
     display: block;
     height: 100%;
     background: #fff;

@@ -40,49 +40,56 @@
 */
 
 /* --- react/styled-components --- */
-import React, { FC, useContext, useEffect, useState } from 'react'
+import React, { FC } from 'react'
 import styled from 'styled-components'
 /* --- types --------------------- */
 import { TodoType } from '../../../../../types/Categories';
 /* --- dev ----------------------- */
 import { isDebugMode } from '../../../../../utils/adminDebugMode';
-import { use } from 'marked';
-import { CardViewContext } from '../../../../../providers/CardViewProvider';
+import { useCardScroll } from '../../../../../providers/CardViewProvider';
+
+import { getCardCarouselStyles } from '../../../../../providers/CardViewProvider';
 
 
 // === TYPE =========================================================== //
 // - PROPS
 interface PropsType {
   todo: TodoType;
-  index: number;
-  // cardActiveIdx: number;
-  updateCardActiveIdx: (newIdx: number) => void;
+  idx: number;
 }
 // - STYLE
+interface StyledLiType {
+  $isActive: boolean;
+  $activeWidth: number;
+  $shrinkRatio: number;
+}
 // - OTHERS
 // =========================================================== TYPE === //
 
 
 // === COMPONENT ====================================================== //
 export const CardTodo: FC<PropsType> = (props) => {
-  const {todo, index, updateCardActiveIdx} = props;
-  const [isActive, setIsActive] = useState(false);
-  const {activeIdx} = useContext(CardViewContext)
+  const { todo, idx } = props;
 
-  useEffect(() => {
-    setIsActive(index === activeIdx);
-  }, [activeIdx]);
+  // contexts
+  const { isActive, handleScroll } = useCardScroll(idx);
 
+  // handlers
   const handleClick = () => {
-    updateCardActiveIdx(index);
+    handleScroll(idx, 'smooth');
   };
+
+  // styles
+  const { activeWidth_vw, inactiveMagnification } = getCardCarouselStyles();
+
 
   return (
     <StyledLi
-      $isActive={isActive}
       onClick={handleClick}
+      $isActive={isActive}
+      $activeWidth={activeWidth_vw}
+      $shrinkRatio={inactiveMagnification}
     >
-
 
       <section className='contents-wrapper'>
         <header>
@@ -117,10 +124,10 @@ export const CardTodo: FC<PropsType> = (props) => {
 
 
 // === STYLE ========================================================= //
-const StyledLi = styled.li<{$isActive: boolean}>`
-  --active-width: 80vw;
-  --active-height: 80vh;
-  --shrink-ratio: .5;
+const StyledLi = styled.li<StyledLiType>`
+  --active-width: ${ props => `${props.$activeWidth}vw` };
+  --active-height: ${ props => `${props.$activeWidth}vh` };
+  --shrink-ratio: ${ props => props.$shrinkRatio };
   background: transparent;
   /* outline: 2px solid #000; */
   min-width: ${ props => props.$isActive ? 'var(--active-width)' : 'calc(var(--active-width) * var(--shrink-ratio))' };

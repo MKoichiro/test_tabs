@@ -25,6 +25,6 @@ export const getCurrentContentsVw = (): number => {
   }
 };
 
-export const convertVwToPx = (vwValue: number): number => {
-  return innerWidth * (vwValue / 100);
+export const vw2px = (vw: number): number => {
+  return innerWidth * (vw / 100);
 };

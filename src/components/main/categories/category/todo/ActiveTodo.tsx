@@ -53,7 +53,7 @@ import { TodoType } from '../../../../../types/Categories';
 // slidable
 import { SlidableParamsType } from '../../../../../functions/slidable/Types';
 /* --- utils --------------------- */
-import { convertVwToPx, getCurrentContentsVw } from '../../../../../utils/converters';
+import { vw2px, getCurrentContentsVw } from '../../../../../utils/converters';
 /* --- font awesome -------------- */
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrashCan, faCircleInfo, faCheck } from '@fortawesome/free-solid-svg-icons';
@@ -63,15 +63,12 @@ import { CSS } from '@dnd-kit/utilities';
 import { CategoriesContext } from '../../../../../providers/CategoriesProvider';
 /* --- dev ----------------------- */
 import { isDebugMode } from '../../../../../utils/adminDebugMode';
-import { CardViewContext } from '../../../../../providers/CardViewProvider';
-import { set } from 'react-hook-form';
-
-
+import { useCardViewOpen } from '../../../../../providers/CardViewProvider';
 
 
 
 // === CONSTANT Against RENDERING ===================================== //
-const contentsWidth = convertVwToPx(getCurrentContentsVw());
+const contentsWidth = vw2px(getCurrentContentsVw());
 const deleteBtnWidth = contentsWidth * .5;
 
 // slidable
@@ -106,7 +103,7 @@ export const ActiveTodo: FC<PropsType> = (props) => {
 
   // contexts
   const { dispatchCategoriesChange } = useContext(CategoriesContext);
-  const { dialogRef, isOpen, setIsOpen, setActiveIdx, cardViewOpen } = useContext(CardViewContext);
+  const { cardViewOpen } = useCardViewOpen();
 
 
 
@@ -130,7 +127,6 @@ export const ActiveTodo: FC<PropsType> = (props) => {
 
   // handlers
   const handleInfoBtnClick = () => {
-    setActiveIdx(liIdx);
     cardViewOpen(liIdx);
   };
   const handleCompleteBtnClick = () => {

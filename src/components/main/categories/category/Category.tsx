@@ -50,7 +50,7 @@ import { CategoriesContext } from "../../../../providers/CategoriesProvider";
 /* --- types --------------------- */
 import { CategoryType } from "../../../../types/Categories";
 /* --- utils --------------------- */
-import { convertVwToPx, getCurrentContentsVw } from "../../../../utils/converters";
+import { vw2px, getCurrentContentsVw } from "../../../../utils/converters";
 /* --- dnd-kit ------------------- */
 import { createPortal } from "react-dom";
 import { ActiveTodo } from "./todo/ActiveTodo";
@@ -75,7 +75,7 @@ import {
 import { isDebugMode } from "../../../../utils/adminDebugMode";
 
 
-const contentWidth = convertVwToPx(getCurrentContentsVw());
+const contentWidth = vw2px(getCurrentContentsVw());
 const deleteBtnWidth = contentWidth * .5;
 
 

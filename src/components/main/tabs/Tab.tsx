@@ -41,12 +41,12 @@
 
 
 /* --- react/styled-components --- */
-import React, { useContext, forwardRef, Ref, RefObject, FC } from 'react';
+import React, { useContext, RefObject, FC } from 'react';
 import styled from 'styled-components';
 /* --- providers/contexts -------- */
 import { CategoriesContext } from '../../../providers/CategoriesProvider';
 /* --- utils --------------------- */
-import { convertVwToPx } from '../../../utils/converters';
+import { vw2px } from '../../../utils/converters';
 /* --- dev ----------------------- */
 import { isDebugMode } from '../../../utils/adminDebugMode';
 
@@ -87,7 +87,7 @@ export const Tab: FC<TabType> = (props) => {
     if (!ulRef.current) { console.error('tab ul が見つかりません。'); return; }
 
     const container = ulRef.current;
-    const currentContentWidth = convertVwToPx(62);
+    const currentContentWidth = vw2px(62);
 
     // get scroll coordinate
     const inActiveTabWidth = currentContentWidth * .15;

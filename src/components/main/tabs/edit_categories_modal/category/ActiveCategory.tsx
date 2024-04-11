@@ -48,7 +48,7 @@ import { CategoryType } from '../../../../../types/Categories';
 /* --- styles -------------------- */
 import { categoryCommonStyles, CategoryCommonStylesType } from './CategoryCommonStyles';
 /* --- utils --------------------- */
-import { convertVwToPx } from '../../../../../utils/converters';
+import { vw2px } from '../../../../../utils/converters';
 /* --- font awesome -------------- */
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArchive } from '@fortawesome/free-solid-svg-icons';
@@ -69,7 +69,7 @@ import { isDebugMode } from '../../../../../utils/adminDebugMode';
 
 // === CONSTANT Against RENDERING ===================================== //
 const btnsContainerWidthVw = 10;
-const btnsContainerWidthPx = convertVwToPx(btnsContainerWidthVw);
+const btnsContainerWidthPx = vw2px(btnsContainerWidthVw);
 // slidable 関連
 const slidableParams: SlidableParamsType = {
   SLIDABLE_LENGTH:                btnsContainerWidthPx,

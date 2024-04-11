@@ -49,7 +49,7 @@ import { CardsCarousel } from './CardsCarousel';
 import { CategoryType } from '../../../../../types/Categories';
 /* --- dev ----------------------- */
 import { isDebugMode } from '../../../../../utils/adminDebugMode';
-import { CardViewContext } from '../../../../../providers/CardViewProvider';
+import { useCardDialogRegister } from '../../../../../providers/CardViewProvider';
 
 // === TYPE =========================================================== //
 // - PROPS
@@ -63,7 +63,7 @@ interface PropsType {
 
 // === COMPONENT ====================================================== //
 export const CardsContainer: FC<PropsType> = (props) => {
-  const { dialogRef } = useContext(CardViewContext);
+  const { dialogRef } = useCardDialogRegister();
 
   return (
     <>

@@ -41,65 +41,63 @@
 
 
 /* --- react/styled-components --- */
-import React, { FC, useContext, useRef, useState } from 'react';
+import React, { FC } from 'react';
 import styled from 'styled-components';
 /* --- child components ---------- */
 import { CardTodo } from './CardTodo';
+/* --- providers/contexts -------- */
+import { useCardCarouselRegister } from '../../../../../providers/CardViewProvider';
 /* --- types --------------------- */
 import { CategoryType } from '../../../../../types/Categories';
 /* --- utils --------------------- */
-import { convertVwToPx } from '../../../../../utils/converters';
 /* --- dev ----------------------- */
 import { isDebugMode } from '../../../../../utils/adminDebugMode';
-import { CardViewContext } from '../../../../../providers/CardViewProvider';
-// import { useCardView } from '../../../../../providers/CardViewProvider';
 
-const carouselGap_vw = 5;
-const activeWidth_vw = 80;
+import { getCardCarouselStyles } from '../../../../../providers/CardViewProvider';
+
 
 // === TYPE =========================================================== //
 // - PROPS
-interface PropsType {
+interface CardsCarouselType {
   category: CategoryType;
-  index: number;
+  index:          number;
 }
 // - STYLE
+interface StyledUlType {
+  $padding: string;
+  $gap:     number;
+}
 // - OTHERS
 // =========================================================== TYPE === //
 
 
 // === COMPONENT ====================================================== //
-export const CardsCarousel: FC<PropsType> = (props) => {
+export const CardsCarousel: FC<CardsCarouselType> = (props) => {
   const { category } = props;
-  // const [cardActiveIdx, setCardActiveIdx] = useState(0);
-  // const ulRef = useRef<HTMLUListElement | null>(null);
-  const cardViewProps = {
-    // carouselContainerRef: ulRef,
-    carouselGap_vw,
-    activeWidth_vw,
-    inactiveMagnification: 1 / 2
-  };
-  const { registerContainer, setActiveIdx, handleScroll, carouselContainerRef } = useContext(CardViewContext);
-  const { adjustedPadding_vw } = registerContainer(cardViewProps);
+  
+  // contexts
+  const { registerContainer } = useCardCarouselRegister();
+  
+  // register carousel container
+  const { adjustedPadding_vw, carouselContainerRef } = registerContainer();
 
-  const updateCardActiveIdx = (newIdx: number) => {
-    setActiveIdx(newIdx);
-    handleScroll(newIdx, 'smooth');
-  };
+  // styles
+  const { gap_vw } = getCardCarouselStyles();
+  
+  // format todos
   const todosFormatted = category.todos; // archiveしたものを削除または最後尾にした配列を渡すべき
 
   return (
     <StyledUl
       ref={carouselContainerRef}
       $padding={adjustedPadding_vw}
+      $gap={gap_vw}
     >
       { todosFormatted.map((todo, i) => (
           <CardTodo
             key={ todo.id }
             todo={todo}
-            index={ i }
-            // cardActiveIdx={ activeIdx }
-            updateCardActiveIdx={updateCardActiveIdx} />
+            idx={ i } />
        )
       ) }
     </StyledUl>
@@ -109,11 +107,10 @@ export const CardsCarousel: FC<PropsType> = (props) => {
 
 
 // === STYLE ========================================================= //
-const StyledUl = styled.ul<{ $padding: string }>`
-  --gap: ${`${carouselGap_vw}vw`};
+const StyledUl = styled.ul<StyledUlType>`
   background: transparent;
-  padding: ${props => props.$padding};
-  gap: var(--gap);
+  padding: ${ props => props.$padding };
+  gap: ${ props => `${props.$gap}vw` };
   display: flex;
   align-items: center;
   overflow-x: auto;

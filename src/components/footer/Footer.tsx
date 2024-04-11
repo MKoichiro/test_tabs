@@ -72,23 +72,6 @@ export const Footer: FC<FooterType> = (props) => {
 // === STYLE ========================================================= //
 const StyledFooter = styled.footer`
   h1 {
-    background: pink;
-    color: red;
   }
 `;
 // ========================================================= STYLE === //
-
-
-
-// memo:
-// export Footer = () => { return (<StyledFooter><h1/></StyledFooter>)};
-// に対して、本来は、
-// const StyledFooter = styled.footer` /* css */ `;
-// が正解だが、
-// const StyledFooter = styled(Footer)` /* css */ `;
-// と誤記していた状態で、npm start すると、
-// ターミナルには成功時と同様にwebpack 5.91.0 compiled successfully in 1739 msまで表示されるが、
-// ブラウザには、tab部分にsite titleが表示される以外、真っ白で何も表示されない。
-// dev toolを開いても、何も要素もコンソールもすべて空でエラーが全く表示されない。
-// これは、FooterコンポーネントとStyledFooterコンポーネントが相互に参照し合っているため、無限ループが発生していると考えられる。
-// このような状態が発生し、かなり沼ったので、今後注意が必要。

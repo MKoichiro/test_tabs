@@ -77,7 +77,7 @@ const StyledUl = styled.ul<{ $activeIndex: number }>`
   transform: ${ props => `translateX(calc(-1 * var(--contents-width) * ${ props.$activeIndex }))` };
   > li {
     min-width: 100%;
-    background: pink;
+    /* background: pink; */
   }
 `;
 // ========================================================= STYLE === //

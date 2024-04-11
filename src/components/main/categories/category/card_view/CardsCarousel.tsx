@@ -109,11 +109,11 @@ export const CardsCarousel: FC<CardsCarouselType> = (props) => {
 // === STYLE ========================================================= //
 const StyledUl = styled.ul<StyledUlType>`
   background: transparent;
+  overflow-x: hidden;
   padding: ${ props => props.$padding };
   gap: ${ props => `${props.$gap}vw` };
   display: flex;
   align-items: center;
-  overflow-x: auto;
   height: 100%;
 `;
 // ========================================================= STYLE === //

@@ -79,9 +79,13 @@ export const CardsContainer: FC<PropsType> = (props) => {
 // === STYLE ========================================================= //
 const StyledDialog = styled.dialog`
   background: transparent;
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
   max-width: none; // reset
+  max-height: none; // reset
+  border: none; // reset
   width: 100vw;
-  height: 90vh;
+  height: 100vh;
   padding: 0;
 `;
 // ========================================================= STYLE === //

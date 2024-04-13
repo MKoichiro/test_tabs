@@ -134,7 +134,7 @@ export const Modal: FC<ModalProps> = (props) => {
 
 
 const StyledDialog = styled.dialog<{$isOpen: boolean;}>`
-  // resetと最低限modalたらしめるstyle
+  // reset と最低限 modal たらしめる style
   touch-action: none;
   color: inherit;
   padding: 0;

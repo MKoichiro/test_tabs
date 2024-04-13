@@ -60,6 +60,8 @@ interface FooterType {}
 // === COMPONENT ====================================================== //
 export const Footer: FC<FooterType> = (props) => {
 	const {} = props;
+
+  
 	return (
     <StyledFooter>
   		<h1 children="Footer" />

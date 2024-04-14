@@ -45,8 +45,7 @@ import React, { FC, useRef, useContext } from 'react';
 import styled from 'styled-components';
 /* --- providers/contexts -------- */
 import { CategoriesContext } from '../../../providers/CategoriesProvider';
-// import { ModalContext } from '../../../providers/ModalProvider';
-import { ModalName, useModalOpener } from '../../../providers/ModalProvider_ver2';
+import { ModalName, useModalOpener } from '../../../providers/ModalProvider_ver3';
 /* --- font awesome -------------- */
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPen } from '@fortawesome/free-solid-svg-icons';
@@ -73,7 +72,6 @@ export const TabsContainer: FC<TabsProps> = (props) => {
 
   // contexts
   const {   categories } = useContext(CategoriesContext);
-  // const { dispatchOpen } = useContext(ModalContext);
   const modalName = 'testModal' as ModalName;
   const { openModal } = useModalOpener(modalName);
 

@@ -51,6 +51,8 @@ import { CategoryType } from '../../../../../types/Categories';
 import { isDebugMode } from '../../../../../utils/adminDebugMode';
 import { useCardDialogRegister } from '../../../../../providers/CardViewProvider';
 
+import { Modal, ModalName, useModalDeclarer, useModalState } from '../../../../../providers/ModalProvider_ver3';
+
 // === TYPE =========================================================== //
 // - PROPS
 interface PropsType {
@@ -66,11 +68,9 @@ export const CardsContainer: FC<PropsType> = (props) => {
   const { dialogRef } = useCardDialogRegister();
 
   return (
-    <>
       <StyledDialog ref={dialogRef}>
         <CardsCarousel {...props} />
       </StyledDialog>
-    </>
   );
 };
 // ====================================================== COMPONENT === //

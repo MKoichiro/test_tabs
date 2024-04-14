@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 
 import { createContext, useContext, useRef, useReducer } from 'react';
@@ -38,32 +38,30 @@ interface ModalNamedIds {
 
 
 type ActionType =
-  | { type: 'register',               id: UUID,   initialModal: Modal       }
-  | { type: 'open',                   id: UUID                                }
-  | { type: 'close',                  id: UUID                                };
+  | { type: 'register',  id: UUID,   initialModal: Modal }
+  | { type: 'open',      id: UUID                        }
+  | { type: 'close',     id: UUID                        };
 
 
 interface ContextType {
   modals:                Modals;
   currentModalId:   UUID | null;
-
-  register:      (name: ModalName, basicRefs: BasicRefs, scrollablesRef: ScrollablesRef)                             =>    void;
-  dispatchOpen:          (name: ModalName)                               =>    void;
-  dispatchClose:         (name: ModalName)                               =>    void;
-  getModalState:         (name: ModalName)                               => boolean;
-  getIdByName:      (name: ModalName)                               =>    UUID;
+  register:       (name: ModalName, basicRefs: BasicRefs, scrollablesRef: ScrollablesRef) =>      void;
+  dispatchOpen:   (name: ModalName)                                                       =>      void;
+  dispatchClose:  (name: ModalName)                                                       =>      void;
+  getModalState:  (name: ModalName)                                                       =>   boolean;
+  getIdByName:    (name: ModalName)                                                       =>      UUID;
 }
 
 
 const initialContext: ContextType = {
   modals:            {},
   currentModalId:  null,
-
-  register:     () =>    {},
-  dispatchOpen:         () =>    {},
-  dispatchClose:        () =>    {},
-  getModalState:        () => false,
-  getIdByName:     () =>    '' as UUID,
+  register:       () =>         {},
+  dispatchOpen:   () =>         {},
+  dispatchClose:  () =>         {},
+  getModalState:  () =>      false,
+  getIdByName:    () => '' as UUID,
 }
 const ModalContext = createContext<ContextType>(initialContext);
 
@@ -118,36 +116,25 @@ const modalReducer = (modals: Modals, action: ActionType): Modals => {
 
     // 'register': modals に id をキーにして、modals[id] の state を初期化
     case 'register': {
-      const { id, initialModal,  } = action;
-      
-      console.log('registered');
+      const { id, initialModal } = action;
       return { ...modals, [id]: initialModal };
     }
 
-
     case 'open': {
       const { id } = action;
-
       const modal = modals[id];
       const refs  = modal.refs;
-
       openModal(refs);
-
       return { ...modals, [id]: { ...modal, isOpen: true } };
     }
 
-
     case 'close': {
       const { id } = action;
-
       const modal = modals[id];
       const refs  = modal.refs;
-
       closeModal(refs);
-
       return { ...modals, [id]: { ...modal, isOpen: false } };
     }
-
 
     default: return modals;
   }
@@ -161,31 +148,24 @@ interface ModalProviderProps {
 export const ModalProvider: FC<ModalProviderProps> = (props) => {
   const { children } = props;
 
-
   // states & refs
-  const [modals, dispatch] = useReducer(modalReducer, {});
-  const [currentModalId, setCurrentModalId] = useState<UUID | null>(null);
-  const modalNamedIdsRef = useRef<ModalNamedIds>({});
-  
-  
-  
+  const [modals, dispatch] = useReducer(modalReducer, {});                 // modals の state
+  const [currentModalId, setCurrentModalId] = useState<UUID | null>(null); // 現在開いている modal の id
+  const modalNamedIdsRef = useRef<ModalNamedIds>({});                      // name と id の紐づけ
+
+
   // helpers
   // 1. getIdByName: name で指定した modal の id を取得する
   const getIdByName = (name: ModalName): UUID => {
     return modalNamedIdsRef.current[name];
   };
-  
+
   // functions
-  // 1. registerNamedIds: コーダーがmodalに名前をつけて管理できるように、名前とidの対応を登録する
-  // この処理が一番最初に実行されるようにする
+  // 1. register: name と紐づけた id をキーにしてmodalsの中に modal の情報を登録する
   const register = (name: ModalName, basicRefs: BasicRefs, scrollablesRef: ScrollablesRef) => {
-    console.log('registerNamedIds');
     const initialModal: Modal = {
       isOpen: false,
-      refs: {
-        basicRefs,
-        scrollablesRef,
-      },
+      refs: { basicRefs, scrollablesRef }
     };
     
     try {
@@ -194,52 +174,45 @@ export const ModalProvider: FC<ModalProviderProps> = (props) => {
         throw new Error(`Duplicated modal name: ${name}`);
       }
       // id を発行して登録
-      const id = generateUUID(); // <- useMemoを使用せずにUUIDを生成します
+      const id = generateUUID();
       modalNamedIdsRef.current[name] = id;
-      console.log(modalNamedIdsRef.current);
     
       const action: ActionType = { type: 'register', id, initialModal };
       dispatch(action);
     } catch (error) {
       console.error(error);
     }
-    console.log(modals[getIdByName('testModal' as ModalName)]);
   };
 
 
-  // 4, 5. dispatchOpen, dispatchClose: modal の 開閉を reducer に通知する
+  // 2, 3. dispatchOpen, dispatchClose: modal の 開閉を reducer に通知する
   const dispatchOpen = (name: ModalName) => {
     const id = getIdByName(name);
     const action: ActionType = { type: 'open', id };
     dispatch(action);
-
     setCurrentModalId(id);
   };
   const dispatchClose = (name: ModalName) => {
     const action: ActionType = { type: 'close', id: getIdByName(name) };
     dispatch(action);
-
     setCurrentModalId(null);
   };
 
 
-  // 6. getModalState: name で指定した modal の isOpen state を取得する
+  // 4. getModalState: name で指定した modal の isOpen state を取得する
   const getModalState = (name: ModalName) => {
-    console.log('getModalState');
     const id = getIdByName(name);
     return modals[id].isOpen;
-  }
+  };
 
 
   // providing values
   const value = {
     modals,
     currentModalId,
-
     register,
     dispatchOpen,
     dispatchClose,
-
     getModalState,
     getIdByName,
   };
@@ -249,14 +222,8 @@ export const ModalProvider: FC<ModalProviderProps> = (props) => {
 
 
 // hooks
-// 1. useModaldeclarer: open btn を含むコンポーネントで使用
-// 厳密にはopen btnを含むモーダルの機能をを完全に内包するコンポーネント以上の先祖要素で使用
-// 基本的にはエントリーポイントで使用すればよい
-// usage:
-// const modalName = ['testModal'] as ModalName[];
-// useModaldeclarer(modalName);
+// 1. useModalDeclarer: ModalName型 の name で modal を登録
 export const useModalDeclarer = (name: ModalName) => {
-  console.log('useModalDeclarer');
   const { register } = useContext(ModalContext);
   
   // modal, mask の ref を発行
@@ -264,8 +231,9 @@ export const useModalDeclarer = (name: ModalName) => {
   const maskRef       = useRef<HTMLDivElement    | null>(null);
   const basicRefs: BasicRefs = { modalRef, maskRef };
   
-  // scrollable 要素の ref を発行
+  // scrollable 要素を格納する ref を発行
   const scrollablesRef: ScrollablesRef = useRef<ScrollableElms>([]);
+  // scrollable 要素を追加する関数
   const addScrollableElm = (element: HTMLElement) => { scrollablesRef.current.push(element) };
 
 
@@ -278,36 +246,23 @@ export const useModalDeclarer = (name: ModalName) => {
   return { closeModal, basicRefs, addScrollableElm };
 };
 
-
-// 2. useModalOpener: open btn を含むコンポーネントで使用
+// 2, 3. useModalOpener, useModalCloser: open/close btn を含むコンポーネントで使用
 export const useModalOpener = (name: ModalName) => {
-  const { dispatchOpen } = useContext(ModalContext);  
-  const { modals } = useContext(ModalContext);
-  const openModal = () => { 
-    console.log(modals);
-    console.log('dispatch modal open');
-    dispatchOpen(name);
-  }
-  return { openModal };
+  const { dispatchOpen } = useContext(ModalContext);
+  return { openModal: () => { dispatchOpen(name) } };
 };
-
-
-// 3. useModalCloser: close btn を含むコンポーネントで使用
 export const useModalCloser = (name: ModalName) => {
   const { dispatchClose } = useContext(ModalContext);
   return { closeModal: () => dispatchClose(name) };
 };
 
-
-// 5. useModalState: name で指定した modal の isOpen state を取得してModalコンポーネントに渡す
+// 4. useModalState: name で指定した modal の isOpen state を取得してModalコンポーネントに渡す
 export const useModalState = (name: ModalName) => {
-  console.log('useModalState');
   const { getModalState, modals, getIdByName } = useContext(ModalContext);
   const [isOpen, setIsOpen] = useState(false);
   const modal = modals[getIdByName(name)];
   useEffect(() => {
-    if (typeof modal === 'undefined') return;
-    console.log(getModalState(name));
+    if (typeof modal === 'undefined') return; // modals が初期化される前に実行されるのを防ぐ
     setIsOpen(getModalState(name));
   }, [modal]);
 
@@ -316,31 +271,20 @@ export const useModalState = (name: ModalName) => {
 
 
 
-
-
 // component
 interface ModalProps {
-  className?:     string;
-  // name:       ModalName;
-  isOpen:        boolean;
-  children:    ReactNode;
+  className?:       string;
+  isOpen:          boolean;
+  basicRefs:     BasicRefs;
   closeModal:   () => void;
-  // addScrollableElm: (element: HTMLElement) => void;
-  basicRefs: BasicRefs;
+  children:      ReactNode;
 }
 interface StyledDialogType {
   $isOpen: boolean;
 }
 
 export const Modal: FC<ModalProps> = (props) => {
-  const { className,  isOpen, children, closeModal, basicRefs } = props;
-
-  // modal ref, mask ref を発行してもらう
-  // const { closeModal, basicRefs, addScrollableElm } = useModalDeclarer(name);
-
-  // handlers
-  const handleMaskClick = () => { closeModal() };
-
+  const { className, isOpen, basicRefs, closeModal, children } = props;
 
   return (
       <StyledDialog
@@ -352,9 +296,9 @@ export const Modal: FC<ModalProps> = (props) => {
   
           {/* mask */}
           <div
-            className = { 'modal-mask'       }
-            ref       = { basicRefs.maskRef  }
-            onClick   = { handleMaskClick    } />
+            className = { 'modal-mask'      }
+            ref       = { basicRefs.maskRef }
+            onClick   = { closeModal        } />
 
       </StyledDialog>
   );
@@ -367,7 +311,7 @@ const StyledDialog = styled.dialog<StyledDialogType>`
   color: inherit;
   padding: 0;
   border: none;
-  &::backdrop { display: none }
+  &::backdrop { display: none } // 疑似要素はjsから操作できないためdefaultで表示されるが使わない。resetしておく。
 
   .modal-mask {
     position: fixed;
@@ -378,13 +322,62 @@ const StyledDialog = styled.dialog<StyledDialogType>`
 
 
 
-
-// memo: 別の役割の定数の型を区別する方法
-// name と uuid で生成した id の型はともに string なので、id の引数に name を渡してもエラーにならない
-// 回避策: brand を使って型を区別する
-// type UUID = string & { _uuidBrand: never };
-// type ModalName = string & { _nameBrand: never };
-// とすることで、相互に誤って代入するとエラーを吐くようにする
+// # USAGE
+// 1. 'Modal' コンポーネントを使用するコンポーネントで: Modalの登録
+// 1.1. コード例
+// import { Modal, useModalDeclarer, useModalState,  ModalName } from '../providers/ModalProvider';
+// const MyModal = () => {
+//    const modalName = 'testModal' as ModalName;
 // 
-// cf) '&': typescriptの交差型
-// cf) brand型
+//   // useModalDeclarer: modal 登録用
+//    const {
+//      closeModal,
+//      basicRefs,
+//      addScrollableElm
+//    } = useModalDeclarer(modalName);
+// 
+//   // useModalState: modal の isOpen state を取得
+//    const {
+//      isOpen
+//    } = useModalState(modalName);
+// 
+//    return (
+//      <Modal
+//        className='you-can-add-your-class'
+//        isOpen={true}                                        // 内部で、modalに最低限のstyleを適用するために使用します
+//        basicRefs={basicRefs}                                // 内部で、modal(dialog element) と mask(div element) の ref 設定に使用します
+//        closeModal={closeModal}                              // 内部で、mask をクリックした時にmodalを閉じるために使用します
+//      >
+//
+//        <button onClick={closeModal}>close</button>          // モーダルを閉じるボタン: closeModalを指定
+//        <div>modal content</div>                             // モーダルの中身
+//        <div ref={addScrollableElm}>scrollable element</div> // スクロールを許可する要素 1
+//        <div ref={addScrollableElm}>scrollable element</div> // スクロールを許可する要素 2
+//
+//      </Modal>
+//    )
+// };
+// 
+// 1.2. 特徴
+// - addScrollableElmは複数の子要素で使用することができます。
+// - Modal コンポーネントはuseModalDeclarerで登録した数、modalを記録できるので、一つのプロジェクト内で複数のmodalを使用することができます。
+// 1.3 styleに関するTips
+// - scrollable要素には
+//  - スクロールバーを表示させるために、overflow: auto を指定する
+//  - スクロール端でさらにスクロールすると、背景がスクロールされてしまうのを防ぐために、overscroll-behavior: contain/none を指定する
+//  - スクロールバーを非表示にしたい場合には、1. -ms-scrollbar: none;, 2. scrollbar-width: none;, 3. ::-webkit-scrollbar { display: none } の3つを指定する
+// - styled-componentsを使用すれば、Modalコンポーネントのスタイルを上書きできます。
+//  - 特にdefaultでdialogは表示状態でdisplay: block;が適用されているため、次のようにしてdisplay: flex;に変更することができます。
+//    例: const StyledModal = styled(Modal)<{isOpen: boolean;}>` &[open] { display: flex }`;
+
+// 2. 'Modal' コンポーネントを開くボタンを含む任意のコンポーネントで: Modalを開く
+//    離れたコンポーネントでも、modal name で紐づけられた modal を開くことができます
+// import { useModalOpener, ModalName } from '../providers/ModalProvider';
+// const MyComponent = () => {
+//    const modalName = 'testModal' as ModalName;
+//    const { openModal } = useModalOpener(modalName);
+//
+//    return (
+//      <button onClick={openModal}>open modal</button>
+//    )
+// };

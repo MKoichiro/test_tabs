@@ -47,7 +47,8 @@ import styled from 'styled-components';
 import { CreateNewCategory } from './CreateNewCategory';
 import { Categories } from './Categories';
 /* --- providers/contexts -------- */
-import { ModalContext, Modal } from '../../../../providers/ModalProvider';
+// import { ModalContext, Modal } from '../../../../providers/ModalProvider';
+import { ModalName, Modal, useModalCloser, useInnerScrollable, useModalState } from '../../../../providers/ModalProvider_ver2';
 /* --- font awesome -------------- */
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faXmark } from '@fortawesome/free-solid-svg-icons';
@@ -69,15 +70,22 @@ interface EditCategoriesModalProps {
 export const EditCategoriesModal: FC<EditCategoriesModalProps> = (props) => {
   const { className } = props;
 
-  const { isOpen, dispatchClose, scrollableRef } = useContext(ModalContext);
+  // const { isOpen, dispatchClose, scrollableRef } = useContext(ModalContext);
+
+  const modalName = 'testModal' as ModalName;
+  const { isOpen } = useModalState(modalName);
+  const { closeModal } = useModalCloser(modalName);
+  const { addScrollableElm } = useInnerScrollable(modalName);
+
 
   const handleCloseBtnClick = () => {
-    dispatchClose();
+    // dispatchClose();
+    closeModal();
   };
 
 
   return (
-    <StyledModal isOpen={isOpen} className={className}>
+    <StyledModal name={modalName} isOpen={isOpen} className={className}>
       <div className='modal-contents-container'>
 
         <h2
@@ -87,13 +95,13 @@ export const EditCategoriesModal: FC<EditCategoriesModalProps> = (props) => {
 
         <button
           className='btn-modal-close'
-          onClick={handleCloseBtnClick} >
+          onClick={ handleCloseBtnClick } >
           <FontAwesomeIcon icon={ faXmark } />
         </button>
 
         <section
           className='categories-display-container'
-          ref={scrollableRef} >
+          ref={ addScrollableElm } >
           <Categories />
         </section>
 

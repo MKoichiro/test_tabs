@@ -49,6 +49,7 @@ import GlobalStyle from './globalStyle';
 import { App } from './components/App';
 /* --- dev ----------------------- */
 import { isDebugMode } from './utils/adminDebugMode';
+import { Providers } from './providers/Providers';
 
 
 // rootを取得
@@ -61,7 +62,9 @@ if (rootDiv) {
   <>
     <StrictMode>
       <GlobalStyle />          {/* 共通スタイルの読み込み */}
-      <App />                  {/* プレエントリの読み込み */}
+      <Providers>
+        <App />                 {/* プレエントリの読み込み */}
+      </Providers>
     </StrictMode>
   </>
 

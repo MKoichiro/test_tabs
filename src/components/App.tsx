@@ -46,12 +46,14 @@ import { Header } from './header/Header';
 import { Main } from './main/Main';
 import { Footer } from './footer/Footer';
 /* --- providers/contexts -------- */
-import { Providers } from '../providers/Providers';
+// import { Providers } from '../providers/Providers';
 /* --- temporarily unused -------- */
 // import Modal from 'react-modal';
 // Modal.setAppElement('#root');
 /* --- dev ----------------------- */
 import { isDebugMode } from '../utils/adminDebugMode';
+
+import { ModalName, useModaldeclarer } from '../providers/ModalProvider_ver2';
 
 
 // === TYPE =========================================================== //
@@ -66,12 +68,15 @@ interface AppType {}
 export const App: FC<AppType> = (props) => {
 	const {} = props;
 
+	const modalName = ['testModal'] as ModalName[];
+	useModaldeclarer(modalName);
+
   return (
-		<Providers>
+		<>
 			<Header />
 			<Main />
 			<Footer />
-		</Providers>
+		</>
   );
 };
 // ====================================================== COMPONENT === //

@@ -41,13 +41,14 @@
 
 
 /* --- react/styled-components --- */
-import React, { FC, useContext } from 'react';
+import React, { FC } from 'react';
 import styled from 'styled-components';
 /* --- child components ---------- */
 import { CreateNewCategory } from './CreateNewCategory';
 import { Categories } from './Categories';
 /* --- providers/contexts -------- */
-import { ModalName, Modal, useModalDeclarer, useModalState } from '../../../../providers/ModalProvider_ver3';
+import { Modal, useModalDeclarer, useModalState } from '../../../../providers/ModalProvider';
+import { modalNames } from '../../../../providers/modalNames';
 /* --- font awesome -------------- */
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faXmark } from '@fortawesome/free-solid-svg-icons';
@@ -61,6 +62,9 @@ interface EditCategoriesModalProps {
   className?: string;
 }
 // - STYLE
+interface StyledModalType {
+  isOpen: boolean;
+}
 // - OTHERS
 // =========================================================== TYPE === //
 
@@ -69,41 +73,34 @@ interface EditCategoriesModalProps {
 export const EditCategoriesModal: FC<EditCategoriesModalProps> = (props) => {
   const { className } = props;
 
-
-  const modalName = 'testModal' as ModalName;
+  const modalName = modalNames.editCategories;
   const { isOpen } = useModalState(modalName);
-
   const { closeModal, basicRefs, addScrollableElm } = useModalDeclarer(modalName);
-
-
-  const handleCloseBtnClick = () => {
-    closeModal();
-  };
 
 
   return (
     <StyledModal
-      closeModal={closeModal}
-      basicRefs={basicRefs}
-      isOpen={isOpen}
-      className={className}
+      name          = { modalName                    }
+      closeModal    = { closeModal                   }
+      basicRefs     = { basicRefs                    }
+      isOpen        = { isOpen                       }
+      className     = { className                    }
+      classNameMask = { 'edit-categories-modal-mask' }
     >
       <div className='modal-contents-container'>
 
         <h2
-          className='modal-heading'
-          children={'Edit Categories'}
-        />
+          className = { 'modal-heading'   }
+          children  = { 'Edit Categories' } />
 
         <button
-          className='btn-modal-close'
-          onClick={ handleCloseBtnClick } >
-          <FontAwesomeIcon icon={ faXmark } />
-        </button>
+          className = { 'btn-modal-close'                    }
+          onClick   = { closeModal                           }
+          children  = { <FontAwesomeIcon icon={ faXmark } /> } />
 
         <section
-          className='categories-display-container'
-          ref={ addScrollableElm } >
+          className = { 'categories-display-container' }
+          ref       = { addScrollableElm               } >
           <Categories />
         </section>
 
@@ -120,21 +117,18 @@ export const EditCategoriesModal: FC<EditCategoriesModalProps> = (props) => {
 
 
 // === STYLE ========================================================= //
-const StyledModal = styled(Modal)<{isOpen: boolean;}>`
-  background: transparent;
-  height: 100lvh;
-  &[open] { display: flex }
-  align-items: center;
+const StyledModal = styled(Modal)<StyledModalType>`
+  &[open] {
+    display: flex;
+  }
 
-  .modal-mask {
-    z-index: 4;
-    --bgc: ${ props => props.isOpen ? 'rgba(255 0 255 / .3)' : 'none' };
-    --bdf: ${ props => props.isOpen ? 'blur(4px)' : 'blur(0px)' };
-
+  .edit-categories-modal-mask {
+    --bdf: ${ props => props.isOpen ? 'blur(4px)' : 'blur(0)' };
+    --bgc: ${ props => props.isOpen ? 'rgba(255 0 255 / .5)' : 'rgba(255 0 255 / 0)' };
     backdrop-filter: var(--bdf);
     -webkit-backdrop-filter: var(--bdf);
     background-color: var(--bgc);
-
+  
     transition:
       background-color 750ms,
       -webkit-backdrop-filter 750ms,
@@ -142,10 +136,7 @@ const StyledModal = styled(Modal)<{isOpen: boolean;}>`
   }
 
 
-
   .modal-contents-container {
-    z-index: 5;
-
     width: var(--contents-width);
     margin: auto 0;
     display: grid;

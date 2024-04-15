@@ -60,7 +60,7 @@ import { getCardCarouselStyles } from '../../../../../providers/CardViewProvider
 // - PROPS
 interface CardsCarouselType {
   category: CategoryType;
-  index:          number;
+  addScrollableElm: (elm: HTMLElement) => void;
 }
 // - STYLE
 interface StyledUlType {
@@ -73,7 +73,7 @@ interface StyledUlType {
 
 // === COMPONENT ====================================================== //
 export const CardsCarousel: FC<CardsCarouselType> = (props) => {
-  const { category } = props;
+  const { category, ...rest } = props;
   
   // contexts
   const { registerContainer } = useCardCarouselRegister();
@@ -89,15 +89,16 @@ export const CardsCarousel: FC<CardsCarouselType> = (props) => {
 
   return (
     <StyledUl
-      ref={carouselContainerRef}
-      $padding={adjustedPadding_vw}
-      $gap={gap_vw}
+      ref      = { carouselContainerRef }
+      $padding = { adjustedPadding_vw   }
+      $gap     = { gap_vw               }
     >
       { todosFormatted.map((todo, i) => (
           <CardTodo
-            key={ todo.id }
-            todo={todo}
-            idx={ i } />
+            key  = { todo.id }
+            todo = { todo    }
+            idx  = { i       }
+            {...rest} />
        )
       ) }
     </StyledUl>
@@ -108,7 +109,9 @@ export const CardsCarousel: FC<CardsCarouselType> = (props) => {
 
 // === STYLE ========================================================= //
 const StyledUl = styled.ul<StyledUlType>`
-  background: transparent;
+  background-color: transparent;
+  pointer-events: none;
+  width: 100%;
   overflow-x: hidden;
   padding: ${ props => props.$padding };
   gap: ${ props => `${props.$gap}vw` };

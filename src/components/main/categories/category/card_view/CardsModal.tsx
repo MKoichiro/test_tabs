@@ -41,51 +41,70 @@
 
 
 /* --- react/styled-components --- */
-import React, { FC, useContext, useRef, useState } from 'react';
+import React, { FC } from 'react';
 import styled from 'styled-components';
 /* --- child components ---------- */
 import { CardsCarousel } from './CardsCarousel';
+/* --- providers/contexts -------- */
+import { Modal, useModalDeclarer, useModalState } from '../../../../../providers/ModalProvider';
+import { modalNames } from '../../../../../providers/modalNames';
 /* --- types --------------------- */
 import { CategoryType } from '../../../../../types/Categories';
 /* --- dev ----------------------- */
 import { isDebugMode } from '../../../../../utils/adminDebugMode';
-import { useCardDialogRegister } from '../../../../../providers/CardViewProvider';
 
-import { Modal, ModalName, useModalDeclarer, useModalState } from '../../../../../providers/ModalProvider_ver3';
 
 // === TYPE =========================================================== //
 // - PROPS
 interface PropsType {
   category: CategoryType;
-  index: number;
 }
 // - STYLE
+interface StyledModalType {
+  isOpen: boolean;
+}
 // - OTHERS
 // =========================================================== TYPE === //
 
 // === COMPONENT ====================================================== //
 export const CardsContainer: FC<PropsType> = (props) => {
-  const { dialogRef } = useCardDialogRegister();
+
+  // modalProvider
+  const modalName = modalNames.cardCarousel;
+  const { isOpen } = useModalState(modalName);
+  const { closeModal, basicRefs, addScrollableElm } = useModalDeclarer(modalName);
 
   return (
-      <StyledDialog ref={dialogRef}>
-        <CardsCarousel {...props} />
-      </StyledDialog>
+    <StyledModal
+      name       = { modalName  }
+      isOpen     = { isOpen     }
+      closeModal = { closeModal }
+      basicRefs  = { basicRefs  }
+    >
+      <CardsCarousel
+        addScrollableElm = { addScrollableElm }
+        { ...props } />
+    </StyledModal>
   );
 };
 // ====================================================== COMPONENT === //
 
 
 // === STYLE ========================================================= //
-const StyledDialog = styled.dialog`
-  background: transparent;
-  backdrop-filter: blur(4px);
-  -webkit-backdrop-filter: blur(4px);
-  max-width: none; // reset
-  max-height: none; // reset
-  border: none; // reset
+const StyledModal = styled(Modal)<StyledModalType>`
+
   width: 100vw;
-  height: 100vh;
-  padding: 0;
+  .card-carousel-modal-mask {
+    --bdf: ${ props => props.isOpen ? 'blur(4px)' : 'blur(0)' };
+    --bgc: ${ props => props.isOpen ? 'rgba(255 0 255 / .5)' : 'rgba(255 0 255 / 0)' };
+    backdrop-filter: var(--bdf);
+    -webkit-backdrop-filter: var(--bdf);
+    background-color: var(--bgc);
+  
+    transition:
+      background-color 750ms,
+      -webkit-backdrop-filter 750ms,
+      backdrop-filter 750ms;
+  }
 `;
 // ========================================================= STYLE === //

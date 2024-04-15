@@ -56,6 +56,7 @@ import { getCardCarouselStyles } from '../../../../../providers/CardViewProvider
 interface PropsType {
   todo: TodoType;
   idx: number;
+  addScrollableElm: (elm: HTMLLIElement) => void;
 }
 // - STYLE
 interface StyledLiType {
@@ -113,7 +114,7 @@ export const CardTodo: FC<PropsType> = (props) => {
         </div>
 
         <div className='category-container'>
-          Category-0
+          Category-0 // todoからcategoryを参照できるようにする
         </div>
       </section>
 
@@ -128,16 +129,13 @@ const StyledLi = styled.li<StyledLiType>`
   --active-width: ${ props => `${props.$activeWidth}vw` };
   --active-height: ${ props => `${props.$activeWidth}vh` };
   --shrink-ratio: ${ props => props.$shrinkRatio };
-  background: transparent;
-  /* outline: 2px solid #000; */
+  pointer-events: auto;
+  background-color: inherit;
   min-width: ${ props => props.$isActive ? 'var(--active-width)' : 'calc(var(--active-width) * var(--shrink-ratio))' };
   height: ${ props => props.$isActive ? 'var(--active-height)' : 'calc(var(--active-height) * var(--shrink-ratio))' };
   overflow-y: hidden;
   transition: min-width 300ms, height 300ms;
-  > * {
-    /* transform: ${ props => props.$isActive ? 'scale(1)' : 'scale(.5)' }; */
-    /* transition: transform 750ms; */
-  }
+
   .contents-wrapper {
     height: 100%;
     display: grid;

@@ -45,7 +45,8 @@ import React, { FC, useRef, useContext } from 'react';
 import styled from 'styled-components';
 /* --- providers/contexts -------- */
 import { CategoriesContext } from '../../../providers/CategoriesProvider';
-import { ModalName, useModalOpener } from '../../../providers/ModalProvider_ver3';
+import { useModalOpener } from '../../../providers/ModalProvider';
+import { modalNames } from '../../../providers/modalNames';
 /* --- font awesome -------------- */
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPen } from '@fortawesome/free-solid-svg-icons';
@@ -71,17 +72,12 @@ export const TabsContainer: FC<TabsProps> = (props) => {
   const { className } = props;
 
   // contexts
-  const {   categories } = useContext(CategoriesContext);
-  const modalName = 'testModal' as ModalName;
+  const { categories } = useContext(CategoriesContext);
+  const modalName = modalNames.editCategories;
   const { openModal } = useModalOpener(modalName);
 
   // register refs
   const ulRef = useRef<HTMLUListElement | null>(null);
-
-  // handlers
-  const handleOpenBtnClick = () => {
-    openModal();
-  };
 
 
 	return (
@@ -100,9 +96,9 @@ export const TabsContainer: FC<TabsProps> = (props) => {
         ) }
       </ul>
 
-      <span className='separater-tabs'/>
+      <span className={'separater-tabs'}/>
 
-      <button onClick={ handleOpenBtnClick }>
+      <button onClick={ openModal }>
         <FontAwesomeIcon icon={faPen} />
       </button>
 

@@ -64,7 +64,7 @@ interface PropsType {
 
 // === COMPONENT ====================================================== //
 export const CategoryContainer: FC<PropsType> = (props) => {
-  const { index } = props;
+  const { index, ...rest } = props;
   const { activeIdx } = useContext(CategoriesContext);
   const [isActive, setIsActive] = useState(false);
 
@@ -80,7 +80,7 @@ export const CategoryContainer: FC<PropsType> = (props) => {
     <StyledDiv>
       <Category { ...props } />
       { isActive && 
-        ( <CardsContainer { ...props }/> )
+        ( <CardsContainer { ...rest }/> )
       }
     </StyledDiv>
   );

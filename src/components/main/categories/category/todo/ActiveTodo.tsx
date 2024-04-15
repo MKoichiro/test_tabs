@@ -48,6 +48,8 @@ import { TodoDetail } from './TodoDetail';
 import { TodoHeader } from './TodoHeader';
 // slidable
 import { Slidable, SlidableMain, SlidableHidden } from '../../../../../functions/slidable/Components';
+/* --- providers/contexts -------- */
+import { useCardViewOpener } from '../../../../../providers/CardViewProvider';
 /* --- types --------------------- */
 import { TodoType } from '../../../../../types/Categories';
 // slidable
@@ -63,8 +65,6 @@ import { CSS } from '@dnd-kit/utilities';
 import { CategoriesContext } from '../../../../../providers/CategoriesProvider';
 /* --- dev ----------------------- */
 import { isDebugMode } from '../../../../../utils/adminDebugMode';
-import { useCardViewOpen } from '../../../../../providers/CardViewProvider';
-
 
 
 // === CONSTANT Against RENDERING ===================================== //
@@ -103,7 +103,7 @@ export const ActiveTodo: FC<PropsType> = (props) => {
 
   // contexts
   const { dispatchCategoriesChange } = useContext(CategoriesContext);
-  const { cardViewOpen } = useCardViewOpen();
+  const { cardViewOpen } = useCardViewOpener();
 
 
 

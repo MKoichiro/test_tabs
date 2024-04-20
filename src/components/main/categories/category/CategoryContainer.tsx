@@ -45,7 +45,7 @@ import React, { FC, useContext, useEffect, useState } from "react";
 import styled from "styled-components";
 /* --- child components ---------- */
 import { Category } from "./Category";
-import { CardsContainer } from "./card_view/CardsModal";
+import { CardsContainer } from "./card_view/CardModal";
 import { CategoriesContext } from "../../../../providers/CategoriesProvider";
 import { CategoryType } from "../../../../types/Categories";
 /* --- dev ----------------------- */

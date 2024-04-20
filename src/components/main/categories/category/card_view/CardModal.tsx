@@ -44,7 +44,7 @@
 import React, { FC } from 'react';
 import styled from 'styled-components';
 /* --- child components ---------- */
-import { CardsCarousel } from './CardsCarousel';
+import { CardsCarousel } from './CardCarousel';
 /* --- providers/contexts -------- */
 import { Modal, useModalDeclarer, useModalState } from '../../../../../providers/ModalProvider';
 import { modalNames } from '../../../../../providers/modalNames';
@@ -65,6 +65,7 @@ interface StyledModalType {
 }
 // - OTHERS
 // =========================================================== TYPE === //
+
 
 // === COMPONENT ====================================================== //
 export const CardsContainer: FC<PropsType> = (props) => {

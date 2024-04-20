@@ -1,6 +1,9 @@
 // 今後の課題
 // - swipe でのスクロール
 // - cardViewOpen での展開時にアニメーションを一時的に止める
+// - 移動距離を算出するために必要なのは、styleFactorと、handleScroll。
+//   よって、styleFactorとhandleScrollを分離できれば、純粋にcarouselのロジックだけを提供するproviderになる気がする。
+//   他でも別種のカルーセルを使用するならば、修正を検討してもいいかもしれない。
 
 
 import React, { FC, MutableRefObject, ReactNode, createContext, useContext, useEffect, useRef, useState } from 'react';
@@ -22,11 +25,8 @@ switch (getCurrentDevice()) {
 // === TYPE =========================================================== //
 // - CONTEXT
 interface CardViewContextType {
-  // isOpen:                                                           boolean;
-  // setIsOpen:                                      (isOpen: boolean) => void;
   activeIdx:                                                         number;
   setActiveIdx:                                         (n: number) => void;
-  // dialogRef:              MutableRefObject<HTMLDialogElement | null> | null;
   carouselContainerRef:    MutableRefObject<HTMLUListElement | null> | null;
   handleScroll:               (n: number, behavior: ScrollBehavior) => void;
   styleFactors:                           MutableRefObject<StyleMagicsType>;
@@ -96,7 +96,6 @@ export const CardViewProvider: FC<CardViewType> = (props) => {
     setActiveIdx(n);
 
     // 2. scroll
-    
     const { gap_vw, activeWidth_vw, inactiveMagnification } = styleFactors.current;
     const padding_vw       = gap_vw         *                     2;
     const inactiveWidth_vw = activeWidth_vw * inactiveMagnification;
@@ -113,7 +112,7 @@ export const CardViewProvider: FC<CardViewType> = (props) => {
       default:  Xn = padding + (inactiveWidth + gap)*(n - 1) + (inactiveWidth - gap);   break;
     }
     
-    // execute scroll: modal は普段は非表示なので、css の適用を待つ意味ために requestAnimationFrame を使用
+    // execute scroll: modal は普段は非表示なので、css の適用を待つ意味で requestAnimationFrame を使用
     requestAnimationFrame(() => {
       if (!carouselContainerRef.current) { return }
         carouselContainerRef.current.scrollTo({ left: Xn, behavior });
@@ -129,7 +128,7 @@ export const CardViewProvider: FC<CardViewType> = (props) => {
     carouselContainerRef,
     handleScroll,
     styleFactors,
-  }
+  };
 
   return <CardViewContext.Provider value={value} children={children} />
 };

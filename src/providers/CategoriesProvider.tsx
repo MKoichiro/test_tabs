@@ -283,19 +283,3 @@ export const CategoriesProvider = ({ children }: { children: ReactNode }) => {
     </CategoriesContext.Provider>
   );
 };
-
-
-// memo: reducer関数
-// reducer関数の処理には3つの制約があるらしい。(これを破っても動くこともあるが、推奨されない)
-// 1. 同じ入力に対して常に同じ結果を起こす'純粋な関数'にする。
-//    例えば、'toggle_isOpen'のようなaction名で、true/falseを切り替えるような処理は、純粋な関数とは言えない。
-//    回避策としては、'todo_open'と'todo_close'のように、それぞれのactionを分けることで、純粋な関数にすることができる。
-
-// 2. '副作用'を持つことができない。
-//    useReducerで扱っているstateは、変更すべきでない。
-
-// 3. stateを直接変更してはいけない。
-//   今回の場合、const newCategories = [...state.categories]; として、新しい配列を作成したと思い満足してしまいそうになるが、
-//   実はjsの仕様上、配列の中身にオブジェクトが入っている場合、オブジェクトのプロパティはその参照がコピーされるだけで、中身はコピーされない。
-//   そのため、オブジェクトのプロパティを変更すると、元のstateも直接変更することになる。
-//   そのため、map関数を使って、"deep copy"を行う必要がある。

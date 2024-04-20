@@ -147,10 +147,10 @@ const reducer = (state: StateType, action: ActionType): StateType => {
   switch (action.type) {
 
     case 'switch_tab': {
-        const newCategories = state.categories.map((todos, i) => {
-          todos.isActive = false;
-          i === action.newActiveIdx && (todos.isActive = true);
-          return todos;
+        const newCategories = state.categories.map((category, i) => {
+          category.isActive = false;
+          i === action.newActiveIdx && (category.isActive = true);
+          return category;
         });
         const newState = {...state, activeIdx: action.newActiveIdx, categories: newCategories};
         return newState;

@@ -2,8 +2,9 @@ import React, { FC, ReactNode } from "react";
 import { MdeProvider } from "./MdeProvider";
 import { ModalProvider } from "./ModalProvider";
 import { CardViewProvider } from "./CardViewProvider";
-import { Categories } from "../components/main/tabs/edit_categories_modal/Categories";
 import { CategoriesProvider } from "./CategoriesProvider";
+import { Provider } from "react-redux";
+import store from "./store";
 
 
 interface ProvidersProps {
@@ -15,13 +16,15 @@ export const Providers: FC<ProvidersProps> = (props) => {
 
   return (
       <CategoriesProvider>
-        <ModalProvider>
-          <CardViewProvider>
-            <MdeProvider>
-                {children}
-            </MdeProvider>
-          </CardViewProvider>
-        </ModalProvider>
+        <Provider store={store}>
+          <ModalProvider>
+            <CardViewProvider>
+              <MdeProvider>
+                  {children}
+              </MdeProvider>
+            </CardViewProvider>
+          </ModalProvider>
+        </Provider>
       </CategoriesProvider>
   );
 };

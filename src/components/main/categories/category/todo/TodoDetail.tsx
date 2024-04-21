@@ -51,9 +51,10 @@ import { CategoriesContext } from '../../../../../providers/CategoriesProvider';
 /* --- types --------------------- */
 import { TodoType } from '../../../../../types/Categories';
 /* --- utils --------------------- */
-import { scrollToRef } from '../../../../../utils/scroll';
+import { scrollToRef } from '../../../../../utils/smoothScrollToRef';
 /* --- dev ----------------------- */
 import { isDebugMode } from '../../../../../utils/adminDebugMode';
+import { getSanitizedDetail } from '../../../../../utils/todoPropsHandler';
 
 
 // useUnsettledHeightAcc: 内容物の高さが可変のアコーディオンを実装するためのカスタムフック
@@ -93,8 +94,10 @@ interface StyledSectionType {
 // === COMPONENT ====================================================== //
 export const TodoDetail = forwardRef<HTMLElement, TodoDetailType>((props, ref) => {
   const { liIdx, todo } = props;
+  const todoId = todo.id;
 
-  const { getSanitizedDetail         } = useContext(CategoriesContext);
+  // const { getSanitizedDetail         } = useContext(CategoriesContext);
+  
   const { inEditing, handleModalOpen } = useContext(MdeContext);
 
   const { detail, isOpen } = todo;
@@ -102,7 +105,7 @@ export const TodoDetail = forwardRef<HTMLElement, TodoDetailType>((props, ref) =
 
 
   const executeModalOpen = () => {
-    handleModalOpen(liIdx);
+    handleModalOpen(todoId);
 
     if (innerWidth > 600) {
       scrollToRef(ref);

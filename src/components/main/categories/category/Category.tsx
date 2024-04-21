@@ -46,7 +46,7 @@ import styled from "styled-components";
 /* --- child components ---------- */
 import { Todo } from "./todo/GhostTodo";
 /* --- providers/contexts -------- */
-import { CategoriesContext } from "../../../../providers/CategoriesProvider";
+// import { CategoriesContext } from "../../../../providers/CategoriesProvider";
 /* --- types --------------------- */
 import { CategoryType } from "../../../../types/Categories";
 /* --- utils --------------------- */
@@ -73,6 +73,8 @@ import {
   verticalListSortingStrategy } from "@dnd-kit/sortable";
 /* --- dev ----------------------- */
 import { isDebugMode } from "../../../../utils/adminDebugMode";
+import { useDispatch } from "react-redux";
+import { replaceTodos } from "../../../../providers/slices/categories";
 
 
 const contentWidth = vw2px(getCurrentContentsVw());
@@ -83,7 +85,7 @@ const deleteBtnWidth = contentWidth * .5;
 // - PROPS
 interface PropsType {
   category: CategoryType;
-  index: number;
+  idx: number;
 }
 // - STYLE
 // - OTHERS
@@ -92,9 +94,11 @@ interface PropsType {
 
 // === COMPONENT ====================================================== //
 export const Category: FC<PropsType> = (props) => {
-  const { category, index } = props;
+  const { category, idx } = props;
   const todos = category.todos;
-  const { categories, dispatchCategoriesChange } = useContext(CategoriesContext);
+  // const { categories, dispatchCategoriesChange } = useContext(CategoriesContext);
+  // const categories = useSelector((state: RootState) => state.categories.categories);
+  const dispatch = useDispatch();
 
   // --- dnd-kit ------------------------------------------------ //
   // sensor 登録
@@ -118,12 +122,13 @@ export const Category: FC<PropsType> = (props) => {
   const handleDragEnd = (e: DragEndEvent) => {
     const { active, over } = e;
     if (active.id !== over?.id) {
-      const oldIndex = todos.findIndex(todo => todo.id === active.id);
-      const newIndex = todos.findIndex(todo => todo.id === over?.id);
-      const newTodo = arrayMove(todos, oldIndex, newIndex);
-      const newCategories = [...categories];
-      newCategories[index].todos = newTodo;
-      dispatchCategoriesChange({ type: 'update_categories', newCategories });
+      const oldIdx = todos.findIndex(todo => todo.id === active.id);
+      const newIdx = todos.findIndex(todo => todo.id === over?.id);
+      // const newTodos = arrayMove(todos, oldIndex, newIndex);
+      // const newCategories = [...categories];
+      // newCategories[index].todos = newTodos;
+      // dispatchCategoriesChange({ type: 'update_categories', newCategories });
+      dispatch(replaceTodos({ oldIdx, newIdx }));
     }
     setActiveId(null);
   };

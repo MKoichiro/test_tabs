@@ -44,7 +44,7 @@
 import React, { FC, useContext } from 'react'
 import styled from 'styled-components'
 /* --- providers/contexts -------- */
-import { CategoriesContext } from '../../../../../providers/CategoriesProvider';
+// import { CategoriesContext } from '../../../../../providers/CategoriesProvider';
 /* --- types --------------------- */
 import { TodoType } from '../../../../../types/Categories';
 /* --- hooks --------------------- */
@@ -58,6 +58,9 @@ import { DragIndicator } from '@mui/icons-material';
 import { SyntheticListenerMap } from '@dnd-kit/core/dist/hooks/utilities';
 /* --- dev ----------------------- */
 import { isDebugMode } from '../../../../../utils/adminDebugMode';
+import { statusCheckers } from '../../../../../utils/todoPropsHandler';
+import { useDispatch } from 'react-redux';
+import { closeTodo, openTodo } from '../../../../../providers/slices/categories';
 
 
 // === TYPE =========================================================== //
@@ -81,7 +84,10 @@ interface StyledHeaderType {
 export const TodoHeader: FC<TodoHeaderType> = (props) => {
   const { todo, attributes, listeners } = props;
 
-  const { dispatchCategoriesChange, checkIsCompleted, checkIsExpired } = useContext(CategoriesContext);
+  // const { dispatchCategoriesChange, checkIsCompleted, checkIsExpired } = useContext(CategoriesContext);
+  const { checkIsCompleted, checkIsExpired } = statusCheckers;
+  const dispatch = useDispatch();
+
 
   // 'double clickで編集' の hooks
   const { inEditing, inputRef, handleDoubleClick, handleSubmit, handleChange, handleBlur } = useImmediateEditable('todo', todo);
@@ -94,8 +100,8 @@ export const TodoHeader: FC<TodoHeaderType> = (props) => {
   // 'isOpen' property の編集を実行 → detail の表示/非表示を切り替える
   const toggleOpen = () => {
     isOpen
-    ? dispatchCategoriesChange({ type: 'todo_close', todoId: todo.id })
-    : dispatchCategoriesChange({ type: 'todo_open',  todoId: todo.id });
+    ? dispatch(closeTodo({ todoId: todo.id }))
+    : dispatch(openTodo({ todoId: todo.id }));
   };
 
 

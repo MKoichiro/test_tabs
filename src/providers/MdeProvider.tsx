@@ -1,9 +1,13 @@
 import React, { LegacyRef, RefObject, MutableRefObject, ReactNode, createContext, useEffect, useRef, useState, useCallback, useContext } from 'react';
 import SimpleMDE, { ToolbarIcon, Options } from 'easymde';
-import { CategoriesContext } from './CategoriesProvider';
+// import { CategoriesContext } from './CategoriesProvider';
 import { convertRemToPx } from '../utils/converters';
 
 import { isDebugMode } from '../utils/adminDebugMode';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from './store';
+import { updateTodoDetail } from './slices/categories';
+import { preventScroll, reviveScroll } from '../utils/scrollBlock'; 
 
 
 
@@ -42,7 +46,7 @@ interface MdeContextType {
     mask: MutableRefObject<HTMLDivElement | null> | null;
   };
   inEditing: boolean;
-  handleModalOpen: (todoIdx: number | undefined) => void;
+  handleModalOpen: (todoId: string | undefined) => void;
   getEditorValue: () => string;
   handleChange: (value: string) => void;
   options: Options | undefined;
@@ -85,7 +89,7 @@ export const MdeProvider = ({ children }: { children: ReactNode }) => {
     'submit' : {
       name: 'submit',
       action: () => {
-        console.log(targetTodoIdx); // 今のところ不具合を起こすものではないが、なぜかいつもここでundefinedになっている。
+        console.log(targetTodoId); // 今のところ不具合を起こすものではないが、なぜかいつもここでundefinedになっている。
         setInEditing(false);
         handleModalClose();
       },
@@ -133,18 +137,19 @@ export const MdeProvider = ({ children }: { children: ReactNode }) => {
   };
 
 
-  const { activeIdx, categories, dispatchCategoriesChange } = useContext(CategoriesContext);
+  const { activeIdx, categories } = useSelector((state: RootState) => state.categories);
+  const dispatch = useDispatch();
+
   const mdeRef   = useRef<SimpleMDE      | null>(null);
   const modalRef = useRef<HTMLDivElement | null>(null);
   const maskRef  = useRef<HTMLDivElement | null>(null);
   const [inEditing,         setInEditing        ] = useState(false);
-  const [targetTodoIdx,     setTargetTodoIdx    ] = useState<number  | undefined>(undefined);
+  const [targetTodoId, setTargetTodoId] = useState<string | undefined>(undefined);
   const [options,           setOptions          ] = useState<Options | undefined>(defaultOptions);
   const [viewportHeight,    setViewportHeight   ] = useState<number  | undefined>(undefined);
   const [hasEditorOverflow, setHasEditorOverflow] = useState(false);
 
-  const preventScroll = useCallback((e: MouseEvent) => e.preventDefault(),  []);
-  const reviveScroll  = useCallback((e: WheelEvent) => e.stopPropagation(), []);
+
   const getCodemirror = () => {
     if (!mdeRef.current) { console.error('mdeRef.currentがfalsyです。[Providers.tsx, getCodemirrorElm()]'); return }
     return mdeRef.current.codemirror;
@@ -157,11 +162,12 @@ export const MdeProvider = ({ children }: { children: ReactNode }) => {
   };
 
   // --- handleModalOpen ---
-  const handleModalOpen = (todoIdx: number | undefined) => {
+  const handleModalOpen = (todoId: string | undefined) => {
     if (inEditing) { return }
-    if (typeof todoIdx !== 'number') { console.error('targetTodoIdxがundefinedです。 [Mde.tsx handleModalOpen()]'); return }
+    if (typeof todoId !== 'string') { console.error('targetTodoIdxがundefinedです。 [Mde.tsx handleModalOpen()]'); return }
+    
     setInEditing(true);
-    setTargetTodoIdx(todoIdx);
+    setTargetTodoId(todoId);
     document.addEventListener('mousedown', handleOutsideClick);
   };
   // --- handleModalOpen ---
@@ -180,32 +186,27 @@ export const MdeProvider = ({ children }: { children: ReactNode }) => {
     document.removeEventListener('mousedown', handleOutsideClick);
   };
 
-  const targetTodos = [...categories][activeIdx].todos;
   const getEditorValue = (): string => {
-    if (!(typeof targetTodoIdx === 'number')) {
-      console.error(`targetTodoIdxが${targetTodoIdx}です。 [MdeProvider.tsx, handleChange()]`);
+    if (!(typeof targetTodoId === 'string')) {
+      console.error(`targetTodoIdが${targetTodoId}です。 [MdeProvider.tsx, handleChange()]`);
       return '';
     }
-    if (!(0 <= targetTodoIdx && targetTodoIdx < targetTodos.length)) {
-      console.error(`targetTodoIdxが無効な値です。（targetTodoIdx: ${targetTodoIdx}) [MdeProvider.tsx, getEditorValue()]`);
-      return '';
-    }
+
+    const targetTodos = [...categories][activeIdx].todos;
+    const targetTodoIdx = targetTodos.findIndex(todo => todo.id === targetTodoId);
     return targetTodos[targetTodoIdx].detail;
   };
 
   const handleChange = (value: string) => {
-    if (!(typeof targetTodoIdx === 'number')) {
-      console.error(`targetTodoIdxが${targetTodoIdx}です。 [MdeProvider.tsx, handleChange()]`);
+    console.log('handleChange: ', value);
+    if (!(typeof targetTodoId === 'string')) {
+      console.error(`targetTodoIdが${targetTodoId}です。 [MdeProvider.tsx, handleChange()]`);
       return;
     }
-    if (!(0 <= targetTodoIdx && targetTodoIdx < targetTodos.length)) {
-      console.error(`targetTodoIdxが無効な値です。（targetTodoIdx: ${targetTodoIdx}) [MdeProvider.tsx, getEditorValue()]`);
-      return;
-    }
-    // update: categories
-    const newCategories = [...categories];
-    newCategories[activeIdx].todos[targetTodoIdx].detail = value;
-    dispatchCategoriesChange({ type: 'update_categories', newCategories });
+
+    console.log('targetTodoId: ', targetTodoId);
+    dispatch(updateTodoDetail({ todoId: targetTodoId, newDetail: value }));
+
     // update: hasEditorOverflow
     updateEditorOverflow();
   };

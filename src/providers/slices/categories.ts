@@ -1,5 +1,6 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, current } from "@reduxjs/toolkit";
 import { storedActiveIdx, storedCategories } from "../../data/categories";
+import { arrayMove } from "@dnd-kit/sortable";
 
 
 
@@ -27,15 +28,22 @@ const categories = createSlice({
       state.categories = action.payload;
     },
 
+    updateCategoryName: (state, action) => {
+      const { categoryId, newName } = action.payload;
+      const categoryIdx = state.categories.findIndex(category => category.id === categoryId);
+      const targetCategory = state.categories[categoryIdx];
+      targetCategory.name = newName;
+    },
+
     updateTodo: (state, action) => {
-      const updatedTodo = action.payload;
+      const { updatedTodo } = action.payload;
       const currentCategory = state.categories[state.activeIdx];
       const todoIdx = currentCategory.todos.findIndex(todo => todo.id === updatedTodo.id);
       currentCategory.todos[todoIdx] = updatedTodo;
     },
 
     openTodo: (state, action) => {
-      const todoId = action.payload;
+      const { todoId } = action.payload;
       const currentCategory = state.categories[state.activeIdx];
       const todoIdx = currentCategory.todos.findIndex(todo => todo.id === todoId);
       const targetTodo = currentCategory.todos[todoIdx];
@@ -43,11 +51,36 @@ const categories = createSlice({
     },
 
     closeTodo: (state, action) => {
-      const todoId = action.payload;
+      const { todoId } = action.payload;
       const currentCategory = state.categories[state.activeIdx];
       const todoIdx = currentCategory.todos.findIndex(todo => todo.id === todoId);
       const targetTodo = currentCategory.todos[todoIdx];
       targetTodo.isOpen = false;
+    },
+
+    replaceTodos: (state, action) => {
+      const { oldIdx, newIdx } = action.payload;
+      console.log("state.categories: ", state.categories);
+      const currentCategory = state.categories[state.activeIdx];
+      const targetTodos = currentCategory.todos;
+      const newTodos = arrayMove(targetTodos, oldIdx, newIdx);
+      currentCategory.todos = newTodos;
+    },
+
+    updateTodoTitle: (state, action) => {
+      const { todoId, newTitle } = action.payload;
+      const currentCategory = state.categories[state.activeIdx];
+      const todoIdx = currentCategory.todos.findIndex(todo => todo.id === todoId);
+      const targetTodo = currentCategory.todos[todoIdx];
+      targetTodo.title = newTitle;
+    },
+
+    updateTodoDetail: (state, action) => {
+      const { todoId, newDetail } = action.payload;
+      const currentCategory = state.categories[state.activeIdx];
+      const todoIdx = currentCategory.todos.findIndex(todo => todo.id === todoId);
+      const targetTodo = currentCategory.todos[todoIdx];
+      targetTodo.detail = newDetail;
     },
 
     updateTodoStatus: (state, action) => {
@@ -97,6 +130,23 @@ const categories = createSlice({
   }
 });
 
-// export const { addCategory, removeCategory } = categories.actions;
+export const {
+  switchCategory,
+  updateCategories,
+  updateCategoryName,
+  updateTodo,
+  openTodo,
+  closeTodo,
+  replaceTodos,
+  updateTodoTitle,
+  updateTodoDetail,
+  updateTodoStatus,
+  updateTodoPriority,
+  // updateTodoDeadline,
+  addTodo,
+  archiveTodo,
+  removeTodo,
+} = categories.actions;
+
 
 export default categories.reducer;

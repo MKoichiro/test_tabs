@@ -48,7 +48,7 @@ import { ActiveCategory } from './category/ActiveCategory';
 import { ArchivedCategory } from './category/ArchivedCategory';
 import { GhostCategory } from './category/GhostCategory';
 /* --- providers/contexts -------- */
-import { CategoriesContext } from '../../../../providers/CategoriesProvider';
+// import { CategoriesContext } from '../../../../providers/CategoriesProvider';
 /* --- dnd-kit ------------------- */
 import {
   DndContext,
@@ -72,6 +72,9 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArchive } from '@fortawesome/free-solid-svg-icons';
 /* --- dev ----------------------- */
 import { isDebugMode } from '../../../../utils/adminDebugMode';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from '../../../../providers/store';
+import { switchCategory, updateCategories } from '../../../../providers/slices/categories';
 
 
 // === TYPE =========================================================== //
@@ -86,7 +89,9 @@ interface CategoriesType {}
 export const Categories: FC<CategoriesType> = (props) => {
   const {} = props;
 
-  const { categories, dispatchCategoriesChange } = useContext(CategoriesContext);
+  // const { categories, dispatchCategoriesChange } = useContext(CategoriesContext);
+  const categories = useSelector((state: RootState) => state.categories.categories);
+  const dispatch = useDispatch();
 
   
   // --- dnd-kit ------------------------------------------------ //
@@ -114,8 +119,10 @@ export const Categories: FC<CategoriesType> = (props) => {
       const oldIndex = categories.findIndex(categories => categories.id === active.id);
       const newIndex = categories.findIndex(categories => categories.id === over?.id);
       const newCategories = arrayMove(categories, oldIndex, newIndex);
-      dispatchCategoriesChange({ type: 'update_categories', newCategories });
-      dispatchCategoriesChange({ type: 'switch_tab', newActiveIdx: newIndex });
+      // dispatchCategoriesChange({ type: 'update_categories', newCategories });
+      // dispatchCategoriesChange({ type: 'switch_tab', newActiveIdx: newIndex });
+      dispatch(updateCategories(newCategories));
+      dispatch(switchCategory(newIndex));
     }
     setActiveId(null);
     setIsDragging(false);

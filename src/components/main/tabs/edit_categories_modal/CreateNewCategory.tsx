@@ -44,7 +44,7 @@
 import React, { FC, useContext, useRef } from 'react';
 import styled from 'styled-components';
 /* --- providers/contexts -------- */
-import { CategoriesContext } from '../../../../providers/CategoriesProvider';
+// import { CategoriesContext } from '../../../../providers/CategoriesProvider';
 /* --- types --------------------- */
 import { TodoType, CategoryType, notSet } from '../../../../types/Categories';
 /* --- react-hook-form ----------- */
@@ -53,6 +53,9 @@ import { useForm } from 'react-hook-form';
 import { generateUUID } from '../../../../utils/generateUUID';
 /* --- dev ----------------------- */
 import { isDebugMode } from '../../../../utils/adminDebugMode';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from '../../../../providers/store';
+import { switchCategory, updateCategories } from '../../../../providers/slices/categories';
 
 
 // === TYPE =========================================================== //
@@ -84,14 +87,16 @@ interface DataType {
 export const CreateNewCategory: FC<CreateNewCategoryType> = (props) => {
   const {} = props;
 
-  const { categories, dispatchCategoriesChange } = useContext(CategoriesContext);
+  // const { categories, dispatchCategoriesChange } = useContext(CategoriesContext);
+  const categories = useSelector((state: RootState) => state.categories.categories);
+  const dispatch = useDispatch();
 
   const { register, handleSubmit, formState: { errors } } = useForm<DataType>({ mode: 'onChange' });
   const { ref: refForName, ...restForName } = register('category_name', NAME_VALIDATION);
   const nameRef = useRef<HTMLInputElement | null>(null);
 
 
-  const updateCategories = (data: DataType, now: Date) => {
+  const dispatchUpdateCategories = (data: DataType, now: Date) => {
     const templateTodo: TodoType = {
       id: generateUUID(),
       createdDate: now,
@@ -117,7 +122,8 @@ export const CreateNewCategory: FC<CreateNewCategoryType> = (props) => {
 
     const newCategories: CategoryType[] = [...categories];
     newCategories.push(newTodos);
-    dispatchCategoriesChange({ type: 'update_categories', newCategories });
+    // dispatchCategoriesChange({ type: 'update_categories', newCategories });
+    dispatch(updateCategories(newCategories));
   };
 
   const formInitializer = () => {
@@ -130,8 +136,9 @@ export const CreateNewCategory: FC<CreateNewCategoryType> = (props) => {
   const executeSubmit = (data: DataType) => {
     const now = new Date;
     formInitializer();
-    updateCategories(data, now);
-    dispatchCategoriesChange({ type: 'switch_tab', newActiveIdx: categories.length });
+    dispatchUpdateCategories(data, now);
+    // dispatchCategoriesChange({ type: 'switch_tab', newActiveIdx: categories.length });
+    dispatch(switchCategory(categories.length));
   };
 
   return (

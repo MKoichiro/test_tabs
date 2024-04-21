@@ -45,7 +45,7 @@ import styled from 'styled-components';
 /* --- child components ---------- */
 import { FormParts } from './FormParts';
 /* --- providers/contexts -------- */
-import { CategoriesContext } from '../../../providers/CategoriesProvider';
+// import { CategoriesContext } from '../../../providers/CategoriesProvider';
 /* --- types --------------------- */
 import { StatusUnionType, PriorityUnionType, TodoType } from '../../../types/Categories';
 /* --- utils --------------------- */
@@ -56,6 +56,9 @@ import { useForm } from 'react-hook-form';
 import { defaultValues, statusOptions, priorityOptions, placeholders } from './FormSetting';
 /* --- dev ----------------------- */
 import { isDebugMode } from '../../../utils/adminDebugMode';
+import { useDispatch } from 'react-redux';
+import { DLFormatters } from '../../../utils/todoPropsHandler';
+import { addTodo } from '../../../providers/slices/categories';
 
 
 // === TYPE =========================================================== //
@@ -78,8 +81,10 @@ interface InputDataType {
 
 export const CreateNewTodo: FC<CreateNewTodoType> = (props) => {
   const {} = props;
-  const { dispatchCategoriesChange, deadlineFormatters } = useContext(CategoriesContext);
-  const { convertToStoredFormat: deadlineFormatter } = deadlineFormatters;
+  // const { dispatchCategoriesChange, deadlineFormatters } = useContext(CategoriesContext);
+  // const { convertToStoredFormat: deadlineFormatter } = deadlineFormatters;
+  const dispatch = useDispatch();
+  const { toSaveDeadline } = DLFormatters;
 
   // --- react-hook-form ---------------------------------------- //
   const { register, handleSubmit, formState: { errors } } = useForm({ mode: 'onChange' });
@@ -109,7 +114,7 @@ export const CreateNewTodo: FC<CreateNewTodoType> = (props) => {
 
   // 2. newTodo を categories に追加
   const addNewTodo = (inputData: InputDataType) => {
-    const formattedDeadline = deadlineFormatter(inputData.deadlineDate, inputData.deadlineTime);
+    const formattedDeadline = toSaveDeadline(inputData.deadlineDate, inputData.deadlineTime);
     const newTodo: TodoType = {
       id:                       generateUUID(),
       createdDate:                  new Date(),
@@ -122,7 +127,8 @@ export const CreateNewTodo: FC<CreateNewTodoType> = (props) => {
       detail:           inputData.detail || '',
       isOpen:                             true,
     };
-    dispatchCategoriesChange({ type: 'add_new_todo', newTodo });
+    // dispatchCategoriesChange({ type: 'add_new_todo', newTodo });
+    dispatch(addTodo(newTodo));
   }
   // --------------------------- executeSubmit の helper 関数 --- //
 

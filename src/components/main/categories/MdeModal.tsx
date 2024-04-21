@@ -49,6 +49,8 @@ import { MdeContext } from '../../../providers/MdeProvider';
 /* --- easymde ------------------- */
 import SimpleMdeReact from 'react-simplemde-editor';
 import "easymde/dist/easymde.min.css";
+import { useSelector } from 'react-redux';
+import { RootState } from '../../../providers/store';
 
 
 // === TYPE =========================================================== //
@@ -69,7 +71,8 @@ interface StyleType {
 export const MdeModal: FC<MdeModalType> = (props) => {
   const {} = props;
 
-  const { activeIdx } = useContext(CategoriesContext)
+  // const { activeIdx } = useContext(CategoriesContext);
+  const activeIdx = useSelector((state: RootState) => state.categories.activeIdx);
 
   const {
     refs,
@@ -80,6 +83,10 @@ export const MdeModal: FC<MdeModalType> = (props) => {
     viewportHeight,
     hasEditorOverflow,
   } = useContext(MdeContext);
+
+  // const excuteChange = () => {
+  //   handle
+  // }
 
   return (
     <>

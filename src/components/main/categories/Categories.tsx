@@ -39,6 +39,8 @@ import { CategoriesContext } from '../../../providers/CategoriesProvider';
 import { CategoryContainer } from './category/CategoryContainer';
 /* --- dev ----------------------- */
 import { isDebugMode } from '../../../utils/adminDebugMode';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../../providers/store';
 
 
 // === TYPE =========================================================== //
@@ -52,7 +54,8 @@ interface CategoriesType {}
 // === COMPONENT ====================================================== //
 export const Categories: FC<CategoriesType> = (props) => {
   const {} = props;
-  const { activeIdx, categories } = useContext(CategoriesContext);
+  // const { activeIdx, categories } = useContext(CategoriesContext);
+  const { activeIdx, categories } = useSelector((state: RootState) => state.categories);
 
   return (
     <StyledUl $activeIndex={ activeIdx }>
@@ -60,7 +63,7 @@ export const Categories: FC<CategoriesType> = (props) => {
       { categories.map((category, i) => {
         return (
           <li key={ category.id }>
-            <CategoryContainer category={ category } index={ i } />
+            <CategoryContainer category={ category } idx={ i } />
           </li>
         );
       }) }

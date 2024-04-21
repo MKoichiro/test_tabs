@@ -44,7 +44,8 @@
 import React, { FC, useRef, useContext } from 'react';
 import styled from 'styled-components';
 /* --- providers/contexts -------- */
-import { CategoriesContext } from '../../../providers/CategoriesProvider';
+// import { CategoriesContext } from '../../../providers/CategoriesProvider';
+import { useSelector } from 'react-redux';
 import { useModalOpener } from '../../../providers/ModalProvider';
 import { modalNames } from '../../../providers/modalNames';
 /* --- font awesome -------------- */
@@ -55,6 +56,7 @@ import { Tab } from './Tab';
 import { EditCategoriesModal } from './edit_categories_modal/EditCategoriesModal';
 /* --- dev ----------------------- */
 import { isDebugMode } from '../../../utils/adminDebugMode';
+import { RootState } from '../../../providers/store';
 
 
 // === TYPE =========================================================== //
@@ -72,7 +74,7 @@ export const TabsContainer: FC<TabsProps> = (props) => {
   const { className } = props;
 
   // contexts
-  const { categories } = useContext(CategoriesContext);
+  const categories = useSelector((state: RootState) => state.categories.categories);
   const modalName = modalNames.editCategories;
   const { openModal } = useModalOpener(modalName);
 

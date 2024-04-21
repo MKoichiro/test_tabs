@@ -4,7 +4,7 @@ import { ModalProvider } from "./ModalProvider";
 import { CardViewProvider } from "./CardViewProvider";
 import { CategoriesProvider } from "./CategoriesProvider";
 import { Provider } from "react-redux";
-import store from "./store";
+import { store } from "./store";
 
 
 interface ProvidersProps {
@@ -15,7 +15,7 @@ export const Providers: FC<ProvidersProps> = (props) => {
   const { children } = props;
 
   return (
-      <CategoriesProvider>
+      // <CategoriesProvider>
         <Provider store={store}>
           <ModalProvider>
             <CardViewProvider>
@@ -25,6 +25,6 @@ export const Providers: FC<ProvidersProps> = (props) => {
             </CardViewProvider>
           </ModalProvider>
         </Provider>
-      </CategoriesProvider>
+      // </CategoriesProvider>
   );
 };

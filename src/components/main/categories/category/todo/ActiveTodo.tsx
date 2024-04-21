@@ -41,7 +41,7 @@
 
 
 /* --- react/styled-components --- */
-import React, { FC, RefObject, useContext, useRef } from 'react';
+import React, { FC, useContext, useRef } from 'react';
 import styled from 'styled-components';
 /* --- child components ---------- */
 import { TodoDetail } from './TodoDetail';
@@ -62,9 +62,11 @@ import { faTrashCan, faCircleInfo, faCheck } from '@fortawesome/free-solid-svg-i
 /* --- dnd-kit ------------------- */
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import { CategoriesContext } from '../../../../../providers/CategoriesProvider';
+// import { CategoriesContext } from '../../../../../providers/CategoriesProvider';
 /* --- dev ----------------------- */
 import { isDebugMode } from '../../../../../utils/adminDebugMode';
+import { useDispatch } from 'react-redux';
+import { updateTodoPriority, updateTodoStatus } from '../../../../../providers/slices/categories';
 
 
 // === CONSTANT Against RENDERING ===================================== //
@@ -102,7 +104,8 @@ export const ActiveTodo: FC<PropsType> = (props) => {
   const currentId = todo.id;
 
   // contexts
-  const { dispatchCategoriesChange } = useContext(CategoriesContext);
+  // const { dispatchCategoriesChange } = useContext(CategoriesContext);
+  const dispatch = useDispatch();
   const { cardViewOpen } = useCardViewOpener();
 
 
@@ -130,10 +133,12 @@ export const ActiveTodo: FC<PropsType> = (props) => {
     cardViewOpen(liIdx);
   };
   const handleCompleteBtnClick = () => {
-    dispatchCategoriesChange({ type: 'change_todo_status', todoId: currentId, newStatus: 'completed' });
+    // dispatchCategoriesChange({ type: 'change_todo_status', todoId: currentId, newStatus: 'completed' });
+    dispatch(updateTodoStatus({ todoId: currentId, newStatus: 'completed' }));
   }
   const handleArchiveBtnClick = () => {
-    dispatchCategoriesChange({ type: 'archive_todo', todoId: currentId });
+    // dispatchCategoriesChange({ type: 'archive_todo', todoId: currentId });
+    dispatch(updateTodoPriority({ todoId: currentId, newPriority: 'archived' }));
   }
 
 

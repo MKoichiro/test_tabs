@@ -46,16 +46,18 @@ import styled from "styled-components";
 /* --- child components ---------- */
 import { Category } from "./Category";
 import { CardsContainer } from "./card_view/CardModal";
-import { CategoriesContext } from "../../../../providers/CategoriesProvider";
+// import { CategoriesContext } from "../../../../providers/CategoriesProvider";
 import { CategoryType } from "../../../../types/Categories";
 /* --- dev ----------------------- */
 import { isDebugMode } from "../../../../utils/adminDebugMode";
+import { useSelector } from "react-redux";
+import { RootState } from "../../../../providers/store";
 
 // === TYPE =========================================================== //
 // - PROPS
 interface PropsType {
   category: CategoryType;
-  index: number;
+  idx: number;
 }
 // - STYLE
 // - OTHERS
@@ -64,17 +66,18 @@ interface PropsType {
 
 // === COMPONENT ====================================================== //
 export const CategoryContainer: FC<PropsType> = (props) => {
-  const { index, ...rest } = props;
-  const { activeIdx } = useContext(CategoriesContext);
+  const { idx, ...rest } = props;
+  // const { activeIdx } = useContext(CategoriesContext);
+  const activeIdx = useSelector((state: RootState) => state.categories.activeIdx);
   const [isActive, setIsActive] = useState(false);
 
   useEffect(() => {
-    if (index === activeIdx) {
+    if (idx === activeIdx) {
       setIsActive(true);
     } else {
       setIsActive(false);
     }
-  }, [index, activeIdx]);
+  }, [idx, activeIdx]);
 
   return (
     <StyledDiv>

@@ -1,13 +1,11 @@
-import React, { LegacyRef, RefObject, MutableRefObject, ReactNode, createContext, useEffect, useRef, useState, useCallback, useContext } from 'react';
+import React, { MutableRefObject, ReactNode, createContext, useEffect, useRef, useState } from 'react';
 import SimpleMDE, { ToolbarIcon, Options } from 'easymde';
-// import { CategoriesContext } from './CategoriesProvider';
 import { convertRemToPx } from '../utils/converters';
 
-import { isDebugMode } from '../utils/adminDebugMode';
-import { useDispatch, useSelector } from 'react-redux';
-import { RootState } from './store';
-import { updateTodoDetail } from './slices/categories';
+import { useDispatch, useCategoriesSelector } from './store';
+import { updateTodoProps } from './slices/categories';
 import { preventScroll, reviveScroll } from '../utils/scrollBlock'; 
+import { isDebugMode } from '../utils/adminDebugMode';
 
 
 
@@ -137,7 +135,7 @@ export const MdeProvider = ({ children }: { children: ReactNode }) => {
   };
 
 
-  const { activeIdx, categories } = useSelector((state: RootState) => state.categories);
+  const { activeIdx, categoriesEntity: categories } = useCategoriesSelector();
   const dispatch = useDispatch();
 
   const mdeRef   = useRef<SimpleMDE      | null>(null);
@@ -165,7 +163,7 @@ export const MdeProvider = ({ children }: { children: ReactNode }) => {
   const handleModalOpen = (todoId: string | undefined) => {
     if (inEditing) { return }
     if (typeof todoId !== 'string') { console.error('targetTodoIdxがundefinedです。 [Mde.tsx handleModalOpen()]'); return }
-    
+
     setInEditing(true);
     setTargetTodoId(todoId);
     document.addEventListener('mousedown', handleOutsideClick);
@@ -205,7 +203,7 @@ export const MdeProvider = ({ children }: { children: ReactNode }) => {
     }
 
     console.log('targetTodoId: ', targetTodoId);
-    dispatch(updateTodoDetail({ todoId: targetTodoId, newDetail: value }));
+    dispatch(updateTodoProps({ todoId: targetTodoId, update: { detail: value } }));
 
     // update: hasEditorOverflow
     updateEditorOverflow();

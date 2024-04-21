@@ -35,7 +35,7 @@ export const useSlidable = (params: SlidableParamsType) => {
     const diffX = touch.clientX - startX;
     const diffY = touch.clientY - startY;
 
-    // 初回のみの処理: 垂直方向のスクロールかどうかの判定, 垂直方向のスクロールの場合は reject
+    // 初回のみの処理: 縦方向のスクロールかどうかの判定, 縦方向のスクロールの場合は reject
     const isFirstInvoke = !allowed && !rejected;
     if (isFirstInvoke) {
       const gradient = Math.abs(diffY / diffX);

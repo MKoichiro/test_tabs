@@ -43,14 +43,13 @@
 /* --- react/styled-components --- */
 import React, { FC, useContext } from 'react';
 import styled from 'styled-components';
+/* --- redux --------------------- */
+import { useCategoriesSelector } from '../../../providers/store';
 /* --- providers/contexts -------- */
-import { CategoriesContext } from '../../../providers/CategoriesProvider';
 import { MdeContext } from '../../../providers/MdeProvider';
 /* --- easymde ------------------- */
 import SimpleMdeReact from 'react-simplemde-editor';
 import "easymde/dist/easymde.min.css";
-import { useSelector } from 'react-redux';
-import { RootState } from '../../../providers/store';
 
 
 // === TYPE =========================================================== //
@@ -71,8 +70,7 @@ interface StyleType {
 export const MdeModal: FC<MdeModalType> = (props) => {
   const {} = props;
 
-  // const { activeIdx } = useContext(CategoriesContext);
-  const activeIdx = useSelector((state: RootState) => state.categories.activeIdx);
+  const { activeIdx } = useCategoriesSelector();
 
   const {
     refs,
@@ -84,9 +82,6 @@ export const MdeModal: FC<MdeModalType> = (props) => {
     hasEditorOverflow,
   } = useContext(MdeContext);
 
-  // const excuteChange = () => {
-  //   handle
-  // }
 
   return (
     <>

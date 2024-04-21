@@ -41,17 +41,16 @@
 
 
 /* --- react/styled-components --- */
-import React, { FC, useContext, useEffect, useState } from "react";
+import React, { FC, useEffect, useState } from "react";
 import styled from "styled-components";
 /* --- child components ---------- */
 import { Category } from "./Category";
 import { CardsContainer } from "./card_view/CardModal";
-// import { CategoriesContext } from "../../../../providers/CategoriesProvider";
 import { CategoryType } from "../../../../types/Categories";
+/* --- redux --------------------- */
+import { useCategoriesSelector } from "../../../../providers/store";
 /* --- dev ----------------------- */
 import { isDebugMode } from "../../../../utils/adminDebugMode";
-import { useSelector } from "react-redux";
-import { RootState } from "../../../../providers/store";
 
 // === TYPE =========================================================== //
 // - PROPS
@@ -67,8 +66,7 @@ interface PropsType {
 // === COMPONENT ====================================================== //
 export const CategoryContainer: FC<PropsType> = (props) => {
   const { idx, ...rest } = props;
-  // const { activeIdx } = useContext(CategoriesContext);
-  const activeIdx = useSelector((state: RootState) => state.categories.activeIdx);
+  const { activeIdx } = useCategoriesSelector();
   const [isActive, setIsActive] = useState(false);
 
   useEffect(() => {

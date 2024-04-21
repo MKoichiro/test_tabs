@@ -41,17 +41,15 @@
 
 
 /* --- react/styled-components --- */
-import React, { useContext, RefObject, FC } from 'react';
+import React, { RefObject, FC } from 'react';
 import styled from 'styled-components';
-/* --- providers/contexts -------- */
-// import { CategoriesContext } from '../../../providers/CategoriesProvider';
+/* --- redux --------------------- */
+import { useDispatch, useCategoriesSelector } from '../../../providers/store';
+import { switchCategory } from '../../../providers/slices/categories';
 /* --- utils --------------------- */
 import { vw2px } from '../../../utils/converters';
 /* --- dev ----------------------- */
 import { isDebugMode } from '../../../utils/adminDebugMode';
-import { useDispatch, useSelector } from 'react-redux';
-import { RootState } from '../../../providers/store';
-import { switchCategory } from '../../../providers/slices/categories';
 
 
 // === TYPE =========================================================== //
@@ -73,17 +71,16 @@ export const Tab: FC<TabType> = (props) => {
   const { index, ulRef } = props;
 
   // contexts
-  // const { categories, dispatchCategoriesChange } = useContext(CategoriesContext);
-  const categories = useSelector((state: RootState) => state.categories.categories);
+  const { activeIdx, categoriesEntity: categories } = useCategoriesSelector();
   const dispatch = useDispatch();
 
   // constants/variables
   const category = categories[index];
+  const isActive = Boolean(activeIdx === index);
 
   // handlers
   const toggleActive = () => {
     handleContainerScroll();
-    // dispatchCategoriesChange({ type: 'switch_tab', newActiveIdx: index });
     dispatch(switchCategory(index));
   };
 
@@ -106,7 +103,7 @@ export const Tab: FC<TabType> = (props) => {
   return (
     <StyledLi
       key       = {       category.id }
-      $isActive = { category.isActive }
+      $isActive = {          isActive }
     >
       <button
         children = { category.name }

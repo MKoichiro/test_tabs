@@ -1,129 +1,97 @@
-import { createSlice, current } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { storedActiveIdx, storedCategories } from "../../data/categories";
 import { arrayMove } from "@dnd-kit/sortable";
+import { CategoryType, TodoType } from "../../types/Categories";
 
+
+// types
+interface CategoriesState {
+  activeIdx: number;
+  categoriesEntity: CategoryType[];
+}
+
+const initialState: CategoriesState = {
+  activeIdx: storedActiveIdx,
+  categoriesEntity: storedCategories,
+};
+
+
+
+// helpers for each reducer
+// reducerが増えそうになければ、廃止も検討
+const getCurrentCategory = (state: CategoriesState) => {
+  return state.categoriesEntity[state.activeIdx];
+};
+const getTargetTodoIdx = (state: CategoriesState, todoId: string) => {
+  const currentCategory = getCurrentCategory(state);
+  return currentCategory.todos.findIndex(todo => todo.id === todoId);
+};
+const getTargetTodo = (state: CategoriesState, todoId: string) => {
+  const currentCategory = getCurrentCategory(state);
+  const todoIdx = getTargetTodoIdx(state, todoId);
+  return currentCategory.todos[todoIdx];
+};
 
 
 const categories = createSlice({
   name: "categories",
-  initialState: {activeIdx: storedActiveIdx, categories: storedCategories},
+  initialState,
   reducers: {
 
-    switchCategory: (state, action) => {
-      const newActiveIdx = action.payload;
-      // 1. state.categories: 各category.isActiveを書き換える
-      state.categories.forEach((category, i) => {
-        if (i === newActiveIdx) {
-          category.isActive = true;
-        } else {
-          category.isActive = false;
-        }
-      });
+    // Categoryまでの更新
 
-      // 2. state.activeIdx: 更新
-      state.activeIdx = newActiveIdx;
+    switchCategory: (state, action: PayloadAction<number>) => {
+      state.activeIdx = action.payload;
     },
 
-    updateCategories: (state, action) => {
-      state.categories = action.payload;
+    updateCategories: (state, action: PayloadAction<CategoryType[]>) => {
+      state.categoriesEntity = action.payload;
     },
 
-    updateCategoryName: (state, action) => {
+    updateCategoryName: (state, action: PayloadAction<{ categoryId: string; newName: string }>) => {
       const { categoryId, newName } = action.payload;
-      const categoryIdx = state.categories.findIndex(category => category.id === categoryId);
-      const targetCategory = state.categories[categoryIdx];
+      const categoryIdx = state.categoriesEntity.findIndex(category => category.id === categoryId);
+      const targetCategory = state.categoriesEntity[categoryIdx];
       targetCategory.name = newName;
     },
 
-    updateTodo: (state, action) => {
+    // Todoより深層の更新
+
+    // [非推奨]
+    // 汎用的な分todoをdeep copyなどして編集し、丸ごと渡す必要があるため、面倒だしメモリ効率も悪い
+    // 基本的にupdateTodoPropsを使う。
+    updateTodo: (state, action: PayloadAction<{ updatedTodo: TodoType }>) => {
       const { updatedTodo } = action.payload;
-      const currentCategory = state.categories[state.activeIdx];
+      const currentCategory = getCurrentCategory(state);
       const todoIdx = currentCategory.todos.findIndex(todo => todo.id === updatedTodo.id);
       currentCategory.todos[todoIdx] = updatedTodo;
     },
 
-    openTodo: (state, action) => {
-      const { todoId } = action.payload;
-      const currentCategory = state.categories[state.activeIdx];
-      const todoIdx = currentCategory.todos.findIndex(todo => todo.id === todoId);
-      const targetTodo = currentCategory.todos[todoIdx];
-      targetTodo.isOpen = true;
-    },
-
-    closeTodo: (state, action) => {
-      const { todoId } = action.payload;
-      const currentCategory = state.categories[state.activeIdx];
-      const todoIdx = currentCategory.todos.findIndex(todo => todo.id === todoId);
-      const targetTodo = currentCategory.todos[todoIdx];
-      targetTodo.isOpen = false;
-    },
-
-    replaceTodos: (state, action) => {
+    // 並び替え、dnd-kitと連携して使う
+    replaceTodos: (state, action: PayloadAction<{ oldIdx: number; newIdx: number }>) => {
       const { oldIdx, newIdx } = action.payload;
-      console.log("state.categories: ", state.categories);
-      const currentCategory = state.categories[state.activeIdx];
+      const currentCategory = getCurrentCategory(state);
       const targetTodos = currentCategory.todos;
       const newTodos = arrayMove(targetTodos, oldIdx, newIdx);
       currentCategory.todos = newTodos;
     },
 
-    updateTodoTitle: (state, action) => {
-      const { todoId, newTitle } = action.payload;
-      const currentCategory = state.categories[state.activeIdx];
-      const todoIdx = currentCategory.todos.findIndex(todo => todo.id === todoId);
-      const targetTodo = currentCategory.todos[todoIdx];
-      targetTodo.title = newTitle;
+    // 複数propsにも対応
+    // updateに{title: 'new title', detail: 'new detail'}を指定すれば、titleとdetailが更新される
+    updateTodoProps: (state, action: PayloadAction<{ todoId: string; update: Partial<TodoType> }>) => {
+      const { todoId, update } = action.payload;
+      const targetTodo = getTargetTodo(state, todoId);
+      Object.assign(targetTodo, update);
     },
 
-    updateTodoDetail: (state, action) => {
-      const { todoId, newDetail } = action.payload;
-      const currentCategory = state.categories[state.activeIdx];
-      const todoIdx = currentCategory.todos.findIndex(todo => todo.id === todoId);
-      const targetTodo = currentCategory.todos[todoIdx];
-      targetTodo.detail = newDetail;
-    },
-
-    updateTodoStatus: (state, action) => {
-      const { todoId, newStatus } = action.payload;
-      const currentCategory = state.categories[state.activeIdx];
-      const todoIdx = currentCategory.todos.findIndex(todo => todo.id === todoId);
-      const targetTodo = currentCategory.todos[todoIdx];
-      targetTodo.status = newStatus;
-    },
-
-    updateTodoPriority: (state, action) => {
-      const { todoId, newPriority } = action.payload;
-      const currentCategory = state.categories[state.activeIdx];
-      const todoIdx = currentCategory.todos.findIndex(todo => todo.id === todoId);
-      const targetTodo = currentCategory.todos[todoIdx];
-      targetTodo.priority = newPriority;
-    },
-
-    // updateTodoDeadline: (state, action) => {
-    //   const { todoId, newDeadline } = action.payload;
-    //   const currentCategory = state.categories[state.activeIdx];
-    //   const todoIdx = currentCategory.todos.findIndex(todo => todo.id === todoId);
-    //   const targetTodo = currentCategory.todos[todoIdx];
-    //   targetTodo.deadline = newDeadline;
-    // },
-
-    addTodo: (state, action) => {
+    addTodo: (state, action: PayloadAction<TodoType>) => {
       const newTodo = action.payload;
-      // push も mutable だけど、immer が対応してくれるのかな？、まあ、エラーが出るかも。
-      state.categories[state.activeIdx].todos.push(newTodo);
+      state.categoriesEntity[state.activeIdx].todos.push(newTodo);
     },
 
-    archiveTodo: (state, action) => {
-      const todoId = action.payload;
-      const currentCategory = state.categories[state.activeIdx];
-      const todoIdx = currentCategory.todos.findIndex(todo => todo.id === todoId);
-      const targetTodo = currentCategory.todos[todoIdx];
-      targetTodo.isArchived = true;
-    },
-
-    removeTodo: (state, action) => {
-      const todoId = action.payload;
-      const currentCategory = state.categories[state.activeIdx];
+    removeTodo: (state, action: PayloadAction<{ todoId: string }>) => {
+      const { todoId } = action.payload;
+      const currentCategory = getCurrentCategory(state);
       const newTodos = currentCategory.todos.filter(todo => todo.id !== todoId);
       currentCategory.todos = newTodos;
     },
@@ -135,16 +103,9 @@ export const {
   updateCategories,
   updateCategoryName,
   updateTodo,
-  openTodo,
-  closeTodo,
   replaceTodos,
-  updateTodoTitle,
-  updateTodoDetail,
-  updateTodoStatus,
-  updateTodoPriority,
-  // updateTodoDeadline,
+  updateTodoProps,
   addTodo,
-  archiveTodo,
   removeTodo,
 } = categories.actions;
 

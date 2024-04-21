@@ -31,16 +31,14 @@
 
 
 /* --- react/styled-components --- */
-import React, { FC, useContext } from 'react';
+import React, { FC } from 'react';
 import styled from 'styled-components';
-/* --- providers/contexts -------- */
-import { CategoriesContext } from '../../../providers/CategoriesProvider';
+/* --- redux --------------------- */
+import { useCategoriesSelector } from '../../../providers/store';
 /* --- child components ---------- */
 import { CategoryContainer } from './category/CategoryContainer';
 /* --- dev ----------------------- */
 import { isDebugMode } from '../../../utils/adminDebugMode';
-import { useSelector } from 'react-redux';
-import { RootState } from '../../../providers/store';
 
 
 // === TYPE =========================================================== //
@@ -54,8 +52,7 @@ interface CategoriesType {}
 // === COMPONENT ====================================================== //
 export const Categories: FC<CategoriesType> = (props) => {
   const {} = props;
-  // const { activeIdx, categories } = useContext(CategoriesContext);
-  const { activeIdx, categories } = useSelector((state: RootState) => state.categories);
+  const { activeIdx, categoriesEntity: categories } = useCategoriesSelector();
 
   return (
     <StyledUl $activeIndex={ activeIdx }>

@@ -44,7 +44,7 @@
 import React, { FC, useContext } from 'react';
 import styled from 'styled-components';
 /* --- providers/contexts -------- */
-import { CategoriesContext } from '../../../../../providers/CategoriesProvider';
+import { CategoriesContext } from '../../../../../providers/CategoriesProvider_ignore';
 /* --- types --------------------- */
 import { TodoType } from '../../../../../types/Categories';
 /* --- dev ----------------------- */
@@ -55,32 +55,25 @@ import { getFormattedDate } from '../../../../../utils/dateFormatter';
 
 // これはもはやフックスである必要はない。ただの関数でいい。これもutilsに入れるべきかもしれない。
 const useFormattedInfoEmitter = (todo: TodoType) => {
-  // const { checkIsCompleted, checkIsExpired, deadlineFormatters, getFormattedDate } = useContext(CategoriesContext);
-  // const { convertToDisplayFormat: getFormattedDeadline } = deadlineFormatters;
+
   const { checkIsExpired, checkIsCompleted } = statusCheckers;
   const { toDispDeadline } = DLFormatters;
   
-  // need to format
+  // format
   const isExpired            = checkIsExpired(todo);
   const isCompleted          = checkIsCompleted(todo);
   const formattedDeadline    = toDispDeadline(todo);
   const formattedCreatedDate = getFormattedDate(todo.createdDate);
   const formattedUpdatedDate = getFormattedDate(todo.updatedDate);
-  // others
-  // const { id, status, priority, isArchived, isOpen } = todo;
 
   return {
-    // id,
     ...todo,
+
     isExpired,
     isCompleted,
     deadline: formattedDeadline,
     createdDate: formattedCreatedDate,
     updatedDate: formattedUpdatedDate,
-    // status,
-    // priority,
-    // isArchived,
-    // isOpen,
   };
 
 };

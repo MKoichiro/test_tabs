@@ -48,7 +48,7 @@ export interface TodoType {
 
 export interface CategoryType {
 	id: string;
-	isActive: boolean;
+	// isActive: boolean;
 	createdDate: Date;
 	updatedDate: Date;
 	isArchived: boolean;

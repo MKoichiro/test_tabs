@@ -9,7 +9,7 @@ export const storedActiveIdx = 0;
 export const storedCategories: CategoryType[] = [
   {
     id: generateUUID(),
-		isActive: true,
+		// isActive: true,
     createdDate: new Date('2024/02/24'),
     updatedDate: new Date('2024/02/25'),
     isArchived: false,
@@ -110,7 +110,7 @@ export const storedCategories: CategoryType[] = [
   },
   {
     id: generateUUID(),
-		isActive: false,
+		// isActive: false,
     createdDate: new Date('2024/01/24'),
     updatedDate: new Date('2024/01/25'),
     isArchived: false,
@@ -157,7 +157,7 @@ export const storedCategories: CategoryType[] = [
   },
   {
     id: generateUUID(),
-		isActive: false,
+		// isActive: false,
     createdDate: new Date('2024/01/24'),
     updatedDate: new Date('2024/01/25'),
     isArchived: false,
@@ -204,7 +204,7 @@ export const storedCategories: CategoryType[] = [
   },
   {
     id: generateUUID(),
-		isActive: false,
+		// isActive: false,
     createdDate: new Date('2024/01/24'),
     updatedDate: new Date('2024/01/25'),
     isArchived: false,
@@ -251,7 +251,7 @@ export const storedCategories: CategoryType[] = [
   },
 	{
     id: generateUUID(),
-		isActive: false,
+		// isActive: false,
     createdDate: new Date('2024/01/24'),
     updatedDate: new Date('2024/01/25'),
     isArchived: true,
@@ -298,7 +298,7 @@ export const storedCategories: CategoryType[] = [
   },
 	{
     id: generateUUID(),
-		isActive: false,
+		// isActive: false,
     createdDate: new Date('2024/01/24'),
     updatedDate: new Date('2024/01/25'),
     isArchived: false,
@@ -345,7 +345,7 @@ export const storedCategories: CategoryType[] = [
   },
 	{
     id: generateUUID(),
-		isActive: false,
+		// isActive: false,
     createdDate: new Date('2024/01/24'),
     updatedDate: new Date('2024/01/25'),
     isArchived: true,
@@ -392,7 +392,7 @@ export const storedCategories: CategoryType[] = [
   },
 	{
     id: generateUUID(),
-		isActive: false,
+		// isActive: false,
     createdDate: new Date('2024/01/24'),
     updatedDate: new Date('2024/01/25'),
     isArchived: true,
@@ -439,7 +439,7 @@ export const storedCategories: CategoryType[] = [
   },
 	{
     id: generateUUID(),
-		isActive: false,
+		// isActive: false,
     createdDate: new Date('2024/01/24'),
     updatedDate: new Date('2024/01/25'),
     isArchived: false,
@@ -486,7 +486,7 @@ export const storedCategories: CategoryType[] = [
   },
   {
     id: generateUUID(),
-		isActive: false,
+		// isActive: false,
     createdDate: new Date('2024/01/24'),
     updatedDate: new Date('2024/01/25'),
     isArchived: false,
@@ -533,7 +533,7 @@ export const storedCategories: CategoryType[] = [
   },
   {
     id: generateUUID(),
-		isActive: false,
+		// isActive: false,
     createdDate: new Date('2024/01/24'),
     updatedDate: new Date('2024/01/25'),
     isArchived: false,

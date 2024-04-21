@@ -41,10 +41,11 @@
 
 
 /* --- react/styled-components --- */
-import React, { FC, useContext, useRef } from 'react';
+import React, { FC, useRef } from 'react';
 import styled from 'styled-components';
-/* --- providers/contexts -------- */
-// import { CategoriesContext } from '../../../../providers/CategoriesProvider';
+/* --- redux --------------------- */
+import { useDispatch, useCategoriesSelector } from '../../../../providers/store';
+import { switchCategory, updateCategories } from '../../../../providers/slices/categories';
 /* --- types --------------------- */
 import { TodoType, CategoryType, notSet } from '../../../../types/Categories';
 /* --- react-hook-form ----------- */
@@ -53,9 +54,6 @@ import { useForm } from 'react-hook-form';
 import { generateUUID } from '../../../../utils/generateUUID';
 /* --- dev ----------------------- */
 import { isDebugMode } from '../../../../utils/adminDebugMode';
-import { useDispatch, useSelector } from 'react-redux';
-import { RootState } from '../../../../providers/store';
-import { switchCategory, updateCategories } from '../../../../providers/slices/categories';
 
 
 // === TYPE =========================================================== //
@@ -87,8 +85,7 @@ interface DataType {
 export const CreateNewCategory: FC<CreateNewCategoryType> = (props) => {
   const {} = props;
 
-  // const { categories, dispatchCategoriesChange } = useContext(CategoriesContext);
-  const categories = useSelector((state: RootState) => state.categories.categories);
+  const { categoriesEntity: categories } = useCategoriesSelector();
   const dispatch = useDispatch();
 
   const { register, handleSubmit, formState: { errors } } = useForm<DataType>({ mode: 'onChange' });
@@ -112,7 +109,7 @@ export const CreateNewCategory: FC<CreateNewCategoryType> = (props) => {
 
     const newTodos: CategoryType = {
       id: generateUUID(),
-      isActive: false,
+      // isActive: false,
       createdDate: now,
       updatedDate: now,
       isArchived: false,

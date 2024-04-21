@@ -48,6 +48,9 @@ import { TodoDetail } from './TodoDetail';
 import { TodoHeader } from './TodoHeader';
 // slidable
 import { Slidable, SlidableMain, SlidableHidden } from '../../../../../functions/slidable/Components';
+/* --- redux --------------------- */
+import { useDispatch } from 'react-redux';
+import { updateTodoProps } from '../../../../../providers/slices/categories';
 /* --- providers/contexts -------- */
 import { useCardViewOpener } from '../../../../../providers/CardViewProvider';
 /* --- types --------------------- */
@@ -62,11 +65,8 @@ import { faTrashCan, faCircleInfo, faCheck } from '@fortawesome/free-solid-svg-i
 /* --- dnd-kit ------------------- */
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-// import { CategoriesContext } from '../../../../../providers/CategoriesProvider';
 /* --- dev ----------------------- */
 import { isDebugMode } from '../../../../../utils/adminDebugMode';
-import { useDispatch } from 'react-redux';
-import { updateTodoPriority, updateTodoStatus } from '../../../../../providers/slices/categories';
 
 
 // === CONSTANT Against RENDERING ===================================== //
@@ -104,7 +104,6 @@ export const ActiveTodo: FC<PropsType> = (props) => {
   const currentId = todo.id;
 
   // contexts
-  // const { dispatchCategoriesChange } = useContext(CategoriesContext);
   const dispatch = useDispatch();
   const { cardViewOpen } = useCardViewOpener();
 
@@ -133,12 +132,10 @@ export const ActiveTodo: FC<PropsType> = (props) => {
     cardViewOpen(liIdx);
   };
   const handleCompleteBtnClick = () => {
-    // dispatchCategoriesChange({ type: 'change_todo_status', todoId: currentId, newStatus: 'completed' });
-    dispatch(updateTodoStatus({ todoId: currentId, newStatus: 'completed' }));
+    dispatch(updateTodoProps({ todoId: currentId, update: {status: 'completed'} }));
   }
   const handleArchiveBtnClick = () => {
-    // dispatchCategoriesChange({ type: 'archive_todo', todoId: currentId });
-    dispatch(updateTodoPriority({ todoId: currentId, newPriority: 'archived' }));
+    dispatch(updateTodoProps({ todoId: currentId, update: {isArchived: true} }));
   }
 
 

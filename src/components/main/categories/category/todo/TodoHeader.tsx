@@ -60,7 +60,7 @@ import { SyntheticListenerMap } from '@dnd-kit/core/dist/hooks/utilities';
 import { isDebugMode } from '../../../../../utils/adminDebugMode';
 import { statusCheckers } from '../../../../../utils/todoPropsHandler';
 import { useDispatch } from 'react-redux';
-import { closeTodo, openTodo } from '../../../../../providers/slices/categories';
+import { updateTodoProps } from '../../../../../providers/slices/categories';
 
 
 // === TYPE =========================================================== //
@@ -100,8 +100,8 @@ export const TodoHeader: FC<TodoHeaderType> = (props) => {
   // 'isOpen' property の編集を実行 → detail の表示/非表示を切り替える
   const toggleOpen = () => {
     isOpen
-    ? dispatch(closeTodo({ todoId: todo.id }))
-    : dispatch(openTodo({ todoId: todo.id }));
+    ? dispatch(updateTodoProps({ todoId: todo.id, update: { isOpen: false } }))
+    : dispatch(updateTodoProps({ todoId: todo.id, update: { isOpen: true } }));
   };
 
 

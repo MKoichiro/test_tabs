@@ -48,8 +48,8 @@ import { ActiveCategory } from './category/ActiveCategory';
 import { ArchivedCategory } from './category/ArchivedCategory';
 import { GhostCategory } from './category/GhostCategory';
 /* --- redux --------------------- */
-import { useDispatch, useCategoriesSelector } from '../../../../providers/store';
-import { switchCategory, updateCategories } from '../../../../providers/slices/categoriesSlice';
+import { useDispatch, useCategoriesSelector } from '../../../../providers/redux/store';
+import { switchCategory, updateCategories } from '../../../../providers/redux/slices/categoriesSlice';
 /* --- dnd-kit ------------------- */
 import {
   DndContext,

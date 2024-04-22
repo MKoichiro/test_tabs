@@ -46,15 +46,15 @@ import styled from 'styled-components';
 /* --- child components ---------- */
 import { CardTodo } from './CardTodo';
 /* --- providers/contexts -------- */
-import { useCardCarouselRegister } from '../../../../../providers/CardView';
+import { useCardCarouselRegister } from '../../../../../providers/context_api/CardView';
 /* --- types --------------------- */
-import { CategoryType } from '../../../../../types/Categories';
+import { CategoryType } from '../../../../../providers/types/categories';
 /* --- utils --------------------- */
 /* --- dev ----------------------- */
 import { isDebugMode } from '../../../../../utils/adminDebugMode';
 
-import { getCardCarouselStyles } from '../../../../../providers/CardView';
-import { ScrollableElm } from '../../../../../providers/ModalElmsRef';
+import { getCardCarouselStyles } from '../../../../../providers/context_api/CardView';
+import { ScrollableElm } from '../../../../../providers/types/modal';
 
 
 // === TYPE =========================================================== //

@@ -47,16 +47,15 @@ import styled from 'styled-components';
 import { CreateNewCategory } from './CreateNewCategory';
 import { Categories } from './Categories';
 /* --- providers/contexts -------- */
-import { Modal } from '../../../../providers/ModalElmsRef';
-import { modalNames } from '../../../../providers/modalNames';
+import { Modal } from '../../../common/modal/Modal';
+import { modalNames } from '../../../common/modal/settings';
 /* --- font awesome -------------- */
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faXmark } from '@fortawesome/free-solid-svg-icons';
 /* --- dev ----------------------- */
 import { isDebugMode } from '../../../../utils/adminDebugMode';
-import { useDispatch, useModalsSelector } from '../../../../providers/store';
-import { useModalCloser, useModalRegistrant } from '../../../../providers/ModalElmsRef';
-import { register } from '../../../../providers/slices/modalSlice';
+import { useModalsSelector } from '../../../../providers/redux/store';
+import { useModalCloser, useModalRegistrant } from '../../../../providers/context_api/ModalElmsRef';
 
 
 // === TYPE =========================================================== //

@@ -44,9 +44,9 @@
 import React, { FC, useContext } from 'react';
 import styled from 'styled-components';
 /* --- providers/contexts -------- */
-import { CategoriesContext } from '../../../../../providers/CategoriesProvider_ignore';
+import { CategoriesContext } from '../../../../../../trash/CategoriesProvider_ignore';
 /* --- types --------------------- */
-import { TodoType } from '../../../../../types/Categories';
+import { TodoType } from '../../../../../providers/types/categories';
 /* --- dev ----------------------- */
 import { isDebugMode } from '../../../../../utils/adminDebugMode';
 import { DLFormatters, statusCheckers } from '../../../../../utils/todoPropsHandler';

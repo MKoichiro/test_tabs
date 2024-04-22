@@ -44,10 +44,10 @@
 import React, { FC, useEffect, useRef, } from 'react';
 import styled from 'styled-components';
 /* --- redux --------------------- */
-import { useCategoriesSelector, useDispatch } from '../../../providers/store';
+import { useCategoriesSelector, useDispatch } from '../../../providers/redux/store';
 /* --- providers/contexts -------- */
-import { useModalOpener } from '../../../providers/ModalElmsRef';
-import { modalNames } from '../../../providers/modalNames';
+import { useModalOpener } from '../../../providers/context_api/ModalElmsRef';
+import { modalNames } from '../../common/modal/settings';
 /* --- font awesome -------------- */
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPen } from '@fortawesome/free-solid-svg-icons';
@@ -56,7 +56,7 @@ import { Tab } from './Tab';
 import { EditCategoriesModal } from './edit_categories_modal/EditCategoriesModal';
 /* --- dev ----------------------- */
 import { isDebugMode } from '../../../utils/adminDebugMode';
-import { register } from '../../../providers/slices/modalSlice';
+import { register } from '../../../providers/redux/slices/modalSlice';
 
 
 // === TYPE =========================================================== //

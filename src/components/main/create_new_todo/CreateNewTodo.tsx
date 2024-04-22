@@ -40,14 +40,13 @@
 */
 
 /* --- react/styled-components --- */
-import React, { FC, useContext, useRef } from 'react';
+import React, { FC, useRef } from 'react';
 import styled from 'styled-components';
 /* --- child components ---------- */
 import { FormParts } from './FormParts';
 /* --- providers/contexts -------- */
-// import { CategoriesContext } from '../../../providers/CategoriesProvider';
 /* --- types --------------------- */
-import { StatusUnionType, PriorityUnionType, TodoType } from '../../../types/Categories';
+import { StatusUnionType, PriorityUnionType, TodoType } from '../../../providers/types/categories';
 /* --- utils --------------------- */
 import { generateUUID } from '../../../utils/generateUUID';
 /* --- react-hook-form ----------- */
@@ -58,7 +57,7 @@ import { defaultValues, statusOptions, priorityOptions, placeholders } from './F
 import { isDebugMode } from '../../../utils/adminDebugMode';
 import { useDispatch } from 'react-redux';
 import { DLFormatters } from '../../../utils/todoPropsHandler';
-import { addTodo } from '../../../providers/slices/categoriesSlice';
+import { addTodo } from '../../../providers/redux/slices/categoriesSlice';
 
 
 // === TYPE =========================================================== //
@@ -81,8 +80,7 @@ interface InputDataType {
 
 export const CreateNewTodo: FC<CreateNewTodoType> = (props) => {
   const {} = props;
-  // const { dispatchCategoriesChange, deadlineFormatters } = useContext(CategoriesContext);
-  // const { convertToStoredFormat: deadlineFormatter } = deadlineFormatters;
+
   const dispatch = useDispatch();
   const { toSaveDeadline } = DLFormatters;
 
@@ -127,7 +125,6 @@ export const CreateNewTodo: FC<CreateNewTodoType> = (props) => {
       detail:           inputData.detail || '',
       isOpen:                             true,
     };
-    // dispatchCategoriesChange({ type: 'add_new_todo', newTodo });
     dispatch(addTodo(newTodo));
   }
   // --------------------------- executeSubmit の helper 関数 --- //

@@ -47,7 +47,7 @@ import styled from 'styled-components';
 import { TodoDetail } from './TodoDetail';
 import { TodoHeader } from './TodoHeader';
 /* --- types --------------------- */
-import { TodoType } from '../../../../../types/Categories';
+import { TodoType } from '../../../../../providers/types/categories';
 /* --- dev ----------------------- */
 import { isDebugMode } from '../../../../../utils/adminDebugMode';
 

@@ -46,7 +46,7 @@ import styled from 'styled-components'
 /* --- providers/contexts -------- */
 // import { CategoriesContext } from '../../../../../providers/CategoriesProvider';
 /* --- types --------------------- */
-import { TodoType } from '../../../../../types/Categories';
+import { TodoType } from '../../../../../providers/types/categories';
 /* --- hooks --------------------- */
 import { useImmediateEditable } from '../../../../../functions/immediateEditable/Hooks';
 /* --- font awesome -------------- */
@@ -60,7 +60,7 @@ import { SyntheticListenerMap } from '@dnd-kit/core/dist/hooks/utilities';
 import { isDebugMode } from '../../../../../utils/adminDebugMode';
 import { statusCheckers } from '../../../../../utils/todoPropsHandler';
 import { useDispatch } from 'react-redux';
-import { updateTodoProps } from '../../../../../providers/slices/categoriesSlice';
+import { updateTodoProps } from '../../../../../providers/redux/slices/categoriesSlice';
 
 
 // === TYPE =========================================================== //

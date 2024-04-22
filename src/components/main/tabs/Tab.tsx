@@ -44,8 +44,8 @@
 import React, { RefObject, FC } from 'react';
 import styled from 'styled-components';
 /* --- redux --------------------- */
-import { useDispatch, useCategoriesSelector } from '../../../providers/store';
-import { switchCategory } from '../../../providers/slices/categoriesSlice';
+import { useDispatch, useCategoriesSelector } from '../../../providers/redux/store';
+import { switchCategory } from '../../../providers/redux/slices/categoriesSlice';
 /* --- utils --------------------- */
 import { vw2px } from '../../../utils/converters';
 /* --- dev ----------------------- */

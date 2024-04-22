@@ -44,7 +44,7 @@
 import React, { LegacyRef, forwardRef } from 'react';
 import styled from 'styled-components';
 /* --- types --------------------- */
-import { CategoryType } from '../../../../../types/Categories';
+import { CategoryType } from '../../../../../providers/types/categories';
 /* --- styles -------------------- */
 import { categoryCommonStyles, CategoryCommonStylesType } from './CategoryCommonStyles';
 /* --- material icons ------------ */

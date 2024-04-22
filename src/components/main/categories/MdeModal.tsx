@@ -44,9 +44,9 @@
 import React, { FC, useContext } from 'react';
 import styled from 'styled-components';
 /* --- redux --------------------- */
-import { useCategoriesSelector } from '../../../providers/store';
+import { useCategoriesSelector } from '../../../providers/redux/store';
 /* --- providers/contexts -------- */
-import { MdeContext } from '../../../providers/Mde';
+import { MdeContext } from '../../../providers/context_api/Mde';
 /* --- easymde ------------------- */
 import SimpleMdeReact from 'react-simplemde-editor';
 import "easymde/dist/easymde.min.css";

@@ -48,7 +48,7 @@ import { Todo } from "./todo/GhostTodo";
 /* --- providers/contexts -------- */
 // import { CategoriesContext } from "../../../../providers/CategoriesProvider";
 /* --- types --------------------- */
-import { CategoryType } from "../../../../types/Categories";
+import { CategoryType } from "../../../../providers/types/categories";
 /* --- utils --------------------- */
 import { vw2px, getCurrentContentsVw } from "../../../../utils/converters";
 /* --- dnd-kit ------------------- */
@@ -74,7 +74,7 @@ import {
 /* --- dev ----------------------- */
 import { isDebugMode } from "../../../../utils/adminDebugMode";
 import { useDispatch } from "react-redux";
-import { replaceTodos } from "../../../../providers/slices/categoriesSlice";
+import { replaceTodos } from "../../../../providers/redux/slices/categoriesSlice";
 
 
 const contentWidth = vw2px(getCurrentContentsVw());

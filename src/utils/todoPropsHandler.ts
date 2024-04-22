@@ -1,4 +1,4 @@
-import { CategoryType, TodoType, DeadlineType, notSet } from '../types/Categories';
+import { CategoryType, TodoType, DeadlineType, notSet } from '../providers/types/categories';
 import { getFormattedDate, getFormattedTime } from './dateFormatter';
 import DOMPurify from 'dompurify';
 const marked = require('marked');

@@ -39,7 +39,7 @@
 - copilotからの提案をここに箇条書きで記述する。
 */
 
-import { notSet, priorityLiterals, statusLiterals } from '../../../types/Categories';
+import { notSet, priorityLiterals, statusLiterals } from '../../../providers/types/categories';
 /* --- dev ----------------------- */
 import { isDebugMode } from '../../../utils/adminDebugMode';
 

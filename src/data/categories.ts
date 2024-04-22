@@ -1,4 +1,4 @@
-import { CategoryType } from "../types/Categories";
+import { CategoryType } from "../providers/types/categories";
 import { generateUUID } from "../utils/generateUUID";
 
 const TODOS_KEY = 'categories';

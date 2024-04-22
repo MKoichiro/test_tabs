@@ -46,15 +46,15 @@ import styled from 'styled-components';
 /* --- child components ---------- */
 import { CardsCarousel } from './CardCarousel';
 /* --- providers/contexts -------- */
-import { Modal } from '../../../../../providers/ModalElmsRef';
-import { modalNames } from '../../../../../providers/modalNames';
+import { Modal } from '../../../../common/modal/Modal';
+import { modalNames } from '../../../../common/modal/settings';
 /* --- types --------------------- */
-import { CategoryType } from '../../../../../types/Categories';
+import { CategoryType } from '../../../../../providers/types/categories';
 /* --- dev ----------------------- */
 import { isDebugMode } from '../../../../../utils/adminDebugMode';
-import { useDispatch, useModalsSelector } from '../../../../../providers/store';
-import { register } from '../../../../../providers/slices/modalSlice';
-import { useModalRegistrant } from '../../../../../providers/ModalElmsRef';
+import { useDispatch, useModalsSelector } from '../../../../../providers/redux/store';
+import { register } from '../../../../../providers/redux/slices/modalSlice';
+import { useModalRegistrant } from '../../../../../providers/context_api/ModalElmsRef';
 
 
 // === TYPE =========================================================== //

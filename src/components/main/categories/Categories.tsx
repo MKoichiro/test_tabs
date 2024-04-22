@@ -34,7 +34,7 @@
 import React, { FC } from 'react';
 import styled from 'styled-components';
 /* --- redux --------------------- */
-import { useCategoriesSelector } from '../../../providers/store';
+import { useCategoriesSelector } from '../../../providers/redux/store';
 /* --- child components ---------- */
 import { CategoryContainer } from './category/CategoryContainer';
 /* --- dev ----------------------- */

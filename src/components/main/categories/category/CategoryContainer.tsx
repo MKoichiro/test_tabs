@@ -46,9 +46,9 @@ import styled from "styled-components";
 /* --- child components ---------- */
 import { Category } from "./Category";
 import { CardsContainer } from "./card_view/CardModal";
-import { CategoryType } from "../../../../types/Categories";
+import { CategoryType } from "../../../../providers/types/categories";
 /* --- redux --------------------- */
-import { useCategoriesSelector } from "../../../../providers/store";
+import { useCategoriesSelector } from "../../../../providers/redux/store";
 /* --- dev ----------------------- */
 import { isDebugMode } from "../../../../utils/adminDebugMode";
 

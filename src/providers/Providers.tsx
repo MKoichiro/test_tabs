@@ -1,9 +1,9 @@
 import React, { FC, ReactNode } from "react";
-import { Mde } from "./Mde";
-import { ModalElmsRef } from "./ModalElmsRef";
-import { CardView } from "./CardView";
+import { Mde } from "./context_api/Mde";
+import { ModalElmsRef } from "./context_api/ModalElmsRef";
+import { CardView } from "./context_api/CardView";
 import { Provider } from "react-redux";
-import { store } from "./store";
+import { store } from "./redux/store";
 
 
 interface ProvidersProps {

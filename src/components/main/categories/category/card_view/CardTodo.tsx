@@ -43,13 +43,13 @@
 import React, { FC } from 'react'
 import styled from 'styled-components'
 /* --- types --------------------- */
-import { TodoType } from '../../../../../types/Categories';
-import { ScrollableElm } from '../../../../../providers/ModalElmsRef';
+import { TodoType } from '../../../../../providers/types/categories';
+import { ScrollableElm } from '../../../../../providers/types/modal';
 /* --- dev ----------------------- */
 import { isDebugMode } from '../../../../../utils/adminDebugMode';
-import { useCardScroll } from '../../../../../providers/CardView';
+import { useCardScroll } from '../../../../../providers/context_api/CardView';
 
-import { getCardCarouselStyles } from '../../../../../providers/CardView';
+import { getCardCarouselStyles } from '../../../../../providers/context_api/CardView';
 
 
 // === TYPE =========================================================== //

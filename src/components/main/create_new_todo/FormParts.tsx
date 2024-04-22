@@ -47,7 +47,7 @@
 import React, { FC, MutableRefObject } from 'react';
 import styled from 'styled-components';
 /* --- types --------------------- */
-import { StatusLiteralsType, PriorityLiteralsType } from '../../../types/Categories';
+import { StatusLiteralsType, PriorityLiteralsType } from '../../../providers/types/categories';
 /* --- react-hook-form ----------- */ /* の型 */
 import { FieldValues, UseFormRegister } from 'react-hook-form';
 /* --- dev ----------------------- */

@@ -44,10 +44,10 @@
 import React, { FC, useRef } from 'react';
 import styled from 'styled-components';
 /* --- redux --------------------- */
-import { useDispatch, useCategoriesSelector } from '../../../../providers/store';
-import { switchCategory, updateCategories } from '../../../../providers/slices/categoriesSlice';
+import { useDispatch, useCategoriesSelector } from '../../../../providers/redux/store';
+import { switchCategory, updateCategories } from '../../../../providers/redux/slices/categoriesSlice';
 /* --- types --------------------- */
-import { TodoType, CategoryType, notSet } from '../../../../types/Categories';
+import { TodoType, CategoryType, notSet } from '../../../../providers/types/categories';
 /* --- react-hook-form ----------- */
 import { useForm } from 'react-hook-form';
 /* --- utils --------------------- */

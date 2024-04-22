@@ -46,9 +46,9 @@ import styled from 'styled-components';
 /* --- child components ---------- */
 import { InfoTable } from './InfoTable';
 /* --- providers/contexts -------- */
-import { MdeContext } from '../../../../../providers/Mde';
+import { MdeContext } from '../../../../../providers/context_api/Mde';
 /* --- types --------------------- */
-import { TodoType } from '../../../../../types/Categories';
+import { TodoType } from '../../../../../providers/types/categories';
 /* --- utils --------------------- */
 import { scrollToRef } from '../../../../../utils/smoothScrollToRef';
 import { getSanitizedDetail } from '../../../../../utils/todoPropsHandler';

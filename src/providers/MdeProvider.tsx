@@ -3,7 +3,7 @@ import SimpleMDE, { ToolbarIcon, Options } from 'easymde';
 import { convertRemToPx } from '../utils/converters';
 
 import { useDispatch, useCategoriesSelector } from './store';
-import { updateTodoProps } from './slices/categories';
+import { updateTodoProps } from './slices/categoriesSlice';
 import { preventScroll, reviveScroll } from '../utils/scrollBlock'; 
 import { isDebugMode } from '../utils/adminDebugMode';
 

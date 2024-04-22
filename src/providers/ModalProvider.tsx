@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import styled, { css } from 'styled-components';
+import styled from 'styled-components';
 
 import { createContext, useContext, useRef, useReducer } from 'react';
 import { FC, MutableRefObject, ReactNode } from 'react';
@@ -249,7 +249,6 @@ export const useModalDeclarer = (name: ModalName) => {
 // 2, 3. useModalOpener, useModalCloser: open/close btn を含むコンポーネントで使用
 export const useModalOpener = (name: ModalName) => {
   const { dispatchOpen } = useContext(ModalContext);
-  // console.log(name);
   return { openModal: () => { dispatchOpen(name) } };
 };
 export const useModalCloser = (name: ModalName) => {

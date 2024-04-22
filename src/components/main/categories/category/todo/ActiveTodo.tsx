@@ -50,7 +50,7 @@ import { TodoHeader } from './TodoHeader';
 import { Slidable, SlidableMain, SlidableHidden } from '../../../../../functions/slidable/Components';
 /* --- redux --------------------- */
 import { useDispatch } from 'react-redux';
-import { updateTodoProps } from '../../../../../providers/slices/categories';
+import { updateTodoProps } from '../../../../../providers/slices/categoriesSlice';
 /* --- providers/contexts -------- */
 import { useCardViewOpener } from '../../../../../providers/CardViewProvider';
 /* --- types --------------------- */

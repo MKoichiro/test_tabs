@@ -45,7 +45,7 @@ import React, { FC, useRef } from 'react';
 import styled from 'styled-components';
 /* --- redux --------------------- */
 import { useDispatch, useCategoriesSelector } from '../../../../providers/store';
-import { switchCategory, updateCategories } from '../../../../providers/slices/categories';
+import { switchCategory, updateCategories } from '../../../../providers/slices/categoriesSlice';
 /* --- types --------------------- */
 import { TodoType, CategoryType, notSet } from '../../../../types/Categories';
 /* --- react-hook-form ----------- */

@@ -60,7 +60,7 @@ import { SyntheticListenerMap } from '@dnd-kit/core/dist/hooks/utilities';
 import { isDebugMode } from '../../../../../utils/adminDebugMode';
 import { statusCheckers } from '../../../../../utils/todoPropsHandler';
 import { useDispatch } from 'react-redux';
-import { updateTodoProps } from '../../../../../providers/slices/categories';
+import { updateTodoProps } from '../../../../../providers/slices/categoriesSlice';
 
 
 // === TYPE =========================================================== //

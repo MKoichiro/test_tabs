@@ -58,7 +58,7 @@ import { defaultValues, statusOptions, priorityOptions, placeholders } from './F
 import { isDebugMode } from '../../../utils/adminDebugMode';
 import { useDispatch } from 'react-redux';
 import { DLFormatters } from '../../../utils/todoPropsHandler';
-import { addTodo } from '../../../providers/slices/categories';
+import { addTodo } from '../../../providers/slices/categoriesSlice';
 
 
 // === TYPE =========================================================== //

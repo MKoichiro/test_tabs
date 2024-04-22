@@ -74,7 +74,7 @@ import {
 /* --- dev ----------------------- */
 import { isDebugMode } from "../../../../utils/adminDebugMode";
 import { useDispatch } from "react-redux";
-import { replaceTodos } from "../../../../providers/slices/categories";
+import { replaceTodos } from "../../../../providers/slices/categoriesSlice";
 
 
 const contentWidth = vw2px(getCurrentContentsVw());

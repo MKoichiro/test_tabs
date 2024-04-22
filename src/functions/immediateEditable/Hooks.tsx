@@ -1,7 +1,7 @@
 import { useState, useRef, FormEvent, ChangeEvent, useEffect } from 'react';
 import { CategoryType, TodoType } from '../../types/Categories';
 import { useDispatch } from 'react-redux';
-import { updateCategoryName, updateTodoProps } from '../../providers/slices/categories';
+import { updateCategoryName, updateTodoProps } from '../../providers/slices/categoriesSlice';
 
 type AttrType = 'category' | 'todo';
 type TargetType = CategoryType | TodoType;

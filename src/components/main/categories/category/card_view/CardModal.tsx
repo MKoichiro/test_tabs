@@ -46,8 +46,7 @@ import styled from 'styled-components';
 /* --- child components ---------- */
 import { CardsCarousel } from './CardCarousel';
 /* --- providers/contexts -------- */
-// import { Modal, useModalDeclarer, useModalState } from '../../../../../providers/ModalProvider';
-import { Modal } from '../../../../../providers/ModalProvider_ver2';
+import { Modal } from '../../../../../providers/ModalElmsRef';
 import { modalNames } from '../../../../../providers/modalNames';
 /* --- types --------------------- */
 import { CategoryType } from '../../../../../types/Categories';
@@ -55,7 +54,7 @@ import { CategoryType } from '../../../../../types/Categories';
 import { isDebugMode } from '../../../../../utils/adminDebugMode';
 import { useDispatch, useModalsSelector } from '../../../../../providers/store';
 import { register } from '../../../../../providers/slices/modalSlice';
-import { useModalRegistrant } from '../../../../../providers/ModalProvider_ver2';
+import { useModalRegistrant } from '../../../../../providers/ModalElmsRef';
 
 
 // === TYPE =========================================================== //
@@ -82,8 +81,6 @@ export const CardsContainer: FC<PropsType> = (props) => {
   }, []);
   const isOpen = useModalsSelector().modalStates[modalName]?.isOpen;
   const { setBasicsRef, addScrollableRef } = useModalRegistrant(modalName);
-  // const { isOpen } = useModalState(modalName);
-  // const { closeModal, basicRefs, addScrollableElm } = useModalDeclarer(modalName);
 
   return (
     <StyledModal

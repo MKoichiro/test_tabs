@@ -46,7 +46,7 @@ import styled from 'styled-components';
 /* --- redux --------------------- */
 import { useCategoriesSelector } from '../../../providers/store';
 /* --- providers/contexts -------- */
-import { MdeContext } from '../../../providers/MdeProvider';
+import { MdeContext } from '../../../providers/Mde';
 /* --- easymde ------------------- */
 import SimpleMdeReact from 'react-simplemde-editor';
 import "easymde/dist/easymde.min.css";

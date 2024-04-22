@@ -1,4 +1,4 @@
-import { ModalName } from "./ModalProvider";
+import { ModalName } from "./ModalProvider_ignore";
 
 export const modalNames: { [key: string]: ModalName } = {
   editCategories: 'edit-categories' as ModalName,

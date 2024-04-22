@@ -1,8 +1,7 @@
 import React, { FC, ReactNode } from "react";
-import { MdeProvider } from "./MdeProvider";
-// import { ModalProvider } from "./ModalProvider";
-import { ModalElmsRefProvider } from "./ModalProvider_ver2";
-import { CardViewProvider } from "./CardViewProvider";
+import { Mde } from "./Mde";
+import { ModalElmsRef } from "./ModalElmsRef";
+import { CardView } from "./CardView";
 import { Provider } from "react-redux";
 import { store } from "./store";
 
@@ -16,15 +15,13 @@ export const Providers: FC<ProvidersProps> = (props) => {
 
   return (
       <Provider store={store}>
-        {/* <ModalProvider> */}
-        <ModalElmsRefProvider>
-          <CardViewProvider>
-            <MdeProvider>
-                {children}
-            </MdeProvider>
-          </CardViewProvider>
-        </ModalElmsRefProvider>
-        {/* </ModalProvider> */}
+        <ModalElmsRef>
+          <CardView>
+            <Mde>
+              {children}
+            </Mde>
+          </CardView>
+        </ModalElmsRef>
       </Provider>
   );
 };

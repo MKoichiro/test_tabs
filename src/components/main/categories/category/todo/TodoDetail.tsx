@@ -46,7 +46,7 @@ import styled from 'styled-components';
 /* --- child components ---------- */
 import { InfoTable } from './InfoTable';
 /* --- providers/contexts -------- */
-import { MdeContext } from '../../../../../providers/MdeProvider';
+import { MdeContext } from '../../../../../providers/Mde';
 /* --- types --------------------- */
 import { TodoType } from '../../../../../types/Categories';
 /* --- utils --------------------- */

@@ -41,7 +41,7 @@
 
 
 /* --- react/styled-components --- */
-import React, { FC, useContext, useRef } from 'react';
+import React, { FC, useRef } from 'react';
 import styled from 'styled-components';
 /* --- child components ---------- */
 import { TodoDetail } from './TodoDetail';
@@ -52,7 +52,7 @@ import { Slidable, SlidableMain, SlidableHidden } from '../../../../../functions
 import { useDispatch } from 'react-redux';
 import { updateTodoProps } from '../../../../../providers/slices/categoriesSlice';
 /* --- providers/contexts -------- */
-import { useCardViewOpener } from '../../../../../providers/CardViewProvider';
+import { useCardViewOpener } from '../../../../../providers/CardView';
 /* --- types --------------------- */
 import { TodoType } from '../../../../../types/Categories';
 // slidable

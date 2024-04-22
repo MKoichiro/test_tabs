@@ -46,8 +46,7 @@ import styled from 'styled-components';
 /* --- redux --------------------- */
 import { useCategoriesSelector, useDispatch } from '../../../providers/store';
 /* --- providers/contexts -------- */
-// import { useModalOpener } from '../../../providers/ModalProvider';
-import { useModalOpener } from '../../../providers/ModalProvider_ver2';
+import { useModalOpener } from '../../../providers/ModalElmsRef';
 import { modalNames } from '../../../providers/modalNames';
 /* --- font awesome -------------- */
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -82,7 +81,7 @@ export const TabsContainer: FC<TabsProps> = (props) => {
 
   // contexts
   const { categoriesEntity: categories } = useCategoriesSelector();
-  const { openModal } = useModalOpener(modalName);
+  const openModal = useModalOpener(modalName);
 
   // register refs
   const ulRef = useRef<HTMLUListElement | null>(null);

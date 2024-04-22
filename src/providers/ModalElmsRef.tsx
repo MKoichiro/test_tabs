@@ -1,9 +1,10 @@
-import React, { useContext, useEffect } from "react";
-import { FC, MutableRefObject, ReactNode, createContext, useRef } from "react";
-import { ModalName } from "./ModalProvider";
+import React, { useContext } from "react";
 import styled from "styled-components";
+import { FC, MutableRefObject, ReactNode, createContext, useRef } from "react";
+import { ModalName } from "./ModalProvider_ignore";
 import { useDispatch } from "./store";
 import { close, open } from "./slices/modalSlice";
+import { preventScroll, reviveScroll } from "../utils/scrollBlock";
 
 type DialogElm = HTMLDialogElement | null;
 type MaskElm = HTMLDivElement | null;
@@ -21,18 +22,18 @@ interface ModalsElms {
 type ModalElmsRef = MutableRefObject<ModalsElms>;
 
 
-interface ModalElmsRefContextType {
+interface ContextType {
   modalElmsRef: ModalElmsRef;
 }
-const ModalElmsRefContext = createContext<ModalElmsRefContextType>({
+const Context = createContext<ContextType>({
   modalElmsRef: { current: {} }
 });
 
 
-interface ModalElmsRefProviderType {
+interface ProviderType {
   children: ReactNode;
 }
-export const ModalElmsRefProvider: FC<ModalElmsRefProviderType> = (props) => {
+export const ModalElmsRef: FC<ProviderType> = (props) => {
 
   const { children } = props;
   const modalElmsRef = useRef<ModalsElms>({});
@@ -40,9 +41,9 @@ export const ModalElmsRefProvider: FC<ModalElmsRefProviderType> = (props) => {
   const value = { modalElmsRef };
 
   return (
-    <ModalElmsRefContext.Provider value={value}>
+    <Context.Provider value={value}>
       {children}
-    </ModalElmsRefContext.Provider>
+    </Context.Provider>
   );
 };
 
@@ -56,7 +57,7 @@ const initialModalElms = (): ModalElms => ({
 });
 
 export const useModalRegistrant = (name: ModalName) => {
-  const { modalElmsRef } = useContext(ModalElmsRefContext);
+  const { modalElmsRef } = useContext(Context);
 
   const setDialogRef = (dialog: DialogElm) => {
     // StrictMode によるアンマウントシミュレーションではスキップ
@@ -93,24 +94,63 @@ export const useModalRegistrant = (name: ModalName) => {
 };
 
 
+const unblockScroll = (modalElms: ModalElms) => {
+  const { basics, scrollables } = modalElms;
+
+  const modalElm = basics.dialog;
+  const maskElm  = basics.mask;
+  if (!modalElm || !maskElm) { console.log('modalElm or maskElm is null'); return }
+
+  modalElm.removeEventListener('wheel', preventScroll);
+  maskElm.removeEventListener('wheel', preventScroll);
+
+  scrollables.forEach(scrollableElm => {
+    if (!scrollableElm) { console.log('scrollableElm is null'); return }
+    scrollableElm.removeEventListener('wheel', reviveScroll);
+  });
+
+  modalElm.close();
+}
+
+const blockScroll = (modalElms: ModalElms) => {
+  const { basics, scrollables } = modalElms;
+
+  const modalElm = basics.dialog;
+  const maskElm  = basics.mask;
+  if (!modalElm || !maskElm) { console.log('modalElm or maskElm is null'); return }
+  modalElm.showModal();
+
+  // 背景スクロールのブロックしつつ、scrollable要素のスクロールは許可する
+  modalElm.addEventListener('wheel', preventScroll, {passive: false});
+  maskElm.addEventListener('wheel', preventScroll, {passive: false});
+
+  scrollables.forEach(scrollableElm => {
+    if (!scrollableElm) { console.log('scrollableElm is null'); return }
+    scrollableElm.addEventListener('wheel', reviveScroll, {passive: false});
+  });
+};
+
+
+
+
 export const useModalOpener = (name: ModalName) => {
-  const { modalElmsRef } = useContext(ModalElmsRefContext);
+  const { modalElmsRef } = useContext(Context);
   const dispatch = useDispatch();
 
-  const openModal = () => {
-    modalElmsRef.current[name].basics.dialog?.showModal();
+  return () => {
+    const modalElms = modalElmsRef.current[name];
+    blockScroll(modalElms);
     dispatch(open(name));
   };
-
-  return { openModal };
 };
 
 export const useModalCloser = (name: ModalName) => {
-  const { modalElmsRef } = useContext(ModalElmsRefContext);
+  const { modalElmsRef } = useContext(Context);
   const dispatch = useDispatch();
   
   return () => {
-    modalElmsRef.current[name].basics.dialog?.close();
+    const modalElms = modalElmsRef.current[name];
+    unblockScroll(modalElms);
     dispatch(close(name));
   };
 };

@@ -9,8 +9,7 @@
 import React, { FC, MutableRefObject, ReactNode, createContext, useContext, useEffect, useRef, useState } from 'react';
 import { vw2px } from '../utils/converters';
 import { getCurrentDevice, CardCarouselMagicsType as StyleMagicsType, cardCarouselMagics } from '../data/styleMagics';
-// import { useModalOpener } from './ModalProvider';
-import { useModalOpener } from './ModalProvider_ver2';
+import { useModalOpener } from './ModalElmsRef';
 import { modalNames } from './modalNames';
 
 
@@ -25,7 +24,7 @@ switch (getCurrentDevice()) {
 
 // === TYPE =========================================================== //
 // - CONTEXT
-interface CardViewContextType {
+interface ContextType {
   activeIdx:                                                         number;
   setActiveIdx:                                         (n: number) => void;
   carouselContainerRef:    MutableRefObject<HTMLUListElement | null> | null;
@@ -40,7 +39,7 @@ interface CardViewType {
 
 
 // === CONTEXT ======================================================== //
-const CardViewContext = createContext<CardViewContextType>({
+const Context = createContext<ContextType>({
   activeIdx:                                           0,
   setActiveIdx:                                 () => {},
   carouselContainerRef:                             null,
@@ -51,7 +50,7 @@ const CardViewContext = createContext<CardViewContextType>({
 
 
 // === PROVIDER ======================================================= //
-export const CardViewProvider: FC<CardViewType> = (props) => {
+export const CardView: FC<CardViewType> = (props) => {
   const { children } = props;
 
   // --- Manegiment Items --------------------------------------- //
@@ -131,7 +130,7 @@ export const CardViewProvider: FC<CardViewType> = (props) => {
     styleFactors,
   };
 
-  return <CardViewContext.Provider value={value} children={children} />
+  return <Context.Provider value={value} children={children} />
 };
 // === PROVIDER ======================================================= //
 
@@ -140,7 +139,7 @@ export const CardViewProvider: FC<CardViewType> = (props) => {
 // === HOOKS ========================================================== //
 // 1. registerContainer: CardsCarousel で使用。carousel container となる ul 要素のコンポーネントで登録
 export const useCardCarouselRegister = () => {
-  const { styleFactors, carouselContainerRef } = useContext(CardViewContext);
+  const { styleFactors, carouselContainerRef } = useContext(Context);
 
     const registerContainer = (args?: StyleMagicsType) => {
 
@@ -157,7 +156,7 @@ export const useCardCarouselRegister = () => {
 // 2. useCardScroll: CardTodo で使用。card のスクロールを管理
 export const useCardScroll = (idx: number) => {
   const [isActive, setIsActive] = useState(false);
-  const { handleScroll, activeIdx } = useContext(CardViewContext);
+  const { handleScroll, activeIdx } = useContext(Context);
 
   // 別の CardTodo で activeIdx が変更されたときに isActive を更新
   useEffect(() => {
@@ -170,10 +169,10 @@ export const useCardScroll = (idx: number) => {
 
 // 3. useCardViewOpen: ActiveTodo で使用。card view を開くボタンを含むコンポーネントで使用
 export const useCardViewOpener = () => {
-  const { handleScroll, setActiveIdx } = useContext(CardViewContext);
+  const { handleScroll, setActiveIdx } = useContext(Context);
   const modalName = modalNames.cardCarousel;
   // const { openModal } = useModalOpener(modalName);
-  const { openModal } = useModalOpener(modalName);
+  const openModal = useModalOpener(modalName);
 
   const cardViewOpen = (idx: number) => {
     // idx 番目の card で modal を開く
@@ -188,7 +187,7 @@ export const useCardViewOpener = () => {
 
 // 4. getStyleMagics: 任意のコンポーネントで使用。
 export const getCardCarouselStyles = () => {
-  const { styleFactors } = useContext(CardViewContext);
+  const { styleFactors } = useContext(Context);
   return styleFactors.current;
 };
 // ========================================================== HOOKS === //

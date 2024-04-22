@@ -70,7 +70,7 @@ export const MdeContext = createContext<MdeContextType>({
 
 
 
-export const MdeProvider = ({ children }: { children: ReactNode }) => {
+export const Mde = ({ children }: { children: ReactNode }) => {
 
   // --- toolbarOptions ---
   // カスタムボタンを作成

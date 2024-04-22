@@ -22,16 +22,16 @@ const modals = createSlice({
   name: "modals",
   initialState,
   reducers: {
-    registerModal: (state, action: PayloadAction<ModalName>) => {
+    register: (state, action: PayloadAction<ModalName>) => {
       const name = action.payload;
       state.modalStates[name] = { isOpen: false };
     },
-    openModal: (state, action: PayloadAction<ModalName>) => {
+    open: (state, action: PayloadAction<ModalName>) => {
       const name = action.payload;
       state.curentModal = name;
       state.modalStates[name].isOpen = true;
     },
-    closeModal: (state, action: PayloadAction<ModalName>) => {
+    close: (state, action: PayloadAction<ModalName>) => {
       const name = action.payload;
       state.curentModal = null;
       state.modalStates[name].isOpen = false;
@@ -40,9 +40,9 @@ const modals = createSlice({
 });
 
 export const {
-  registerModal,
-  openModal,
-  closeModal,
+  register,
+  open,
+  close,
 } = modals.actions;
 
 export default modals.reducer;

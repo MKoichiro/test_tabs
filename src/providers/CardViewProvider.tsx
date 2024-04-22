@@ -9,7 +9,8 @@
 import React, { FC, MutableRefObject, ReactNode, createContext, useContext, useEffect, useRef, useState } from 'react';
 import { vw2px } from '../utils/converters';
 import { getCurrentDevice, CardCarouselMagicsType as StyleMagicsType, cardCarouselMagics } from '../data/styleMagics';
-import { useModalOpener } from './ModalProvider';
+// import { useModalOpener } from './ModalProvider';
+import { useModalOpener } from './ModalProvider_ver2';
 import { modalNames } from './modalNames';
 
 
@@ -171,6 +172,7 @@ export const useCardScroll = (idx: number) => {
 export const useCardViewOpener = () => {
   const { handleScroll, setActiveIdx } = useContext(CardViewContext);
   const modalName = modalNames.cardCarousel;
+  // const { openModal } = useModalOpener(modalName);
   const { openModal } = useModalOpener(modalName);
 
   const cardViewOpen = (idx: number) => {

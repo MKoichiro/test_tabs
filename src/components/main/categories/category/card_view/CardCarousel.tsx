@@ -54,13 +54,14 @@ import { CategoryType } from '../../../../../types/Categories';
 import { isDebugMode } from '../../../../../utils/adminDebugMode';
 
 import { getCardCarouselStyles } from '../../../../../providers/CardViewProvider';
+import { ScrollableElm } from '../../../../../providers/ModalProvider_ver2';
 
 
 // === TYPE =========================================================== //
 // - PROPS
 interface CardsCarouselType {
   category: CategoryType;
-  addScrollableElm: (elm: HTMLElement) => void;
+  addScrollableRef: (scrollable: ScrollableElm) => void;
 }
 // - STYLE
 interface StyledUlType {

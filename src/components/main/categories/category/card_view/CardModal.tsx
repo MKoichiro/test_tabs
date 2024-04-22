@@ -41,17 +41,21 @@
 
 
 /* --- react/styled-components --- */
-import React, { FC } from 'react';
+import React, { FC, useEffect } from 'react';
 import styled from 'styled-components';
 /* --- child components ---------- */
 import { CardsCarousel } from './CardCarousel';
 /* --- providers/contexts -------- */
-import { Modal, useModalDeclarer, useModalState } from '../../../../../providers/ModalProvider';
+// import { Modal, useModalDeclarer, useModalState } from '../../../../../providers/ModalProvider';
+import { Modal } from '../../../../../providers/ModalProvider_ver2';
 import { modalNames } from '../../../../../providers/modalNames';
 /* --- types --------------------- */
 import { CategoryType } from '../../../../../types/Categories';
 /* --- dev ----------------------- */
 import { isDebugMode } from '../../../../../utils/adminDebugMode';
+import { useDispatch, useModalsSelector } from '../../../../../providers/store';
+import { register } from '../../../../../providers/slices/modalSlice';
+import { useModalRegistrant } from '../../../../../providers/ModalProvider_ver2';
 
 
 // === TYPE =========================================================== //
@@ -72,18 +76,23 @@ export const CardsContainer: FC<PropsType> = (props) => {
 
   // modalProvider
   const modalName = modalNames.cardCarousel;
-  const { isOpen } = useModalState(modalName);
-  const { closeModal, basicRefs, addScrollableElm } = useModalDeclarer(modalName);
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(register(modalName));
+  }, []);
+  const isOpen = useModalsSelector().modalStates[modalName]?.isOpen;
+  const { setBasicsRef, addScrollableRef } = useModalRegistrant(modalName);
+  // const { isOpen } = useModalState(modalName);
+  // const { closeModal, basicRefs, addScrollableElm } = useModalDeclarer(modalName);
 
   return (
     <StyledModal
       name       = { modalName  }
       isOpen     = { isOpen     }
-      closeModal = { closeModal }
-      basicRefs  = { basicRefs  }
+      setBasicsRef  = { setBasicsRef  }
     >
       <CardsCarousel
-        addScrollableElm = { addScrollableElm }
+        addScrollableRef = { addScrollableRef }
         { ...props } />
     </StyledModal>
   );

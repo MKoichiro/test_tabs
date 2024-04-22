@@ -41,12 +41,13 @@
 
 
 /* --- react/styled-components --- */
-import React, { FC, useRef, } from 'react';
+import React, { FC, useEffect, useRef, } from 'react';
 import styled from 'styled-components';
 /* --- redux --------------------- */
-import { useCategoriesSelector } from '../../../providers/store';
+import { useCategoriesSelector, useDispatch } from '../../../providers/store';
 /* --- providers/contexts -------- */
-import { useModalOpener } from '../../../providers/ModalProvider';
+// import { useModalOpener } from '../../../providers/ModalProvider';
+import { useModalOpener } from '../../../providers/ModalProvider_ver2';
 import { modalNames } from '../../../providers/modalNames';
 /* --- font awesome -------------- */
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -56,6 +57,7 @@ import { Tab } from './Tab';
 import { EditCategoriesModal } from './edit_categories_modal/EditCategoriesModal';
 /* --- dev ----------------------- */
 import { isDebugMode } from '../../../utils/adminDebugMode';
+import { register } from '../../../providers/slices/modalSlice';
 
 
 // === TYPE =========================================================== //
@@ -72,9 +74,14 @@ interface TabsProps {
 export const TabsContainer: FC<TabsProps> = (props) => {
   const { className } = props;
 
+  const modalName = modalNames.editCategories;
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(register(modalName));
+  }, []);
+
   // contexts
   const { categoriesEntity: categories } = useCategoriesSelector();
-  const modalName = modalNames.editCategories;
   const { openModal } = useModalOpener(modalName);
 
   // register refs

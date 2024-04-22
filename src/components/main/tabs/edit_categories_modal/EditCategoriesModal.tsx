@@ -47,13 +47,17 @@ import styled from 'styled-components';
 import { CreateNewCategory } from './CreateNewCategory';
 import { Categories } from './Categories';
 /* --- providers/contexts -------- */
-import { Modal, useModalDeclarer, useModalState } from '../../../../providers/ModalProvider';
+// import { Modal, useModalDeclarer, useModalState } from '../../../../providers/ModalProvider';
+import { Modal } from '../../../../providers/ModalProvider_ver2';
 import { modalNames } from '../../../../providers/modalNames';
 /* --- font awesome -------------- */
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faXmark } from '@fortawesome/free-solid-svg-icons';
 /* --- dev ----------------------- */
 import { isDebugMode } from '../../../../utils/adminDebugMode';
+import { useDispatch, useModalsSelector } from '../../../../providers/store';
+import { useModalCloser, useModalRegistrant } from '../../../../providers/ModalProvider_ver2';
+import { register } from '../../../../providers/slices/modalSlice';
 
 
 // === TYPE =========================================================== //
@@ -74,15 +78,20 @@ export const EditCategoriesModal: FC<EditCategoriesModalProps> = (props) => {
   const { className } = props;
 
   const modalName = modalNames.editCategories;
-  const { isOpen } = useModalState(modalName);
-  const { closeModal, basicRefs, addScrollableElm } = useModalDeclarer(modalName);
+  // const { isOpen } = useModalState(modalName);
+  // const { closeModal, basicRefs, addScrollableElm } = useModalDeclarer(modalName);
+
+  const isOpen = useModalsSelector().modalStates[modalName]?.isOpen;
+  const { setBasicsRef, addScrollableRef } = useModalRegistrant(modalName);
+  const closeModal = useModalCloser(modalName);
+
+
 
 
   return (
     <StyledModal
       name          = { modalName                    }
-      closeModal    = { closeModal                   }
-      basicRefs     = { basicRefs                    }
+      setBasicsRef  = { setBasicsRef                 }
       isOpen        = { isOpen                       }
       className     = { className                    }
       classNameMask = { 'edit-categories-modal-mask' }
@@ -100,7 +109,7 @@ export const EditCategoriesModal: FC<EditCategoriesModalProps> = (props) => {
 
         <section
           className = { 'categories-display-container' }
-          ref       = { addScrollableElm               } >
+          ref       = { addScrollableRef               } >
           <Categories />
         </section>
 

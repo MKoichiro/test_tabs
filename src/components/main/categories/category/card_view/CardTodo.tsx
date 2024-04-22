@@ -49,6 +49,7 @@ import { isDebugMode } from '../../../../../utils/adminDebugMode';
 import { useCardScroll } from '../../../../../providers/CardViewProvider';
 
 import { getCardCarouselStyles } from '../../../../../providers/CardViewProvider';
+import { ScrollableElm } from '../../../../../providers/ModalProvider_ver2';
 
 
 // === TYPE =========================================================== //
@@ -56,7 +57,7 @@ import { getCardCarouselStyles } from '../../../../../providers/CardViewProvider
 interface PropsType {
   todo: TodoType;
   idx: number;
-  addScrollableElm: (elm: HTMLLIElement) => void;
+  addScrollableRef: (scrollable: ScrollableElm) => void;
 }
 // - STYLE
 interface StyledLiType {

@@ -171,22 +171,28 @@ export const ActiveTodo: FC<PropsType> = (props) => {
             <SlidableHidden className='btns-container' slidableLength={slidableParams.SLIDABLE_LENGTH}>
 
                 {/* 1. cards modal を表示する */}
-                <button
-                  className = {                             'btn-info' }
-                  onClick   = {                     handleInfoBtnClick }
-                  children  = { <FontAwesomeIcon icon={faCircleInfo}/> } />
+                <div className='each-btn-container info-btn-container'>
+                  <button
+                    className = {                    'each-btn btn-info' }
+                    onClick   = {                     handleInfoBtnClick }
+                    children  = { <FontAwesomeIcon icon={faCircleInfo}/> } />
+                </div>
 
                 {/* 2. todo を完了済み(completed)にする */}
-                <button
-                  className = {                       'btn-check' }
-                  onClick   = {            handleCompleteBtnClick }
-                  children  = { <FontAwesomeIcon icon={faCheck}/> } />
+                <div className='each-btn-container check-btn-container'>
+                  <button
+                    className = {              'each-btn btn-check' }
+                    onClick   = {            handleCompleteBtnClick }
+                    children  = { <FontAwesomeIcon icon={faCheck}/> } />
+                </div>
 
                 {/* 3. todo をアーカイブ(isArchived === true に)する */}
-                <button
-                  className = {                         'btn-delete' }
-                  onClick   = {                handleArchiveBtnClick }
-                  children  = { <FontAwesomeIcon icon={faTrashCan}/> } />
+                <div className='each-btn-container delete-btn-container'>
+                  <button
+                    className = {                'each-btn btn-delete' }
+                    onClick   = {                handleArchiveBtnClick }
+                    children  = { <FontAwesomeIcon icon={faTrashCan}/> } />
+                </div>
 
             </SlidableHidden>
         </Slidable>
@@ -219,18 +225,29 @@ const StyledLi = styled.li<StyledLiType>`
   .btns-container {
     z-index: 100;
     display: flex;
-    button {
+    .each-btn-container {
       flex: 1;
-      font-size: 2rem;
-    }
-    .btn-info {
-      background: pink;
-    }
-    .btn-check {
-      background: skyblue;
-    }
-    .btn-delete {
-      background: #999;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      .each-btn {
+        font-size: 2rem;
+        display: block;
+        width: 95%;
+        height: 95%;
+      }
+      .btn-info {
+        color: #0b4906;
+        border: .2rem solid #0b4906;
+      }
+      .btn-check {
+        color: #454e70;
+        border: .2rem solid #454e70;
+      }
+      .btn-delete {
+        color: #8c1111;
+        border: .2rem solid #8c1111;
+      }
     }
 
   }

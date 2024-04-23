@@ -102,8 +102,8 @@ const StyledModal = styled(Modal)<StyledModalType>`
 
   width: 100vw;
   .card-carousel-modal-mask {
-    --bdf: ${ props => props.isOpen ? 'blur(4px)' : 'blur(0)' };
-    --bgc: ${ props => props.isOpen ? 'rgba(255 0 255 / .5)' : 'rgba(255 0 255 / 0)' };
+    --bdf: ${ props => props.isOpen ? 'blur(2px)' : 'blur(0)' };
+    --bgc: ${ props => props.isOpen ? 'rgba(69 78 112 / .5)' : 'rgba(69 78 112 / 0)' };
     backdrop-filter: var(--bdf);
     -webkit-backdrop-filter: var(--bdf);
     background-color: var(--bgc);

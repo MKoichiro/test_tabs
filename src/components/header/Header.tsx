@@ -49,7 +49,6 @@ import styled from 'styled-components';
 import { isDebugMode } from '../../utils/adminDebugMode';
 
 
-
 // === TYPE =========================================================== //
 // - PROPS
 interface HeaderType {}
@@ -59,21 +58,61 @@ interface HeaderType {}
 
 
 // === COMPONENT ====================================================== //
-export const Header: FC<HeaderType> = (props) => {
-	const {} = props;
-
+export const Header: FC<HeaderType> = () => {
 	return (
 		<StyledHeader>
-			<h1 children="Header" />
-		</StyledHeader>
-	);
+      <div className = "header-container">
+        <h1>
+          T<span>o</span>D<span>o</span>
+        </h1>
+        {/* <h2 children = " - To Do 管理ツール編 - " /> */}
+      </div>
+    </StyledHeader>
+  )
 };
 // ====================================================== COMPONENT === //
 
 
 // === STYLE ========================================================= //
 const StyledHeader = styled.header`
-	h1 {
-	}
+  height: 45vh;
+  background-color: #454e70;
+  color: #d0d0d0;;
+  clip-path: polygon(
+    0 0,
+    100% 0,
+    100% 100%,
+    0 calc(100% - 5vw)
+  );
+  letter-spacing: .15rem;
+
+  @media (width < 600px) {
+    height: 30vh;
+  }
+
+  span {
+    color: #cfcf00;
+  }
+
+  .header-container {
+    height: 100%;
+    width: 60%;
+    margin: 0 auto;
+    @media (width < 600px) {
+      width: 75%;
+    }
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 1.8rem;
+
+    h1, h2 { margin: 0 auto; }
+    /* h1 {  } */
+    h2 {
+      width: auto;
+      text-align: right;
+    }
+  }
 `;
 // ========================================================= STYLE === //

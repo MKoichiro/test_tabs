@@ -236,7 +236,7 @@ export const CreateNewTodo: FC<CreateNewTodoType> = (props) => {
 
         <div className="btn-submit-container">
           <button>
-            Submit
+            + ADD
           </button>
         </div>
       </fieldset>
@@ -248,7 +248,7 @@ export const CreateNewTodo: FC<CreateNewTodoType> = (props) => {
 
 // === STYLE ========================================================= //
 const StyledForm = styled.form`
-
+  margin-top: 2.4rem;
   /* reset */
   fieldset {
     border: none;
@@ -272,6 +272,10 @@ const StyledForm = styled.form`
   fieldset {
     margin: 0 .8rem;
 
+    legend {
+      font-weight: bold;
+    }
+
     .form-legend {
       font-size: 2rem;
     }
@@ -281,8 +285,9 @@ const StyledForm = styled.form`
       .child-legend {
         font-size: 1.8rem;
         margin-bottom: .8rem;
+        /* font-weight: bold; */
         &::after {
-          content: ':';
+          /* content: ':'; */
 
         }
       }
@@ -388,6 +393,8 @@ const StyledForm = styled.form`
       button {
         display: block;
         margin-left: auto;
+        padding: .4rem .8rem;
+        border: .15rem solid black;
       }
     }
 

@@ -58,22 +58,41 @@ interface FooterType {}
 
 
 // === COMPONENT ====================================================== //
-export const Footer: FC<FooterType> = (props) => {
-	const {} = props;
-
-  
-	return (
+export const Footer: FC<FooterType> = () => {
+  return (
     <StyledFooter>
-  		<h1 children="Footer" />
+      <h3 children = "Todo By React x TypeScript x styled-components" />
     </StyledFooter>
-	);
+  );
 };
 // ====================================================== COMPONENT === //
 
 
 // === STYLE ========================================================= //
 const StyledFooter = styled.footer`
-  h1 {
+  display: flex;
+  margin-top: auto;
+  height: 15vh;
+  width: 100%;
+  color: #777;
+  background: #fcfcfc;
+  clip-path: polygon(
+    0 5vw, 100% 0, 100% 100%, 0 100%
+  );
+  @media (width < 600px) {
+    height: 10vh;
+  }
+
+  h3 {
+    padding: 0 .8rem;
+    align-self: flex-end;
+    margin: 0 auto 0;
+    width: var(--contents-width);
+    line-height: 5rem;
+    text-align: right;
+    @media (width < 1024px) {
+      width: 90%;
+    }
   }
 `;
 // ========================================================= STYLE === //

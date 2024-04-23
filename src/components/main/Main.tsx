@@ -64,13 +64,13 @@ export const Main: FC<MainType> = (props) => {
 
 	return (
 		<StyledMain>
-			<h1 children="Main" />
+			
 			<section className="todos-display-container">
 				<TabsContainer />
 				<CategoriesContainer />
 			</section>
 			<section className="form-create-new-todos-container">
-				<CreateNewTodo />				{/* = form */}
+				<CreateNewTodo />
 			</section>
 		</StyledMain>
 	);
@@ -82,5 +82,6 @@ export const Main: FC<MainType> = (props) => {
 const StyledMain = styled.main`
 	width: var(--contents-width);
 	margin: 0 auto;
+	
 `;
 // ========================================================= STYLE === //

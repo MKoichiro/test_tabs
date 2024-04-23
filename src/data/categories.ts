@@ -1,5 +1,6 @@
 import { CategoryType } from "../providers/types/categories";
 import { generateUUID } from "../utils/generateUUID";
+import { getRandTnD } from "./randomTnD";
 
 const TODOS_KEY = 'categories';
 localStorage.getItem(TODOS_KEY);
@@ -9,12 +10,10 @@ export const storedActiveIdx = 0;
 export const storedCategories: CategoryType[] = [
   {
     id: generateUUID(),
-		// isActive: true,
     createdDate: new Date('2024/02/24'),
     updatedDate: new Date('2024/02/25'),
     isArchived: false,
     name: 'category-0',
-    // get next_assigning_id() { return this.todos.reduce((store, todo) => Math.max(store, todo.id), 0) + 1; },
     todos: [
       {
         id: generateUUID(),
@@ -24,8 +23,9 @@ export const storedCategories: CategoryType[] = [
         status: 'In Progress...',
         priority: '---',
         isArchived: false,
-        title: '今日やること',
-        detail: 'aiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこaiueoとかきくけこ',
+        // title: '今日やること',
+        // detail: 'なにぬねのとはひふへほ',
+        ...getRandTnD(),
 				isOpen: true,
       },
       {
@@ -36,8 +36,7 @@ export const storedCategories: CategoryType[] = [
         status: 'Not Started',
         priority: '---',
         isArchived: false,
-        title: '明日やること',
-        detail: 'さしすせそとたちつてと',
+        ...getRandTnD(),
 				isOpen: true,
       },
       {
@@ -48,8 +47,7 @@ export const storedCategories: CategoryType[] = [
         status: 'Not Started',
         priority: '---',
         isArchived: true,
-        title: '明後日やること',
-        detail: 'さしすせそとたちつてと',
+        ...getRandTnD(),
 				isOpen: true,
       },
       {
@@ -60,8 +58,7 @@ export const storedCategories: CategoryType[] = [
         status: 'Not Started',
         priority: '---',
         isArchived: false,
-        title: '明々後日やること',
-        detail: 'さしすせそとたちつてと',
+        ...getRandTnD(),
 				isOpen: true,
       },
       {
@@ -75,8 +72,7 @@ export const storedCategories: CategoryType[] = [
         status: 'In Progress...',
         priority: '---',
         isArchived: false,
-        title: '昨日やる予定だったこと',
-        detail: 'さしすせそとたちつてと',
+        ...getRandTnD(),
 				isOpen: false,
       },
       {
@@ -90,8 +86,7 @@ export const storedCategories: CategoryType[] = [
         status: 'completed',
         priority: '---',
         isArchived: false,
-        title: '昨日やった予定だったこと',
-        detail: 'さしすせそとたちつてと',
+        ...getRandTnD(),
 				isOpen: true,
       },
       {
@@ -102,20 +97,17 @@ export const storedCategories: CategoryType[] = [
         status: 'Pending',
         priority: '---',
         isArchived: false,
-        title: '今日やること',
-        detail: '# aiueoとかきくけこ',
+        ...getRandTnD(),
 				isOpen: true,
       },
     ],
   },
   {
     id: generateUUID(),
-		// isActive: false,
     createdDate: new Date('2024/01/24'),
     updatedDate: new Date('2024/01/25'),
     isArchived: false,
     name: 'category-1',
-    // get next_assigning_id() { return this.todos.reduce((store, todo) => Math.max(store, todo.id), 0) + 1; },
     todos: [
       {
         id: generateUUID(),
@@ -125,8 +117,7 @@ export const storedCategories: CategoryType[] = [
         status: '---',
         priority: '---',
         isArchived: false,
-        title: '今日やること',
-        detail: 'なにぬねのとはひふへほ',
+        ...getRandTnD(),
 				isOpen: true,
       },
       {
@@ -137,8 +128,7 @@ export const storedCategories: CategoryType[] = [
         status: '---',
         priority: '---',
         isArchived: false,
-        title: '明日やること',
-        detail: 'まみむめもとやいゆえよ',
+        ...getRandTnD(),
 				isOpen: true,
       },
       {
@@ -149,20 +139,17 @@ export const storedCategories: CategoryType[] = [
         status: '---',
         priority: '---',
         isArchived: true,
-        title: '明後日やること',
-        detail: 'らりるれろとわをん',
+        ...getRandTnD(),
 				isOpen: true,
       },
     ],
   },
   {
     id: generateUUID(),
-		// isActive: false,
     createdDate: new Date('2024/01/24'),
     updatedDate: new Date('2024/01/25'),
     isArchived: false,
     name: 'category-2category-2category-2category-2category-2category-2category-2category-2category-2category-2',
-    // get next_assigning_id() { return this.todos.reduce((store, todo) => Math.max(store, todo.id), 0) + 1; },
     todos: [
       {
         id: generateUUID(),
@@ -172,8 +159,7 @@ export const storedCategories: CategoryType[] = [
         status: '---',
         priority: '---',
         isArchived: false,
-        title: '今日やること',
-        detail: 'なにぬねのとはひふへほ',
+        ...getRandTnD(),
 				isOpen: true,
       },
       {
@@ -184,8 +170,7 @@ export const storedCategories: CategoryType[] = [
         status: '---',
         priority: '---',
         isArchived: false,
-        title: '明日やること',
-        detail: 'まみむめもとやいゆえよ',
+        ...getRandTnD(),
 				isOpen: true,
       },
       {
@@ -196,20 +181,17 @@ export const storedCategories: CategoryType[] = [
         status: '---',
         priority: '---',
         isArchived: true,
-        title: '明後日やること',
-        detail: 'らりるれろとわをん',
+        ...getRandTnD(),
 				isOpen: true,
       },
     ],
   },
   {
     id: generateUUID(),
-		// isActive: false,
     createdDate: new Date('2024/01/24'),
     updatedDate: new Date('2024/01/25'),
     isArchived: false,
     name: 'category-3',
-    // get next_assigning_id() { return this.todos.reduce((store, todo) => Math.max(store, todo.id), 0) + 1; },
     todos: [
       {
         id: generateUUID(),
@@ -219,8 +201,7 @@ export const storedCategories: CategoryType[] = [
         status: '---',
         priority: '---',
         isArchived: false,
-        title: '今日やること',
-        detail: 'なにぬねのとはひふへほ',
+        ...getRandTnD(),
 				isOpen: true,
       },
       {
@@ -231,8 +212,7 @@ export const storedCategories: CategoryType[] = [
         status: '---',
         priority: '---',
         isArchived: false,
-        title: '明日やること',
-        detail: 'まみむめもとやいゆえよ',
+        ...getRandTnD(),
 				isOpen: true,
       },
       {
@@ -243,20 +223,17 @@ export const storedCategories: CategoryType[] = [
         status: '---',
         priority: '---',
         isArchived: true,
-        title: '明後日やること',
-        detail: 'らりるれろとわをん',
+        ...getRandTnD(),
 				isOpen: true,
       },
     ],
   },
 	{
     id: generateUUID(),
-		// isActive: false,
     createdDate: new Date('2024/01/24'),
     updatedDate: new Date('2024/01/25'),
     isArchived: true,
     name: 'category-4',
-    // get next_assigning_id() { return this.todos.reduce((store, todo) => Math.max(store, todo.id), 0) + 1; },
     todos: [
       {
         id: generateUUID(),
@@ -266,8 +243,7 @@ export const storedCategories: CategoryType[] = [
         status: '---',
         priority: '---',
         isArchived: false,
-        title: '今日やること',
-        detail: 'なにぬねのとはひふへほ',
+        ...getRandTnD(),
 				isOpen: true,
       },
       {
@@ -278,8 +254,7 @@ export const storedCategories: CategoryType[] = [
         status: '---',
         priority: '---',
         isArchived: false,
-        title: '明日やること',
-        detail: 'まみむめもとやいゆえよ',
+        ...getRandTnD(),
 				isOpen: true,
       },
       {
@@ -290,20 +265,17 @@ export const storedCategories: CategoryType[] = [
         status: '---',
         priority: '---',
         isArchived: true,
-        title: '明後日やること',
-        detail: 'らりるれろとわをん',
+        ...getRandTnD(),
 				isOpen: true,
       },
     ],
   },
 	{
     id: generateUUID(),
-		// isActive: false,
     createdDate: new Date('2024/01/24'),
     updatedDate: new Date('2024/01/25'),
     isArchived: false,
     name: 'category-5',
-    // get next_assigning_id() { return this.todos.reduce((store, todo) => Math.max(store, todo.id), 0) + 1; },
     todos: [
       {
         id: generateUUID(),
@@ -313,8 +285,7 @@ export const storedCategories: CategoryType[] = [
         status: '---',
         priority: '---',
         isArchived: false,
-        title: '今日やること',
-        detail: 'なにぬねのとはひふへほ',
+        ...getRandTnD(),
 				isOpen: true,
       },
       {
@@ -325,8 +296,7 @@ export const storedCategories: CategoryType[] = [
         status: '---',
         priority: '---',
         isArchived: false,
-        title: '明日やること',
-        detail: 'まみむめもとやいゆえよ',
+        ...getRandTnD(),
 				isOpen: true,
       },
       {
@@ -337,20 +307,17 @@ export const storedCategories: CategoryType[] = [
         status: '---',
         priority: '---',
         isArchived: true,
-        title: '明後日やること',
-        detail: 'らりるれろとわをん',
+        ...getRandTnD(),
 				isOpen: true,
       },
     ],
   },
 	{
     id: generateUUID(),
-		// isActive: false,
     createdDate: new Date('2024/01/24'),
     updatedDate: new Date('2024/01/25'),
     isArchived: true,
     name: 'category-6',
-    // get next_assigning_id() { return this.todos.reduce((store, todo) => Math.max(store, todo.id), 0) + 1; },
     todos: [
       {
         id: generateUUID(),
@@ -360,8 +327,7 @@ export const storedCategories: CategoryType[] = [
         status: '---',
         priority: '---',
         isArchived: false,
-        title: '今日やること',
-        detail: 'なにぬねのとはひふへほ',
+        ...getRandTnD(),
 				isOpen: true,
       },
       {
@@ -372,8 +338,7 @@ export const storedCategories: CategoryType[] = [
         status: '---',
         priority: '---',
         isArchived: false,
-        title: '明日やること',
-        detail: 'まみむめもとやいゆえよ',
+        ...getRandTnD(),
 				isOpen: true,
       },
       {
@@ -384,20 +349,17 @@ export const storedCategories: CategoryType[] = [
         status: '---',
         priority: '---',
         isArchived: true,
-        title: '明後日やること',
-        detail: 'らりるれろとわをん',
+        ...getRandTnD(),
 				isOpen: true,
       },
     ],
   },
 	{
     id: generateUUID(),
-		// isActive: false,
     createdDate: new Date('2024/01/24'),
     updatedDate: new Date('2024/01/25'),
     isArchived: true,
     name: 'category-7',
-    // get next_assigning_id() { return this.todos.reduce((store, todo) => Math.max(store, todo.id), 0) + 1; },
     todos: [
       {
         id: generateUUID(),
@@ -407,8 +369,7 @@ export const storedCategories: CategoryType[] = [
         status: '---',
         priority: '---',
         isArchived: false,
-        title: '今日やること',
-        detail: 'なにぬねのとはひふへほ',
+        ...getRandTnD(),
 				isOpen: true,
       },
       {
@@ -419,8 +380,7 @@ export const storedCategories: CategoryType[] = [
         status: '---',
         priority: '---',
         isArchived: false,
-        title: '明日やること',
-        detail: 'まみむめもとやいゆえよ',
+        ...getRandTnD(),
 				isOpen: true,
       },
       {
@@ -431,20 +391,17 @@ export const storedCategories: CategoryType[] = [
         status: '---',
         priority: '---',
         isArchived: true,
-        title: '明後日やること',
-        detail: 'らりるれろとわをん',
+        ...getRandTnD(),
 				isOpen: true,
       },
     ],
   },
 	{
     id: generateUUID(),
-		// isActive: false,
     createdDate: new Date('2024/01/24'),
     updatedDate: new Date('2024/01/25'),
     isArchived: false,
     name: 'category-8',
-    // get next_assigning_id() { return this.todos.reduce((store, todo) => Math.max(store, todo.id), 0) + 1; },
     todos: [
       {
         id: generateUUID(),
@@ -454,8 +411,7 @@ export const storedCategories: CategoryType[] = [
         status: '---',
         priority: '---',
         isArchived: false,
-        title: '今日やること',
-        detail: 'なにぬねのとはひふへほ',
+        ...getRandTnD(),
 				isOpen: true,
       },
       {
@@ -466,8 +422,7 @@ export const storedCategories: CategoryType[] = [
         status: '---',
         priority: '---',
         isArchived: false,
-        title: '明日やること',
-        detail: 'まみむめもとやいゆえよ',
+        ...getRandTnD(),
 				isOpen: true,
       },
       {
@@ -478,20 +433,17 @@ export const storedCategories: CategoryType[] = [
         status: '---',
         priority: '---',
         isArchived: true,
-        title: '明後日やること',
-        detail: 'らりるれろとわをん',
+        ...getRandTnD(),
 				isOpen: true,
       },
     ],
   },
   {
     id: generateUUID(),
-		// isActive: false,
     createdDate: new Date('2024/01/24'),
     updatedDate: new Date('2024/01/25'),
     isArchived: false,
     name: 'category-9',
-    // get next_assigning_id() { return this.todos.reduce((store, todo) => Math.max(store, todo.id), 0) + 1; },
     todos: [
       {
         id: generateUUID(),
@@ -513,8 +465,7 @@ export const storedCategories: CategoryType[] = [
         status: '---',
         priority: '---',
         isArchived: false,
-        title: '明日やること',
-        detail: 'まみむめもとやいゆえよ',
+        ...getRandTnD(),
 				isOpen: true,
       },
       {
@@ -533,12 +484,10 @@ export const storedCategories: CategoryType[] = [
   },
   {
     id: generateUUID(),
-		// isActive: false,
     createdDate: new Date('2024/01/24'),
     updatedDate: new Date('2024/01/25'),
     isArchived: false,
     name: 'category-10',
-    // get next_assigning_id() { return this.todos.reduce((store, todo) => Math.max(store, todo.id), 0) + 1; },
     todos: [
       {
         id: generateUUID(),
@@ -548,8 +497,7 @@ export const storedCategories: CategoryType[] = [
         status: '---',
         priority: '---',
         isArchived: false,
-        title: '今日やること',
-        detail: 'なにぬねのとはひふへほ',
+        ...getRandTnD(),
 				isOpen: true,
       },
       {
@@ -560,8 +508,7 @@ export const storedCategories: CategoryType[] = [
         status: '---',
         priority: '---',
         isArchived: false,
-        title: '明日やること',
-        detail: 'まみむめもとやいゆえよ',
+        ...getRandTnD(),
 				isOpen: true,
       },
       {
@@ -572,8 +519,7 @@ export const storedCategories: CategoryType[] = [
         status: '---',
         priority: '---',
         isArchived: true,
-        title: '明後日やること',
-        detail: 'らりるれろとわをん',
+        ...getRandTnD(),
 				isOpen: true,
       },
     ],

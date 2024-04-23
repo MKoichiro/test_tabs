@@ -50,6 +50,8 @@ import { isDebugMode } from '../../../../../utils/adminDebugMode';
 import { useCardScroll } from '../../../../../providers/context_api/CardView';
 
 import { getCardCarouselStyles } from '../../../../../providers/context_api/CardView';
+import { useDispatch } from '../../../../../providers/redux/store';
+import { setActiveIdx } from '../../../../../providers/redux/slices/cardSlice';
 
 
 // === TYPE =========================================================== //
@@ -75,10 +77,12 @@ export const CardTodo: FC<PropsType> = (props) => {
 
   // contexts
   const { isActive, handleScroll } = useCardScroll(idx);
+  const dispatch = useDispatch()
 
   // handlers
   const handleClick = () => {
     handleScroll(idx, 'smooth');
+    // dispatch(setActiveIdx(idx));
   };
 
   // styles

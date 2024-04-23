@@ -67,6 +67,8 @@ import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 /* --- dev ----------------------- */
 import { isDebugMode } from '../../../../../utils/adminDebugMode';
+import { set } from 'react-hook-form';
+import { setActiveIdx } from '../../../../../providers/redux/slices/cardSlice';
 
 
 // === CONSTANT Against RENDERING ===================================== //
@@ -108,7 +110,6 @@ export const ActiveTodo: FC<PropsType> = (props) => {
   const { cardViewOpen } = useCardViewOpener();
 
 
-
   // --- dnd-kit ------------------------------------------------ //
   const {
     attributes,
@@ -130,6 +131,7 @@ export const ActiveTodo: FC<PropsType> = (props) => {
   // handlers
   const handleInfoBtnClick = () => {
     cardViewOpen(liIdx);
+    dispatch(setActiveIdx(liIdx));
   };
   const handleCompleteBtnClick = () => {
     dispatch(updateTodoProps({ todoId: currentId, update: {status: 'completed'} }));
@@ -245,7 +247,7 @@ const StyledLi = styled.li<StyledLiType>`
         border: .2rem solid #454e70;
       }
       .btn-delete {
-        color: #8c1111;
+        
         border: .2rem solid #8c1111;
       }
     }

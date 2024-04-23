@@ -96,8 +96,6 @@ interface PropsType {
 export const Category: FC<PropsType> = (props) => {
   const { category, idx } = props;
   const todos = category.todos;
-  // const { categories, dispatchCategoriesChange } = useContext(CategoriesContext);
-  // const categories = useSelector((state: RootState) => state.categories.categories);
   const dispatch = useDispatch();
 
   // --- dnd-kit ------------------------------------------------ //
@@ -124,10 +122,6 @@ export const Category: FC<PropsType> = (props) => {
     if (active.id !== over?.id) {
       const oldIdx = todos.findIndex(todo => todo.id === active.id);
       const newIdx = todos.findIndex(todo => todo.id === over?.id);
-      // const newTodos = arrayMove(todos, oldIndex, newIndex);
-      // const newCategories = [...categories];
-      // newCategories[index].todos = newTodos;
-      // dispatchCategoriesChange({ type: 'update_categories', newCategories });
       dispatch(replaceTodos({ oldIdx, newIdx }));
     }
     setActiveId(null);

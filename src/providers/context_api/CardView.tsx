@@ -11,6 +11,8 @@ import { vw2px } from '../../utils/converters';
 import { getCurrentDevice, CardCarouselMagicsType as StyleMagicsType, cardCarouselMagics } from '../../data/styleMagics';
 import { useModalOpener } from './ModalElmsRef';
 import { modalNames } from '../../components/common/modal/settings';
+import { useCardSelector, useDispatch } from '../redux/store';
+import { setActiveIdx } from '../redux/slices/cardSlice';
 
 
 let initialStyleFactors: StyleMagicsType;
@@ -25,8 +27,6 @@ switch (getCurrentDevice()) {
 // === TYPE =========================================================== //
 // - CONTEXT
 interface ContextType {
-  activeIdx:                                                         number;
-  setActiveIdx:                                         (n: number) => void;
   carouselContainerRef:    MutableRefObject<HTMLUListElement | null> | null;
   handleScroll:               (n: number, behavior: ScrollBehavior) => void;
   styleFactors:                           MutableRefObject<StyleMagicsType>;
@@ -40,8 +40,6 @@ interface CardViewType {
 
 // === CONTEXT ======================================================== //
 const Context = createContext<ContextType>({
-  activeIdx:                                           0,
-  setActiveIdx:                                 () => {},
   carouselContainerRef:                             null,
   handleScroll:                                 () => {},
   styleFactors:         { current: initialStyleFactors },
@@ -54,11 +52,9 @@ export const CardView: FC<CardViewType> = (props) => {
   const { children } = props;
 
   // --- Manegiment Items --------------------------------------- //
-  // 1. states
-  const [activeIdx, setActiveIdx] = useState(0);
-  // 2. refs: nodes
+  // 1. refs: nodes
   const carouselContainerRef = useRef<HTMLUListElement | null>(null);
-  // 3. ref: style factors
+  // 2. ref: style factors
   const styleFactors = useRef<StyleMagicsType>(initialStyleFactors);
   // --------------------------------------- Manegiment Items --- //
 
@@ -93,7 +89,10 @@ export const CardView: FC<CardViewType> = (props) => {
   const handleScroll = (n: number, behavior: ScrollBehavior) => {
 
     // 1. set activeIdx
-    setActiveIdx(n);
+    // ここでhooksは呼び出せない。
+    // const dispatch = useDispatch();
+    // dispatch(setActiveIdx(n));
+
 
     // 2. scroll
     const { gap_vw, activeWidth_vw, inactiveMagnification } = styleFactors.current;
@@ -123,8 +122,6 @@ export const CardView: FC<CardViewType> = (props) => {
 
   // providing value
   const value = {
-    activeIdx,
-    setActiveIdx,
     carouselContainerRef,
     handleScroll,
     styleFactors,
@@ -156,7 +153,8 @@ export const useCardCarouselRegister = () => {
 // 2. useCardScroll: CardTodo で使用。card のスクロールを管理
 export const useCardScroll = (idx: number) => {
   const [isActive, setIsActive] = useState(false);
-  const { handleScroll, activeIdx } = useContext(Context);
+  const { handleScroll } = useContext(Context);
+  const { activeIdx } = useCardSelector();
 
   // 別の CardTodo で activeIdx が変更されたときに isActive を更新
   useEffect(() => {
@@ -169,15 +167,15 @@ export const useCardScroll = (idx: number) => {
 
 // 3. useCardViewOpen: ActiveTodo で使用。card view を開くボタンを含むコンポーネントで使用
 export const useCardViewOpener = () => {
-  const { handleScroll, setActiveIdx } = useContext(Context);
+  const { handleScroll } = useContext(Context);
   const modalName = modalNames.cardCarousel;
-  // const { openModal } = useModalOpener(modalName);
+  const dispatch = useDispatch();
   const openModal = useModalOpener(modalName);
 
   const cardViewOpen = (idx: number) => {
     // idx 番目の card で modal を開く
     openModal();
-    setActiveIdx(idx);
+    dispatch(setActiveIdx(idx));
     // 'instant' でアニメーション無しでスクロール
     handleScroll(idx, 'instant');
   };

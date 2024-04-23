@@ -97,6 +97,7 @@ export const ActiveCategory: FC<ActiveCategoryType> = (props) => {
   const { inEditing, inputRef, handleDoubleClick, handleSubmit, handleChange, handleBlur } = useImmediateEditable('category', activeCategory);
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: activeCategory.id });
 
+
   const style = {
     transform: CSS.Transform.toString(transform),
     transition,

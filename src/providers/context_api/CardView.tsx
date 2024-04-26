@@ -89,7 +89,7 @@ export const CardView: FC<CardViewType> = (props) => {
   const handleScroll = (n: number, behavior: ScrollBehavior) => {
 
     // 1. set activeIdx
-    // ここでhooksは呼び出せない。
+    // ここでhooksは呼び出せない。→なぜか調べる
     // const dispatch = useDispatch();
     // dispatch(setActiveIdx(n));
 

@@ -1,0 +1,9 @@
+# .gitignore と同じ構文
+# https://prettier.io/docs/en/ignore
+
+# Ignore artifacts:
+build
+coverage
+
+# Ignore all HTML files:
+**/*.html

@@ -5,7 +5,7 @@ import { getRandTnD } from "./randomTnD";
 const TODOS_KEY = 'categories';
 localStorage.getItem(TODOS_KEY);
 export const storedActiveIdx = 0;
-
+console.log('storedActiveIdx: ', storedActiveIdx);
 
 export const storedCategories: CategoryType[] = [
   {

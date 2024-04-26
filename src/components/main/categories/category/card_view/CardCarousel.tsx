@@ -76,6 +76,9 @@ interface StyledUlType {
 export const CardsCarousel: FC<CardsCarouselType> = (props) => {
   const { category, ...rest } = props;
   
+  const [test, setTest] = React.useState('test')
+  console.log('CardsCarousel: ', category);
+  
   // contexts
   const { registerContainer } = useCardCarouselRegister();
   

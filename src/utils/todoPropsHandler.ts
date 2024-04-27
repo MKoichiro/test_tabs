@@ -1,7 +1,9 @@
-import { CategoryType, TodoType, DeadlineType, notSet } from '../providers/types/categories';
+import { TodoType, DeadlineType, notSet } from '../providers/types/categories';
 import { getFormattedDate, getFormattedTime } from './dateFormatter';
 import DOMPurify from 'dompurify';
-const marked = require('marked');
+// const marked = require('marked');
+// import marked from 'marked';
+import * as marked from 'marked';
 
 // 完了済みか確認
 const checkIsCompleted = (todo: TodoType) => {
@@ -61,9 +63,10 @@ const DLFormatters = {
 
 
 // detail を HTML に挿入する際のサニタイズ処理
-const getSanitizedDetail = (todo: TodoType) => {
+const getSanitizedDetail = async (todo: TodoType): Promise<string> => {
   const detail = todo.detail;
-  return DOMPurify.sanitize(marked.parse(detail));
+  const parsedDetail = await marked.parse(detail);
+  return DOMPurify.sanitize(parsedDetail);
 };
 
 

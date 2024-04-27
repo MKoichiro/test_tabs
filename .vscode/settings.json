@@ -5,5 +5,17 @@
 
   // prettier拡張機能の設定
   "prettier.configPath": ".prettierrc.js",
-  "editor.defaultFormatter": "esbenp.prettier-vscode"
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+
+  // cSpell拡張機能の設定
+  "cSpell.words": [
+    "Disp",
+    "dompurify",
+    "easymde",
+    "fontawesome",
+    "fortawesome",
+    "reduxjs",
+    "remotedebug",
+    "simplemde"
+  ]
 }

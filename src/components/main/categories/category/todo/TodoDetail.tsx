@@ -41,7 +41,7 @@
 
 
 /* --- react/styled-components --- */
-import React, { useContext, useLayoutEffect, useRef, useState, forwardRef } from 'react';
+import React, { useContext, useLayoutEffect, useRef, useState, forwardRef, useEffect } from 'react';
 import styled from 'styled-components';
 /* --- child components ---------- */
 import { InfoTable } from './InfoTable';
@@ -53,7 +53,7 @@ import { TodoType } from '../../../../../providers/types/categories';
 import { scrollToRef } from '../../../../../utils/smoothScrollToRef';
 import { getSanitizedDetail } from '../../../../../utils/todoPropsHandler';
 /* --- dev ----------------------- */
-import { isDebugMode } from '../../../../../utils/adminDebugMode';
+// import { isDebugMode } from '../../../../../utils/adminDebugMode';
 
 
 // useUnsettledHeightAcc: 内容物の高さが可変のアコーディオンを実装するためのカスタムフック
@@ -92,7 +92,7 @@ interface StyledSectionType {
 
 // === COMPONENT ====================================================== //
 export const TodoDetail = forwardRef<HTMLElement, TodoDetailType>((props, ref) => {
-  const { liIdx, todo } = props;
+  const { todo } = props;
   const todoId = todo.id;
 
   const { inEditing, handleModalOpen } = useContext(MdeContext);
@@ -108,6 +108,16 @@ export const TodoDetail = forwardRef<HTMLElement, TodoDetailType>((props, ref) =
       scrollToRef(ref);
     }
   };
+
+  const [sanitizedDetail, setSanitizedDetail] = useState('');
+  useEffect(() => {
+    const fetchSanitizedDetail = async () => {
+      const detail = await getSanitizedDetail(todo);
+      setSanitizedDetail(detail);
+    };
+    fetchSanitizedDetail();
+  }, [todo]);
+
 
 
   return (
@@ -126,7 +136,7 @@ export const TodoDetail = forwardRef<HTMLElement, TodoDetailType>((props, ref) =
           >
               <div
                 dangerouslySetInnerHTML={{
-                  __html: getSanitizedDetail(todo) }} />
+                  __html: sanitizedDetail }} />
           </section>
 
           <InfoTable todo={ todo } />

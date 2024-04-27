@@ -41,6 +41,8 @@
     "prettier": "3.2.5",
     "storybook": "^8.0.9",
     "ts-node": "^10.9.2",
+    "typedoc": "^0.25.13",
+    "typedoc-theme-hierarchy": "^4.1.2",
     "typescript": "^5.4.5",
     "typescript-eslint": "^7.7.1",
     "vite": "^5.2.10",

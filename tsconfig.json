@@ -110,6 +110,5 @@
   // + 2024/04/09
   "exclude": [
     "src/**/*_ignore.*", // blah_ignore.(extension) を TypeScript の compile から除外
-  ]
-
+  ],
 }

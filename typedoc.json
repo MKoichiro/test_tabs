@@ -1,0 +1,10 @@
+{
+  "entryPoints": ["src"],
+  "entryPointStrategy": "expand",
+  "out": "docs",
+  "name": "Todo",
+  "htmlLang": "ja",
+  "tsconfig": "./tsconfig.json",
+  "plugin": ["typedoc-theme-hierarchy"], // サイドメニューのスタイルを整えるplugin
+  "theme": "hierarchy",
+}

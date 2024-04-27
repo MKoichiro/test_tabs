@@ -46,7 +46,7 @@ const commonConfig = {
 
 
 // tsファイル固有の設定
-/** @type { import("./node_modules/@typescript-eslint/utils/dist/ts-eslint/Config").FlatConfig.ConfigArray } */
+/** @type { import("@typescript-eslint/utils/dist/ts-eslint/Config").FlatConfig.ConfigArray } */
 const tsConfig = tsEslint.config(
   {
     // [automatic settings]

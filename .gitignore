@@ -24,3 +24,4 @@ npm-debug.log*
 # custom ignore
 /src/**/*_ignore.*
 /trash
+*storybook.log

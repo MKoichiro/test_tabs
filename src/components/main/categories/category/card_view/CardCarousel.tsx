@@ -39,7 +39,6 @@
 - copilotからの提案をここに箇条書きで記述する。
 */
 
-
 /* --- react/styled-components --- */
 import React, { FC } from 'react';
 import styled from 'styled-components';
@@ -56,71 +55,68 @@ import { isDebugMode } from '../../../../../utils/adminDebugMode';
 import { getCardCarouselStyles } from '../../../../../providers/context_api/CardView';
 import { ScrollableElm } from '../../../../../providers/types/modal';
 
-
 // === TYPE =========================================================== //
 // - PROPS
 interface CardsCarouselType {
-  category: CategoryType;
-  addScrollableRef: (scrollable: ScrollableElm) => void;
+    category: CategoryType;
+    addScrollableRef: (scrollable: ScrollableElm) => void;
 }
 // - STYLE
 interface StyledUlType {
-  $padding: string;
-  $gap:     number;
+    $padding: string;
+    $gap: number;
 }
 // - OTHERS
 // =========================================================== TYPE === //
 
-
 // === COMPONENT ====================================================== //
 export const CardsCarousel: FC<CardsCarouselType> = (props) => {
-  const { category, ...rest } = props;
-  
-  const [test, setTest] = React.useState('test')
-  console.log('CardsCarousel: ', category);
-  
-  // contexts
-  const { registerContainer } = useCardCarouselRegister();
-  
-  // register carousel container
-  const { adjustedPadding_vw, carouselContainerRef } = registerContainer();
+    const { category, ...rest } = props;
 
-  // styles
-  const { gap_vw } = getCardCarouselStyles();
-  
-  // format todos
-  const todosFormatted = category.todos; // archiveしたものを削除または最後尾にした配列を渡すべき
+    const [test, setTest] = React.useState('test');
+    console.log('CardsCarousel: ', category);
 
-  return (
-    <StyledUl
-      ref      = { carouselContainerRef }
-      $padding = { adjustedPadding_vw   }
-      $gap     = { gap_vw               }
-    >
-      { todosFormatted.map((todo, i) => (
-          <CardTodo
-            key  = { todo.id }
-            todo = { todo    }
-            idx  = { i       }
-            {...rest} />
-       )
-      ) }
-    </StyledUl>
-  );
+    // contexts
+    const { registerContainer } = useCardCarouselRegister();
+
+    // register carousel container
+    const { adjustedPadding_vw, carouselContainerRef } = registerContainer();
+
+    // styles
+    const { gap_vw } = getCardCarouselStyles();
+
+    // format todos
+    const todosFormatted = category.todos; // archiveしたものを削除または最後尾にした配列を渡すべき
+
+    return (
+        <StyledUl
+            ref={carouselContainerRef}
+            $padding={adjustedPadding_vw}
+            $gap={gap_vw}
+        >
+            {todosFormatted.map((todo, i) => (
+                <CardTodo
+                    key={todo.id}
+                    todo={todo}
+                    idx={i}
+                    {...rest}
+                />
+            ))}
+        </StyledUl>
+    );
 };
 // ====================================================== COMPONENT === //
 
-
 // === STYLE ========================================================= //
 const StyledUl = styled.ul<StyledUlType>`
-  background-color: transparent;
-  pointer-events: none;
-  width: 100%;
-  overflow-x: hidden;
-  padding: ${ props => props.$padding };
-  gap: ${ props => `${props.$gap}vw` };
-  display: flex;
-  align-items: center;
-  height: 100%;
+    background-color: transparent;
+    pointer-events: none;
+    width: 100%;
+    overflow-x: hidden;
+    padding: ${(props) => props.$padding};
+    gap: ${(props) => `${props.$gap}vw`};
+    display: flex;
+    align-items: center;
+    height: 100%;
 `;
 // ========================================================= STYLE === //

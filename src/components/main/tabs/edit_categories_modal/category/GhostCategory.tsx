@@ -39,7 +39,6 @@
 - copilotからの提案をここに箇条書きで記述する。
 */
 
-
 /* --- react/styled-components --- */
 import React, { LegacyRef, forwardRef } from 'react';
 import styled from 'styled-components';
@@ -52,42 +51,41 @@ import { DragIndicator } from '@mui/icons-material';
 /* --- dev ----------------------- */
 import { isDebugMode } from '../../../../../utils/adminDebugMode';
 
-
 // === TYPE =========================================================== //
 // - PROPS
 interface GhostCategoryType {
-  category: CategoryType;
+    category: CategoryType;
 }
 // - STYLE
 // - OTHERS
 // =========================================================== TYPE === //
 
-
 // === COMPONENT ====================================================== //
-export const GhostCategory = forwardRef(({ ...props }: GhostCategoryType, ref: LegacyRef<HTMLDivElement> | undefined) => {
-  const { category } = props;
-  return (
-    <StyledDiv ref={ ref }>
-      <span className="gripper">
-        <DragIndicator />
-      </span>
-      <p children={ category.name } />
-    </StyledDiv>
-  );
-});
+export const GhostCategory = forwardRef(
+    ({ ...props }: GhostCategoryType, ref: LegacyRef<HTMLDivElement> | undefined) => {
+        const { category } = props;
+        return (
+            <StyledDiv ref={ref}>
+                <span className="gripper">
+                    <DragIndicator />
+                </span>
+                <p children={category.name} />
+            </StyledDiv>
+        );
+    }
+);
 // ====================================================== COMPONENT === //
-
 
 // === STYLE ========================================================= //
 const StyledDiv = styled.div<CategoryCommonStylesType>`
-  ${ categoryCommonStyles }
-  .gripper {
-    cursor: grabbing;
-  }
-  .category-name-container {
-    p {
-      display: block;
+    ${categoryCommonStyles}
+    .gripper {
+        cursor: grabbing;
     }
-  }
+    .category-name-container {
+        p {
+            display: block;
+        }
+    }
 `;
 // ========================================================= STYLE === //

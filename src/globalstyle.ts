@@ -1,6 +1,5 @@
-import { createGlobalStyle } from "styled-components";
-import { $contentsWidth } from "./data/styleMagics";
-
+import { createGlobalStyle } from 'styled-components';
+import { $contentsWidth } from './data/styleMagics';
 
 const GlobalStyle = createGlobalStyle`
 
@@ -107,7 +106,5 @@ const GlobalStyle = createGlobalStyle`
   }
 
 `;
-
-
 
 export default GlobalStyle;

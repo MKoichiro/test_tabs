@@ -1,10 +1,24 @@
+// cf. tsdoc.json: custom tags is there
+
 {
-  "entryPoints": ["src"],
-  "entryPointStrategy": "expand",
-  "out": "docs",
-  "name": "Todo",
-  "htmlLang": "ja",
-  "tsconfig": "./tsconfig.json",
-  "plugin": ["typedoc-theme-hierarchy"], // サイドメニューのスタイルを整えるplugin
-  "theme": "hierarchy",
+    "entryPoints": ["src"],
+    "entryPointStrategy": "expand",
+    "out": "docs",
+    "name": "Todo",
+    "htmlLang": "ja",
+    "tsconfig": "./tsconfig.json",
+    "plugin": [
+        // サイドメニューのスタイルを整えるplugin
+        "typedoc-theme-hierarchy",
+        // exportしていない型を表示するplugin
+        "typedoc-plugin-missing-exports"
+      ],
+    "theme": "hierarchy", // By: typedoc-theme-hierarchy
+    "placeInternalsInOwningModule": true, // By: typedoc-plugin-missing-exports
+
+    "excludePrivate": false,
+    "cleanOutputDir": true,
+    "searchInComments": true,
+    "hideGenerator": true,
+    // "customCss": "./extra_asset/custom.css", // 追加のカスタムCSSを適用する場合
 }

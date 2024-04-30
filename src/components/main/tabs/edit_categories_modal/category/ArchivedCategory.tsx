@@ -39,7 +39,6 @@
 - copilotからの提案をここに箇条書きで記述する。
 */
 
-
 /* --- react/styled-components --- */
 import React, { FC } from 'react';
 import styled from 'styled-components';
@@ -50,42 +49,37 @@ import { categoryCommonStyles, CategoryCommonStylesType } from './CategoryCommon
 /* --- dev ----------------------- */
 import { isDebugMode } from '../../../../../utils/adminDebugMode';
 
-
 // === TYPE =========================================================== //
 // - PROPS
 interface ArchivedCategoryType {
-  archivedCategory: CategoryType;
+    archivedCategory: CategoryType;
 }
 // - STYLE
 // - OTHERS
 // =========================================================== TYPE === //
 
-
 // === COMPONENT ====================================================== //
 export const ArchivedCategory: FC<ArchivedCategoryType> = (props) => {
-  const { archivedCategory } = props;
-  return (
-    <StyledLi>
-      <div className='category-name-container'>
-        <p>
-          { archivedCategory.name }
-        </p>
-      </div>
-    </StyledLi>
-  );
+    const { archivedCategory } = props;
+    return (
+        <StyledLi>
+            <div className="category-name-container">
+                <p>{archivedCategory.name}</p>
+            </div>
+        </StyledLi>
+    );
 };
 // ====================================================== COMPONENT === //
 
-
 // === STYLE ========================================================= //
 const StyledLi = styled.li<CategoryCommonStylesType>`
-  ${ categoryCommonStyles }
+    ${categoryCommonStyles}
 
-  .category-name-container {
-    p {
-      display: block;
-      opacity: 0.5;
+    .category-name-container {
+        p {
+            display: block;
+            opacity: 0.5;
+        }
     }
-  }
 `;
 // ========================================================= STYLE === //

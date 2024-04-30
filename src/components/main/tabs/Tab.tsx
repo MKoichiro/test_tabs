@@ -1,129 +1,200 @@
-
-
+/**
+ * @summary
+ * カテゴリー名のタブメニューの中の、各タブを表示するコンポーネント。
+ *
+ * @issues
+ * - TODO: ulRef({@link TabsContainer}への参照) をグローバルに管理することで、{@link useTabSwitcher} を他コンポーネントからも利用できるようにする。
+ * - TODO: {@link useTabSwitcher} 内で定義している handleContainerScroll で、グローバルに参照しうる magic number が含まれているため、これを別 module に切り出す。
+ * - IF_POSSIBLE: {@link useTabSwitcher} の引数を、第一引数に移動距離を算出する関数、第二引数に container の ref を返す関数に修正することで、より汎用的に利用できるようにする。
+ *
+ * @copilot
+ * > 全体として、このコードは非常によく書かれており、特に問題点は見つかりませんでした。ただし、可能であれば、スタイルの値（特に色）をハードコードするのではなく、テーマまたは定数から取得することを検討してみてください。これにより、将来的にデザインを変更する際の作業が容易になります。
+ *
+ * @module
+ */
 
 /* --- react/styled-components --- */
-import React, { RefObject, FC } from 'react';
+import React, { RefObject } from 'react';
 import styled from 'styled-components';
+
 /* --- redux --------------------- */
 import { useDispatch, useCategoriesSelector } from '../../../providers/redux/store';
 import { switchCategory } from '../../../providers/redux/slices/categoriesSlice';
+
 /* --- utils --------------------- */
 import { vw2px } from '../../../utils/converters';
-/* --- dev ----------------------- */
-import { isDebugMode } from '../../../utils/adminDebugMode';
 
+/* --- dev ----------------------- */
+// import { isDebugMode } from '../../../utils/adminDebugMode';
 
 // === TYPE =========================================================== //
-// - PROPS
+/**
+ * @summary {@link Tab} コンポーネントに渡す props の型。
+ * @property idx - Tabのli要素としてのインデックス番号。
+ * @property ulRef - TabsContainer(ul要素)への参照。
+ * @category Type of Props
+ */
 interface TabType {
-  index: number;
-  ulRef: RefObject<HTMLUListElement>;
+    idx: number;
+    ulRef: RefObject<HTMLUListElement>;
 }
-// - STYLE
-interface StylePropsType {
-  $isActive: boolean;
-}
-// - OTHERS
 // =========================================================== TYPE === //
 
+// === FUNCTION ======================================================= //
+// 1. useTabSwitcher
+/**
+ * @param arg - {@link Tab} コンポーネントが受け取る {@link TabType} 型の props をそのまま引数として受け取る。
+ *
+ * @summary タブを切り替えの toggleActive 関数を提供するカスタムフック。このカスタムフックは、{@link useTab} のヘルパーフックとして利用される。
+ * @remarks
+ * 返り値の toggleActive は、以下の処理を行う。
+ * 1. active になるタブがコンテナの左端に来るようにスクロールする。
+ * 2. categories の store に対して、activeIdx の更新を dispatch する。
+ *
+ * @example
+ * ```tsx
+ * const { toggleActive } = useTabSwitcher({ idx, ulRef });
+ * ```
+ *
+ * @category Custom Hook
+ */
+export const useTabSwitcher = ({ idx, ulRef }: TabType) => {
+    const dispatch = useDispatch();
+
+    /**
+     * toggleActiveで使うヘルパー関数。
+     * TODO: magic number (currentContentWidth, 0.15) は別 module に切り出す。
+     * IF_POSSIBLE: 移動距離を算出する関数を第一引数に、第二引数に container の ref を返すように修正することで、より汎用的に利用できるようにしても良い。
+     */
+    const handleContainerScroll = () => {
+        const container = ulRef.current;
+
+        if (!container) {
+            console.error('tab ul が見つかりません。');
+            return;
+        }
+
+        /** tab の idx と 非アクティブ時の tab の幅を元に、スクロール位置を計算してスムーズスクロール */
+        const currentContentWidth = vw2px(62);
+        const inactiveTabWidth = currentContentWidth * 0.15;
+        const targetCoordinate = inactiveTabWidth * idx;
+        container.scrollTo({ left: targetCoordinate, behavior: 'smooth' });
+    };
+
+    return {
+        /** useTabを通じてコンポーネントに提供、button 要素の onClick にバインドするハンドラ */
+        toggleActive: () => {
+            handleContainerScroll();
+            dispatch(switchCategory(idx));
+        },
+    };
+};
+
+// 2. useTab
+/**
+ * @param arg - {@link Tab} コンポーネントが受け取る {@link TabType} 型の props をそのまま引数として受け取る。
+ * 
+ * @category Custom Hook
+ * @example
+ * ```tsx
+ * const { isActive, isLastItem, categoryId, categoryName, toggleActive } = useTab({ idx, ulRef });
+ * ```
+ */
+export const useTab = ({ idx, ulRef }: TabType) => {
+    const { activeIdx, categoriesEntity: categories } = useCategoriesSelector();
+
+    return {
+        isActive: activeIdx === idx,
+        /** 末尾のタブ間セパレーターはレンダリングしたくないので必要 */
+        isLastItem: idx === categories.length - 1,
+        /** タブに紐づくカテゴリーID */
+        categoryId: categories[idx].id,
+        /** タブに表示するカテゴリー名 */
+        categoryName: categories[idx].name,
+        /** button 要素の onClick にバインドするハンドラ */
+        toggleActive: useTabSwitcher({ idx, ulRef }).toggleActive,
+    };
+};
+// ======================================================= FUNCTION === //
 
 // === COMPONENT ====================================================== //
 /**
- * Tab コンポーネントはタブ切り替え機能を提供します。
+ * @param props
+ * @returns
  * 
+ * @renderAs
+ * - `<li/>`
  * @example
- * <Tab>...</Tab>
+ * ```tsx
+ * <Tab idx={0} ulRef={ulRef} />
+ * ```
+ *
+ * @category Component
  */
-export const Tab: FC<TabType> = (props) => {
-  const { index, ulRef } = props;
+export const Tab = (props: TabType) => {
+    const { isActive, isLastItem, categoryId, categoryName, toggleActive } = useTab(props);
 
-  // contexts
-  const { activeIdx, categoriesEntity: categories } = useCategoriesSelector();
-  const dispatch = useDispatch();
+    return (
+        <StyledLi
+            key={categoryId}
+            $isActive={isActive}
+        >
+            <button
+                children={categoryName}
+                onClick={toggleActive}
+            />
 
-  // constants/variables
-  const category = categories[index];
-  const isActive = Boolean(activeIdx === index);
-
-  // handlers
-  const toggleActive = () => {
-    handleContainerScroll();
-    dispatch(switchCategory(index));
-  };
-
-  // helpers
-  const handleContainerScroll = () => {
-    // null check
-    if (!ulRef.current) { console.error('tab ul が見つかりません。'); return; }
-
-    const container = ulRef.current;
-    const currentContentWidth = vw2px(62);
-
-    // get scroll coordinate
-    const inActiveTabWidth = currentContentWidth * .15;
-    const scroll = inActiveTabWidth * index;
-    // execute scroll
-    container.scrollTo({ left: scroll, behavior: 'smooth' });
-  };
-
-
-  return (
-    <StyledLi
-      key       = {       category.id }
-      $isActive = {          isActive }
-    >
-      <button
-        children = { category.name }
-        onClick = {   toggleActive } />
-
-      { (index !== categories.length - 1) && <span className="separater" /> }
-    </StyledLi>
-  )
+            {isLastItem && <span className="separator" />}
+        </StyledLi>
+    );
 };
 // ====================================================== COMPONENT === //
 
-
 // === STYLE ========================================================= //
-
+interface StylePropsType {
+    $isActive: boolean;
+}
 
 const StyledLi = styled.li<StylePropsType>`
     & {
-    display: flex;
-    gap: inherit;
-    align-items: center;
-    flex-grow: 1;
-    flex-shrink: 0;
+        display: flex;
+        gap: inherit;
+        align-items: center;
+        flex-grow: 1;
+        flex-shrink: 0;
 
-    transition: max-width 750ms;
-    max-width: ${ props => props.$isActive ? `100%` : '15%' };
+        transition: max-width 750ms;
+        max-width: ${({ $isActive }) => ($isActive ? `100%` : '15%')};
 
-    height: 100%;
-    min-width: 15%;
-  }
+        height: 100%;
+        min-width: 15%;
+    }
 
-  button {
-    display: block;
-    width: 100%;
-    height: 66.7%;
-    padding: 0 .8rem;
+    button {
+        display: block;
+        width: 100%;
+        height: 66.7%;
+        padding: 0 0.8rem;
 
-    background: ${ props => props.$isActive ? '#454e70' : '#ddd' };
-    color: ${ props => props.$isActive ? '#fff' : '' };
-    margin-left: .4rem;
+        background: ${({ $isActive }) => ($isActive ? '#454e70' : '#ddd')};
+        color: ${({ $isActive }) => ($isActive ? '#fff' : '')};
+        margin-left: 0.4rem;
 
-    overflow-x: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    transition: scale 50ms;
-  }
-  button:active { scale: .9; }
+        overflow-x: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        transition: scale 50ms;
+    }
+    button:active {
+        scale: 0.9;
+    }
 
-  .separater {
-    height: 100%;
-    min-width: .15rem;
-    margin-left:.4rem;
+    .separator {
+        height: 100%;
+        min-width: 0.15rem;
+        margin-left: 0.4rem;
 
-    background: #fff;
-  }
+        background: #fff;
+    }
 `;
 // ========================================================= STYLE === //

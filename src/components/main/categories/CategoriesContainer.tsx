@@ -39,7 +39,6 @@ import { MdeModal } from './MdeModal';
 /* --- dev ----------------------- */
 import { isDebugMode } from '../../../utils/adminDebugMode';
 
-
 // === TYPE =========================================================== //
 // - PROPS
 interface CategoriesContainerType {}
@@ -47,23 +46,21 @@ interface CategoriesContainerType {}
 // - OTHERS
 // =========================================================== TYPE === //
 
-
 // === COMPONENT ====================================================== //
 export const CategoriesContainer: FC<CategoriesContainerType> = (props) => {
-  const {} = props;
+    const {} = props;
 
-  return (
-    <StyledDiv>
-      <Categories />
-      <MdeModal />
-    </StyledDiv>
-  );
+    return (
+        <StyledDiv>
+            <Categories />
+            <MdeModal />
+        </StyledDiv>
+    );
 };
 // ====================================================== COMPONENT === //
 
-
 // === STYLE ========================================================= //
 const StyledDiv = styled.div`
-  overflow-x: hidden;
+    overflow-x: hidden;
 `;
 // ========================================================= STYLE === //

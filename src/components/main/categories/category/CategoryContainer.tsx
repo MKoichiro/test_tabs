@@ -39,57 +39,51 @@
 - copilotからの提案をここに箇条書きで記述する。
 */
 
-
 /* --- react/styled-components --- */
-import React, { FC, useEffect, useState } from "react";
-import styled from "styled-components";
+import React, { FC, useEffect, useState } from 'react';
+import styled from 'styled-components';
 /* --- child components ---------- */
-import { Category } from "./Category";
-import { CardsContainer } from "./card_view/CardModal";
-import { CategoryType } from "../../../../providers/types/categories";
+import { Category } from './Category';
+import { CardsContainer } from './card_view/CardModal';
+import { CategoryType } from '../../../../providers/types/categories';
 /* --- redux --------------------- */
-import { useCategoriesSelector } from "../../../../providers/redux/store";
+import { useCategoriesSelector } from '../../../../providers/redux/store';
 /* --- dev ----------------------- */
-import { isDebugMode } from "../../../../utils/adminDebugMode";
+import { isDebugMode } from '../../../../utils/adminDebugMode';
 
 // === TYPE =========================================================== //
 // - PROPS
 interface PropsType {
-  category: CategoryType;
-  idx: number;
+    category: CategoryType;
+    idx: number;
 }
 // - STYLE
 // - OTHERS
 // =========================================================== TYPE === //
 
-
 // === COMPONENT ====================================================== //
 export const CategoryContainer: FC<PropsType> = (props) => {
-  const { idx, ...rest } = props;
-  const { activeIdx } = useCategoriesSelector();
-  const [isActive, setIsActive] = useState(false);
+    const { idx, ...rest } = props;
+    const { activeIdx } = useCategoriesSelector();
+    const [isActive, setIsActive] = useState(false);
 
-  useEffect(() => {
-    if (idx === activeIdx) {
-      setIsActive(true);
-    } else {
-      setIsActive(false);
-    }
-  }, [idx, activeIdx]);
+    useEffect(() => {
+        if (idx === activeIdx) {
+            setIsActive(true);
+        } else {
+            setIsActive(false);
+        }
+    }, [idx, activeIdx]);
 
-  return (
-    <StyledDiv>
-      <Category { ...props } />
-      { isActive && 
-        ( <CardsContainer { ...rest }/> )
-      }
-    </StyledDiv>
-  );
+    return (
+        <StyledDiv>
+            <Category {...props} />
+            {isActive && <CardsContainer {...rest} />}
+        </StyledDiv>
+    );
 };
 // ====================================================== COMPONENT === //
 
-
 // === STYLE ========================================================= //
-const StyledDiv = styled.div`
-`;
+const StyledDiv = styled.div``;
 // ========================================================= STYLE === //

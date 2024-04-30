@@ -40,8 +40,8 @@
 */
 
 /* --- react/styled-components --- */
-import React, { FC } from 'react'
-import styled from 'styled-components'
+import React, { FC } from 'react';
+import styled from 'styled-components';
 /* --- types --------------------- */
 import { TodoType } from '../../../../../providers/types/categories';
 import { ScrollableElm } from '../../../../../providers/types/modal';
@@ -53,130 +53,124 @@ import { getCardCarouselStyles } from '../../../../../providers/context_api/Card
 import { useDispatch } from '../../../../../providers/redux/store';
 import { setActiveIdx } from '../../../../../providers/redux/slices/cardSlice';
 
-
 // === TYPE =========================================================== //
 // - PROPS
 interface PropsType {
-  todo: TodoType;
-  idx: number;
-  addScrollableRef: (scrollable: ScrollableElm) => void;
+    todo: TodoType;
+    idx: number;
+    addScrollableRef: (scrollable: ScrollableElm) => void;
 }
 // - STYLE
 interface StyledLiType {
-  $isActive: boolean;
-  $activeWidth: number;
-  $shrinkRatio: number;
+    $isActive: boolean;
+    $activeWidth: number;
+    $shrinkRatio: number;
 }
 // - OTHERS
 // =========================================================== TYPE === //
 
-
 // === COMPONENT ====================================================== //
 export const CardTodo: FC<PropsType> = (props) => {
-  const { todo, idx } = props;
+    const { todo, idx } = props;
 
-  // contexts
-  const { isActive, handleScroll } = useCardScroll(idx);
-  const dispatch = useDispatch()
+    // contexts
+    const { isActive, handleScroll } = useCardScroll(idx);
+    const dispatch = useDispatch();
 
-  // handlers
-  const handleClick = () => {
-    handleScroll(idx, 'smooth');
-    // dispatch(setActiveIdx(idx));
-  };
+    // handlers
+    const handleClick = () => {
+        handleScroll(idx, 'smooth');
+        // dispatch(setActiveIdx(idx));
+    };
 
-  // styles
-  const { activeWidth_vw, inactiveMagnification } = getCardCarouselStyles();
+    // styles
+    const { activeWidth_vw, inactiveMagnification } = getCardCarouselStyles();
 
+    return (
+        <StyledLi
+            onClick={handleClick}
+            $isActive={isActive}
+            $activeWidth={activeWidth_vw}
+            $shrinkRatio={inactiveMagnification}
+        >
+            <section className="contents-wrapper">
+                <header>
+                    <h3>{todo.title}</h3>
+                </header>
 
-  return (
-    <StyledLi
-      onClick={handleClick}
-      $isActive={isActive}
-      $activeWidth={activeWidth_vw}
-      $shrinkRatio={inactiveMagnification}
-    >
+                <div className="color-container">color-container</div>
 
-      <section className='contents-wrapper'>
-        <header>
-          <h3>
-            { todo.title }
-          </h3>
-        </header>
+                <div className="info-container">infmation</div>
 
-        <div className='color-container'>
-          color-container
-        </div>
+                <div className="detail-container">
+                    <p>{todo.detail}</p>
+                </div>
 
-        <div className='info-container'>
-          infmation
-        </div>
-
-        <div className='detail-container'>
-          <p>
-            { todo.detail }
-          </p>
-        </div>
-
-        <div className='category-container'>
-          Category-0 // todoからcategoryを参照できるようにする
-        </div>
-      </section>
-
-    </StyledLi>
-  )
+                <div className="category-container">
+                    Category-0 // todoからcategoryを参照できるようにする
+                </div>
+            </section>
+        </StyledLi>
+    );
 };
 // ====================================================== COMPONENT === //
 
-
 // === STYLE ========================================================= //
 const StyledLi = styled.li<StyledLiType>`
-  --active-width: ${ props => `${props.$activeWidth}vw` };
-  --active-height: ${ props => `${props.$activeWidth}vh` };
-  --shrink-ratio: ${ props => props.$shrinkRatio };
-  pointer-events: auto;
-  background-color: inherit;
-  min-width: ${ props => props.$isActive ? 'var(--active-width)' : 'calc(var(--active-width) * var(--shrink-ratio))' };
-  height: ${ props => props.$isActive ? 'var(--active-height)' : 'calc(var(--active-height) * var(--shrink-ratio))' };
-  overflow-y: hidden;
-  transition: min-width 300ms, height 300ms;
+    --active-width: ${(props) => `${props.$activeWidth}vw`};
+    --active-height: ${(props) => `${props.$activeWidth}vh`};
+    --shrink-ratio: ${(props) => props.$shrinkRatio};
+    pointer-events: auto;
+    background-color: inherit;
+    min-width: ${(props) =>
+        props.$isActive
+            ? 'var(--active-width)'
+            : 'calc(var(--active-width) * var(--shrink-ratio))'};
+    height: ${(props) =>
+        props.$isActive
+            ? 'var(--active-height)'
+            : 'calc(var(--active-height) * var(--shrink-ratio))'};
+    overflow-y: hidden;
+    transition:
+        min-width 300ms,
+        height 300ms;
 
-  .contents-wrapper {
-    height: 100%;
-    display: grid;
-    grid-template:
-      "heading    heading"  auto
-      "color       detail"   1fr
-      "info        detail"   2fr
-      "category  category"  auto
-    /       1fr       1fr;
-    gap: 1.2rem;
-    header {
-      grid-area: heading;
-      background: #eee;
+    .contents-wrapper {
+        height: 100%;
+        display: grid;
+        grid-template:
+            'heading    heading' auto
+            'color       detail' 1fr
+            'info        detail' 2fr
+            'category  category' auto
+            / 1fr 1fr;
+        gap: 1.2rem;
+        header {
+            grid-area: heading;
+            background: #eee;
+        }
+        .color-container {
+            margin: 10%;
+            grid-area: color;
+            background: #eee;
+        }
+        .info-container {
+            grid-area: info;
+            background: #eee;
+        }
+        .detail-container {
+            > * {
+                transform: ${(props) => (props.$isActive ? 'scale(1)' : 'scale(.5)')};
+                transform-origin: top left;
+                transition: transform 300ms;
+            }
+            grid-area: detail;
+            background: #eee;
+        }
+        .category-container {
+            grid-area: category;
+            background: #eee;
+        }
     }
-    .color-container {
-      margin: 10%;
-      grid-area: color;
-      background: #eee;
-    }
-    .info-container {
-      grid-area: info;
-      background: #eee;
-    }
-    .detail-container {
-      > * {
-        transform: ${props => props.$isActive ? 'scale(1)' : 'scale(.5)'};
-        transform-origin: top left;
-        transition: transform 300ms;
-      }
-      grid-area: detail;
-      background: #eee;
-    }
-    .category-container {
-      grid-area: category;
-      background: #eee;
-    }
-  }
 `;
 // ========================================================= STYLE === //

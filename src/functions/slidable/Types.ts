@@ -12,24 +12,22 @@ import { ReactNode } from 'react';
 //      開閉時のアニメーション時間（指が離れた後、終状態まで補完する時）
 
 export interface SlidableParamsType {
-  SLIDABLE_LENGTH:            number;
-  GRADIENT_THRESHOLD:         number;
-  TOGGLE_THRESHOLD:           number;
-  COMPLEMENT_ANIME_DURATION:  number;
+    SLIDABLE_LENGTH: number;
+    GRADIENT_THRESHOLD: number;
+    TOGGLE_THRESHOLD: number;
+    COMPLEMENT_ANIME_DURATION: number;
 }
-
 
 // common
 interface SlidableBaseType {
-  children: ReactNode;
-  className?: string;
+    children: ReactNode;
+    className?: string;
 }
 // each
 export interface SlidableType extends SlidableBaseType {
-  slidableParams: SlidableParamsType;
+    slidableParams: SlidableParamsType;
 }
-export interface SlidableMainType extends SlidableBaseType {
-}
+export interface SlidableMainType extends SlidableBaseType {}
 export interface SlidableHiddenType extends SlidableBaseType {
-  slidableLength: number;
+    slidableLength: number;
 }

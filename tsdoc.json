@@ -1,0 +1,25 @@
+{
+    "$schema": "https://developer.microsoft.com/json-schemas/tsdoc/v0/tsdoc.schema.json",
+    "tagDefinitions": [
+        {
+            "tagName": "@renderAs",
+            "syntaxKind": "block"
+        },
+        {
+            "tagName": "@children",
+            "syntaxKind": "block"
+        },
+        {
+            "tagName": "@parents",
+            "syntaxKind": "block"
+        },
+        {
+            "tagName": "@issues",
+            "syntaxKind": "block"
+        },
+        {
+            "tagName": "@copilot",
+            "syntaxKind": "block"
+        }
+    ]
+}

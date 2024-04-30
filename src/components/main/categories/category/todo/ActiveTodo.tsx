@@ -39,7 +39,6 @@
 - copilotからの提案をここに箇条書きで記述する。
 */
 
-
 /* --- react/styled-components --- */
 import React, { FC, useRef } from 'react';
 import styled from 'styled-components';
@@ -47,7 +46,11 @@ import styled from 'styled-components';
 import { TodoDetail } from './TodoDetail';
 import { TodoHeader } from './TodoHeader';
 // slidable
-import { Slidable, SlidableMain, SlidableHidden } from '../../../../../functions/slidable/Components';
+import {
+    Slidable,
+    SlidableMain,
+    SlidableHidden,
+} from '../../../../../functions/slidable/Components';
 /* --- redux --------------------- */
 import { useDispatch } from 'react-redux';
 import { updateTodoProps } from '../../../../../providers/redux/slices/categoriesSlice';
@@ -70,188 +73,177 @@ import { isDebugMode } from '../../../../../utils/adminDebugMode';
 import { set } from 'react-hook-form';
 import { setActiveIdx } from '../../../../../providers/redux/slices/cardSlice';
 
-
 // === CONSTANT Against RENDERING ===================================== //
 const contentsWidth = vw2px(getCurrentContentsVw());
-const deleteBtnWidth = contentsWidth * .5;
+const deleteBtnWidth = contentsWidth * 0.5;
 
 // slidable
 const slidableParams: SlidableParamsType = {
-  SLIDABLE_LENGTH: deleteBtnWidth,
-  GRADIENT_THRESHOLD: .5,
-  TOGGLE_THRESHOLD: .2,
-  COMPLEMENT_ANIME_DURATION: 200,
+    SLIDABLE_LENGTH: deleteBtnWidth,
+    GRADIENT_THRESHOLD: 0.5,
+    TOGGLE_THRESHOLD: 0.2,
+    COMPLEMENT_ANIME_DURATION: 200,
 };
 // ===================================== CONSTANT Against RENDERING === //
-
 
 // === TYPE =========================================================== //
 // - PROPS
 interface PropsType {
-  todo: TodoType;
-  liIdx: number;
+    todo: TodoType;
+    liIdx: number;
 }
 // - STYLE
 interface StyledLiType {
-  $isDragging: boolean;
+    $isDragging: boolean;
 }
 // - OTHERS
 // =========================================================== TYPE === //
 
-
 // === COMPONENT ====================================================== //
 export const ActiveTodo: FC<PropsType> = (props) => {
+    const { todo, liIdx } = props;
+    const currentId = todo.id;
 
-  const { todo, liIdx } = props;
-  const currentId = todo.id;
+    // contexts
+    const dispatch = useDispatch();
+    const { cardViewOpen } = useCardViewOpener();
 
-  // contexts
-  const dispatch = useDispatch();
-  const { cardViewOpen } = useCardViewOpener();
+    // --- dnd-kit ------------------------------------------------ //
+    const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
+        id: currentId,
+    });
+    const style = {
+        transform: CSS.Transform.toString(transform),
+        transition,
+    };
+    // ------------------------------------------------ dnd-kit --- //
 
+    // detail の double click で mde modal を開くときに自動 scroll 先となる ref
+    const liRef = useRef<HTMLElement | null>(null);
 
-  // --- dnd-kit ------------------------------------------------ //
-  const {
-    attributes,
-    listeners,
-    setNodeRef,
-    transform,
-    transition,
-    isDragging
-  } = useSortable({id: currentId});
-  const style = {
-    transform: CSS.Transform.toString(transform),
-    transition,
-  };
-  // ------------------------------------------------ dnd-kit --- //
+    // handlers
+    const handleInfoBtnClick = () => {
+        cardViewOpen(liIdx);
+        dispatch(setActiveIdx(liIdx));
+    };
+    const handleCompleteBtnClick = () => {
+        dispatch(updateTodoProps({ todoId: currentId, update: { status: 'completed' } }));
+    };
+    const handleArchiveBtnClick = () => {
+        dispatch(updateTodoProps({ todoId: currentId, update: { isArchived: true } }));
+    };
 
-  // detail の double click で mde modal を開くときに自動 scroll 先となる ref
-  const liRef = useRef<HTMLElement | null>(null);
+    return (
+        <StyledLi
+            key={currentId}
+            style={style}
+            $isDragging={isDragging}
+            ref={(e) => {
+                setNodeRef(e);
+                liRef.current = e;
+            }}
+            {...attributes}
+        >
+            {/* slidable: li内をスライド可能にするためのコンテナ */}
+            <Slidable slidableParams={slidableParams}>
+                {/* slidable: 通常時に表示されている要素 */}
+                <SlidableMain className="slidable-main-contents">
+                    <TodoHeader
+                        attributes={'active'}
+                        listeners={listeners}
+                        todo={todo}
+                    />
 
-  // handlers
-  const handleInfoBtnClick = () => {
-    cardViewOpen(liIdx);
-    dispatch(setActiveIdx(liIdx));
-  };
-  const handleCompleteBtnClick = () => {
-    dispatch(updateTodoProps({ todoId: currentId, update: {status: 'completed'} }));
-  }
-  const handleArchiveBtnClick = () => {
-    dispatch(updateTodoProps({ todoId: currentId, update: {isArchived: true} }));
-  }
+                    <TodoDetail
+                        ref={liRef}
+                        liIdx={liIdx}
+                        todo={todo}
+                    />
+                </SlidableMain>
 
+                {/* slidable: スライドで右から出てくる要素 */}
+                <SlidableHidden
+                    className="btns-container"
+                    slidableLength={slidableParams.SLIDABLE_LENGTH}
+                >
+                    {/* 1. cards modal を表示する */}
+                    <div className="each-btn-container info-btn-container">
+                        <button
+                            className={'each-btn btn-info'}
+                            onClick={handleInfoBtnClick}
+                            children={<FontAwesomeIcon icon={faCircleInfo} />}
+                        />
+                    </div>
 
-  return (
-    <StyledLi
-      key         = {                                  currentId }
-      style       = {                                      style }
-      $isDragging = {                                 isDragging }
-      ref         = { e => { setNodeRef(e); liRef.current = e; } }
-      {...attributes}
-    >
+                    {/* 2. todo を完了済み(completed)にする */}
+                    <div className="each-btn-container check-btn-container">
+                        <button
+                            className={'each-btn btn-check'}
+                            onClick={handleCompleteBtnClick}
+                            children={<FontAwesomeIcon icon={faCheck} />}
+                        />
+                    </div>
 
-        {/* slidable: li内をスライド可能にするためのコンテナ */}
-        <Slidable slidableParams={slidableParams}>
-        
-            {/* slidable: 通常時に表示されている要素 */}
-            <SlidableMain className='slidable-main-contents'>
-
-                <TodoHeader
-                  attributes = {  'active' }
-                  listeners  = { listeners }
-                  todo       = {      todo } />
-
-                <TodoDetail
-                  ref   = { liRef }
-                  liIdx = { liIdx }
-                  todo  = { todo  } />
-
-            </SlidableMain>
-
-
-            {/* slidable: スライドで右から出てくる要素 */}
-            <SlidableHidden className='btns-container' slidableLength={slidableParams.SLIDABLE_LENGTH}>
-
-                {/* 1. cards modal を表示する */}
-                <div className='each-btn-container info-btn-container'>
-                  <button
-                    className = {                    'each-btn btn-info' }
-                    onClick   = {                     handleInfoBtnClick }
-                    children  = { <FontAwesomeIcon icon={faCircleInfo}/> } />
-                </div>
-
-                {/* 2. todo を完了済み(completed)にする */}
-                <div className='each-btn-container check-btn-container'>
-                  <button
-                    className = {              'each-btn btn-check' }
-                    onClick   = {            handleCompleteBtnClick }
-                    children  = { <FontAwesomeIcon icon={faCheck}/> } />
-                </div>
-
-                {/* 3. todo をアーカイブ(isArchived === true に)する */}
-                <div className='each-btn-container delete-btn-container'>
-                  <button
-                    className = {                'each-btn btn-delete' }
-                    onClick   = {                handleArchiveBtnClick }
-                    children  = { <FontAwesomeIcon icon={faTrashCan}/> } />
-                </div>
-
-            </SlidableHidden>
-        </Slidable>
-    </StyledLi>
-  );
+                    {/* 3. todo をアーカイブ(isArchived === true に)する */}
+                    <div className="each-btn-container delete-btn-container">
+                        <button
+                            className={'each-btn btn-delete'}
+                            onClick={handleArchiveBtnClick}
+                            children={<FontAwesomeIcon icon={faTrashCan} />}
+                        />
+                    </div>
+                </SlidableHidden>
+            </Slidable>
+        </StyledLi>
+    );
 };
 // ====================================================== COMPONENT === //
 
-
 // === STYLE ========================================================= //
 const StyledLi = styled.li<StyledLiType>`
-  background: #efefef;
+    background: #efefef;
 
-  border-radius: .4rem;
-  /* background: #e0e0e0;
+    border-radius: 0.4rem;
+    /* background: #e0e0e0;
   box-shadow:  2rem 2rem 6rem #bebebe,
               -2rem -2rem 6rem #ffffff; */
-  
-  margin: 1.6rem 0;
-  opacity: ${ props => props.$isDragging ? .5 : 1 };
-  overflow-x: hidden;
-  width: 100%;
-  -ms-overflow-style: none;
-  scrollbar-width: none;
-  &:-webkit-scrollbar {
-    display: none;
-  }
 
-
-  .btns-container {
-    z-index: 100;
-    display: flex;
-    .each-btn-container {
-      flex: 1;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      .each-btn {
-        font-size: 2rem;
-        display: block;
-        width: 95%;
-        height: 95%;
-      }
-      .btn-info {
-        color: #0b4906;
-        border: .2rem solid #0b4906;
-      }
-      .btn-check {
-        color: #454e70;
-        border: .2rem solid #454e70;
-      }
-      .btn-delete {
-        
-        border: .2rem solid #8c1111;
-      }
+    margin: 1.6rem 0;
+    opacity: ${(props) => (props.$isDragging ? 0.5 : 1)};
+    overflow-x: hidden;
+    width: 100%;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+    &:-webkit-scrollbar {
+        display: none;
     }
 
-  }
+    .btns-container {
+        z-index: 100;
+        display: flex;
+        .each-btn-container {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            .each-btn {
+                font-size: 2rem;
+                display: block;
+                width: 95%;
+                height: 95%;
+            }
+            .btn-info {
+                color: #0b4906;
+                border: 0.2rem solid #0b4906;
+            }
+            .btn-check {
+                color: #454e70;
+                border: 0.2rem solid #454e70;
+            }
+            .btn-delete {
+                border: 0.2rem solid #8c1111;
+            }
+        }
+    }
 `;
 // ========================================================= STYLE === //

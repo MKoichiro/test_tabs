@@ -39,133 +39,137 @@
 - copilotからの提案をここに箇条書きで記述する。
 */
 
-
 /* --- react/styled-components --- */
-import React, { FC, useContext, useState } from "react";
-import styled from "styled-components";
+import React, { FC, useContext, useState } from 'react';
+import styled from 'styled-components';
 /* --- child components ---------- */
-import { Todo } from "./todo/GhostTodo";
+import { Todo } from './todo/GhostTodo';
 /* --- providers/contexts -------- */
 // import { CategoriesContext } from "../../../../providers/CategoriesProvider";
 /* --- types --------------------- */
-import { CategoryType } from "../../../../providers/types/categories";
+import { CategoryType } from '../../../../providers/types/categories';
 /* --- utils --------------------- */
-import { vw2px, getCurrentContentsVw } from "../../../../utils/converters";
+import { vw2px, getCurrentContentsVw } from '../../../../utils/converters';
 /* --- dnd-kit ------------------- */
-import { createPortal } from "react-dom";
-import { ActiveTodo } from "./todo/ActiveTodo";
+import { createPortal } from 'react-dom';
+import { ActiveTodo } from './todo/ActiveTodo';
 import {
-  DndContext,
-  DragEndEvent,
-  DragOverlay,
-  DragStartEvent,
-  KeyboardSensor,
-  PointerSensor,
-  TouchSensor,
-  UniqueIdentifier,
-  closestCenter,
-  useSensor,
-  useSensors } from "@dnd-kit/core";
+    DndContext,
+    DragEndEvent,
+    DragOverlay,
+    DragStartEvent,
+    KeyboardSensor,
+    PointerSensor,
+    TouchSensor,
+    UniqueIdentifier,
+    closestCenter,
+    useSensor,
+    useSensors,
+} from '@dnd-kit/core';
 import {
-  SortableContext,
-  arrayMove,
-  sortableKeyboardCoordinates,
-  verticalListSortingStrategy } from "@dnd-kit/sortable";
+    SortableContext,
+    arrayMove,
+    sortableKeyboardCoordinates,
+    verticalListSortingStrategy,
+} from '@dnd-kit/sortable';
 /* --- dev ----------------------- */
-import { isDebugMode } from "../../../../utils/adminDebugMode";
-import { useDispatch } from "react-redux";
-import { replaceTodos } from "../../../../providers/redux/slices/categoriesSlice";
-
+import { isDebugMode } from '../../../../utils/adminDebugMode';
+import { useDispatch } from 'react-redux';
+import { replaceTodos } from '../../../../providers/redux/slices/categoriesSlice';
 
 const contentWidth = vw2px(getCurrentContentsVw());
-const deleteBtnWidth = contentWidth * .5;
-
+const deleteBtnWidth = contentWidth * 0.5;
 
 // === TYPE =========================================================== //
 // - PROPS
 interface PropsType {
-  category: CategoryType;
-  idx: number;
+    category: CategoryType;
+    idx: number;
 }
 // - STYLE
 // - OTHERS
 // =========================================================== TYPE === //
 
-
 // === COMPONENT ====================================================== //
 export const Category: FC<PropsType> = (props) => {
-  const { category, idx } = props;
-  const todos = category.todos;
-  const dispatch = useDispatch();
+    const { category, idx } = props;
+    const todos = category.todos;
+    const dispatch = useDispatch();
 
-  // --- dnd-kit ------------------------------------------------ //
-  // sensor 登録
-  const sensors = useSensors(
-    useSensor(PointerSensor),
-    useSensor(TouchSensor),
-    useSensor(KeyboardSensor, {
-      coordinateGetter: sortableKeyboardCoordinates,
-    }),
-  );
+    // --- dnd-kit ------------------------------------------------ //
+    // sensor 登録
+    const sensors = useSensors(
+        useSensor(PointerSensor),
+        useSensor(TouchSensor),
+        useSensor(KeyboardSensor, {
+            coordinateGetter: sortableKeyboardCoordinates,
+        })
+    );
 
-  // DragOverlay で使用
-  const [ activeId, setActiveId ] = useState<UniqueIdentifier | null>(null);
-  // DragOverlay で使用する dragStart event の handler
-  const handleDragStart = (e: DragStartEvent) => {
-    const { active } = e;
-    setActiveId(active.id);
-  };
+    // DragOverlay で使用
+    const [activeId, setActiveId] = useState<UniqueIdentifier | null>(null);
+    // DragOverlay で使用する dragStart event の handler
+    const handleDragStart = (e: DragStartEvent) => {
+        const { active } = e;
+        setActiveId(active.id);
+    };
 
-  // dnd-kit/sortable で必須の dragEnd event の handler
-  const handleDragEnd = (e: DragEndEvent) => {
-    const { active, over } = e;
-    if (active.id !== over?.id) {
-      const oldIdx = todos.findIndex(todo => todo.id === active.id);
-      const newIdx = todos.findIndex(todo => todo.id === over?.id);
-      dispatch(replaceTodos({ oldIdx, newIdx }));
-    }
-    setActiveId(null);
-  };
-  // ------------------------------------------------ dnd-kit --- //
+    // dnd-kit/sortable で必須の dragEnd event の handler
+    const handleDragEnd = (e: DragEndEvent) => {
+        const { active, over } = e;
+        if (active.id !== over?.id) {
+            const oldIdx = todos.findIndex((todo) => todo.id === active.id);
+            const newIdx = todos.findIndex((todo) => todo.id === over?.id);
+            dispatch(replaceTodos({ oldIdx, newIdx }));
+        }
+        setActiveId(null);
+    };
+    // ------------------------------------------------ dnd-kit --- //
 
+    return (
+        <StyledUl>
+            <DndContext
+                sensors={sensors}
+                collisionDetection={closestCenter}
+                onDragStart={handleDragStart}
+                onDragEnd={handleDragEnd}
+            >
+                <SortableContext
+                    items={todos}
+                    strategy={verticalListSortingStrategy}
+                >
+                    {todos.map(
+                        (todo, i) =>
+                            !todo.isArchived && (
+                                <ActiveTodo
+                                    key={todo.id}
+                                    liIdx={i}
+                                    todo={todo}
+                                />
+                            )
+                    )}
+                </SortableContext>
 
-  return (
-    <StyledUl>
-      <DndContext
-        sensors={sensors}
-        collisionDetection={closestCenter}
-        onDragStart={handleDragStart}
-        onDragEnd={handleDragEnd}
-      >
-        <SortableContext
-          items={ todos }
-          strategy={verticalListSortingStrategy}
-        >
-          { todos.map((todo, i) => !todo.isArchived &&
-            <ActiveTodo
-              key={ todo.id }
-              liIdx={ i }
-              todo={ todo } />
-          ) }
-        </SortableContext>
-
-        {/* dnd-kit/sortable: createPortalでラップして、
+                {/* dnd-kit/sortable: createPortalでラップして、
             第二引数に body を指定すればこれを基準に要素が配置されるようになる。
             transform が body 基準になるのでカーソルからずれなくなる。 */}
-        {createPortal(
-          <DragOverlay>
-            { activeId ? <Todo todo={ todos.filter(todo => todo.id === activeId )[0] } categoryId={ category.id } /> : null }
-          </DragOverlay>,
-          document.body,
-        )}
-      </DndContext>
-    </StyledUl>
-  )
+                {createPortal(
+                    <DragOverlay>
+                        {activeId ? (
+                            <Todo
+                                todo={todos.filter((todo) => todo.id === activeId)[0]}
+                                categoryId={category.id}
+                            />
+                        ) : null}
+                    </DragOverlay>,
+                    document.body
+                )}
+            </DndContext>
+        </StyledUl>
+    );
 };
 // ====================================================== COMPONENT === //
 
-
 // === STYLE ========================================================= //
-const StyledUl = styled.ul`
-`;
+const StyledUl = styled.ul``;
 // ========================================================= STYLE === //

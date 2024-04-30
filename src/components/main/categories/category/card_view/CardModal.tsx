@@ -39,7 +39,6 @@
 - copilotからの提案をここに箇条書きで記述する。
 */
 
-
 /* --- react/styled-components --- */
 import React, { FC, useEffect } from 'react';
 import styled from 'styled-components';
@@ -56,62 +55,58 @@ import { useDispatch, useModalsSelector } from '../../../../../providers/redux/s
 import { register } from '../../../../../providers/redux/slices/modalSlice';
 import { useModalRegistrant } from '../../../../../providers/context_api/ModalElmsRef';
 
-
 // === TYPE =========================================================== //
 // - PROPS
 interface PropsType {
-  category: CategoryType;
+    category: CategoryType;
 }
 // - STYLE
 interface StyledModalType {
-  isOpen: boolean;
+    isOpen: boolean;
 }
 // - OTHERS
 // =========================================================== TYPE === //
 
-
 // === COMPONENT ====================================================== //
 export const CardsContainer: FC<PropsType> = (props) => {
+    // modalProvider
+    const modalName = modalNames.cardCarousel;
+    const dispatch = useDispatch();
+    useEffect(() => {
+        dispatch(register(modalName));
+    }, []);
+    const isOpen = useModalsSelector().modalStates[modalName]?.isOpen;
+    const { setBasicsRef, addScrollableRef } = useModalRegistrant(modalName);
 
-  // modalProvider
-  const modalName = modalNames.cardCarousel;
-  const dispatch = useDispatch();
-  useEffect(() => {
-    dispatch(register(modalName));
-  }, []);
-  const isOpen = useModalsSelector().modalStates[modalName]?.isOpen;
-  const { setBasicsRef, addScrollableRef } = useModalRegistrant(modalName);
-
-  return (
-    <StyledModal
-      name       = { modalName  }
-      isOpen     = { isOpen     }
-      setBasicsRef  = { setBasicsRef  }
-    >
-      <CardsCarousel
-        addScrollableRef = { addScrollableRef }
-        { ...props } />
-    </StyledModal>
-  );
+    return (
+        <StyledModal
+            name={modalName}
+            isOpen={isOpen}
+            setBasicsRef={setBasicsRef}
+        >
+            <CardsCarousel
+                addScrollableRef={addScrollableRef}
+                {...props}
+            />
+        </StyledModal>
+    );
 };
 // ====================================================== COMPONENT === //
 
-
 // === STYLE ========================================================= //
 const StyledModal = styled(Modal)<StyledModalType>`
+    width: 100vw;
+    .card-carousel-modal-mask {
+        --bdf: ${(props) => (props.isOpen ? 'blur(2px)' : 'blur(0)')};
+        --bgc: ${(props) => (props.isOpen ? 'rgba(69 78 112 / .5)' : 'rgba(69 78 112 / 0)')};
+        backdrop-filter: var(--bdf);
+        -webkit-backdrop-filter: var(--bdf);
+        background-color: var(--bgc);
 
-  width: 100vw;
-  .card-carousel-modal-mask {
-    --bdf: ${ props => props.isOpen ? 'blur(2px)' : 'blur(0)' };
-    --bgc: ${ props => props.isOpen ? 'rgba(69 78 112 / .5)' : 'rgba(69 78 112 / 0)' };
-    backdrop-filter: var(--bdf);
-    -webkit-backdrop-filter: var(--bdf);
-    background-color: var(--bgc);
-  
-    transition:
-      background-color 750ms,
-      -webkit-backdrop-filter 750ms,
-      backdrop-filter 750ms;
-  }
+        transition:
+            background-color 750ms,
+            -webkit-backdrop-filter 750ms,
+            backdrop-filter 750ms;
+    }
 `;
 // ========================================================= STYLE === //

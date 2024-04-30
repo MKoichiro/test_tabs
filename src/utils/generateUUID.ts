@@ -1,7 +1,6 @@
 import { v4 as uuidv4 } from 'uuid';
 export type UUID = string & { _uuidBrand: never };
 
-
 let existingUUIDs: UUID[] = []; // 既存のUUIDを保存する配列
 
 export const generateUUID = () => {
@@ -13,4 +12,4 @@ export const generateUUID = () => {
     // 重複しないUUIDが生成されたら配列に追加
     existingUUIDs.push(uuid);
     return uuid as UUID;
-}
+};

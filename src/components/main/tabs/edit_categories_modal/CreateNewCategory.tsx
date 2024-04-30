@@ -39,13 +39,15 @@
 - copilotからの提案をここに箇条書きで記述する。
 */
 
-
 /* --- react/styled-components --- */
 import React, { FC, useRef } from 'react';
 import styled from 'styled-components';
 /* --- redux --------------------- */
 import { useDispatch, useCategoriesSelector } from '../../../../providers/redux/store';
-import { switchCategory, updateCategories } from '../../../../providers/redux/slices/categoriesSlice';
+import {
+    switchCategory,
+    updateCategories,
+} from '../../../../providers/redux/slices/categoriesSlice';
 /* --- types --------------------- */
 import { TodoType, CategoryType, notSet } from '../../../../providers/types/categories';
 /* --- react-hook-form ----------- */
@@ -55,7 +57,6 @@ import { generateUUID } from '../../../../utils/generateUUID';
 /* --- dev ----------------------- */
 import { isDebugMode } from '../../../../utils/adminDebugMode';
 
-
 // === TYPE =========================================================== //
 // - PROPS
 interface CreateNewCategoryType {}
@@ -63,188 +64,186 @@ interface CreateNewCategoryType {}
 // - OTHERS
 // 新規カテゴリーにデフォルトで入れるtodoの見出し及びコメント
 const TEMPLATE_MESSAGE = {
-  title: 'template message of main',
-  detail: 'template message of detail',
-}
+    title: 'template message of main',
+    detail: 'template message of detail',
+};
 // バリデーションエラーメッセージ
 const NAME_VALIDATION = {
-  required: 'この項目は必須です。',
-  pattern: {
-    value: /\S/,
-    message: '空白・改行・タブ文字以外の入力が必要です。'
-  }
-}
+    required: 'この項目は必須です。',
+    pattern: {
+        value: /\S/,
+        message: '空白・改行・タブ文字以外の入力が必要です。',
+    },
+};
 
 interface DataType {
-  category_name: string;
+    category_name: string;
 }
 // =========================================================== TYPE === //
 
-
 // === COMPONENT ====================================================== //
 export const CreateNewCategory: FC<CreateNewCategoryType> = (props) => {
-  const {} = props;
+    const {} = props;
 
-  const { categoriesEntity: categories } = useCategoriesSelector();
-  const dispatch = useDispatch();
+    const { categoriesEntity: categories } = useCategoriesSelector();
+    const dispatch = useDispatch();
 
-  const { register, handleSubmit, formState: { errors } } = useForm<DataType>({ mode: 'onChange' });
-  const { ref: refForName, ...restForName } = register('category_name', NAME_VALIDATION);
-  const nameRef = useRef<HTMLInputElement | null>(null);
+    const {
+        register,
+        handleSubmit,
+        formState: { errors },
+    } = useForm<DataType>({ mode: 'onChange' });
+    const { ref: refForName, ...restForName } = register('category_name', NAME_VALIDATION);
+    const nameRef = useRef<HTMLInputElement | null>(null);
 
+    const dispatchUpdateCategories = (data: DataType, now: Date) => {
+        const templateTodo: TodoType = {
+            id: generateUUID(),
+            createdDate: now,
+            updatedDate: now,
+            deadline: notSet,
+            status: notSet,
+            priority: notSet,
+            isArchived: false,
+            title: TEMPLATE_MESSAGE.title,
+            detail: TEMPLATE_MESSAGE.detail,
+            isOpen: true,
+        };
 
-  const dispatchUpdateCategories = (data: DataType, now: Date) => {
-    const templateTodo: TodoType = {
-      id: generateUUID(),
-      createdDate: now,
-      updatedDate: now,
-      deadline: notSet,
-      status: notSet,
-      priority: notSet,
-      isArchived: false,
-      title: TEMPLATE_MESSAGE.title,
-      detail: TEMPLATE_MESSAGE.detail,
-      isOpen: true,
+        const newTodos: CategoryType = {
+            id: generateUUID(),
+            // isActive: false,
+            createdDate: now,
+            updatedDate: now,
+            isArchived: false,
+            name: data.category_name,
+            todos: [templateTodo],
+        };
+
+        const newCategories: CategoryType[] = [...categories];
+        newCategories.push(newTodos);
+        // dispatchCategoriesChange({ type: 'update_categories', newCategories });
+        dispatch(updateCategories(newCategories));
     };
 
-    const newTodos: CategoryType = {
-      id: generateUUID(),
-      // isActive: false,
-      createdDate: now,
-      updatedDate: now,
-      isArchived: false,
-      name: data.category_name,
-      todos: [templateTodo],
+    const formInitializer = () => {
+        // 各項目の入力内容をクリア
+        nameRef.current && (nameRef.current.value = '');
+        // focus を category name にリセット
+        nameRef.current && nameRef.current.focus();
     };
 
-    const newCategories: CategoryType[] = [...categories];
-    newCategories.push(newTodos);
-    // dispatchCategoriesChange({ type: 'update_categories', newCategories });
-    dispatch(updateCategories(newCategories));
-  };
+    const executeSubmit = (data: DataType) => {
+        const now = new Date();
+        formInitializer();
+        dispatchUpdateCategories(data, now);
+        // dispatchCategoriesChange({ type: 'switch_tab', newActiveIdx: categories.length });
+        dispatch(switchCategory(categories.length));
+    };
 
-  const formInitializer = () => {
-    // 各項目の入力内容をクリア
-    nameRef.current && (nameRef.current.value = '');
-    // focus を category name にリセット
-    nameRef.current && nameRef.current.focus();
-  };
+    return (
+        <StyledForm onSubmit={handleSubmit(executeSubmit)}>
+            <fieldset>
+                <legend children="Create New Category" />
 
-  const executeSubmit = (data: DataType) => {
-    const now = new Date;
-    formInitializer();
-    dispatchUpdateCategories(data, now);
-    // dispatchCategoriesChange({ type: 'switch_tab', newActiveIdx: categories.length });
-    dispatch(switchCategory(categories.length));
-  };
+                <div className="container category_name-container">
+                    <label htmlFor="category_name">
+                        <span className="input-feature required">Required</span>
+                        <span>Category Name:</span>
+                    </label>
+                    <div className="input-and-error">
+                        <input
+                            type="text"
+                            id="category_name"
+                            placeholder="例: 買い物リスト"
+                            {...restForName}
+                            ref={(e) => {
+                                refForName(e);
+                                nameRef.current = e;
+                            }}
+                        />
+                        <p>{errors.category_name?.message}</p>
+                    </div>
+                </div>
 
-  return (
-    <StyledForm onSubmit={ handleSubmit(executeSubmit) }>
-      <fieldset>
-        <legend children='Create New Category' />
-
-        <div className='container category_name-container'>
-          <label htmlFor="category_name">
-            <span className="input-feature required">Required</span>
-            <span>Category Name:</span>
-          </label>
-          <div className='input-and-error'>
-            <input
-              type="text"
-              id="category_name"
-              placeholder='例: 買い物リスト'
-              { ...restForName }
-              ref={ (e) => { refForName(e); nameRef.current = e; } } />
-              <p>{ errors.category_name?.message }</p>
-          </div>
-        </div>
-
-        <button className='btn-add'>
-          ADD
-        </button>
-      </fieldset>
-
-    </StyledForm>
-  )
-}
+                <button className="btn-add">ADD</button>
+            </fieldset>
+        </StyledForm>
+    );
+};
 // ====================================================== COMPONENT === //
-
 
 // === STYLE ========================================================= //
 const StyledForm = styled.form`
+    fieldset {
+        // reset
+        border: none;
+        padding: 0;
+        margin: 0;
 
-  fieldset {
-    // reset
-    border: none;
-    padding: 0;
-    margin: 0;
+        legend {
+            padding: 0; // reset
+            font-size: 2rem;
+        }
 
-    legend {
-      padding: 0; // reset
-      font-size: 2rem;
+        .container {
+            margin-top: 1.6rem;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+
+            label {
+                display: flex;
+                gap: 0.8rem;
+                .input-feature {
+                    background: pink;
+                    padding: 0 1em;
+                }
+            }
+
+            .input-and-error {
+                flex: 1;
+                input {
+                    font-size: var(--fs-form);
+                    /* height: 4rem; */
+                    line-height: 3.6rem;
+                    width: 100%;
+                    border-radius: 0;
+                    border: none;
+                    outline: none;
+                    padding: 0 0.8rem;
+                }
+                p {
+                    margin-left: auto;
+                    width: fit-content;
+                }
+            }
+
+            @media (width < 600px) {
+                flex-direction: column;
+                align-items: flex-start;
+                label {
+                    margin-right: auto;
+                }
+                .input-and-error {
+                    flex: 0 1 auto;
+                    width: 100%;
+                    input {
+                    }
+                }
+            }
+        }
+
+        .btn-add {
+            background: #fff;
+
+            display: block;
+            width: fit-content;
+            height: fit-content;
+            margin-top: 1.6rem;
+            margin-left: auto;
+            padding: 0.4rem 0.8rem;
+        }
     }
-
-    .container {
-      margin-top: 1.6rem;
-      display: flex;
-      align-items: center;
-      gap: .8rem;
-
-      label {
-        display: flex;
-        gap: .8rem;
-        .input-feature {
-          background: pink;
-          padding: 0 1em;
-        }
-      }
-
-      .input-and-error {
-        flex: 1;
-        input {
-          font-size: var(--fs-form);
-          /* height: 4rem; */
-          line-height: 3.6rem;
-          width: 100%;
-          border-radius: 0;
-          border: none;
-          outline: none;
-          padding: 0 .8rem;
-        }
-        p {
-          margin-left: auto;
-          width: fit-content;
-        }
-      }
-
-      @media (width < 600px) {
-        flex-direction: column;
-        align-items: flex-start;
-        label {
-          margin-right: auto;
-        }
-        .input-and-error {
-          flex: 0 1 auto;
-          width: 100%;
-          input {
-            
-          }
-        }
-      }
-    }
-
-    .btn-add {
-      background: #fff;
-
-      display: block;
-      width: fit-content;
-      height: fit-content;
-      margin-top: 1.6rem;
-      margin-left: auto;
-      padding: .4rem .8rem;
-    }
-
-
-  }
 `;
 // ========================================================= STYLE === //

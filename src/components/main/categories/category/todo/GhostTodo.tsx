@@ -39,7 +39,6 @@
 - copilotからの提案をここに箇条書きで記述する。
 */
 
-
 /* --- react/styled-components --- */
 import React, { LegacyRef, forwardRef } from 'react';
 import styled from 'styled-components';
@@ -51,73 +50,68 @@ import { TodoType } from '../../../../../providers/types/categories';
 /* --- dev ----------------------- */
 import { isDebugMode } from '../../../../../utils/adminDebugMode';
 
-
 // === TYPE =========================================================== //
 // - PROPS
 interface PropsType {
-  todo: TodoType;
-  categoryId: string;
+    todo: TodoType;
+    categoryId: string;
 }
 // - STYLE
 // - OTHERS
 // =========================================================== TYPE === //
 
-
 // === COMPONENT ====================================================== //
-export const Todo = forwardRef(({...props}: PropsType, ref: LegacyRef<HTMLDivElement> | undefined) => {
-  const { todo } = props;
-  
-  return (
-    <StyledDiv ref={ref}>
+export const Todo = forwardRef(
+    ({ ...props }: PropsType, ref: LegacyRef<HTMLDivElement> | undefined) => {
+        const { todo } = props;
 
-      <TodoHeader
-        attributes={ 'ghost' }
-        todo={ todo } />
+        return (
+            <StyledDiv ref={ref}>
+                <TodoHeader
+                    attributes={'ghost'}
+                    todo={todo}
+                />
 
-      <TodoDetail todo={ todo } />
-    </StyledDiv>
-  );
-});
+                <TodoDetail todo={todo} />
+            </StyledDiv>
+        );
+    }
+);
 // ====================================================== COMPONENT === //
-
 
 // === STYLE ========================================================= //
 const StyledDiv = styled.div`
-  background: grey;
-  
-  .gripper {
-    padding: 0 .8rem;
-    cursor: grabbing;
-  }
+    background: grey;
 
-  header {
-    display: flex;
-  }
-
-  h4 {
-
-  }
-  .icon-expired {
-    color: red;
-  }
-
-  .detail-container {
-
-    .todo-info {
-      width: 20%;
-      margin: 0 1.6rem 0 auto;
-      .info-item {
-        width: 100%;
-        display: flex;
-        justify-content: space-between;
-        .info-label {
-
-        }
-        .info-value {
-        }
-      }
-
+    .gripper {
+        padding: 0 0.8rem;
+        cursor: grabbing;
     }
-  }
+
+    header {
+        display: flex;
+    }
+
+    h4 {
+    }
+    .icon-expired {
+        color: red;
+    }
+
+    .detail-container {
+        .todo-info {
+            width: 20%;
+            margin: 0 1.6rem 0 auto;
+            .info-item {
+                width: 100%;
+                display: flex;
+                justify-content: space-between;
+                .info-label {
+                }
+                .info-value {
+                }
+            }
+        }
+    }
 `;
 // ========================================================= STYLE === //

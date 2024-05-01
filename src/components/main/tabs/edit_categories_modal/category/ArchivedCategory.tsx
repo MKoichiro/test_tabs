@@ -1,66 +1,50 @@
 /**
-# "AAA.tsx"
-
-## RENDER AS:
-- ``` <example/> ```
-
-## DEPENDENCIES:
-| type     | name                                            | role       |
-| ---------| ----------------------------------------------- | ---------- |
-| PARENT 1 | BBB.tsx                                         | 機能や役割 |
-| CHILD  1 | CCC.tsx                                         | 機能や役割 |
-| CHILD  2 | DDD.tsx                                         | 機能や役割 |
-| PACKAGE  | importしているpackage名                         | 機能や役割 |
-| PROVIDER | importしているprovider名                        | 機能や役割 |
-| SETTING  | importしているsetting file名                    | 機能や役割 |
-| UTILS    | ultils ディレクトリからimportしているファイル名 | 機能や役割 |
-| TYPES    | 外部からimportしている型名                      | 機能や役割 |
-
-## FEATURES:
-- conponent
-
-## DESCRIPTION:
-- コンポーネントが提供する機能や役割を箇条書きで記述する。
-
-## PROPS:
-| name        | type | role                     |
-| ----------- | ---- | ------------------------ |
-| propsの名前 | 型   | 役割などの一言程度の説明 |
-
-## STATES:
-| name        | type | role                     |
-| ----------- | ---- | ------------------------ |
-| stateの名前 | 型   | 役割などの一言程度の説明 |
-
-## FUTURE TASKS:
-- 今後の展望や修正点を箇条書きで記述する。
-
-## COPILOT
-- copilotからの提案をここに箇条書きで記述する。
-*/
+ * @summary Edit Categories Modal で、 isArchived === true のカテゴリを表示する
+ * @issues
+ * - なし
+ * @copilot
+ * - なし
+ * @module
+ */
 
 /* --- react/styled-components --- */
-import React, { FC } from 'react';
+import React from 'react';
 import styled from 'styled-components';
+
 /* --- types --------------------- */
 import { CategoryType } from '../../../../../providers/types/categories';
+
 /* --- styles -------------------- */
 import { categoryCommonStyles, CategoryCommonStylesType } from './CategoryCommonStyles';
+
 /* --- dev ----------------------- */
-import { isDebugMode } from '../../../../../utils/adminDebugMode';
+// import { isDebugMode } from '../../../../../utils/adminDebugMode';
 
 // === TYPE =========================================================== //
-// - PROPS
-interface ArchivedCategoryType {
+/**
+ * @property archivedCategory - isArchived === true のカテゴリ
+ * @category Type of Props
+ */
+interface ArchivedCategoryProps {
     archivedCategory: CategoryType;
 }
-// - STYLE
-// - OTHERS
 // =========================================================== TYPE === //
 
 // === COMPONENT ====================================================== //
-export const ArchivedCategory: FC<ArchivedCategoryType> = (props) => {
-    const { archivedCategory } = props;
+/**
+ * @param props
+ * @returns
+ * 
+ * @renderAs
+ * - `<li/>`
+ * @example
+ * ```tsx
+ * <ArchivedCategory archivedCategory={} />
+ * ```
+ *
+ * @category Component
+ */
+export const ArchivedCategory = ({ archivedCategory }: ArchivedCategoryProps) => {
     return (
         <StyledLi>
             <div className="category-name-container">

@@ -1,82 +1,82 @@
-/**
-# "AAA.tsx"
 
-## RENDER AS:
-- ``` <example/> ```
-
-## DEPENDENCIES:
-| type     | name                                            | role       |
-| ---------| ----------------------------------------------- | ---------- |
-| PARENT 1 | BBB.tsx                                         | 機能や役割 |
-| CHILD  1 | CCC.tsx                                         | 機能や役割 |
-| CHILD  2 | DDD.tsx                                         | 機能や役割 |
-| PACKAGE  | importしているpackage名                         | 機能や役割 |
-| PROVIDER | importしているprovider名                        | 機能や役割 |
-| SETTING  | importしているsetting file名                    | 機能や役割 |
-| UTILS    | ultils ディレクトリからimportしているファイル名 | 機能や役割 |
-| TYPES    | 外部からimportしている型名                      | 機能や役割 |
-
-## FEATURES:
-- conponent
-
-## DESCRIPTION:
-- コンポーネントが提供する機能や役割を箇条書きで記述する。
-
-## PROPS:
-| name        | type | role                     |
-| ----------- | ---- | ------------------------ |
-| propsの名前 | 型   | 役割などの一言程度の説明 |
-
-## STATES:
-| name        | type | role                     |
-| ----------- | ---- | ------------------------ |
-| stateの名前 | 型   | 役割などの一言程度の説明 |
-
-## FUTURE TASKS:
-- 今後の展望や修正点を箇条書きで記述する。
-
-## COPILOT
-- copilotからの提案をここに箇条書きで記述する。
-*/
 
 /* --- react/styled-components --- */
-import React, { FC } from 'react';
+import React from 'react';
 import styled from 'styled-components';
+
 /* --- child components ---------- */
 import { CreateNewCategory } from './CreateNewCategory';
 import { Categories } from './Categories';
+
 /* --- providers/contexts -------- */
 import { Modal } from '../../../common/modal/Modal';
 import { modalNames } from '../../../common/modal/settings';
+import { useModalCloser, useModalRegistrant } from '../../../../providers/context_api/ModalElmsRef';
+
+/* --- redux --------------------- */
+import { useModalsSelector } from '../../../../providers/redux/store';
+
 /* --- font awesome -------------- */
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faXmark } from '@fortawesome/free-solid-svg-icons';
+
 /* --- dev ----------------------- */
-import { isDebugMode } from '../../../../utils/adminDebugMode';
-import { useModalsSelector } from '../../../../providers/redux/store';
-import { useModalCloser, useModalRegistrant } from '../../../../providers/context_api/ModalElmsRef';
+// import { isDebugMode } from '../../../../utils/adminDebugMode';
+
 
 // === TYPE =========================================================== //
-// - PROPS
+/**
+ * @property className - modal (dialog 要素)に付与するクラス名
+ * @category Type of Props
+ */
 interface EditCategoriesModalProps {
     className?: string;
 }
-// - STYLE
-interface StyledModalType {
-    isOpen: boolean;
-}
-// - OTHERS
 // =========================================================== TYPE === //
 
-// === COMPONENT ====================================================== //
-export const EditCategoriesModal: FC<EditCategoriesModalProps> = (props) => {
-    const { className } = props;
-
+// === FUNCTION ======================================================= //
+/**
+ * @category Custom Hook
+ */
+export const useEditCategoriesModal = () => {
+    
     const modalName = modalNames.editCategories;
-
     const isOpen = useModalsSelector().modalStates[modalName]?.isOpen;
     const { setBasicsRef, addScrollableRef } = useModalRegistrant(modalName);
     const closeModal = useModalCloser(modalName);
+
+    return {
+        modalName,
+        isOpen,
+        setBasicsRef,
+        addScrollableRef,
+        closeModal,
+    };
+};
+// ======================================================= FUNCTION === //
+
+// === COMPONENT ====================================================== //
+/**
+ * @param props
+ * @returns
+ * 
+ * @renderAs
+ * - `<dialog/>`
+ * @example
+ * ```tsx
+ * <EditCategoriesModal />
+ * ```
+ *
+ * @category Component
+ */
+export const EditCategoriesModal = ({className}: EditCategoriesModalProps) => {
+    const {
+        modalName,
+        isOpen,
+        setBasicsRef,
+        addScrollableRef,
+        closeModal,
+    } = useEditCategoriesModal();
 
     return (
         <StyledModal
@@ -115,6 +115,10 @@ export const EditCategoriesModal: FC<EditCategoriesModalProps> = (props) => {
 // ====================================================== COMPONENT === //
 
 // === STYLE ========================================================= //
+interface StyledModalType {
+    isOpen: boolean;
+}
+
 const StyledModal = styled(Modal)<StyledModalType>`
     &[open] {
         display: flex;

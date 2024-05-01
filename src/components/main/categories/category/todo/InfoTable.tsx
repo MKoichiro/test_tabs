@@ -1,91 +1,69 @@
 /**
-# "AAA.tsx"
-
-## RENDER AS:
-- ``` <example/> ```
-
-## DEPENDENCIES:
-| type     | name                                            | role       |
-| ---------| ----------------------------------------------- | ---------- |
-| PARENT 1 | BBB.tsx                                         | 機能や役割 |
-| CHILD  1 | CCC.tsx                                         | 機能や役割 |
-| CHILD  2 | DDD.tsx                                         | 機能や役割 |
-| PACKAGE  | importしているpackage名                         | 機能や役割 |
-| PROVIDER | importしているprovider名                        | 機能や役割 |
-| SETTING  | importしているsetting file名                    | 機能や役割 |
-| UTILS    | ultils ディレクトリからimportしているファイル名 | 機能や役割 |
-| TYPES    | 外部からimportしている型名                      | 機能や役割 |
-
-## FEATURES:
-- conponent
-
-## DESCRIPTION:
-- コンポーネントが提供する機能や役割を箇条書きで記述する。
-
-## PROPS:
-| name        | type | role                     |
-| ----------- | ---- | ------------------------ |
-| propsの名前 | 型   | 役割などの一言程度の説明 |
-
-## STATES:
-| name        | type | role                     |
-| ----------- | ---- | ------------------------ |
-| stateの名前 | 型   | 役割などの一言程度の説明 |
-
-## FUTURE TASKS:
-- 今後の展望や修正点を箇条書きで記述する。
-
-## COPILOT
-- copilotからの提案をここに箇条書きで記述する。
-*/
+ * @summary detail open時に表示される詳細な情報を表示するテーブル部分。
+ *
+ * @issues
+ * - なし
+ * @copilot
+ * - 未確認
+ *
+ * @module
+ */
 
 /* --- react/styled-components --- */
-import React, { FC, useContext } from 'react';
+import React from 'react';
 import styled from 'styled-components';
-/* --- providers/contexts -------- */
-import { CategoriesContext } from '../../../../../../trash/CategoriesProvider_ignore';
+
 /* --- types --------------------- */
 import { TodoType } from '../../../../../providers/types/categories';
-/* --- dev ----------------------- */
-import { isDebugMode } from '../../../../../utils/adminDebugMode';
+
+/* --- utils --------------------- */
 import { DLFormatters, statusCheckers } from '../../../../../utils/todoPropsHandler';
 import { getFormattedDate } from '../../../../../utils/dateFormatter';
 
-// これはもはやフックスである必要はない。ただの関数でいい。これもutilsに入れるべきかもしれない。
-const useFormattedInfoEmitter = (todo: TodoType) => {
+/* --- dev ----------------------- */
+import { isDebugMode } from '../../../../../utils/adminDebugMode';
+
+// === TYPE =========================================================== //
+/**
+ * @property todo - todo の情報
+ * @category Type of Props
+*/
+interface InfoTableProps {
+    todo: TodoType;
+}
+// =========================================================== TYPE === //
+
+// === FUNCTION ======================================================= //
+const getFormattedInfo = (todo: TodoType) => {
     const { checkIsExpired, checkIsCompleted } = statusCheckers;
     const { toDispDeadline } = DLFormatters;
 
-    // format
-    const isExpired = checkIsExpired(todo);
-    const isCompleted = checkIsCompleted(todo);
-    const formattedDeadline = toDispDeadline(todo);
-    const formattedCreatedDate = getFormattedDate(todo.createdDate);
-    const formattedUpdatedDate = getFormattedDate(todo.updatedDate);
-
     return {
         ...todo,
-
-        isExpired,
-        isCompleted,
-        deadline: formattedDeadline,
-        createdDate: formattedCreatedDate,
-        updatedDate: formattedUpdatedDate,
+        isExpired: checkIsExpired(todo),
+        isCompleted: checkIsCompleted(todo),
+        deadline: toDispDeadline(todo),
+        createdDate: getFormattedDate(todo.createdDate),
+        updatedDate: getFormattedDate(todo.updatedDate),
     };
 };
-
-// === TYPE =========================================================== //
-// - PROPS
-interface InfoTableType {
-    todo: TodoType;
-}
-// - STYLE
-// - OTHERS
-// =========================================================== TYPE === //
+// ======================================================= FUNCTION === //
 
 // === COMPONENT ====================================================== //
-export const InfoTable: FC<InfoTableType> = (props) => {
-    const { todo } = props;
+/**
+ * @param props
+ * @returns
+ * 
+ * @renderAs
+ * - `<table/>`
+ * @example
+ * ```tsx
+ * <InfoTable todo={} />
+ * ```
+ *
+ * @category Component
+ */
+export const InfoTable = ({ todo }: InfoTableProps) => {
 
     const {
         id,
@@ -98,7 +76,7 @@ export const InfoTable: FC<InfoTableType> = (props) => {
         priority,
         isArchived,
         isOpen,
-    } = useFormattedInfoEmitter(todo);
+    } = getFormattedInfo(todo);
 
     return (
         <StyledTable $isDev={isDebugMode}>

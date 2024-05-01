@@ -1,67 +1,49 @@
 /**
-# "AAA.tsx"
-
-## RENDER AS:
-- ``` <example/> ```
-
-## DEPENDENCIES:
-| type     | name                                            | role       |
-| ---------| ----------------------------------------------- | ---------- |
-| PARENT 1 | BBB.tsx                                         | 機能や役割 |
-| CHILD  1 | CCC.tsx                                         | 機能や役割 |
-| CHILD  2 | DDD.tsx                                         | 機能や役割 |
-| PACKAGE  | importしているpackage名                         | 機能や役割 |
-| PROVIDER | importしているprovider名                        | 機能や役割 |
-| SETTING  | importしているsetting file名                    | 機能や役割 |
-| UTILS    | ultils ディレクトリからimportしているファイル名 | 機能や役割 |
-| TYPES    | 外部からimportしている型名                      | 機能や役割 |
-
-## FEATURES:
-- conponent
-
-## DESCRIPTION:
-- コンポーネントが提供する機能や役割を箇条書きで記述する。
-
-## PROPS:
-| name        | type | role                     |
-| ----------- | ---- | ------------------------ |
-| propsの名前 | 型   | 役割などの一言程度の説明 |
-
-## STATES:
-| name        | type | role                     |
-| ----------- | ---- | ------------------------ |
-| stateの名前 | 型   | 役割などの一言程度の説明 |
-
-## FUTURE TASKS:
-- 今後の展望や修正点を箇条書きで記述する。
-
-## COPILOT
-- copilotからの提案をここに箇条書きで記述する。
-*/
+ * @summary ヘッダーの表示を担当するコンポーネント
+ *
+ * @issues
+ * - なし
+ * @copilot
+ * - なし
+ *
+ * @module
+ */
 
 /* --- react/styled-components --- */
-import React, { FC } from 'react';
+import React from 'react';
 import styled from 'styled-components';
-/* --- child components ---------- */
+
 /* --- dev ----------------------- */
-import { isDebugMode } from '../../utils/adminDebugMode';
+// import { isDebugMode } from '../../utils/adminDebugMode';
 
 // === TYPE =========================================================== //
 // - PROPS
-interface HeaderType {}
+// interface HeaderType {}
 // - STYLE
 // - OTHERS
 // =========================================================== TYPE === //
 
 // === COMPONENT ====================================================== //
-export const Header: FC<HeaderType> = () => {
+/**
+ * @param props
+ * @returns
+ * 
+ * @renderAs
+ * - `<header/>`
+ * @example
+ * ```tsx
+ * <Header />
+ * ```
+ *
+ * @category Component
+ */
+export const Header = () => {
     return (
         <StyledHeader>
             <div className="header-container">
                 <h1>
                     T<span>o</span>D<span>o</span>
                 </h1>
-                {/* <h2 children = " - To Do 管理ツール編 - " /> */}
             </div>
         </StyledHeader>
     );
@@ -97,14 +79,8 @@ const StyledHeader = styled.header`
         justify-content: center;
         gap: 1.8rem;
 
-        h1,
-        h2 {
+        h1 {
             margin: 0 auto;
-        }
-        /* h1 {  } */
-        h2 {
-            width: auto;
-            text-align: right;
         }
     }
 `;

@@ -1,87 +1,82 @@
 /**
-# "AAA.tsx"
-
-## RENDER AS:
-- ``` <example/> ```
-
-## DEPENDENCIES:
-| type     | name                                            | role       |
-| ---------| ----------------------------------------------- | ---------- |
-| PARENT 1 | BBB.tsx                                         | 機能や役割 |
-| CHILD  1 | CCC.tsx                                         | 機能や役割 |
-| CHILD  2 | DDD.tsx                                         | 機能や役割 |
-| PACKAGE  | importしているpackage名                         | 機能や役割 |
-| PROVIDER | importしているprovider名                        | 機能や役割 |
-| SETTING  | importしているsetting file名                    | 機能や役割 |
-| UTILS    | ultils ディレクトリからimportしているファイル名 | 機能や役割 |
-| TYPES    | 外部からimportしている型名                      | 機能や役割 |
-
-## FEATURES:
-- conponent
-
-## DESCRIPTION:
-- コンポーネントが提供する機能や役割を箇条書きで記述する。
-
-## PROPS:
-| name        | type | role                     |
-| ----------- | ---- | ------------------------ |
-| propsの名前 | 型   | 役割などの一言程度の説明 |
-
-## STATES:
-| name        | type | role                     |
-| ----------- | ---- | ------------------------ |
-| stateの名前 | 型   | 役割などの一言程度の説明 |
-
-## FUTURE TASKS:
-- 今後の展望や修正点を箇条書きで記述する。
-
-## COPILOT
-- copilotからの提案をここに箇条書きで記述する。
-*/
+ * @summary title を表示する todo のヘッダーコンポーネント。
+ *
+ * @issues
+ * - なし
+ *
+ * @copilot
+ * - なし
+ *
+ * @module
+ */
 
 /* --- react/styled-components --- */
-import React, { FC, useContext } from 'react';
+import React from 'react';
 import styled from 'styled-components';
-/* --- providers/contexts -------- */
-// import { CategoriesContext } from '../../../../../providers/CategoriesProvider';
-/* --- types --------------------- */
-import { TodoType } from '../../../../../providers/types/categories';
-/* --- hooks --------------------- */
-import { useImmediateEditable } from '../../../../../functions/immediateEditable/Hooks';
-/* --- font awesome -------------- */
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faChevronUp, faCircleExclamation } from '@fortawesome/free-solid-svg-icons';
-/* --- material icons ------------ */
-import { DragIndicator } from '@mui/icons-material';
-/* --- dnd-kit ------------------- */
-import { SyntheticListenerMap } from '@dnd-kit/core/dist/hooks/utilities';
-/* --- dev ----------------------- */
-import { isDebugMode } from '../../../../../utils/adminDebugMode';
-import { statusCheckers } from '../../../../../utils/todoPropsHandler';
+
+/* --- redux --------------------- */
 import { useDispatch } from 'react-redux';
 import { updateTodoProps } from '../../../../../providers/redux/slices/categoriesSlice';
 
+/* --- types --------------------- */
+import { TodoType } from '../../../../../providers/types/categories';
+
+/* --- utils --------------------- */
+import { statusCheckers } from '../../../../../utils/todoPropsHandler';
+
+/* --- hooks --------------------- */
+import { useImmediateEditable } from '../../../../../functions/immediateEditable/Hooks';
+
+/* --- font awesome -------------- */
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faChevronUp, faCircleExclamation } from '@fortawesome/free-solid-svg-icons';
+
+/* --- material icons ------------ */
+import { DragIndicator } from '@mui/icons-material';
+
+/* --- dnd-kit ------------------- */
+import { SyntheticListenerMap } from '@dnd-kit/core/dist/hooks/utilities';
+
+/* --- dev ----------------------- */
+// import { isDebugMode } from '../../../../../utils/adminDebugMode';
+
 // === TYPE =========================================================== //
-// - PROPS
-interface TodoHeaderType {
+/**
+ * @property todo - todo の情報
+ * @property attributes - 親要素の属性によって、表示内容を変える
+ * @property listeners - dnd-kit 用のリスナー、gripper に適用
+ * @category Type of Props
+ */
+interface TodoHeaderProps {
     todo: TodoType;
     attributes: 'active' | 'ghost' | 'archived'; // 3種類の親要素で、表示内容を変える
     listeners?: SyntheticListenerMap;
 }
-// - STYLE
-interface StyledHeaderType {
-    $isCompleted: boolean;
-    $inEditing: boolean;
-    $isOpen: boolean;
-}
-// - OTHERS
 // =========================================================== TYPE === //
 
-// === COMPONENT ====================================================== //
-export const TodoHeader: FC<TodoHeaderType> = (props) => {
-    const { todo, attributes, listeners } = props;
-
-    // const { dispatchCategoriesChange, checkIsCompleted, checkIsExpired } = useContext(CategoriesContext);
+// === FUNCTION ======================================================= //
+/**
+ * @param arg
+ * 
+ * @category Custom Hook
+ * @example
+ * ```tsx
+ * const {
+ *     inEditing,
+ *     inputRef,
+ *     handleDoubleClick,
+ *     handleSubmit,
+ *     handleChange,
+ *     handleBlur,
+ *     title,
+ *     isExpired,
+ *     isCompleted,
+ *     isOpen,
+ *     toggleOpen,
+ * } = useTodoHeader(todo);
+ * ```
+ */
+const useTodoHeader = (todo: TodoType) => {
     const { checkIsCompleted, checkIsExpired } = statusCheckers;
     const dispatch = useDispatch();
 
@@ -100,6 +95,57 @@ export const TodoHeader: FC<TodoHeaderType> = (props) => {
             ? dispatch(updateTodoProps({ todoId: todo.id, update: { isOpen: false } }))
             : dispatch(updateTodoProps({ todoId: todo.id, update: { isOpen: true } }));
     };
+
+    return {
+        inEditing,
+        /** 編集中に表示する title の inputRef */
+        inputRef,
+        /** title がダブルクリックされた時の処理 */
+        handleDoubleClick,
+        /** title の編集内容を submit する処理 */
+        handleSubmit,
+        /** title の編集内容が変更された時の処理 */
+        handleChange,
+        /** title の編集が終了した時の処理 */
+        handleBlur,
+        title,
+        isExpired,
+        isCompleted,
+        isOpen,
+        toggleOpen,
+    };
+};
+// ======================================================= FUNCTION === //
+
+// === COMPONENT ====================================================== //
+/**
+ * @param props
+ * @returns
+ * 
+ * @renderAs
+ * - `<header/>`
+ * @example
+ * ```tsx
+ * <TodoHeader todo={} attributes={} listeners={} />
+ * ```
+ *
+ * @category Component
+ */
+export const TodoHeader = ({ todo, attributes, listeners }: TodoHeaderProps) => {
+
+    const {
+        inEditing,
+        inputRef,
+        handleDoubleClick,
+        handleSubmit,
+        handleChange,
+        handleBlur,
+        title,
+        isExpired,
+        isCompleted,
+        isOpen,
+        toggleOpen,
+    } = useTodoHeader(todo);
 
     return (
         <StyledHeader
@@ -163,6 +209,11 @@ export const TodoHeader: FC<TodoHeaderType> = (props) => {
 // ====================================================== COMPONENT === //
 
 // === STYLE ========================================================= //
+interface StyledHeaderType {
+    $isCompleted: boolean;
+    $inEditing: boolean;
+    $isOpen: boolean;
+}
 const StyledHeader = styled.header<StyledHeaderType>`
     display: flex;
     align-items: center;

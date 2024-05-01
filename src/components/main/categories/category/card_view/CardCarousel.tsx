@@ -1,81 +1,54 @@
 /**
-# "AAA.tsx"
-
-## RENDER AS:
-- ``` <example/> ```
-
-## DEPENDENCIES:
-| type     | name                                            | role       |
-| ---------| ----------------------------------------------- | ---------- |
-| PARENT 1 | BBB.tsx                                         | 機能や役割 |
-| CHILD  1 | CCC.tsx                                         | 機能や役割 |
-| CHILD  2 | DDD.tsx                                         | 機能や役割 |
-| PACKAGE  | importしているpackage名                         | 機能や役割 |
-| PROVIDER | importしているprovider名                        | 機能や役割 |
-| SETTING  | importしているsetting file名                    | 機能や役割 |
-| UTILS    | ultils ディレクトリからimportしているファイル名 | 機能や役割 |
-| TYPES    | 外部からimportしている型名                      | 機能や役割 |
-
-## FEATURES:
-- conponent
-
-## DESCRIPTION:
-- コンポーネントが提供する機能や役割を箇条書きで記述する。
-
-## PROPS:
-| name        | type | role                     |
-| ----------- | ---- | ------------------------ |
-| propsの名前 | 型   | 役割などの一言程度の説明 |
-
-## STATES:
-| name        | type | role                     |
-| ----------- | ---- | ------------------------ |
-| stateの名前 | 型   | 役割などの一言程度の説明 |
-
-## FUTURE TASKS:
-- 今後の展望や修正点を箇条書きで記述する。
-
-## COPILOT
-- copilotからの提案をここに箇条書きで記述する。
-*/
+ * @summary Card Viewのカルーセルコンテナ
+ * @issues
+ * - TODO: isArchived === true のものを分けて表示する
+ * @copilot
+ * - なし
+ * @module
+ */
 
 /* --- react/styled-components --- */
-import React, { FC } from 'react';
+import React from 'react';
 import styled from 'styled-components';
+
 /* --- child components ---------- */
 import { CardTodo } from './CardTodo';
+
 /* --- providers/contexts -------- */
 import { useCardCarouselRegister } from '../../../../../providers/context_api/CardView';
-/* --- types --------------------- */
-import { CategoryType } from '../../../../../providers/types/categories';
-/* --- utils --------------------- */
-/* --- dev ----------------------- */
-import { isDebugMode } from '../../../../../utils/adminDebugMode';
-
 import { getCardCarouselStyles } from '../../../../../providers/context_api/CardView';
 import { ScrollableElm } from '../../../../../providers/types/modal';
 
+/* --- types --------------------- */
+import { CategoryType } from '../../../../../providers/types/categories';
+
+/* --- dev ----------------------- */
+// import { isDebugMode } from '../../../../../utils/adminDebugMode';
+
+
 // === TYPE =========================================================== //
-// - PROPS
-interface CardsCarouselType {
+/**
+ * @property category - カテゴリー の情報
+ * @property addScrollableRef - modal にスクロール可能な要素を追加する関数、CardTodoで実際にバインドするので受け渡す。
+ * @category Type of Props
+ */
+interface CardsCarouselProps {
     category: CategoryType;
-    addScrollableRef: (scrollable: ScrollableElm) => void;
+    addScrollableRef: (scrollable: ScrollableElm) => void; // 今後CardTodoで実際にバインドすれば、未使用の警告は消えるはず
 }
-// - STYLE
-interface StyledUlType {
-    $padding: string;
-    $gap: number;
-}
-// - OTHERS
 // =========================================================== TYPE === //
 
-// === COMPONENT ====================================================== //
-export const CardsCarousel: FC<CardsCarouselType> = (props) => {
-    const { category, ...rest } = props;
-
-    const [test, setTest] = React.useState('test');
-    console.log('CardsCarousel: ', category);
-
+// === FUNCTION ======================================================= //
+/**
+ * @param arg - hogehoge
+ * 
+ * @category Custom Hook
+ * @example
+ * ```tsx
+ * const { return1, return2 } = useHoge({arg1, arg2});
+ * ```
+ */
+export const useCardCarousel = (category: CategoryType) => {
     // contexts
     const { registerContainer } = useCardCarouselRegister();
 
@@ -86,7 +59,43 @@ export const CardsCarousel: FC<CardsCarouselType> = (props) => {
     const { gap_vw } = getCardCarouselStyles();
 
     // format todos
+    /** TODO: isArchived === true のものを分けて表示する */
     const todosFormatted = category.todos; // archiveしたものを削除または最後尾にした配列を渡すべき
+
+    return {
+        /** padding 値はカルーセルの挙動(transform 距離)に影響するため、あらかじめロジカルに計算したものを style props として styled-components に与える */
+        adjustedPadding_vw,
+        /** gap 値はカルーセルの挙動(transform 距離)に影響するため、あらかじめロジカルに計算したものを style props として styled-components に与える */
+        gap_vw,
+        /** カルーセルのコンテナ要素の ref */
+        carouselContainerRef,
+        /** フォーマット済みの todos */
+        todosFormatted,
+    };
+}
+// ======================================================= FUNCTION === //
+
+// === COMPONENT ====================================================== //
+/**
+ * @param props
+ * @returns
+ * 
+ * @renderAs
+ * - `<ul/>`
+ * @example
+ * ```tsx
+ * <CardCarousel category={} addScrollableRef={} />
+ * ```
+ *
+ * @category Component
+ */
+export const CardCarousel = ({ category, addScrollableRef }: CardsCarouselProps) => {
+    const {
+        adjustedPadding_vw,
+        gap_vw,
+        carouselContainerRef,
+        todosFormatted,
+    } = useCardCarousel(category);
 
     return (
         <StyledUl
@@ -99,7 +108,7 @@ export const CardsCarousel: FC<CardsCarouselType> = (props) => {
                     key={todo.id}
                     todo={todo}
                     idx={i}
-                    {...rest}
+                    addScrollableRef={addScrollableRef}
                 />
             ))}
         </StyledUl>
@@ -108,6 +117,11 @@ export const CardsCarousel: FC<CardsCarouselType> = (props) => {
 // ====================================================== COMPONENT === //
 
 // === STYLE ========================================================= //
+interface StyledUlType {
+    $padding: string;
+    $gap: number;
+}
+
 const StyledUl = styled.ul<StyledUlType>`
     background-color: transparent;
     pointer-events: none;

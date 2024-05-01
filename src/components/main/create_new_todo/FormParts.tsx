@@ -1,60 +1,27 @@
-/*
-# "FormParts.tsx"
-
-## RENDER AS:
-- ``` <div/> ```
-
-## FEATURES:
-- component
-
-## DEPENDENCIES:
-| type     | name                                         | role                 |
-| -------- | -------------------------------------------- | -------------------- |
-| PARENT 1 | CreateNewTodo.tsx                            |                      |
-| CHILD 1  | null                                         |                      |
-| TYPES    | StatusLiteralsType <br> PriorityLiteralsType | selectOptions に使用 |
-
-## DESCRIPTION:
-- このコンポーネントは、スタイリングされた div 要素を提供します。
-
-## PROPS:
-| name           | type                                       | role                                                    | 
-| -------------- | ------------------------------------------ | ------------------------------------------------------- | 
-| className      | string                                     | スタイリングのためのクラス名                            | 
-| partsFor       | string                                     | フォーム要素の名前、htmlFor, id, label のテキストに使用 | 
-| as             | 'input' \| 'textarea' \| 'select'          | レンダリング要素の選択                                  | 
-| feature        | 'optional' \| 'required'                   | 必須項目か任意項目かの指定                              | 
-| register       | UseFormRegister<FieldValues>               | react-hook-form の register                             | 
-| partsRef       | MutableRefObject<any>                      | 親コンポーネントでフォームのクリアに使用する ref を登録 | 
-| defaultValue?  | string                                     | デフォルト値                                            | 
-| inputType?     | 'text' \| 'date' \| 'time'                 | input の type 属性に指定                                | 
-| placeholder?   | string                                     | placeholder の指定                                      | 
-| selectOptions? | StatusLiteralsType \| PriorityLiteralsType | select の option の指定                                 | 
-
-## STATES:
-- null
-
-## FUTURE TASKS:
-- スタイリングの詳細を追加する。
-- 他のHTML要素に対応するように拡張する。
-- input type="date" はスタイリングが難しいため、muiのDatePickerの使用を検討する。
-
-## COPILOT:
-*/
+/**
+ * @summary CreateNewTodo のフォーム部品
+ * @issues
+ * - なし
+ * @copilot
+ * - なし
+ * @module
+ */
 
 /* --- react/styled-components --- */
-import React, { FC, MutableRefObject } from 'react';
+import React, { MutableRefObject } from 'react';
 import styled from 'styled-components';
+
 /* --- types --------------------- */
 import { StatusLiteralsType, PriorityLiteralsType } from '../../../providers/types/categories';
+
 /* --- react-hook-form ----------- */ /* の型 */
 import { FieldValues, UseFormRegister } from 'react-hook-form';
+
 /* --- dev ----------------------- */
-import { isDebugMode } from '../../../utils/adminDebugMode';
+// import { isDebugMode } from '../../../utils/adminDebugMode';
 
 // === TYPE =========================================================== //
-// - PROPS
-interface FormPartsType {
+interface FormPartsProps {
     className: string;
     partsFor: string;
     as: 'input' | 'textarea' | 'select';
@@ -68,12 +35,30 @@ interface FormPartsType {
     placeholder?: string;
     selectOptions?: StatusLiteralsType | PriorityLiteralsType;
 }
-// - STYLE
-// - OTHERS
 // =========================================================== TYPE === //
 
+// === FUNCTION ======================================================= //
+export const useFormParts = ({partsFor, register}: Pick<FormPartsProps, 'partsFor' | 'register'>) => {
+
+
+    const { ref, ...rest } = register(partsFor); // 第二引数でrequired などを設定することもできる
+
+    const htmlFor = partsFor;
+    const id = partsFor;
+    const labelTxt = partsFor.charAt(0).toUpperCase() + partsFor.slice(1); // 例: 'Title', ::after で ':' を付与
+
+    return {
+        id,
+        htmlFor,
+        labelTxt,
+        ref,
+        rest,
+    };
+};
+// ======================================================= FUNCTION === //
+
 // === COMPONENT ====================================================== //
-export const FormParts: FC<FormPartsType> = (props) => {
+export const FormParts = (props: FormPartsProps) => {
     const {
         className, // ↓ essentials
         partsFor,
@@ -87,11 +72,8 @@ export const FormParts: FC<FormPartsType> = (props) => {
         selectOptions,
     } = props;
 
-    const { ref, ...rest } = register(partsFor); // 第二引数でrequired などを設定することもできる
+    const { id, htmlFor, labelTxt, ref, rest } = useFormParts({partsFor, register});
 
-    const htmlFor = partsFor;
-    const id = partsFor;
-    const labelTxt = partsFor.charAt(0).toUpperCase() + partsFor.slice(1); // 例: 'Title', ::after で ':' を付与
 
     return (
         <StyledDiv className={className}>

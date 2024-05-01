@@ -1,72 +1,54 @@
 /**
-# "AAA.tsx"
-
-## RENDER AS:
-- ``` <example/> ```
-
-## DEPENDENCIES:
-| type     | name                                            | role       |
-| ---------| ----------------------------------------------- | ---------- |
-| PARENT 1 | BBB.tsx                                         | 機能や役割 |
-| CHILD  1 | CCC.tsx                                         | 機能や役割 |
-| CHILD  2 | DDD.tsx                                         | 機能や役割 |
-| PACKAGE  | importしているpackage名                         | 機能や役割 |
-| PROVIDER | importしているprovider名                        | 機能や役割 |
-| SETTING  | importしているsetting file名                    | 機能や役割 |
-| UTILS    | ultils ディレクトリからimportしているファイル名 | 機能や役割 |
-| TYPES    | 外部からimportしている型名                      | 機能や役割 |
-
-## FEATURES:
-- conponent
-
-## DESCRIPTION:
-- コンポーネントが提供する機能や役割を箇条書きで記述する。
-
-## PROPS:
-| name        | type | role                     |
-| ----------- | ---- | ------------------------ |
-| propsの名前 | 型   | 役割などの一言程度の説明 |
-
-## STATES:
-| name        | type | role                     |
-| ----------- | ---- | ------------------------ |
-| stateの名前 | 型   | 役割などの一言程度の説明 |
-
-## FUTURE TASKS:
-- 今後の展望や修正点を箇条書きで記述する。
-
-## COPILOT
-- copilotからの提案をここに箇条書きで記述する。
-*/
+ * @summary detail 編集中に markdown editor を表示するモーダル
+ *
+ * @issues
+ * - なし
+ * @copilot
+ * - なし
+ *
+ * @module
+ */
 
 /* --- react/styled-components --- */
-import React, { FC, useContext } from 'react';
+import React, { useContext } from 'react';
 import styled from 'styled-components';
+
 /* --- redux --------------------- */
 import { useCategoriesSelector } from '../../../providers/redux/store';
+
 /* --- providers/contexts -------- */
 import { MdeContext } from '../../../providers/context_api/Mde';
+
 /* --- easymde ------------------- */
 import SimpleMdeReact from 'react-simplemde-editor';
 import 'easymde/dist/easymde.min.css';
 
+/* --- dev ----------------------- */
+// import { isDebugMode } from '../../../utils/adminDebugMode';
+
 // === TYPE =========================================================== //
-// - PROPS
-interface MdeModalType {}
-// - STAYLE
-interface StyleType {
-    $activeIndex: number;
-    $inEditing: boolean;
-    $viewportHeight: number | undefined;
-    $hasEditorOverflow: boolean;
-}
-// - OTHERS
+// interface MdeModalType {}
 // =========================================================== TYPE === //
 
-// === COMPONENT ====================================================== //
-export const MdeModal: FC<MdeModalType> = (props) => {
-    const {} = props;
-
+// === FUNCTION ======================================================= //
+/**
+ * @param arg
+ * @category Custom Hook
+ * @example
+ * ```tsx
+ * const {
+ *      activeIdx,
+ *      refs,
+ *      inEditing,
+ *      getEditorValue,
+ *      handleChange,
+ *      options,
+ *      viewportHeight,
+ *      hasEditorOverflow,
+ * } = useMdeModal();
+ * ```
+ */
+export const useMdeModal = () => {
     const { activeIdx } = useCategoriesSelector();
 
     const {
@@ -78,6 +60,53 @@ export const MdeModal: FC<MdeModalType> = (props) => {
         viewportHeight,
         hasEditorOverflow,
     } = useContext(MdeContext);
+
+    return {
+        /** store にある categories の activeIdx */
+        activeIdx,
+        /** modal, mde, mask の ref */
+        refs,
+        /** detailが編集中かどうか */
+        inEditing,
+        /** mde で入力中の valueを取得する関数 */
+        getEditorValue,
+        /** `<SimpleMdeReact/>` の onChange にバインドして使用する */
+        handleChange,
+        /** `<SimpleMdeReact/>` に渡す options。表示するボタンの種類などの設定。 */
+        options,
+        /** iOSのダイナミックタブバーを考慮したビューポートの高さ */
+        viewportHeight,
+        /** editor をスクロール可否判定の際に、コンテンツのオーバーフローを確認するのに使用 */
+        hasEditorOverflow,
+    };
+}
+// ======================================================= FUNCTION === //
+
+// === COMPONENT ====================================================== //
+/**
+ * @param props
+ * @returns
+ * 
+ * @renderAs
+ * - </> > `<div/>`(modal), (`<div/>`(mask))
+ * @example
+ * ```tsx
+ * <MdeModal />
+ * ```
+ *
+ * @category Component
+ */
+export const MdeModal = () => {
+    const {
+        activeIdx,
+        refs,
+        inEditing,
+        getEditorValue,
+        handleChange,
+        options,
+        viewportHeight,
+        hasEditorOverflow,
+    } = useMdeModal();
 
     return (
         <>
@@ -115,6 +144,13 @@ export const MdeModal: FC<MdeModalType> = (props) => {
 // ====================================================== COMPONENT === //
 
 // === STYLE ========================================================= //
+interface StyleType {
+    $activeIndex: number;
+    $inEditing: boolean;
+    $viewportHeight: number | undefined;
+    $hasEditorOverflow: boolean;
+}
+
 const StyledDiv = styled.div<StyleType>`
     position: fixed;
     z-index: 10;
@@ -201,11 +237,9 @@ const StyledDiv = styled.div<StyleType>`
 `;
 
 const StyledMask = styled.div`
-    /* .mask { */
     position: fixed;
     inset: 0;
     z-index: 5;
     touch-action: none;
-    /* } */
 `;
 // ========================================================= STYLE === //

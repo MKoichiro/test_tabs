@@ -1,54 +1,46 @@
-/*
-# "Categories.tsx"
-
-## RENDER AS:
-- ``` <ul/> ```
-
-## DEPENDENCIES:
-| type     | name                    | role                 |
-| -------- | ----------------------- | -------------------- |
-| PARENT 1 | CategoriesContainer.tsx | カテゴリ一覧を表示   |
-| CHILD 1  | CategoryContainer.tsx   | 個々のカテゴリを表示 |
-
-## FEATURES:
-- compenet
-
-## DESCRIPTION:
-- Categories の carousel コンテナ。
-
-## PROPS:
-- null
-
-## STATES:
-- null
-
-## FUTURE TASKS:
-- null
-
-## COPILOT
-- このコンポーネントは現状のままで問題ないと思われます。必要に応じて更新してください。
-*/
+/**
+ * @summary カテゴリーごとにすべてのタスクを表示するコンポーネント
+ *
+ * @issues
+ * - なし
+ * @copilot
+ * - なし
+ *
+ * @module
+ */
 
 /* --- react/styled-components --- */
-import React, { FC } from 'react';
+import React from 'react';
 import styled from 'styled-components';
+
 /* --- redux --------------------- */
 import { useCategoriesSelector } from '../../../providers/redux/store';
+
 /* --- child components ---------- */
 import { CategoryContainer } from './category/CategoryContainer';
+
 /* --- dev ----------------------- */
-import { isDebugMode } from '../../../utils/adminDebugMode';
+// import { isDebugMode } from '../../../utils/adminDebugMode';
 
 // === TYPE =========================================================== //
-// - PROPS
-interface CategoriesType {}
-// - STYLE
-// - OTHERS
+// interface CategoriesType {}
 // =========================================================== TYPE === //
 
 // === COMPONENT ====================================================== //
-export const Categories: FC<CategoriesType> = (props) => {
-    const {} = props;
+/**
+ * @param props
+ * @returns
+ * 
+ * @renderAs
+ * - `<ul/>`
+ * @example
+ * ```tsx
+ * <Categories />
+ * ```
+ *
+ * @category Component
+ */
+export const Categories = () => {
     const { activeIdx, categoriesEntity: categories } = useCategoriesSelector();
 
     return (
@@ -75,7 +67,6 @@ const StyledUl = styled.ul<{ $activeIndex: number }>`
     transform: ${(props) => `translateX(calc(-1 * var(--contents-width) * ${props.$activeIndex}))`};
     > li {
         min-width: 100%;
-        /* background: pink; */
     }
 `;
 // ========================================================= STYLE === //

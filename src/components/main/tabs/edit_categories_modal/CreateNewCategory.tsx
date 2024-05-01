@@ -1,67 +1,37 @@
 /**
-# "AAA.tsx"
-
-## RENDER AS:
-- ``` <example/> ```
-
-## DEPENDENCIES:
-| type     | name                                            | role       |
-| ---------| ----------------------------------------------- | ---------- |
-| PARENT 1 | BBB.tsx                                         | 機能や役割 |
-| CHILD  1 | CCC.tsx                                         | 機能や役割 |
-| CHILD  2 | DDD.tsx                                         | 機能や役割 |
-| PACKAGE  | importしているpackage名                         | 機能や役割 |
-| PROVIDER | importしているprovider名                        | 機能や役割 |
-| SETTING  | importしているsetting file名                    | 機能や役割 |
-| UTILS    | ultils ディレクトリからimportしているファイル名 | 機能や役割 |
-| TYPES    | 外部からimportしている型名                      | 機能や役割 |
-
-## FEATURES:
-- conponent
-
-## DESCRIPTION:
-- コンポーネントが提供する機能や役割を箇条書きで記述する。
-
-## PROPS:
-| name        | type | role                     |
-| ----------- | ---- | ------------------------ |
-| propsの名前 | 型   | 役割などの一言程度の説明 |
-
-## STATES:
-| name        | type | role                     |
-| ----------- | ---- | ------------------------ |
-| stateの名前 | 型   | 役割などの一言程度の説明 |
-
-## FUTURE TASKS:
-- 今後の展望や修正点を箇条書きで記述する。
-
-## COPILOT
-- copilotからの提案をここに箇条書きで記述する。
-*/
+ * @summary Create New Category 表示部分
+ *
+ * @issues
+ * - なし
+ * @copilot
+ * - なし
+ * @module
+ */
 
 /* --- react/styled-components --- */
-import React, { FC, useRef } from 'react';
+import React, { useRef } from 'react';
 import styled from 'styled-components';
+
 /* --- redux --------------------- */
 import { useDispatch, useCategoriesSelector } from '../../../../providers/redux/store';
 import {
     switchCategory,
     updateCategories,
 } from '../../../../providers/redux/slices/categoriesSlice';
+
 /* --- types --------------------- */
 import { TodoType, CategoryType, notSet } from '../../../../providers/types/categories';
+
 /* --- react-hook-form ----------- */
 import { useForm } from 'react-hook-form';
+
 /* --- utils --------------------- */
 import { generateUUID } from '../../../../utils/generateUUID';
-/* --- dev ----------------------- */
-import { isDebugMode } from '../../../../utils/adminDebugMode';
 
-// === TYPE =========================================================== //
-// - PROPS
-interface CreateNewCategoryType {}
-// - STYLE
-// - OTHERS
+/* --- dev ----------------------- */
+// import { isDebugMode } from '../../../../utils/adminDebugMode';
+
+// === CONST ========================================================= //
 // 新規カテゴリーにデフォルトで入れるtodoの見出し及びコメント
 const TEMPLATE_MESSAGE = {
     title: 'template message of main',
@@ -75,16 +45,24 @@ const NAME_VALIDATION = {
         message: '空白・改行・タブ文字以外の入力が必要です。',
     },
 };
+// ========================================================= CONST === //
 
+// === TYPE =========================================================== //
+// - PROPS
+// interface CreateNewCategoryType {}
+
+// - OTHERS
 interface DataType {
     category_name: string;
 }
 // =========================================================== TYPE === //
 
-// === COMPONENT ====================================================== //
-export const CreateNewCategory: FC<CreateNewCategoryType> = (props) => {
-    const {} = props;
-
+// === FUNCTION ======================================================= //
+/**
+ * @category Custom Hook
+ */
+export const useCreateNewCategory = () => {
+    
     const { categoriesEntity: categories } = useCategoriesSelector();
     const dispatch = useDispatch();
 
@@ -112,7 +90,6 @@ export const CreateNewCategory: FC<CreateNewCategoryType> = (props) => {
 
         const newTodos: CategoryType = {
             id: generateUUID(),
-            // isActive: false,
             createdDate: now,
             updatedDate: now,
             isArchived: false,
@@ -122,7 +99,6 @@ export const CreateNewCategory: FC<CreateNewCategoryType> = (props) => {
 
         const newCategories: CategoryType[] = [...categories];
         newCategories.push(newTodos);
-        // dispatchCategoriesChange({ type: 'update_categories', newCategories });
         dispatch(updateCategories(newCategories));
     };
 
@@ -137,9 +113,36 @@ export const CreateNewCategory: FC<CreateNewCategoryType> = (props) => {
         const now = new Date();
         formInitializer();
         dispatchUpdateCategories(data, now);
-        // dispatchCategoriesChange({ type: 'switch_tab', newActiveIdx: categories.length });
         dispatch(switchCategory(categories.length));
     };
+
+    return { handleSubmit, executeSubmit, errors, refForName, restForName, nameRef };
+};
+// ======================================================= FUNCTION === //
+
+// === COMPONENT ====================================================== //
+/**
+ * @param props
+ * @returns
+ * 
+ * @renderAs
+ * - `<form/>`
+ * @example
+ * ```tsx
+ * <CreateNewCategory />
+ * ```
+ *
+ * @category Component
+ */
+export const CreateNewCategory = () => {
+    const {
+        handleSubmit,
+        executeSubmit,
+        errors,
+        refForName,
+        restForName,
+        nameRef,
+    } = useCreateNewCategory();
 
     return (
         <StyledForm onSubmit={handleSubmit(executeSubmit)}>

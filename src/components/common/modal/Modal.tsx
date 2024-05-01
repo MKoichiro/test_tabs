@@ -1,11 +1,30 @@
+/**
+ * @summary Modal を提供。
+ * - 背景のスクロールを禁止し、maskをクリックすることで閉じることができる。
+ * - dialog要素とmask(div)要素、またその内部でスクロール可能な要素を指定するためのref callbackを提供する。
+ * @issues
+ * - なぜか動作が重い。原因を究明する必要がある。
+ * @copilot
+ * - なし
+ * @module
+ */
+
+/* --- react/styled-components --- */
 import React, { FC, ReactNode } from 'react';
 import styled from 'styled-components';
+
+/* --- providers/contexts -------- */
 import { useModalCloser } from '../../../providers/context_api/ModalElmsRef';
 import { ModalName, DialogElm, MaskElm } from '../../../providers/types/modal';
 
+/* --- dev ----------------------- */
+// import { isDebugMode } from '../../../utils/adminDebugMode';
+
 // === TYPE =========================================================== //
-// - COMPONENT
-interface ModalType {
+/**
+ * @category Type of Props
+ */
+interface ModalProps {
     className?: string;
     classNameMask?: string;
     name: ModalName;
@@ -17,18 +36,23 @@ interface ModalType {
         setMaskRef: (mask: MaskElm) => void;
     };
 }
-// - STYLE
-interface StyledDialogType {
-    $zIndex: number;
-}
-interface StyledMaskType {
-    $isOpen: boolean;
-}
-// - OTHERS
 // =========================================================== TYPE === //
 
 // === COMPONENT ====================================================== //
-export const Modal: FC<ModalType> = (props) => {
+/**
+ * @param props
+ * @returns
+ * @renderAs
+ * - `<dialog/>`
+ * @example
+ * ```tsx
+ * <Modal name={} isOpen={} setBasicsRef={}>
+ *     {children}
+ * </Modal>
+ * ```
+ * @category Component
+ */
+export const Modal: FC<ModalProps> = (props) => {
     const { className, classNameMask, name, isOpen, zIndex, children, setBasicsRef } = props;
     const { setDialogRef, setMaskRef } = setBasicsRef;
     const closeModal = useModalCloser(name);
@@ -55,6 +79,10 @@ export const Modal: FC<ModalType> = (props) => {
 // ====================================================== COMPONENT === //
 
 // === STYLE ========================================================== //
+interface StyledDialogType {
+    $zIndex: number;
+}
+
 const StyledDialog = styled.dialog<StyledDialogType>`
     // reset & minimum styles
 
@@ -80,6 +108,11 @@ const StyledDialog = styled.dialog<StyledDialogType>`
     touch-action: none; // スクロールをブロックするために指定
     background-color: transparent; // 背景を透過するために指定
 `;
+
+
+interface StyledMaskType {
+    $isOpen: boolean;
+}
 
 const StyledMask = styled.div<StyledMaskType>`
     pointer-events: ${({ $isOpen }) => ($isOpen ? 'auto' : 'none')};

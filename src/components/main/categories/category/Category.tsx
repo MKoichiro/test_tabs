@@ -1,55 +1,29 @@
 /**
-# "AAA.tsx"
-
-## RENDER AS:
-- ``` <example/> ```
-
-## DEPENDENCIES:
-| type     | name                                            | role       |
-| ---------| ----------------------------------------------- | ---------- |
-| PARENT 1 | BBB.tsx                                         | 機能や役割 |
-| CHILD  1 | CCC.tsx                                         | 機能や役割 |
-| CHILD  2 | DDD.tsx                                         | 機能や役割 |
-| PACKAGE  | importしているpackage名                         | 機能や役割 |
-| PROVIDER | importしているprovider名                        | 機能や役割 |
-| SETTING  | importしているsetting file名                    | 機能や役割 |
-| UTILS    | ultils ディレクトリからimportしているファイル名 | 機能や役割 |
-| TYPES    | 外部からimportしている型名                      | 機能や役割 |
-
-## FEATURES:
-- conponent
-
-## DESCRIPTION:
-- コンポーネントが提供する機能や役割を箇条書きで記述する。
-
-## PROPS:
-| name        | type | role                     |
-| ----------- | ---- | ------------------------ |
-| propsの名前 | 型   | 役割などの一言程度の説明 |
-
-## STATES:
-| name        | type | role                     |
-| ----------- | ---- | ------------------------ |
-| stateの名前 | 型   | 役割などの一言程度の説明 |
-
-## FUTURE TASKS:
-- 今後の展望や修正点を箇条書きで記述する。
-
-## COPILOT
-- copilotからの提案をここに箇条書きで記述する。
-*/
+ * @summary アクティブなカテゴリーのtodosを表示する部分（メインビューとなる部分）
+ *
+ * @issues
+ * - IF_POSSIBLE: ドラッグ中はすべてのtodoを一時的に閉じる。（isOpen状態を一時的にfalseにするともとに戻すのがめんどくさそう。heightを一律で変えるようにすると楽かも）
+ *
+ * @copilot
+ * - なし
+ *
+ * @module
+ */
 
 /* --- react/styled-components --- */
-import React, { FC, useContext, useState } from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
+
 /* --- child components ---------- */
-import { Todo } from './todo/GhostTodo';
-/* --- providers/contexts -------- */
-// import { CategoriesContext } from "../../../../providers/CategoriesProvider";
+import { GhostTodo } from './todo/GhostTodo';
+
+/* --- redux --------------------- */
+import { useDispatch } from 'react-redux';
+import { replaceTodos } from '../../../../providers/redux/slices/categoriesSlice';
+
 /* --- types --------------------- */
-import { CategoryType } from '../../../../providers/types/categories';
-/* --- utils --------------------- */
-import { vw2px, getCurrentContentsVw } from '../../../../utils/converters';
+import { CategoryType, TodoType } from '../../../../providers/types/categories';
+
 /* --- dnd-kit ------------------- */
 import { createPortal } from 'react-dom';
 import { ActiveTodo } from './todo/ActiveTodo';
@@ -68,35 +42,34 @@ import {
 } from '@dnd-kit/core';
 import {
     SortableContext,
-    arrayMove,
     sortableKeyboardCoordinates,
     verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
-/* --- dev ----------------------- */
-import { isDebugMode } from '../../../../utils/adminDebugMode';
-import { useDispatch } from 'react-redux';
-import { replaceTodos } from '../../../../providers/redux/slices/categoriesSlice';
 
-const contentWidth = vw2px(getCurrentContentsVw());
-const deleteBtnWidth = contentWidth * 0.5;
+/* --- dev ----------------------- */
+// import { isDebugMode } from '../../../../utils/adminDebugMode';
+
+
 
 // === TYPE =========================================================== //
-// - PROPS
-interface PropsType {
+/**
+ * @property category - categoriesSlice から取得したカテゴリー情報
+ * @category Type of Props
+ */
+interface CategoryProps {
     category: CategoryType;
-    idx: number;
 }
-// - STYLE
-// - OTHERS
 // =========================================================== TYPE === //
 
-// === COMPONENT ====================================================== //
-export const Category: FC<PropsType> = (props) => {
-    const { category, idx } = props;
-    const todos = category.todos;
+// === FUNCTIONS ====================================================== //
+/**
+ * @summary dnd-kit/sortable を使用するためのカスタムフック。{@link useCategory} のヘルパー。
+ * @param todos - カテゴリーに含まれる todo のリスト
+ * @returns
+ */
+export const useDNDSortable = (todos: TodoType[]) => {
     const dispatch = useDispatch();
 
-    // --- dnd-kit ------------------------------------------------ //
     // sensor 登録
     const sensors = useSensors(
         useSensor(PointerSensor),
@@ -106,9 +79,9 @@ export const Category: FC<PropsType> = (props) => {
         })
     );
 
-    // DragOverlay で使用
+    // `<DragOverlay/>` で使用
     const [activeId, setActiveId] = useState<UniqueIdentifier | null>(null);
-    // DragOverlay で使用する dragStart event の handler
+    // `<DragOverlay/>` で使用する dragStart event の handler
     const handleDragStart = (e: DragStartEvent) => {
         const { active } = e;
         setActiveId(active.id);
@@ -124,7 +97,43 @@ export const Category: FC<PropsType> = (props) => {
         }
         setActiveId(null);
     };
-    // ------------------------------------------------ dnd-kit --- //
+
+    return { sensors, activeId, handleDragStart, handleDragEnd };
+};
+
+/**
+ * @summary カテゴリーの情報を取得するためのカスタムフック
+ * @param props - カテゴリー情報
+ * @returns
+ */
+export const useCategory = (props: CategoryProps) => {
+    const { category } = props;
+    const todos = category.todos;
+    const { sensors, activeId, handleDragStart, handleDragEnd } = useDNDSortable(todos);
+
+    return {
+        /** カテゴリーに含まれる todo のリスト */
+        todos,
+        /** dnd-kit/sortable で使用する sensor のリスト */
+        sensors,
+        /** ドラッグ中の todo の id */
+        activeId,
+        /** ドラッグ開始時の handler */
+        handleDragStart,
+        /** ドラッグ終了時の handler */
+        handleDragEnd
+    };
+};
+// ====================================================== FUNCTIONS === //
+
+// === COMPONENT ====================================================== //
+/**
+ * @summary カテゴリーのメインビュー部分
+ * @param props
+ * @returns
+ */
+export const Category = (props: CategoryProps) => {
+    const { todos, sensors, activeId, handleDragStart, handleDragEnd } = useCategory(props);
 
     return (
         <StyledUl>
@@ -143,7 +152,7 @@ export const Category: FC<PropsType> = (props) => {
                             !todo.isArchived && (
                                 <ActiveTodo
                                     key={todo.id}
-                                    liIdx={i}
+                                    activeTodoIdx={i}
                                     todo={todo}
                                 />
                             )
@@ -156,9 +165,8 @@ export const Category: FC<PropsType> = (props) => {
                 {createPortal(
                     <DragOverlay>
                         {activeId ? (
-                            <Todo
+                            <GhostTodo
                                 todo={todos.filter((todo) => todo.id === activeId)[0]}
-                                categoryId={category.id}
                             />
                         ) : null}
                     </DragOverlay>,

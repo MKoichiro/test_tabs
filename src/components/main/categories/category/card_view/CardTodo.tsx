@@ -1,90 +1,101 @@
 /**
-# "AAA.tsx"
-
-## RENDER AS:
-- ``` <example/> ```
-
-## DEPENDENCIES:
-| type     | name                                            | role       |
-| ---------| ----------------------------------------------- | ---------- |
-| PARENT 1 | BBB.tsx                                         | 機能や役割 |
-| CHILD  1 | CCC.tsx                                         | 機能や役割 |
-| CHILD  2 | DDD.tsx                                         | 機能や役割 |
-| PACKAGE  | importしているpackage名                         | 機能や役割 |
-| PROVIDER | importしているprovider名                        | 機能や役割 |
-| SETTING  | importしているsetting file名                    | 機能や役割 |
-| UTILS    | ultils ディレクトリからimportしているファイル名 | 機能や役割 |
-| TYPES    | 外部からimportしている型名                      | 機能や役割 |
-
-## FEATURES:
-- conponent
-
-## DESCRIPTION:
-- コンポーネントが提供する機能や役割を箇条書きで記述する。
-
-## PROPS:
-| name        | type | role                     |
-| ----------- | ---- | ------------------------ |
-| propsの名前 | 型   | 役割などの一言程度の説明 |
-
-## STATES:
-| name        | type | role                     |
-| ----------- | ---- | ------------------------ |
-| stateの名前 | 型   | 役割などの一言程度の説明 |
-
-## FUTURE TASKS:
-- 今後の展望や修正点を箇条書きで記述する。
-
-## COPILOT
-- copilotからの提案をここに箇条書きで記述する。
-*/
+ * @summary Card View で 各 Todo を表示するコンポーネント
+ * @issues
+ * - TODO: スタイリングを調整する
+ * @copilot
+ * - なし
+ * @module
+ */
 
 /* --- react/styled-components --- */
-import React, { FC } from 'react';
+import React from 'react';
 import styled from 'styled-components';
+
 /* --- types --------------------- */
 import { TodoType } from '../../../../../providers/types/categories';
-import { ScrollableElm } from '../../../../../providers/types/modal';
-/* --- dev ----------------------- */
-import { isDebugMode } from '../../../../../utils/adminDebugMode';
-import { useCardScroll } from '../../../../../providers/context_api/CardView';
 
+/* --- providers/contexts -------- */
+import { ScrollableElm } from '../../../../../providers/types/modal';
+import { useCardScroll } from '../../../../../providers/context_api/CardView';
 import { getCardCarouselStyles } from '../../../../../providers/context_api/CardView';
-import { useDispatch } from '../../../../../providers/redux/store';
-import { setActiveIdx } from '../../../../../providers/redux/slices/cardSlice';
+
+/* --- dev ----------------------- */
+// import { isDebugMode } from '../../../../../utils/adminDebugMode';
 
 // === TYPE =========================================================== //
-// - PROPS
-interface PropsType {
+/**
+ * @property todo - todo の情報
+ * @property idx - インデックス
+ * @category Type of Props
+ */
+interface CardTodoProps {
     todo: TodoType;
     idx: number;
     addScrollableRef: (scrollable: ScrollableElm) => void;
 }
-// - STYLE
-interface StyledLiType {
-    $isActive: boolean;
-    $activeWidth: number;
-    $shrinkRatio: number;
-}
-// - OTHERS
 // =========================================================== TYPE === //
 
-// === COMPONENT ====================================================== //
-export const CardTodo: FC<PropsType> = (props) => {
-    const { todo, idx } = props;
-
+// === FUNCTION ======================================================= //
+/**
+ * @category Custom Hook
+ * @example
+ * ```tsx
+ * const {
+ *      todoTitle,
+ *      todoDetail,
+ *      isActive,
+ *      handleClick,
+ *      activeWidth_vw,
+ *      inactiveMagnification
+ * } = useCardTodo({ todo, idx });
+ * ```
+ */
+export const useCardTodo = ({ todo, idx }: Omit<CardTodoProps, 'addScrollableRef'>) => {
     // contexts
     const { isActive, handleScroll } = useCardScroll(idx);
-    const dispatch = useDispatch();
 
     // handlers
     const handleClick = () => {
         handleScroll(idx, 'smooth');
-        // dispatch(setActiveIdx(idx));
     };
 
     // styles
     const { activeWidth_vw, inactiveMagnification } = getCardCarouselStyles();
+
+    return {
+        todoTitle: todo.title,
+        todoDetail: todo.detail,
+        isActive,
+        handleClick,
+        activeWidth_vw,
+        inactiveMagnification,
+    };
+}
+// ======================================================= FUNCTION === //
+
+// === COMPONENT ====================================================== //
+/**
+ * @param props
+ * @returns
+ * 
+ * @renderAs
+ * - `<li/>`
+ * @example
+ * ```tsx
+ * <CardTodo todo={} idx={} addScrollableRef={} />
+ * ```
+ *
+ * @category Component
+ */
+export const CardTodo = ({ todo, idx, addScrollableRef }: CardTodoProps) => {
+    const {
+        todoTitle,
+        todoDetail,
+        isActive,
+        handleClick,
+        activeWidth_vw,
+        inactiveMagnification
+    } = useCardTodo({ todo, idx });
 
     return (
         <StyledLi
@@ -95,15 +106,15 @@ export const CardTodo: FC<PropsType> = (props) => {
         >
             <section className="contents-wrapper">
                 <header>
-                    <h3>{todo.title}</h3>
+                    <h3>{todoTitle}</h3>
                 </header>
 
                 <div className="color-container">color-container</div>
 
-                <div className="info-container">infmation</div>
+                <div className="info-container">information</div>
 
                 <div className="detail-container">
-                    <p>{todo.detail}</p>
+                    <p>{todoDetail}</p>
                 </div>
 
                 <div className="category-container">
@@ -116,6 +127,12 @@ export const CardTodo: FC<PropsType> = (props) => {
 // ====================================================== COMPONENT === //
 
 // === STYLE ========================================================= //
+interface StyledLiType {
+    $isActive: boolean;
+    $activeWidth: number;
+    $shrinkRatio: number;
+}
+
 const StyledLi = styled.li<StyledLiType>`
     --active-width: ${(props) => `${props.$activeWidth}vw`};
     --active-height: ${(props) => `${props.$activeWidth}vh`};

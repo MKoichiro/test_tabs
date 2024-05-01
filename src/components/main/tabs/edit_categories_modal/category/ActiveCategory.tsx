@@ -1,61 +1,36 @@
 /**
-# "AAA.tsx"
-
-## RENDER AS:
-- ``` <example/> ```
-
-## DEPENDENCIES:
-| type     | name                                            | role       |
-| ---------| ----------------------------------------------- | ---------- |
-| PARENT 1 | BBB.tsx                                         | 機能や役割 |
-| CHILD  1 | CCC.tsx                                         | 機能や役割 |
-| CHILD  2 | DDD.tsx                                         | 機能や役割 |
-| PACKAGE  | importしているpackage名                         | 機能や役割 |
-| PROVIDER | importしているprovider名                        | 機能や役割 |
-| SETTING  | importしているsetting file名                    | 機能や役割 |
-| UTILS    | ultils ディレクトリからimportしているファイル名 | 機能や役割 |
-| TYPES    | 外部からimportしている型名                      | 機能や役割 |
-
-## FEATURES:
-- conponent
-
-## DESCRIPTION:
-- コンポーネントが提供する機能や役割を箇条書きで記述する。
-
-## PROPS:
-| name        | type | role                     |
-| ----------- | ---- | ------------------------ |
-| propsの名前 | 型   | 役割などの一言程度の説明 |
-
-## STATES:
-| name        | type | role                     |
-| ----------- | ---- | ------------------------ |
-| stateの名前 | 型   | 役割などの一言程度の説明 |
-
-## FUTURE TASKS:
-- 今後の展望や修正点を箇条書きで記述する。
-
-## COPILOT
-- copilotからの提案をここに箇条書きで記述する。
-*/
+ * @summary Edit Categories Modal で、 isArchived === false のカテゴリを表示する
+ * @issues
+ * - なし
+ * @copilot
+ * - なし
+ * @module
+ */
 
 /* --- react/styled-components --- */
-import React, { FC } from 'react';
+import React from 'react';
 import styled from 'styled-components';
+
 /* --- types --------------------- */
 import { CategoryType } from '../../../../../providers/types/categories';
+
 /* --- styles -------------------- */
 import { categoryCommonStyles, CategoryCommonStylesType } from './CategoryCommonStyles';
+
 /* --- utils --------------------- */
 import { vw2px } from '../../../../../utils/converters';
+
 /* --- font awesome -------------- */
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArchive } from '@fortawesome/free-solid-svg-icons';
+
 /* --- material icons ------------ */
 import { DragIndicator } from '@mui/icons-material';
+
 /* --- dnd-kit ------------------- */
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
+
 /* --- hooks --------------------- */
 /* slidable */
 import {
@@ -66,8 +41,9 @@ import {
 import { SlidableParamsType } from '../../../../../functions/slidable/Types';
 /* immediateEditable */
 import { useImmediateEditable } from '../../../../../functions/immediateEditable/Hooks';
+
 /* --- dev ----------------------- */
-import { isDebugMode } from '../../../../../utils/adminDebugMode';
+// import { isDebugMode } from '../../../../../utils/adminDebugMode';
 
 // === CONSTANT Against RENDERING ===================================== //
 const btnsContainerWidthVw = 10;
@@ -82,28 +58,62 @@ const slidableParams: SlidableParamsType = {
 // ===================================== CONSTANT Against RENDERING === //
 
 // === TYPE =========================================================== //
-// - PROPS
-interface ActiveCategoryType {
+/**
+ * @property activeCategory - isArchived === false のカテゴリ
+ * @category Type of Props
+ */
+interface ActiveCategoryProps {
     activeCategory: CategoryType;
 }
-// - STYLE
-// - OTHERS
 // =========================================================== TYPE === //
 
-// === COMPONENT ====================================================== //
-export const ActiveCategory: FC<ActiveCategoryType> = (props) => {
-    const { activeCategory } = props;
-
-    const { inEditing, inputRef, handleDoubleClick, handleSubmit, handleChange, handleBlur } =
-        useImmediateEditable('category', activeCategory);
-    const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
-        id: activeCategory.id,
-    });
+// === FUNCTION ======================================================= //
+/**
+ * @category Custom Hook
+ */
+export const useActiveCategory = ({ activeCategory }: ActiveCategoryProps) => {
+    const { transform, transition, ...rest } = useSortable({ id: activeCategory.id });
 
     const style = {
         transform: CSS.Transform.toString(transform),
         transition,
     };
+
+    return {
+        ...useImmediateEditable('category', activeCategory),
+        ...rest,
+        style,
+    };
+};
+// ======================================================= FUNCTION === //
+
+// === COMPONENT ====================================================== //
+/**
+ * @param props
+ * @returns
+ * @renderAs
+ * - `<li/>`
+ * @example
+ * ```tsx
+ * <ActiveCategory activeCategory={} />
+ * ```
+ * @category Component
+ */
+export const ActiveCategory = ({ activeCategory }: ActiveCategoryProps) => {
+    const {
+        inEditing,
+        inputRef,
+        handleDoubleClick,
+        handleSubmit,
+        handleChange,
+        handleBlur,
+
+        isDragging,
+        listeners,
+        attributes,
+        setNodeRef,
+        style,
+    } = useActiveCategory({ activeCategory });
 
     return (
         <StyledLi

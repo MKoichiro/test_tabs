@@ -1,69 +1,44 @@
-/*
-# "CreateNewTodo.tsx"
-
-## RENDER AS:
-- ``` <form/> ```
-
-## DEPENDENCIES:
-| type     | name               | role                                                       |
-| -------- | ------------------ | ---------------------------------------------------------- |
-| PARENT 1 | Main.tsx           | 特になし                                                   |
-| CHILD 1  | FormParts.tsx      | フォームの各部品を提供                                     |
-| PACKAGE  | react-hook-form    | フォームの状態管理                                         |
-| PROVIDER | CategoriesProvider | カテゴリー情報の提供                                       |
-| SETTING  | FormSetting.tsx    | フォームのデフォルト値、プレースホルダー、選択肢などの設定 |
-| UTILS    | generateUUID       | 確率的に一意な値を提供。新しい todo の id に使用           |
-
-## FEATURES:
-- component
-
-## DESCRIPTION:
-- このコンポーネントは、active な category に新しい todo を作成するためのフォームを提供します。
-- フォームには、タイトル(title)、詳細(detail)、期限日(deadline: date)、期限時間(deadline: time)、進捗状況(status)、優先度(priority)を入力するフィールドがあります。
-- 各フィールドは、FormParts コンポーネントを使用している。
-- また、フォームのデフォルト値、プレースホルダー、選択肢などは、FormSetting.tsx で定義されています。
-
-## PROPS:
-- null
-
-## STATES:
-- null
-
-## FUTURE TASKS:
-- フォームのバリデーションを強化する。
-- error message を表示する。
-- フォームのUIを改善する。
-
-## COPILOT:
-- useRefを使用している部分を、react-hook-formのregisterを使用するようにリファクタリングすることを提案します。これにより、フォームの状態管理をよりシンプルにできます。
-- useContextを使用している部分を、カスタムフックを使用するようにリファクタリングすることを提案します。これにより、コンポーネントの再利用性とテストの容易性が向上します。
-*/
+/**
+ * @summary Create New Todo のフォームを表示するコンポーネント
+ * @issues
+ * - TODO: title は必須項目にする
+ * @copilot
+ * - 未確認
+ * @module
+ */
 
 /* --- react/styled-components --- */
-import React, { FC, useRef } from 'react';
+import React, { useRef } from 'react';
 import styled from 'styled-components';
+
 /* --- child components ---------- */
 import { FormParts } from './FormParts';
+
 /* --- providers/contexts -------- */
-/* --- types --------------------- */
-import { StatusUnionType, PriorityUnionType, TodoType } from '../../../providers/types/categories';
-/* --- utils --------------------- */
-import { generateUUID } from '../../../utils/generateUUID';
-/* --- react-hook-form ----------- */
-import { useForm } from 'react-hook-form';
-/* --- settings ------------------ */
-import { defaultValues, statusOptions, priorityOptions, placeholders } from './FormSetting';
-/* --- dev ----------------------- */
-import { isDebugMode } from '../../../utils/adminDebugMode';
-import { useDispatch } from 'react-redux';
-import { DLFormatters } from '../../../utils/todoPropsHandler';
 import { addTodo } from '../../../providers/redux/slices/categoriesSlice';
 
+/* --- redux ---------------------- */
+import { useDispatch } from 'react-redux';
+
+/* --- types --------------------- */
+import { StatusUnionType, PriorityUnionType, TodoType } from '../../../providers/types/categories';
+
+/* --- utils --------------------- */
+import { generateUUID } from '../../../utils/generateUUID';
+import { DLFormatters } from '../../../utils/todoPropsHandler';
+
+/* --- react-hook-form ----------- */
+import { useForm } from 'react-hook-form';
+
+/* --- settings ------------------ */
+import { defaultValues, statusOptions, priorityOptions, placeholders } from './FormSetting';
+
+/* --- dev ----------------------- */
+// import { isDebugMode } from '../../../utils/adminDebugMode';
+
 // === TYPE =========================================================== //
-// - PROPS
-interface CreateNewTodoType {}
-// - STYLE
-// - OTHERS
+// interface CreateNewTodoType {}
+
 interface InputDataType {
     title?: string;
     detail?: string;
@@ -74,11 +49,11 @@ interface InputDataType {
 }
 // =========================================================== TYPE === //
 
-// === COMPONENT ====================================================== //
-
-export const CreateNewTodo: FC<CreateNewTodoType> = (props) => {
-    const {} = props;
-
+// === FUNCTION ======================================================= //
+/**
+ * @category Custom Hook
+ */
+export const useCreateNewTodo = () => {
     const dispatch = useDispatch();
     const { toSaveDeadline } = DLFormatters;
 
@@ -136,6 +111,47 @@ export const CreateNewTodo: FC<CreateNewTodoType> = (props) => {
         addNewTodo(inputData); // 2. newTodo を categories に追加
     };
     // ------------------------------------------ submit で実行 --- //
+
+    return {
+        register,
+        handleSubmit,
+        titleRef,
+        detailRef,
+        dateRef,
+        timeRef,
+        priorityRef,
+        statusRef,
+        executeSubmit,
+    };
+}
+
+// ======================================================= FUNCTION === //
+
+// === COMPONENT ====================================================== //
+/**
+ * @param props
+ * @returns
+ * @renderAs
+ * - `<form/>`
+ * @example
+ * ```tsx
+ * <CreateNewTodo />
+ * ```
+ * @category Component
+ */
+export const CreateNewTodo = () => {
+    const {
+        register,
+        handleSubmit,
+        titleRef,
+        detailRef,
+        dateRef,
+        timeRef,
+        priorityRef,
+        statusRef,
+        executeSubmit
+    } = useCreateNewTodo();
+
 
     return (
         <StyledForm onSubmit={handleSubmit(executeSubmit)}>

@@ -29,7 +29,7 @@ import { vw2px } from '../../../utils/converters';
 
 // === TYPE =========================================================== //
 /**
- * @summary {@link Tab} コンポーネントに渡す props の型。
+ * @summary {@link Tab} の Props の型定義。
  * @property idx - Tabのli要素としてのインデックス番号。
  * @property ulRef - TabsContainer(ul要素)への参照。
  * @category Type of Props

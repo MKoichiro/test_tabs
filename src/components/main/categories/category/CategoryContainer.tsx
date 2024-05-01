@@ -1,69 +1,50 @@
 /**
-# "AAA.tsx"
-
-## RENDER AS:
-- ``` <example/> ```
-
-## DEPENDENCIES:
-| type     | name                                            | role       |
-| ---------| ----------------------------------------------- | ---------- |
-| PARENT 1 | BBB.tsx                                         | 機能や役割 |
-| CHILD  1 | CCC.tsx                                         | 機能や役割 |
-| CHILD  2 | DDD.tsx                                         | 機能や役割 |
-| PACKAGE  | importしているpackage名                         | 機能や役割 |
-| PROVIDER | importしているprovider名                        | 機能や役割 |
-| SETTING  | importしているsetting file名                    | 機能や役割 |
-| UTILS    | ultils ディレクトリからimportしているファイル名 | 機能や役割 |
-| TYPES    | 外部からimportしている型名                      | 機能や役割 |
-
-## FEATURES:
-- conponent
-
-## DESCRIPTION:
-- コンポーネントが提供する機能や役割を箇条書きで記述する。
-
-## PROPS:
-| name        | type | role                     |
-| ----------- | ---- | ------------------------ |
-| propsの名前 | 型   | 役割などの一言程度の説明 |
-
-## STATES:
-| name        | type | role                     |
-| ----------- | ---- | ------------------------ |
-| stateの名前 | 型   | 役割などの一言程度の説明 |
-
-## FUTURE TASKS:
-- 今後の展望や修正点を箇条書きで記述する。
-
-## COPILOT
-- copilotからの提案をここに箇条書きで記述する。
-*/
+ * @summary カテゴリーのメインビュー部分
+ *
+ * @issues
+ * - なし
+ * @copilot
+ * - なし
+ *
+ * @module
+ */
 
 /* --- react/styled-components --- */
-import React, { FC, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
+
 /* --- child components ---------- */
 import { Category } from './Category';
 import { CardsContainer } from './card_view/CardModal';
+
+/* --- types --------------------- */
 import { CategoryType } from '../../../../providers/types/categories';
+
 /* --- redux --------------------- */
 import { useCategoriesSelector } from '../../../../providers/redux/store';
+
 /* --- dev ----------------------- */
-import { isDebugMode } from '../../../../utils/adminDebugMode';
+// import { isDebugMode } from '../../../../utils/adminDebugMode';
 
 // === TYPE =========================================================== //
-// - PROPS
-interface PropsType {
+/**
+ * @property category - categoriesSlice から取得したカテゴリー情報
+ * @property idx - カテゴリーのインデックス
+ * @category Type of Props
+ */
+interface CategoryContainerProps {
     category: CategoryType;
     idx: number;
 }
-// - STYLE
-// - OTHERS
 // =========================================================== TYPE === //
 
-// === COMPONENT ====================================================== //
-export const CategoryContainer: FC<PropsType> = (props) => {
-    const { idx, ...rest } = props;
+// === FUNCTION ======================================================= //
+/**
+ * @param props
+ * @returns
+ */
+export const useCategoryContainer = (props: CategoryContainerProps) => {
+    const { idx, category } = props;
     const { activeIdx } = useCategoriesSelector();
     const [isActive, setIsActive] = useState(false);
 
@@ -75,10 +56,36 @@ export const CategoryContainer: FC<PropsType> = (props) => {
         }
     }, [idx, activeIdx]);
 
+    return {
+        /** categoryがアクティブかどうか */
+        isActive,
+        /** categoriesSliceから取得するカテゴリー情報 */
+        category,
+    };
+}
+// ======================================================= FUNCTION === //
+
+// === COMPONENT ====================================================== //
+/**
+ * @param props
+ * @returns
+ * 
+ * @renderAs
+ * - `<div/>`
+ * @example
+ * ```tsx
+ * <CategoryContainer category={category} idx={idx} />
+ * ```
+ *
+ * @category Component
+ */
+export const CategoryContainer = (props: CategoryContainerProps) => {
+    const { isActive, category } = useCategoryContainer(props);
+
     return (
         <StyledDiv>
-            <Category {...props} />
-            {isActive && <CardsContainer {...rest} />}
+            <Category category={category} />
+            {isActive && <CardsContainer category={category} />}
         </StyledDiv>
     );
 };

@@ -1,47 +1,19 @@
 /**
-# "AAA.tsx"
-
-## RENDER AS:
-- ``` <example/> ```
-
-## DEPENDENCIES:
-| type     | name                                            | role       |
-| ---------| ----------------------------------------------- | ---------- |
-| PARENT 1 | BBB.tsx                                         | 機能や役割 |
-| CHILD  1 | CCC.tsx                                         | 機能や役割 |
-| CHILD  2 | DDD.tsx                                         | 機能や役割 |
-| PACKAGE  | importしているpackage名                         | 機能や役割 |
-| PROVIDER | importしているprovider名                        | 機能や役割 |
-| SETTING  | importしているsetting file名                    | 機能や役割 |
-| UTILS    | ultils ディレクトリからimportしているファイル名 | 機能や役割 |
-| TYPES    | 外部からimportしている型名                      | 機能や役割 |
-
-## FEATURES:
-- conponent
-
-## DESCRIPTION:
-- コンポーネントが提供する機能や役割を箇条書きで記述する。
-
-## PROPS:
-| name        | type | role                     |
-| ----------- | ---- | ------------------------ |
-| propsの名前 | 型   | 役割などの一言程度の説明 |
-
-## STATES:
-| name        | type | role                     |
-| ----------- | ---- | ------------------------ |
-| stateの名前 | 型   | 役割などの一言程度の説明 |
-
-## FUTURE TASKS:
-- 今後の展望や修正点を箇条書きで記述する。
-
-## COPILOT
-- copilotからの提案をここに箇条書きで記述する。
-*/
+ * @summary カテゴリー内のアーカイブされていない todo の表示を担当。
+ *
+ * @issues
+ * - なし
+ *
+ * @copilot
+ * - なし
+ *
+ * @module
+ */
 
 /* --- react/styled-components --- */
-import React, { FC, useRef } from 'react';
+import React, { useRef } from 'react';
 import styled from 'styled-components';
+
 /* --- child components ---------- */
 import { TodoDetail } from './TodoDetail';
 import { TodoHeader } from './TodoHeader';
@@ -51,27 +23,33 @@ import {
     SlidableMain,
     SlidableHidden,
 } from '../../../../../functions/slidable/Components';
+
 /* --- redux --------------------- */
 import { useDispatch } from 'react-redux';
 import { updateTodoProps } from '../../../../../providers/redux/slices/categoriesSlice';
+import { setActiveIdx } from '../../../../../providers/redux/slices/cardSlice';
+
 /* --- providers/contexts -------- */
 import { useCardViewOpener } from '../../../../../providers/context_api/CardView';
+
 /* --- types --------------------- */
 import { TodoType } from '../../../../../providers/types/categories';
 // slidable
 import { SlidableParamsType } from '../../../../../functions/slidable/Types';
+
 /* --- utils --------------------- */
 import { vw2px, getCurrentContentsVw } from '../../../../../utils/converters';
+
 /* --- font awesome -------------- */
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrashCan, faCircleInfo, faCheck } from '@fortawesome/free-solid-svg-icons';
+
 /* --- dnd-kit ------------------- */
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
+
 /* --- dev ----------------------- */
-import { isDebugMode } from '../../../../../utils/adminDebugMode';
-import { set } from 'react-hook-form';
-import { setActiveIdx } from '../../../../../providers/redux/slices/cardSlice';
+// import { isDebugMode } from '../../../../../utils/adminDebugMode';
 
 // === CONSTANT Against RENDERING ===================================== //
 const contentsWidth = vw2px(getCurrentContentsVw());
@@ -87,55 +65,140 @@ const slidableParams: SlidableParamsType = {
 // ===================================== CONSTANT Against RENDERING === //
 
 // === TYPE =========================================================== //
-// - PROPS
-interface PropsType {
+/**
+ * @property todo - 各 todo の情報
+ * @property activeTodoIdx - todos 配列の index ではなく、todos 配列に isArchived === false でfiltering した配列における index
+ * @category Type of Props
+ */
+interface ActiveTodoProps {
     todo: TodoType;
-    liIdx: number;
+    activeTodoIdx: number;
 }
-// - STYLE
-interface StyledLiType {
-    $isDragging: boolean;
-}
-// - OTHERS
 // =========================================================== TYPE === //
 
-// === COMPONENT ====================================================== //
-export const ActiveTodo: FC<PropsType> = (props) => {
-    const { todo, liIdx } = props;
-    const currentId = todo.id;
-
-    // contexts
-    const dispatch = useDispatch();
-    const { cardViewOpen } = useCardViewOpener();
-
-    // --- dnd-kit ------------------------------------------------ //
+// === FUNCTION ======================================================= //
+/**
+ * dnd-kit の useSortable を使って、drag される要素の情報を取得する。
+ * {@link useActiveTodo} のヘルパーとして使用。
+ * @param arg
+ * 
+ * @category Custom Hook
+ * @example
+ * ```tsx
+ * const { attributes, listeners, setNodeRef, style, isDragging } = useDNDItem(todoId);
+ * ```
+ */
+export const useDNDItem = (todoId: string) => {
     const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
-        id: currentId,
+        id: todoId,
     });
     const style = {
         transform: CSS.Transform.toString(transform),
         transition,
     };
-    // ------------------------------------------------ dnd-kit --- //
 
-    // detail の double click で mde modal を開くときに自動 scroll 先となる ref
+    return { attributes, listeners, setNodeRef, style, isDragging };
+};
+
+/**
+ * ActiveTodo コンポーネントのロジックを担当。
+ * @param arg
+ * 
+ * @category Custom Hook
+ * @example
+ * ```tsx
+ * const {
+ *      todoId,
+ *      attributes, 
+ *      listeners, 
+ *      setNodeRef, 
+ *      style, 
+ *      isDragging, 
+ *      liRef, 
+ *      handleInfoBtnClick, 
+ *      handleCompleteBtnClick, 
+ *      handleArchiveBtnClick
+ * } = useActiveTodo({todo, activeTodoIdx});
+ * ```
+ */
+export const useActiveTodo = ({todo, activeTodoIdx}: ActiveTodoProps) => {
+    const todoId = todo.id;
+    // dnd-kit
+    const { attributes, listeners, setNodeRef, style, isDragging } = useDNDItem(todoId);
+
+    // contexts
+    const dispatch = useDispatch();
+    const { cardViewOpen } = useCardViewOpener();
+
     const liRef = useRef<HTMLElement | null>(null);
 
     // handlers
     const handleInfoBtnClick = () => {
-        cardViewOpen(liIdx);
-        dispatch(setActiveIdx(liIdx));
+        cardViewOpen(activeTodoIdx);
+        dispatch(setActiveIdx(activeTodoIdx));
     };
     const handleCompleteBtnClick = () => {
-        dispatch(updateTodoProps({ todoId: currentId, update: { status: 'completed' } }));
+        dispatch(updateTodoProps({ todoId, update: { status: 'completed' } }));
     };
     const handleArchiveBtnClick = () => {
-        dispatch(updateTodoProps({ todoId: currentId, update: { isArchived: true } }));
+        dispatch(updateTodoProps({ todoId, update: { isArchived: true } }));
     };
+
+    return {
+        todoId,
+        /** dnd-kit: dnd-kit の仕様上必要。 */
+        attributes,
+        /** dnd-kit: `<TodoHeader/>` に渡して、最終的に dnd 時にグリッパーとなる span 要素にバインド。 */
+        listeners,
+        /** dnd-kit: drag される要素の ref を設定する ref callback。 仕様上必要。 */
+        setNodeRef,
+        /** dnd-kit: drag される要素の transform 関連の style 仕様上コンポーネント定義内で定義して渡す。 */
+        style,
+        /** dnd-kit: drag 中かどうか。 */
+        isDragging,
+        /** detail の double click で mde modal を開くときに自動 scroll 先となる ref */
+        liRef,
+        /** info ボタンの click handler */
+        handleInfoBtnClick,
+        /** complete ボタンの click handler */
+        handleCompleteBtnClick,
+        /** archive ボタンの click handler */
+        handleArchiveBtnClick
+    };
+}
+// ======================================================= FUNCTION === //
+
+// === COMPONENT ====================================================== //
+/**
+ * @param props
+ * @returns
+ * 
+ * @renderAs
+ * - `<li/>`
+ * @example
+ * ```tsx
+ * <ActiveTodo />
+ * ```
+ *
+ * @category Component
+ */
+export const ActiveTodo = ({ todo, activeTodoIdx }: ActiveTodoProps) => {
+    const {
+        todoId,
+        attributes, 
+        listeners, 
+        setNodeRef, 
+        style, 
+        isDragging, 
+        liRef, 
+        handleInfoBtnClick, 
+        handleCompleteBtnClick, 
+        handleArchiveBtnClick
+     } = useActiveTodo({todo, activeTodoIdx});
 
     return (
         <StyledLi
-            key={currentId}
+            key={todoId}
             style={style}
             $isDragging={isDragging}
             ref={(e) => {
@@ -156,7 +219,7 @@ export const ActiveTodo: FC<PropsType> = (props) => {
 
                     <TodoDetail
                         ref={liRef}
-                        liIdx={liIdx}
+                        // activeTodoIdx={activeTodoIdx}
                         todo={todo}
                     />
                 </SlidableMain>
@@ -200,13 +263,13 @@ export const ActiveTodo: FC<PropsType> = (props) => {
 // ====================================================== COMPONENT === //
 
 // === STYLE ========================================================= //
+interface StyledLiType {
+    $isDragging: boolean;
+}
+
 const StyledLi = styled.li<StyledLiType>`
     background: #efefef;
-
     border-radius: 0.4rem;
-    /* background: #e0e0e0;
-  box-shadow:  2rem 2rem 6rem #bebebe,
-              -2rem -2rem 6rem #ffffff; */
 
     margin: 1.6rem 0;
     opacity: ${(props) => (props.$isDragging ? 0.5 : 1)};

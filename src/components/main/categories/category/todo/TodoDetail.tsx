@@ -48,12 +48,20 @@ export const useUnsettledHeightAcc = (isOpen: boolean, changeableTxtContentsStat
     const [height, setHeight] = useState<number | null>(null);
 
     const heightGetterRef = useRef<HTMLDivElement | null>(null);
-    useLayoutEffect(() => {
+
+    /**
+     * useEffect自体はレンダリング後に実行されるため、
+     * 依存配列に heightGetterRef.current を含める必要は無いように思われるが、
+     * transition や animation はレンダリングと非同期で実行されるため、
+     * レンダリング完了後にheightが確定している保証は無い。
+     * そのため、やはりheightGetterRef.currentを含めないと、正常な値が取得できない。
+     */
+    useEffect(() => {
         if (heightGetterRef.current) {
             const newHeight = heightGetterRef.current.getBoundingClientRect().height;
             setHeight(newHeight);
         }
-    }, [isOpen, changeableTxtContentsState]);
+    }, [isOpen, changeableTxtContentsState, heightGetterRef.current]);
     return { height, heightGetterRef };
 };
 
@@ -88,7 +96,7 @@ export const useTodoDetail = ({ todo }: TodoDetailProps, ref: Ref<HTMLElement> )
     };
 
     const [sanitizedDetail, setSanitizedDetail] = useState('');
-    useEffect(() => {
+    useLayoutEffect(() => {
         const fetchSanitizedDetail = async () => {
             const detail = await getSanitizedDetail(todo);
             setSanitizedDetail(detail);

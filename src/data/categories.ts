@@ -1,38 +1,41 @@
 import { CategoryType } from '../providers/types/categories';
 import { generateUUID } from '../utils/generateUUID';
 import { getRandTnD } from './randomTnD';
+import { getCategoryRandDates, getTodoRandDates } from './randomISOStr';
 
 const TODOS_KEY = 'categories';
 localStorage.getItem(TODOS_KEY);
 export const storedActiveIdx = 0;
-console.log('storedActiveIdx: ', storedActiveIdx);
+
+const categoriesRandDates = new Array(11).fill(null).map(() => getCategoryRandDates());
+
 
 export const storedCategories: CategoryType[] = [
     {
         id: generateUUID(),
-        createdDate: new Date('2024/02/24'),
-        updatedDate: new Date('2024/02/25'),
+        // spread例: createdDate: '2024-12-01T12:26:00.000Z',
+        // spread例: updatedDate: '2024-12-21T05:31:00.000Z',
+        ...categoriesRandDates[0],
         isArchived: false,
         name: 'category-0',
         todos: [
             {
                 id: generateUUID(),
-                createdDate: new Date('2024/02/26'),
-                updatedDate: new Date('2024/02/27'),
-                deadline: '---',
+                // spread例: createdDate: '2024-12-01T12:26:00.000Z',
+                // spread例: updatedDate: '2024-12-21T05:31:00.000Z',
+                // spread例: deadline: { date: '2024-12-10T13:00:00.000Z', use_time: true }, // updatedDateより後であることは保証しない。これにより、isExpiredの判定が自然になる。
+                ...getTodoRandDates(categoriesRandDates[0].createdDate),
                 status: 'In Progress...',
                 priority: '---',
                 isArchived: false,
-                // title: '今日やること',
-                // detail: 'なにぬねのとはひふへほ',
+                // spread例: title: '今日やること',
+                // spread例: detail: 'なにぬねのとはひふへほ',
                 ...getRandTnD(),
                 isOpen: true,
             },
             {
                 id: generateUUID(),
-                createdDate: new Date('2024/02/28'),
-                updatedDate: new Date('2024/02/29'),
-                deadline: '---',
+                ...getTodoRandDates(categoriesRandDates[0].createdDate),
                 status: 'Not Started',
                 priority: '---',
                 isArchived: false,
@@ -41,9 +44,7 @@ export const storedCategories: CategoryType[] = [
             },
             {
                 id: generateUUID(),
-                createdDate: new Date('2024/03/01'),
-                updatedDate: new Date('2024/03/02'),
-                deadline: '---',
+                ...getTodoRandDates(categoriesRandDates[0].createdDate),
                 status: 'Not Started',
                 priority: '---',
                 isArchived: true,
@@ -52,9 +53,7 @@ export const storedCategories: CategoryType[] = [
             },
             {
                 id: generateUUID(),
-                createdDate: new Date('2024/03/01'),
-                updatedDate: new Date('2024/03/02'),
-                deadline: '---',
+                ...getTodoRandDates(categoriesRandDates[0].createdDate),
                 status: 'Not Started',
                 priority: '---',
                 isArchived: false,
@@ -63,12 +62,7 @@ export const storedCategories: CategoryType[] = [
             },
             {
                 id: generateUUID(),
-                createdDate: new Date('2024/03/01'),
-                updatedDate: new Date('2024/03/02'),
-                deadline: {
-                    date: new Date('2024/02/25'),
-                    use_time: true,
-                },
+                ...getTodoRandDates(categoriesRandDates[0].createdDate),
                 status: 'In Progress...',
                 priority: '---',
                 isArchived: false,
@@ -77,12 +71,7 @@ export const storedCategories: CategoryType[] = [
             },
             {
                 id: generateUUID(),
-                createdDate: new Date('2024/03/01'),
-                updatedDate: new Date('2024/03/02'),
-                deadline: {
-                    date: new Date('2024/02/25'),
-                    use_time: false,
-                },
+                ...getTodoRandDates(categoriesRandDates[0].createdDate),
                 status: 'completed',
                 priority: '---',
                 isArchived: false,
@@ -91,9 +80,7 @@ export const storedCategories: CategoryType[] = [
             },
             {
                 id: generateUUID(),
-                createdDate: new Date('2024/02/26'),
-                updatedDate: new Date('2024/02/27'),
-                deadline: '---',
+                ...getTodoRandDates(categoriesRandDates[0].createdDate),
                 status: 'Pending',
                 priority: '---',
                 isArchived: false,
@@ -104,16 +91,13 @@ export const storedCategories: CategoryType[] = [
     },
     {
         id: generateUUID(),
-        createdDate: new Date('2024/01/24'),
-        updatedDate: new Date('2024/01/25'),
+        ...categoriesRandDates[1],
         isArchived: false,
         name: 'category-1',
         todos: [
             {
                 id: generateUUID(),
-                createdDate: new Date('2024/01/26'),
-                updatedDate: new Date('2024/01/27'),
-                deadline: '---',
+                ...getTodoRandDates(categoriesRandDates[1].createdDate),
                 status: '---',
                 priority: '---',
                 isArchived: false,
@@ -122,9 +106,7 @@ export const storedCategories: CategoryType[] = [
             },
             {
                 id: generateUUID(),
-                createdDate: new Date('2024/01/28'),
-                updatedDate: new Date('2024/01/29'),
-                deadline: '---',
+                ...getTodoRandDates(categoriesRandDates[1].createdDate),
                 status: '---',
                 priority: '---',
                 isArchived: false,
@@ -133,9 +115,7 @@ export const storedCategories: CategoryType[] = [
             },
             {
                 id: generateUUID(),
-                createdDate: new Date('2024/02/01'),
-                updatedDate: new Date('2024/02/02'),
-                deadline: '---',
+                ...getTodoRandDates(categoriesRandDates[1].createdDate),
                 status: '---',
                 priority: '---',
                 isArchived: true,
@@ -146,16 +126,13 @@ export const storedCategories: CategoryType[] = [
     },
     {
         id: generateUUID(),
-        createdDate: new Date('2024/01/24'),
-        updatedDate: new Date('2024/01/25'),
+        ...categoriesRandDates[2],
         isArchived: false,
         name: 'category-2category-2category-2category-2category-2category-2category-2category-2category-2category-2',
         todos: [
             {
                 id: generateUUID(),
-                createdDate: new Date('2024/01/26'),
-                updatedDate: new Date('2024/01/27'),
-                deadline: '---',
+                ...getTodoRandDates(categoriesRandDates[2].createdDate),
                 status: '---',
                 priority: '---',
                 isArchived: false,
@@ -164,9 +141,7 @@ export const storedCategories: CategoryType[] = [
             },
             {
                 id: generateUUID(),
-                createdDate: new Date('2024/01/28'),
-                updatedDate: new Date('2024/01/29'),
-                deadline: '---',
+                ...getTodoRandDates(categoriesRandDates[2].createdDate),
                 status: '---',
                 priority: '---',
                 isArchived: false,
@@ -175,9 +150,7 @@ export const storedCategories: CategoryType[] = [
             },
             {
                 id: generateUUID(),
-                createdDate: new Date('2024/02/01'),
-                updatedDate: new Date('2024/02/02'),
-                deadline: '---',
+                ...getTodoRandDates(categoriesRandDates[2].createdDate),
                 status: '---',
                 priority: '---',
                 isArchived: true,
@@ -188,16 +161,13 @@ export const storedCategories: CategoryType[] = [
     },
     {
         id: generateUUID(),
-        createdDate: new Date('2024/01/24'),
-        updatedDate: new Date('2024/01/25'),
+        ...categoriesRandDates[3],
         isArchived: false,
         name: 'category-3',
         todos: [
             {
                 id: generateUUID(),
-                createdDate: new Date('2024/01/26'),
-                updatedDate: new Date('2024/01/27'),
-                deadline: '---',
+                ...getTodoRandDates(categoriesRandDates[3].createdDate),
                 status: '---',
                 priority: '---',
                 isArchived: false,
@@ -206,9 +176,7 @@ export const storedCategories: CategoryType[] = [
             },
             {
                 id: generateUUID(),
-                createdDate: new Date('2024/01/28'),
-                updatedDate: new Date('2024/01/29'),
-                deadline: '---',
+                ...getTodoRandDates(categoriesRandDates[3].createdDate),
                 status: '---',
                 priority: '---',
                 isArchived: false,
@@ -217,9 +185,7 @@ export const storedCategories: CategoryType[] = [
             },
             {
                 id: generateUUID(),
-                createdDate: new Date('2024/02/01'),
-                updatedDate: new Date('2024/02/02'),
-                deadline: '---',
+                ...getTodoRandDates(categoriesRandDates[3].createdDate),
                 status: '---',
                 priority: '---',
                 isArchived: true,
@@ -230,16 +196,13 @@ export const storedCategories: CategoryType[] = [
     },
     {
         id: generateUUID(),
-        createdDate: new Date('2024/01/24'),
-        updatedDate: new Date('2024/01/25'),
+        ...categoriesRandDates[4],
         isArchived: true,
         name: 'category-4',
         todos: [
             {
                 id: generateUUID(),
-                createdDate: new Date('2024/01/26'),
-                updatedDate: new Date('2024/01/27'),
-                deadline: '---',
+                ...getTodoRandDates(categoriesRandDates[4].createdDate),
                 status: '---',
                 priority: '---',
                 isArchived: false,
@@ -248,9 +211,7 @@ export const storedCategories: CategoryType[] = [
             },
             {
                 id: generateUUID(),
-                createdDate: new Date('2024/01/28'),
-                updatedDate: new Date('2024/01/29'),
-                deadline: '---',
+                ...getTodoRandDates(categoriesRandDates[4].createdDate),
                 status: '---',
                 priority: '---',
                 isArchived: false,
@@ -259,9 +220,7 @@ export const storedCategories: CategoryType[] = [
             },
             {
                 id: generateUUID(),
-                createdDate: new Date('2024/02/01'),
-                updatedDate: new Date('2024/02/02'),
-                deadline: '---',
+                ...getTodoRandDates(categoriesRandDates[4].createdDate),
                 status: '---',
                 priority: '---',
                 isArchived: true,
@@ -272,16 +231,13 @@ export const storedCategories: CategoryType[] = [
     },
     {
         id: generateUUID(),
-        createdDate: new Date('2024/01/24'),
-        updatedDate: new Date('2024/01/25'),
+        ...categoriesRandDates[5],
         isArchived: false,
         name: 'category-5',
         todos: [
             {
                 id: generateUUID(),
-                createdDate: new Date('2024/01/26'),
-                updatedDate: new Date('2024/01/27'),
-                deadline: '---',
+                ...getTodoRandDates(categoriesRandDates[5].createdDate),
                 status: '---',
                 priority: '---',
                 isArchived: false,
@@ -290,9 +246,7 @@ export const storedCategories: CategoryType[] = [
             },
             {
                 id: generateUUID(),
-                createdDate: new Date('2024/01/28'),
-                updatedDate: new Date('2024/01/29'),
-                deadline: '---',
+                ...getTodoRandDates(categoriesRandDates[5].createdDate),
                 status: '---',
                 priority: '---',
                 isArchived: false,
@@ -301,9 +255,7 @@ export const storedCategories: CategoryType[] = [
             },
             {
                 id: generateUUID(),
-                createdDate: new Date('2024/02/01'),
-                updatedDate: new Date('2024/02/02'),
-                deadline: '---',
+                ...getTodoRandDates(categoriesRandDates[5].createdDate),
                 status: '---',
                 priority: '---',
                 isArchived: true,
@@ -314,16 +266,13 @@ export const storedCategories: CategoryType[] = [
     },
     {
         id: generateUUID(),
-        createdDate: new Date('2024/01/24'),
-        updatedDate: new Date('2024/01/25'),
+        ...categoriesRandDates[6],
         isArchived: true,
         name: 'category-6',
         todos: [
             {
                 id: generateUUID(),
-                createdDate: new Date('2024/01/26'),
-                updatedDate: new Date('2024/01/27'),
-                deadline: '---',
+                ...getTodoRandDates(categoriesRandDates[6].createdDate),
                 status: '---',
                 priority: '---',
                 isArchived: false,
@@ -332,9 +281,7 @@ export const storedCategories: CategoryType[] = [
             },
             {
                 id: generateUUID(),
-                createdDate: new Date('2024/01/28'),
-                updatedDate: new Date('2024/01/29'),
-                deadline: '---',
+                ...getTodoRandDates(categoriesRandDates[6].createdDate),
                 status: '---',
                 priority: '---',
                 isArchived: false,
@@ -343,9 +290,7 @@ export const storedCategories: CategoryType[] = [
             },
             {
                 id: generateUUID(),
-                createdDate: new Date('2024/02/01'),
-                updatedDate: new Date('2024/02/02'),
-                deadline: '---',
+                ...getTodoRandDates(categoriesRandDates[7].createdDate),
                 status: '---',
                 priority: '---',
                 isArchived: true,
@@ -356,16 +301,13 @@ export const storedCategories: CategoryType[] = [
     },
     {
         id: generateUUID(),
-        createdDate: new Date('2024/01/24'),
-        updatedDate: new Date('2024/01/25'),
+        ...categoriesRandDates[7],
         isArchived: true,
         name: 'category-7',
         todos: [
             {
                 id: generateUUID(),
-                createdDate: new Date('2024/01/26'),
-                updatedDate: new Date('2024/01/27'),
-                deadline: '---',
+                ...getTodoRandDates(categoriesRandDates[7].createdDate),
                 status: '---',
                 priority: '---',
                 isArchived: false,
@@ -374,9 +316,7 @@ export const storedCategories: CategoryType[] = [
             },
             {
                 id: generateUUID(),
-                createdDate: new Date('2024/01/28'),
-                updatedDate: new Date('2024/01/29'),
-                deadline: '---',
+                ...getTodoRandDates(categoriesRandDates[7].createdDate),
                 status: '---',
                 priority: '---',
                 isArchived: false,
@@ -385,9 +325,7 @@ export const storedCategories: CategoryType[] = [
             },
             {
                 id: generateUUID(),
-                createdDate: new Date('2024/02/01'),
-                updatedDate: new Date('2024/02/02'),
-                deadline: '---',
+                ...getTodoRandDates(categoriesRandDates[7].createdDate),
                 status: '---',
                 priority: '---',
                 isArchived: true,
@@ -398,16 +336,13 @@ export const storedCategories: CategoryType[] = [
     },
     {
         id: generateUUID(),
-        createdDate: new Date('2024/01/24'),
-        updatedDate: new Date('2024/01/25'),
+        ...categoriesRandDates[8],
         isArchived: false,
         name: 'category-8',
         todos: [
             {
                 id: generateUUID(),
-                createdDate: new Date('2024/01/26'),
-                updatedDate: new Date('2024/01/27'),
-                deadline: '---',
+                ...getTodoRandDates(categoriesRandDates[8].createdDate),
                 status: '---',
                 priority: '---',
                 isArchived: false,
@@ -416,9 +351,7 @@ export const storedCategories: CategoryType[] = [
             },
             {
                 id: generateUUID(),
-                createdDate: new Date('2024/01/28'),
-                updatedDate: new Date('2024/01/29'),
-                deadline: '---',
+                ...getTodoRandDates(categoriesRandDates[8].createdDate),
                 status: '---',
                 priority: '---',
                 isArchived: false,
@@ -427,9 +360,7 @@ export const storedCategories: CategoryType[] = [
             },
             {
                 id: generateUUID(),
-                createdDate: new Date('2024/02/01'),
-                updatedDate: new Date('2024/02/02'),
-                deadline: '---',
+                ...getTodoRandDates(categoriesRandDates[8].createdDate),
                 status: '---',
                 priority: '---',
                 isArchived: true,
@@ -440,16 +371,13 @@ export const storedCategories: CategoryType[] = [
     },
     {
         id: generateUUID(),
-        createdDate: new Date('2024/01/24'),
-        updatedDate: new Date('2024/01/25'),
+        ...categoriesRandDates[9],
         isArchived: false,
         name: 'category-9',
         todos: [
             {
                 id: generateUUID(),
-                createdDate: new Date('2024/01/26'),
-                updatedDate: new Date('2024/01/27'),
-                deadline: '---',
+                ...getTodoRandDates(categoriesRandDates[9].createdDate),
                 status: '---',
                 priority: '---',
                 isArchived: false,
@@ -459,9 +387,7 @@ export const storedCategories: CategoryType[] = [
             },
             {
                 id: generateUUID(),
-                createdDate: new Date('2024/01/28'),
-                updatedDate: new Date('2024/01/29'),
-                deadline: '---',
+                ...getTodoRandDates(categoriesRandDates[9].createdDate),
                 status: '---',
                 priority: '---',
                 isArchived: false,
@@ -470,9 +396,7 @@ export const storedCategories: CategoryType[] = [
             },
             {
                 id: generateUUID(),
-                createdDate: new Date('2024/02/01'),
-                updatedDate: new Date('2024/02/02'),
-                deadline: '---',
+                ...getTodoRandDates(categoriesRandDates[9].createdDate),
                 status: '---',
                 priority: '---',
                 isArchived: true,
@@ -484,16 +408,13 @@ export const storedCategories: CategoryType[] = [
     },
     {
         id: generateUUID(),
-        createdDate: new Date('2024/01/24'),
-        updatedDate: new Date('2024/01/25'),
+        ...categoriesRandDates[10],
         isArchived: false,
         name: 'category-10',
         todos: [
             {
                 id: generateUUID(),
-                createdDate: new Date('2024/01/26'),
-                updatedDate: new Date('2024/01/27'),
-                deadline: '---',
+                ...getTodoRandDates(categoriesRandDates[10].createdDate),
                 status: '---',
                 priority: '---',
                 isArchived: false,
@@ -502,9 +423,7 @@ export const storedCategories: CategoryType[] = [
             },
             {
                 id: generateUUID(),
-                createdDate: new Date('2024/01/28'),
-                updatedDate: new Date('2024/01/29'),
-                deadline: '---',
+                ...getTodoRandDates(categoriesRandDates[10].createdDate),
                 status: '---',
                 priority: '---',
                 isArchived: false,
@@ -513,9 +432,7 @@ export const storedCategories: CategoryType[] = [
             },
             {
                 id: generateUUID(),
-                createdDate: new Date('2024/02/01'),
-                updatedDate: new Date('2024/02/02'),
-                deadline: '---',
+                ...getTodoRandDates(categoriesRandDates[10].createdDate),
                 status: '---',
                 priority: '---',
                 isArchived: true,

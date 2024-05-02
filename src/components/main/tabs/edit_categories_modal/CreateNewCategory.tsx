@@ -77,8 +77,8 @@ export const useCreateNewCategory = () => {
     const dispatchUpdateCategories = (data: DataType, now: Date) => {
         const templateTodo: TodoType = {
             id: generateUUID(),
-            createdDate: now,
-            updatedDate: now,
+            createdDate: now.toISOString(),
+            updatedDate: now.toISOString(),
             deadline: notSet,
             status: notSet,
             priority: notSet,
@@ -90,8 +90,8 @@ export const useCreateNewCategory = () => {
 
         const newTodos: CategoryType = {
             id: generateUUID(),
-            createdDate: now,
-            updatedDate: now,
+            createdDate: now.toISOString(),
+            updatedDate: now.toISOString(),
             isArchived: false,
             name: data.category_name,
             todos: [templateTodo],

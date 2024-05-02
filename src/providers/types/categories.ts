@@ -17,15 +17,13 @@ export type PriorityLiteralsType = typeof priorityLiterals;
 export type StatusUnionType = (typeof statusLiterals)[number];
 export type PriorityUnionType = (typeof priorityLiterals)[number];
 
-export type DeadlineType = { date: Date; use_time: boolean } | NotSetType;
+export type DeadlineType = { date: string; use_time: boolean } | NotSetType;
 
-/**
- * Represents a todo item.
- */
+
 export interface TodoType {
     id: string;
-    createdDate: Date;
-    updatedDate: Date;
+    createdDate: string;
+    updatedDate: string;
     deadline: DeadlineType;
     status: StatusUnionType;
     priority: PriorityUnionType;
@@ -38,8 +36,8 @@ export interface TodoType {
 export interface CategoryType {
     id: string;
     // isActive: boolean;
-    createdDate: Date;
-    updatedDate: Date;
+    createdDate: string;
+    updatedDate: string;
     isArchived: boolean;
     name: string;
     todos: TodoType[];

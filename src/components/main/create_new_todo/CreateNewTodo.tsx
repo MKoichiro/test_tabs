@@ -42,8 +42,8 @@ import { defaultValues, statusOptions, priorityOptions, placeholders } from './F
 interface InputDataType {
     title?: string;
     detail?: string;
-    deadlineDate?: Date;
-    deadlineTime?: Date;
+    deadlineDate?: string;
+    deadlineTime?: string;
     status?: StatusUnionType;
     priority?: PriorityUnionType;
 }
@@ -89,10 +89,11 @@ export const useCreateNewTodo = () => {
     // 2. newTodo を categories に追加
     const addNewTodo = (inputData: InputDataType) => {
         const formattedDeadline = toSaveDeadline(inputData.deadlineDate, inputData.deadlineTime);
+        const nowDateISOStr = new Date().toISOString();
         const newTodo: TodoType = {
             id: generateUUID(),
-            createdDate: new Date(),
-            updatedDate: new Date(),
+            createdDate: nowDateISOStr,
+            updatedDate: nowDateISOStr,
             status: inputData.status || '---',
             deadline: formattedDeadline,
             priority: inputData.priority || '---',

@@ -8,6 +8,7 @@ import react from '@vitejs/plugin-react-swc';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
+/** @type {import('vite').UserConfig} */
 export default defineConfig({
     plugins: [
         // tsconfig.jsonのpathsで設定したpath aliasを読み込む
@@ -22,12 +23,16 @@ export default defineConfig({
         //     '@': path.resolve(__dirname, 'src'),
         // },
     },
+    // root: path.resolve(__dirname, './'),
+    // base: './',
     // ここでの指定は、本番ビルド時の設定になる、開発時はviteによって最適化されているので特に指定しなくても問題ない。
     build: {
         // bundle.jsとindex.htmlの出力先に関する設定
         outDir: path.resolve(__dirname, 'dist'),
+        emptyOutDir: true,
+        // outDir: 'dist',
         rollupOptions: {
-            input: path.resolve(__dirname, 'src/index.tsx'),
+            input: path.resolve(__dirname, './index.html'), // 公式に明示されていないが、index.tsxを指定してしまうと、distにindex.htmlが出力されない。
             output: {
                 entryFileNames: 'js/bundle.js',
             },
@@ -48,12 +53,4 @@ export default defineConfig({
         // ブラウザを自動で開く
         open: true,
     },
-    // scssを使う場合
-    // css: {
-    //     preprocessorOptions: {
-    //         scss: {
-    //             additionalData: `@import "src/styles/variables.scss";`,
-    //         },
-    //     },
-    // },
 });

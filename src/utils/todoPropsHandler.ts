@@ -1,8 +1,6 @@
 import { TodoType, DeadlineType, notSet } from '../providers/types/categories';
 import { getFormattedDate, getFormattedTime } from './dateFormatter';
 import DOMPurify from 'dompurify';
-// const marked = require('marked');
-// import marked from 'marked';
 import * as marked from 'marked';
 
 // 完了済みか確認
@@ -13,7 +11,8 @@ const checkIsCompleted = (todo: TodoType) => {
 const checkIsExpired = (todo: TodoType) => {
     const deadline = todo.deadline;
     if (!checkIsCompleted(todo) && deadline !== notSet) {
-        return Date.now() > deadline.date.getTime();
+        const restoredDeadline = new Date(deadline.date);
+        return Date.now() > restoredDeadline.getTime();
     }
     return false;
 };
@@ -22,37 +21,40 @@ const statusCheckers = {
     checkIsExpired,
 };
 
-// deadline を保存用フォーマットへ変換
-const toSaveDeadline = (dateInput: Date | undefined, timeInput: Date | undefined): DeadlineType => {
-    const now = new Date();
-    let deadline: Date;
 
-    if (timeInput) {
-        if (dateInput) {
-            deadline = new Date(`${dateInput} ${timeInput}`);
-        } // 年月日: 有り,   時刻: 有り
-        else {
-            deadline = new Date(`${now.toDateString()} ${timeInput}`);
-        } // 年月日: 無し,   時刻: 有り
-        return { date: deadline, use_time: true };
-    } else if (dateInput) {
-        deadline = new Date(`${dateInput} 23:59:59`);
-        return { date: deadline, use_time: false }; // 年月日: 有り,   時刻: 無し
-    }
+/**
+ * @summary deadline を保存用フォーマット(ISO形式のstring)へ変換
+ * @discussion Sliceのインデックスの意味
+ * ISO: YYYY-MM-DDTHH:mm:ss.sssZ
+ * 0-9が日付, 10は区切り文字'T', 11-23が時刻
+ * 0から10文字取りたいので、slice(0, 10)とする。
+ */
+const toSaveDeadline = (dateInput: string | undefined, timeInput: string | undefined): DeadlineType => {
+    const deadlineDate: string = dateInput || new Date().toISOString().slice(0, 10);
+    const deadlineTime: string = timeInput || '23:59:59.999Z';
 
-    return notSet; // 年月日: 無し,   時刻: 無し
+    let deadline: DeadlineType;
+    (dateInput || timeInput)
+        ? deadline = { date: `${deadlineDate}T${deadlineTime}`, use_time: Boolean(timeInput) }
+        : deadline = notSet;
+
+    return deadline;
 };
-// deadline を表示用フォーマットへ変換
+/**
+ * @summary deadline を表示用フォーマットへ変換
+ */
 const toDispDeadline = (todo: TodoType) => {
     const deadline = todo.deadline;
     if (deadline === notSet) return notSet;
 
     const date = deadline.date;
-    if (deadline.use_time) {
-        return `${getFormattedDate(date)} ${getFormattedTime(date)}`; // 例: 2021/8/1 12:34
-    } else {
-        return `${getFormattedDate(date)}`; // 例: 2021/8/1
-    }
+    let displayFormat: string;
+    
+    deadline.use_time
+        ? displayFormat = `${getFormattedDate(date)} ${getFormattedTime(date)}`     // 例: 2021/8/1 12:34
+        : displayFormat = `${getFormattedDate(date)}`;                              // 例: 2021/8/1
+    
+    return displayFormat;
 };
 const DLFormatters = {
     toSaveDeadline,

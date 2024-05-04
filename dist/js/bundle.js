@@ -745,6 +745,7 @@ var Q=Y,Z=Symbol.for("react.element"),J=Symbol.for("react.fragment"),ee=Object.p
             width: 3.6rem;
             svg {
                 height: 50%;
+                height: 1.6rem;
             }
         }
     }

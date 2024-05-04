@@ -24,7 +24,7 @@ export default defineConfig({
         // },
     },
     // root: path.resolve(__dirname, './'),
-    // base: './',
+    base: '/dist/',
     // ここでの指定は、本番ビルド時の設定になる、開発時はviteによって最適化されているので特に指定しなくても問題ない。
     build: {
         // bundle.jsとindex.htmlの出力先に関する設定

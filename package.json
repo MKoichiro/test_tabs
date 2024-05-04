@@ -6,7 +6,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "vite build && vite preview",
     "serve": "vite preview",
     "i_debug": "echo 'visit to debug: chrome://inspect/#devices' && echo 'copy and add: localhost:9000' && remotedebug_ios_webkit_adapter --port=9000",
     "storybook": "storybook dev -p 6006",

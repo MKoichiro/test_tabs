@@ -166,7 +166,9 @@ export const TodoDetail = forwardRef<HTMLElement, TodoDetailProps>(({ todo }, re
                     />
                 </section>
 
-                <InfoTable todo={todo} />
+                <div className='table-container'>
+                    <InfoTable todo={todo} />
+                </div>
             </div>
         </StyledSection>
     );
@@ -184,6 +186,19 @@ const StyledSection = styled.section<StyledSectionType>`
     height: ${(props) => (props.$isOpen ? `${props.$height}px` : '0')};
     transition: height 500ms;
     contain: paint;
+
+    .table-container {
+        height: 9.6rem;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        max-width: 75%;
+        margin-left: auto;
+        @media (width < 600px) {
+            height: 6.4rem;
+            max-width: 100%;
+        }
+    }
 
     .detail-container {
         h1 {

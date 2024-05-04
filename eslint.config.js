@@ -64,11 +64,12 @@ const tsConfig = tsEslint.config(
         languageOptions: {
             parser: tsEslint.parser,
             parserOptions: {
-                project: './tsconfig.json', // rootから近いtsconfig.jsonを参照。tsconfig.jsonが複数ある場合には、明示的に指定しておく。
+                project: './tsconfig.json', // trueはrootから近いtsconfig.jsonを参照。tsconfig.jsonが複数ある場合には、明示的に指定しておく。
             },
         },
         rules: {
             'no-console': 'off',
+            '@typescript-eslint/no-unused-vars': 'warn',
         },
     },
 
@@ -98,7 +99,7 @@ const reactConfig = {
     rules: {
         'react/jsx-uses-react': 'error',
         'react/jsx-uses-vars': 'error',
-        'react/no-unused-state': 'error',
+        'react/no-unused-state': 'warn',
     },
     // ... others are omitted for brevity
 };

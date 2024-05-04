@@ -81,8 +81,14 @@ const useTodoHeader = (todo: TodoType) => {
     const dispatch = useDispatch();
 
     // 'double clickで編集' の hooks
-    const { inEditing, inputRef, handleDoubleClick, handleSubmit, handleChange, handleBlur } =
-        useImmediateEditable('todo', todo);
+    const {
+        inEditing,
+        inputRef,
+        handleDoubleClick,
+        handleSubmit,
+        handleChange,
+        handleBlur
+    } = useImmediateEditable({target: todo, targetProperty: 'title'});
 
     // todo の各 property を取得
     const { title, isOpen } = todo;
@@ -184,6 +190,18 @@ export const TodoHeader = ({ todo, attributes, listeners }: TodoHeaderProps) => 
                             onBlur={handleBlur}
                         />
                     </form>
+                    {/* <IEForm
+                        formProps={{ onSubmit: handleSubmit }}
+                        handleSubmit={handleSubmit}
+                    >
+                        <IEInput
+                            type="text"
+                            value={title}
+                            inputRef={inputRef}
+                            handleChange={handleChange}
+                            handleBlur={handleBlur}
+                        />
+                    </IEForm> */}
                 </div>
             )}
 

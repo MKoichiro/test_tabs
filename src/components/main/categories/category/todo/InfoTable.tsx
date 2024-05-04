@@ -10,11 +10,11 @@
  */
 
 /* --- react/styled-components --- */
-import React from 'react';
-import styled from 'styled-components';
+import React, { ChangeEvent, useEffect, useRef, useState } from 'react';
+import styled, { css } from 'styled-components';
 
 /* --- types --------------------- */
-import { TodoType } from '../../../../../providers/types/categories';
+import { TodoType, priorityLiterals, statusLiterals } from '../../../../../providers/types/categories';
 
 /* --- utils --------------------- */
 import { DLFormatters, statusCheckers } from '../../../../../utils/todoPropsHandler';
@@ -22,6 +22,10 @@ import { getFormattedDate } from '../../../../../utils/dateFormatter';
 
 /* --- dev ----------------------- */
 import { isDebugMode } from '../../../../../utils/adminDebugMode';
+import { useImmediateEditable } from '../../../../../functions/immediateEditable/Hooks';
+import { useCoexistSingleDoubleClickHandler } from '../../../../../functions/coexist_single_double_click_handler/Hooks';
+
+const displayMoreInfo = false;
 
 // === TYPE =========================================================== //
 /**
@@ -47,6 +51,141 @@ const getFormattedInfo = (todo: TodoType) => {
         updatedDate: getFormattedDate(todo.updatedDate),
     };
 };
+
+// order of columns
+const DISPLAY_ORDER = ['deadline', 'status', 'priority', 'created', 'updated'];
+// waiting time for double click
+const CLICK_DELAY = 200;
+// get index of active column
+const getActiveIdx = (e: React.MouseEvent): number => {
+    const targetCell = (e.target as HTMLElement).closest('th, td');
+    if (!targetCell) return -1;
+
+    // key will be got like following: 'info-head priority' -> 'priority', 'info-value priority' -> 'priority'
+    const classNames = targetCell.className.split(' ');
+    const key = classNames.filter(className => DISPLAY_ORDER.includes(className))[0];
+
+    return DISPLAY_ORDER.indexOf(key);
+};
+
+const useInfoTable = (todo: TodoType) => {
+
+    const [activeIdx, setActiveIdx] = useState<number | undefined>(undefined);
+
+    const deadlineIE = useImmediateEditable({target: todo, targetProperty: 'deadline'});
+    const statusIE = useImmediateEditable({target: todo, targetProperty: 'status'});
+    const priorityIE = useImmediateEditable({target: todo, targetProperty: 'priority'});
+    const inEditingStates = [deadlineIE.inEditing, statusIE.inEditing, priorityIE.inEditing];
+
+    // handleOutsideClickは、よく使うのでhooks化するべきかも
+    const tableRef = useRef<HTMLTableElement>(null);
+    const handleOutsideClick = (e: MouseEvent) => {
+        if (tableRef.current && !tableRef.current.contains(e.target as Node)) setActiveIdx(undefined);
+    };
+    useEffect(() => {
+        activeIdx !== undefined
+        ? document.addEventListener('mousedown', handleOutsideClick)
+        : document.removeEventListener('mousedown', handleOutsideClick); // cleanup
+    }, [activeIdx]);
+
+    const toggleActiveKey = (e: React.MouseEvent): void => {
+        const newIdx = getActiveIdx(e);
+        if (activeIdx === newIdx  && !inEditingStates[activeIdx]) {
+            setActiveIdx(undefined);
+        } else {
+            setActiveIdx(newIdx);
+        }
+    };
+    const activateKey = (e: React.MouseEvent): void => {
+        const newIdx = getActiveIdx(e);
+        if (activeIdx !== newIdx) setActiveIdx(newIdx);
+    };
+
+    const handleDeadlineDoubleClick = (e: React.MouseEvent) => {
+        activateKey(e);
+        deadlineIE.handleDoubleClick();
+    };
+    const handleStatusDoubleClick = (e: React.MouseEvent) => {
+        activateKey(e);
+        statusIE.handleDoubleClick();
+    };
+    const handlePriorityDoubleClick = (e: React.MouseEvent) => {
+        activateKey(e);
+        priorityIE.handleDoubleClick();
+    };
+    const handleDeadlineClick = useCoexistSingleDoubleClickHandler({
+        handlers: {
+            single: toggleActiveKey,
+            double: handleDeadlineDoubleClick,
+        },
+        delay: CLICK_DELAY,
+    });
+    const handleStatusClick = useCoexistSingleDoubleClickHandler({
+        handlers: {
+            single: toggleActiveKey,
+            double: handleStatusDoubleClick,
+        },
+        delay: CLICK_DELAY,
+    });
+    const handlePriorityClick = useCoexistSingleDoubleClickHandler({
+        handlers: {
+            single: toggleActiveKey,
+            double: handlePriorityDoubleClick,
+        },
+        delay: CLICK_DELAY,
+    });
+
+    const handleDeadlineBlur = () => {
+        deadlineIE.handleBlur();
+        setActiveIdx(undefined);
+    };
+    const handleStatusBlur = () => {
+        statusIE.handleBlur();
+        setActiveIdx(undefined);
+    };
+    const handlePriorityBlur = () => {
+        priorityIE.handleBlur();
+        setActiveIdx(undefined);
+    };
+
+    const handleDeadlineChange = (e: ChangeEvent<HTMLInputElement>) => {
+        deadlineIE.handleChange(e);
+        if (deadlineIE.inputRef && deadlineIE.inputRef.current) {
+            deadlineIE.inputRef.current.blur();
+        }
+    }
+    const handleStatusChange = (e: ChangeEvent<HTMLSelectElement>) => {
+        statusIE.handleChange(e);
+        if (statusIE.selectRef && statusIE.selectRef.current) {
+            statusIE.selectRef.current.blur();
+        }
+    }
+    const handlePriorityChange = (e: ChangeEvent<HTMLSelectElement>) => {
+        priorityIE.handleChange(e);
+        if (priorityIE.selectRef && priorityIE.selectRef.current) {
+            priorityIE.selectRef.current.blur();
+        }
+    }
+
+
+    return {
+        deadlineIE,
+        statusIE,
+        priorityIE,
+        handleDeadlineClick,
+        handleStatusClick,
+        handlePriorityClick,
+        handleDeadlineBlur,
+        handleStatusBlur,
+        handlePriorityBlur,
+        handleDeadlineChange,
+        handleStatusChange,
+        handlePriorityChange,
+        tableRef,
+        ...getFormattedInfo(todo),
+        activeIdx,
+    };
+}
 // ======================================================= FUNCTION === //
 
 // === COMPONENT ====================================================== //
@@ -64,8 +203,20 @@ const getFormattedInfo = (todo: TodoType) => {
  * @category Component
  */
 export const InfoTable = ({ todo }: InfoTableProps) => {
-
     const {
+        deadlineIE,
+        statusIE,
+        priorityIE,
+        handleDeadlineClick,
+        handleStatusClick,
+        handlePriorityClick,
+        handleDeadlineBlur,
+        handleStatusBlur,
+        handlePriorityBlur,
+        handleDeadlineChange,
+        handleStatusChange,
+        handlePriorityChange,
+        tableRef,
         id,
         isExpired,
         isCompleted,
@@ -76,15 +227,30 @@ export const InfoTable = ({ todo }: InfoTableProps) => {
         priority,
         isArchived,
         isOpen,
-    } = getFormattedInfo(todo);
+        activeIdx,
+    } = useInfoTable(todo);
 
     return (
-        <StyledTable $isDev={isDebugMode}>
+        <StyledTable $isDev={isDebugMode} ref={tableRef}>
             <thead className="info-heads-container">
                 <tr className="info-heads">
-                    <th
-                        className="info-head"
+                    <StyledTh
+                        $isActive={activeIdx === 0}
+                        className="info-head deadline"
                         children="deadline"
+                        onClick={handleDeadlineClick}
+                    />
+                    <StyledTh
+                        $isActive={activeIdx === 1}
+                        className="info-head status"
+                        children="status"
+                        onClick={handleStatusClick}
+                    />
+                    <StyledTh
+                        $isActive={activeIdx === 2}
+                        className="info-head priority"
+                        children="priority"
+                        onClick={handlePriorityClick}
                     />
                     <th
                         className="info-head"
@@ -94,15 +260,7 @@ export const InfoTable = ({ todo }: InfoTableProps) => {
                         className="info-head"
                         children="updated"
                     />
-                    <th
-                        className="info-head"
-                        children="status"
-                    />
-                    <th
-                        className="info-head"
-                        children="priority"
-                    />
-                    {isDebugMode && (
+                    {(isDebugMode && displayMoreInfo) && (
                         <>
                             <th
                                 className="dev-th info-head"
@@ -130,10 +288,65 @@ export const InfoTable = ({ todo }: InfoTableProps) => {
             </thead>
             <tbody className="info-values-container">
                 <tr className="info-values">
-                    <td
-                        className="info-value"
-                        children={deadline}
-                    />
+                    <StyledTd
+                        $isActive={activeIdx === 0}
+                        className="info-value deadline"
+                        onClick={handleDeadlineClick}
+                    >
+                        {deadlineIE.inEditing ? (
+                            <form onSubmit={deadlineIE.handleSubmit}>
+                                <input
+                                    type="date"
+                                    ref={deadlineIE.inputRef}
+                                    defaultValue={deadline}
+                                    onChange={handleDeadlineChange}
+                                    onBlur={handleDeadlineBlur}
+                                />
+                            </form>
+                        ) : (
+                            <span children={deadline} />
+                        )}
+                    </StyledTd>
+                    <StyledTd
+                        $isActive={activeIdx === 1}
+                        className="info-value status"
+                        onClick={handleStatusClick}
+                    >
+                        {statusIE.inEditing ? (
+                            <form onSubmit={statusIE.handleSubmit}>
+                                <select
+                                    ref={statusIE.selectRef}
+                                    defaultValue={status}
+                                    onChange={handleStatusChange}
+                                    onBlur={handleStatusBlur}
+                                >
+                                    {statusLiterals.map(option => <option key={option} defaultValue={option} children={option} /> )}
+                                </select>
+                            </form>
+                        ) : (
+                            <span children={status} />
+                        )}
+                    </StyledTd>
+                    <StyledTd
+                        $isActive={activeIdx === 2}
+                        className="info-value priority"
+                        onClick={handlePriorityClick}
+                    >
+                        {priorityIE.inEditing ? (
+                            <form onSubmit={priorityIE.handleSubmit}>
+                                <select
+                                    ref={priorityIE.selectRef}
+                                    defaultValue={priority}
+                                    onChange={handlePriorityChange}
+                                    onBlur={handlePriorityBlur}
+                                >
+                                    {priorityLiterals.map(option => <option key={option} defaultValue={option} children={option} /> )}
+                                </select>
+                            </form>
+                        ) : (
+                            <span children={priority} />
+                            )}
+                    </StyledTd>
                     <td
                         className="info-value"
                         children={createdDate}
@@ -142,15 +355,7 @@ export const InfoTable = ({ todo }: InfoTableProps) => {
                         className="info-value"
                         children={updatedDate}
                     />
-                    <td
-                        className="info-value"
-                        children={status}
-                    />
-                    <td
-                        className="info-value"
-                        children={priority}
-                    />
-                    {isDebugMode && (
+                    {(isDebugMode && displayMoreInfo) && (
                         <>
                             <td
                                 className="dev-td info-value"
@@ -183,44 +388,108 @@ export const InfoTable = ({ todo }: InfoTableProps) => {
 
 // === STYLE ========================================================= //
 const StyledTable = styled.table<{ $isDev: boolean }>`
-    /* margin: 0 1.6rem; */
-    margin-left: auto;
-    border-collapse: collapse;
-    /* padding: 1.6rem; */
+    /* reset --- */
+    th, td {
+        padding: 0;
+        display: block;
+    }
+    user-select: none;
+    /* --- reset */
+    /* dev --- */
     width: ${({ $isDev }) => ($isDev ? '100%' : '50%')};
-
-    .dev-th {
-        background: #ddd;
+    .dev-th, .dev-td {
+        outline: 1px solid #ddd;
     }
-    .dev-td {
-        background: #eee;
-    }
+    /* --- dev */
 
+
+    width: 100%;
+    height: 100%;
+    margin-left: auto;
+    border-collapse: collapse; // cell 間の border が2重にならず1本にまとまる
+
+
+    thead, tbody {
+        height: 50%;
+    }
     tr {
+        height: 100%;
+        width: 100%;
         display: flex;
-        padding: 0 0.8rem;
     }
-    th,
-    td {
+    thead > tr {
+        // header行は下寄せ
+        align-items: flex-end;
+    }
+    tbody > tr {
+        // value行は上寄せ
+        align-items: flex-start;
+    }
+    th, td {
         flex: 1;
-        border: 1px solid #aaa;
-        padding: 0.8rem 0;
-        text-align: center;
+        height: 67%;
+        font-size: 1.4rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #999;
     }
-
-    thead.info-heads-container {
-        /* background: #ddd; */
-        tr.info-heads {
-            th.info-head {
-            }
-        }
+    th {
+        border-bottom: 1px solid #000;
     }
+`;
 
-    tbody.info-values-container {
-        tr.info-values {
-            td.info-value {
-            }
+const StyledTh = styled.th<{$isActive: boolean}>`
+    ${({ $isActive }) => getActiveStyles($isActive)}
+    border-top: ${({ $isActive }) => ($isActive ? '1px solid #000' : '1px solid transparent')};
+    border-left: ${({ $isActive }) => ($isActive ? '1px solid #000' : '1px solid transparent')};
+    transition: min-height 300ms, border-top-color 1000ms, border-left-color 1000ms, color 1000ms;
+`;
+const StyledTd = styled.td<{$isActive: boolean}>`
+    ${({ $isActive }) => getActiveStyles($isActive)}
+    border-bottom: ${({ $isActive }) => ($isActive ? '1px solid #000' : '1px solid transparent')};
+    border-right: ${({ $isActive }) => ($isActive ? '1px solid #000' : '1px solid transparent')};
+    transition: min-height 300ms, border-bottom-color 1000ms, border-right-color 1000ms, color 1000ms;
+
+    form {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        height: 100%;
+        input, select {
+            user-select: none;
+            width: 100%;
+            height: 100%;
+            font-size: 1.4rem;
+            padding: 0;
+            border: 1px solid #000;
+            border-radius: 0;
+            outline: 0;
+            background-color: transparent;
         }
     }
 `;
+
+const getActiveStyles = ($isActive: boolean) => css`
+    cursor: pointer;
+    font-size: ${$isActive ? '1.6rem' : '1.4rem'};
+    min-height: ${$isActive ? '85%' : '67%'};
+    tr > & {
+        // 詳細度を1 point 上げるためにセレクタを指定
+        color: ${$isActive ? '#000' : '#999'};
+    }
+`;
 // ========================================================= STYLE === //
+
+
+// memo: React.MouseEvent と MouseEvent の違い
+// そもそも'MouseEvent'には二種類存在する。
+// 1. 'MouseEvent': これはブラウザネイティブのAPIから提供されている型定義で、Reactのイベントとは関係ない。
+// 2. 'React.MouseEvent': これはReactが提供している型定義。
+
+// 使い分け
+// 1. 'MouseEvent': vanilla.js の add(/remove)EventListener に渡す関数の型定義として使う。
+// 2. 'React.MouseEvent': JSX の 例えば onClick などのReactのイベントハンドラに渡す関数の型定義として使う。
+// 混同すると、これらは相互に互換性がないため、エラーが発生する。
+

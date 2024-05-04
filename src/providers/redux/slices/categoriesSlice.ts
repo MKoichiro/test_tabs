@@ -57,9 +57,11 @@ const categories = createSlice({
 
         // Todoより深層の更新
 
-        // [非推奨]
-        // 汎用的な分todoをdeep copyなどして編集し、丸ごと渡す必要があるため、面倒だしメモリ効率も悪い
-        // 基本的にupdateTodoPropsを使う。
+        /**
+         * 汎用的な分todoをdeep copyなどして編集し、丸ごと渡す必要があるため、面倒だしメモリ効率も悪い
+         * 基本的にupdateTodoPropsを使う。
+         * @deprecated
+         */
         updateTodo: (state, action: PayloadAction<{ updatedTodo: TodoType }>) => {
             const { updatedTodo } = action.payload;
             const currentCategory = getCurrentCategory(state);

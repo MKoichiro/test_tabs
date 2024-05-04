@@ -80,7 +80,7 @@ export const useActiveCategory = ({ activeCategory }: ActiveCategoryProps) => {
     };
 
     return {
-        ...useImmediateEditable('category', activeCategory),
+        ...useImmediateEditable({ target: activeCategory, targetProperty: 'name' }),
         ...rest,
         style,
     };

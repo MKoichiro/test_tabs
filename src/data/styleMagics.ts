@@ -12,7 +12,7 @@ export const $contentsWidth: ContentsWidthType = {
     sp: 90,
 };
 
-export const getCurrentDevice = () => {
+export const getCurrentDevice = (): 'pc' | 'tb' | 'sp' => {
     if (innerWidth > 1024) {
         return 'pc';
     } else if (innerWidth > 600) {

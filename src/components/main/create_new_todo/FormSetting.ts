@@ -41,7 +41,7 @@
 
 import { notSet, priorityLiterals, statusLiterals } from '../../../providers/types/categories';
 /* --- dev ----------------------- */
-import { isDebugMode } from '../../../utils/adminDebugMode';
+// import { isDebugMode } from '../../../utils/adminDebugMode';
 
 // status/priority の <option/> に渡す選択肢を用意
 // 現状横流ししているだけ、保守性のため記述しておく。
@@ -61,7 +61,7 @@ export const defaultValues = {
 
 // placeholder 属性として渡す値
 export const placeholders = {
-    title: '例) スーパーでお買い物',
+    title: '例) スーパーで買い物',
     detail: '例) 牛乳、卵、パン、トイレットペーパー',
     date: 'yyyy-mm-dd',
     time: 'hh:mm',

@@ -8,7 +8,7 @@
  */
 
 /* --- react/styled-components --- */
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import styled from 'styled-components';
 
 /* --- child components ---------- */
@@ -32,6 +32,8 @@ import { useForm } from 'react-hook-form';
 
 /* --- settings ------------------ */
 import { defaultValues, statusOptions, priorityOptions, placeholders } from './FormSetting';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faPlus } from '@fortawesome/free-solid-svg-icons';
 
 /* --- dev ----------------------- */
 // import { isDebugMode } from '../../../utils/adminDebugMode';
@@ -62,6 +64,7 @@ export const useCreateNewTodo = () => {
         register,
         handleSubmit,
         formState: { errors },
+        resetField,
     } = useForm({ mode: 'onChange' });
     // set up element refs
     const titleRef = useRef<HTMLInputElement | null>(null);
@@ -110,6 +113,7 @@ export const useCreateNewTodo = () => {
     const executeSubmit = (inputData: InputDataType) => {
         formInitializer(); // 1. form の初期化
         addNewTodo(inputData); // 2. newTodo を categories に追加
+        resetField("title", {keepError: false}); // 3. react-hook-form の form をリセット(エラーメッセージの表示など、これをしないと「エラーで拒絶→正常な入力でsubmit」の次回以降の入力時、フォーカスしただけでエラーメッセージが表示されてしまう)
     };
     // ------------------------------------------ submit で実行 --- //
 
@@ -123,6 +127,8 @@ export const useCreateNewTodo = () => {
         priorityRef,
         statusRef,
         executeSubmit,
+        errors,
+        resetField,
     };
 }
 
@@ -150,13 +156,24 @@ export const CreateNewTodo = () => {
         timeRef,
         priorityRef,
         statusRef,
-        executeSubmit
+        executeSubmit,
+        errors,
+        resetField,
     } = useCreateNewTodo();
+
+    const [isFieldsetBlurred, setIsFieldsetBlurred] = useState(false);
+    const handleFocus = () => {
+        setIsFieldsetBlurred(false);
+    };
+    const handleBlur = () => {
+        setIsFieldsetBlurred(true);
+        resetField("title", {keepError: false});
+    };
 
 
     return (
         <StyledForm onSubmit={handleSubmit(executeSubmit)}>
-            <fieldset>
+            <fieldset className="parent-field" onBlur={handleBlur} onFocus={handleFocus}>
                 <legend className="form-legend">CREATE NEW TODO</legend>
 
                 <fieldset className="child-field">
@@ -166,12 +183,14 @@ export const CreateNewTodo = () => {
                             className={'parts title'}
                             partsFor={'title'}
                             as={'input'}
-                            feature={'optional'}
+                            feature={'required'}
                             register={register}
                             partsRef={titleRef}
                             defaultValue={defaultValues.title}
                             inputType={'text'}
                             placeholder={placeholders.title}
+                            error={errors.title}
+                            isFieldsetBlurred={isFieldsetBlurred}
                         />
 
                         <FormParts
@@ -183,6 +202,7 @@ export const CreateNewTodo = () => {
                             partsRef={detailRef}
                             defaultValue={defaultValues.detail}
                             placeholder={placeholders.detail}
+                            isFieldsetBlurred={isFieldsetBlurred}
                         />
                     </div>
                 </fieldset>
@@ -200,6 +220,7 @@ export const CreateNewTodo = () => {
                             defaultValue={defaultValues.date}
                             inputType={'date'}
                             placeholder={placeholders.date}
+                            isFieldsetBlurred={isFieldsetBlurred}
                         />
                         <span className="form-separator"></span>
                         <FormParts
@@ -212,6 +233,7 @@ export const CreateNewTodo = () => {
                             defaultValue={defaultValues.time}
                             inputType={'time'}
                             placeholder={placeholders.time}
+                            isFieldsetBlurred={isFieldsetBlurred}
                         />
                     </div>
                 </fieldset>
@@ -229,6 +251,7 @@ export const CreateNewTodo = () => {
                             defaultValue={'---'}
                             selectOptions={statusOptions}
                             placeholder={placeholders.status}
+                            isFieldsetBlurred={isFieldsetBlurred}
                         />
                         <span className="form-separator"></span>
                         <FormParts
@@ -241,12 +264,16 @@ export const CreateNewTodo = () => {
                             defaultValue={'---'}
                             selectOptions={priorityOptions}
                             placeholder={placeholders.priority}
+                            isFieldsetBlurred={isFieldsetBlurred}
                         />
                     </div>
                 </fieldset>
 
                 <div className="btn-submit-container">
-                    <button>+ ADD</button>
+                    <button>
+                        <FontAwesomeIcon icon={faPlus} />
+                        ADD
+                    </button>
                 </div>
             </fieldset>
         </StyledForm>
@@ -269,34 +296,31 @@ const StyledForm = styled.form`
         border: none;
         border-radius: 0;
         outline: none;
-        padding: 0.4rem 0.8rem;
-        font-size: 1.8rem;
-        @media (width < 600px) {
-            font-size: 16px;
-        }
+
+    }
+    input[type='date'],
+    input[type='time'] {
+        -webkit-appearance: none;
     }
     /* reset */
 
-    fieldset {
-        margin: 0 0.8rem;
+    .parent-field {
+        margin: 0 .8rem;
 
         legend {
             font-weight: bold;
         }
 
         .form-legend {
-            font-size: 2rem;
+            font-size: 2.4rem;
         }
 
         .child-field {
             margin-top: 1.6rem;
             .child-legend {
-                font-size: 1.8rem;
-                margin-bottom: 0.8rem;
-                /* font-weight: bold; */
-                &::after {
-                    /* content: ':'; */
-                }
+                font-size: 2rem;
+                margin-bottom: .8rem;
+
             }
 
             /* common */
@@ -304,17 +328,31 @@ const StyledForm = styled.form`
                 display: flex;
                 .parts {
                     display: flex;
-                    gap: 0.8rem;
-                    /* align-items: center; */
+                    gap: .8rem;
+                    @media (width < 600px) {
+                        flex-direction: column;
+                        gap: 0.4rem;
+                    }
 
                     label {
                         display: flex;
                         height: fit-content;
+                        align-items: center;
                         gap: 0.4rem;
                         .feature {
-                            font-size: 0.8em;
-                            padding: 0 0.6rem;
-                            background: lightgray;
+                            height: 100%;
+                            font-size: .9em;
+                            padding: .2rem .6rem;
+                        }
+                        .feature.optional {
+                            font-weight: bold;
+                            letter-spacing: 0.1rem;
+                            border: 0.15rem solid black;
+                        }
+                        .feature.required {
+                            font-weight: bold;
+                            letter-spacing: 0.1rem;
+                            border: 0.15rem solid tomato;
                         }
                         .label-txt {
                             flex: 1;
@@ -325,6 +363,7 @@ const StyledForm = styled.form`
                             }
                             font-size: 1.8rem;
                             @media (width < 600px) {
+                                justify-content: flex-start;
                                 font-size: 16px;
                             }
                         }
@@ -334,7 +373,23 @@ const StyledForm = styled.form`
                         input,
                         textarea,
                         select {
-                            width: 100%;
+                            min-width: 100%;
+                            color: var(--color-txt-black-1);
+                            background-color: var(--color-bg-white-2);
+                            padding: 0 .8rem;
+                            font-size: 1.8rem;
+                            @media (width < 600px) {
+                                font-size: 16px;
+                            }
+                        }
+                        input,
+                        select {
+                            height: 3.2rem;
+                            line-height: 3.2rem;
+                        }
+                        textarea {
+                            min-height: 6.4rem;
+                            line-height: 1.6;
                         }
                         .error-message {
                             text-align: right;
@@ -409,8 +464,16 @@ const StyledForm = styled.form`
                 margin-left: auto;
                 padding: 0.4rem 0.8rem;
                 border: 0.15rem solid black;
+                .fa-plus {
+                    margin-right: 0.8rem;
+                }
+            }
+            button:active {
+                scale: .9;
+                transition: scale 50ms;
             }
         }
     }
+
 `;
 // ========================================================= STYLE === //

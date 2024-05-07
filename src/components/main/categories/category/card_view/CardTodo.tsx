@@ -18,6 +18,8 @@ import { TodoType } from '../../../../../providers/types/categories';
 import { ScrollableElm } from '../../../../../providers/types/modal';
 import { useCardScroll } from '../../../../../providers/context_api/CardView';
 import { getCardCarouselStyles } from '../../../../../providers/context_api/CardView';
+import { useDispatch } from '../../../../../providers/redux/store';
+import { setActiveIdx } from '../../../../../providers/redux/slices/cardSlice';
 
 /* --- dev ----------------------- */
 // import { isDebugMode } from '../../../../../utils/adminDebugMode';
@@ -53,10 +55,12 @@ interface CardTodoProps {
 export const useCardTodo = ({ todo, idx }: Omit<CardTodoProps, 'addScrollableRef'>) => {
     // contexts
     const { isActive, handleScroll } = useCardScroll(idx);
+    const dispatch = useDispatch();
 
     // handlers
     const handleClick = () => {
         handleScroll(idx, 'smooth');
+        dispatch(setActiveIdx(idx));
     };
 
     // styles

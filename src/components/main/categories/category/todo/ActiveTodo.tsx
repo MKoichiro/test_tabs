@@ -47,6 +47,7 @@ import { faTrashCan, faCircleInfo, faCheck } from '@fortawesome/free-solid-svg-i
 /* --- dnd-kit ------------------- */
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
+import { getCurrentDevice } from '../../../../../data/styleMagics';
 
 /* --- dev ----------------------- */
 // import { isDebugMode } from '../../../../../utils/adminDebugMode';
@@ -56,12 +57,31 @@ const contentsWidth = vw2px(getCurrentContentsVw());
 const deleteBtnWidth = contentsWidth * 0.5;
 
 // slidable
-const slidableParams: SlidableParamsType = {
+let slidableParams: SlidableParamsType = {
     SLIDABLE_LENGTH: deleteBtnWidth,
-    GRADIENT_THRESHOLD: 0.5,
-    TOGGLE_THRESHOLD: 0.2,
+    GRADIENT_THRESHOLD: 0.3,
+    TOGGLE_THRESHOLD: 50,
     COMPLEMENT_ANIME_DURATION: 200,
+    SLIDABLE_PLAY: 20,
 };
+switch (getCurrentDevice()) {
+    case 'pc': {
+        break;
+    }
+    case 'tb': {
+        break;
+    }
+    case 'sp': {
+        slidableParams.GRADIENT_THRESHOLD = .3;
+        break;
+    }
+}
+// const slidableParams: SlidableParamsType = {
+//     SLIDABLE_LENGTH: deleteBtnWidth,
+//     GRADIENT_THRESHOLD: 0.5,
+//     TOGGLE_THRESHOLD: 0.2,
+//     COMPLEMENT_ANIME_DURATION: 200,
+// };
 // ===================================== CONSTANT Against RENDERING === //
 
 // === TYPE =========================================================== //
@@ -88,7 +108,7 @@ interface ActiveTodoProps {
  * const { attributes, listeners, setNodeRef, style, isDragging } = useDNDItem(todoId);
  * ```
  */
-export const useDNDItem = (todoId: string) => {
+export const useDndItem = (todoId: string) => {
     const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
         id: todoId,
     });
@@ -124,7 +144,7 @@ export const useDNDItem = (todoId: string) => {
 export const useActiveTodo = ({todo, activeTodoIdx}: ActiveTodoProps) => {
     const todoId = todo.id;
     // dnd-kit
-    const { attributes, listeners, setNodeRef, style, isDragging } = useDNDItem(todoId);
+    const { attributes, listeners, setNodeRef, style, isDragging } = useDndItem(todoId);
 
     // contexts
     const dispatch = useDispatch();

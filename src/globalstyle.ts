@@ -8,6 +8,13 @@ const GlobalStyle = createGlobalStyle`
     --eng-ff-1:                            Arial, 'Helvetica Neue', Helvetica, sans-serif;
     --eng-ff-2: 'Times NewRoman', 'Times', Arial, 'Helvetica Neue', Helvetica, sans-serif;
     --eng-ff-3: 'Economica'              , Arial, 'Helvetica Neue', Helvetica, sans-serif;
+
+    
+    --color-txt-black-1: #444;
+
+    --color-bg-white-1: #e1e1e1;
+    --color-bg-white-2: #f9f9f9;
+
     --contents-width: ${`${$contentsWidth.pc}vw`};
     --border-weight: .15rem;
     @media (width < 600px) {
@@ -25,11 +32,17 @@ const GlobalStyle = createGlobalStyle`
 
   * { box-sizing: border-box }
     
-  html { font-size: 62.5%;}
+  html {
+    /* overflow-y: hidden; */
+    font-size: 62.5%;
+  }
 
   body {
-    background: #e9e9e9;
-    color: #3e3e3e;
+    /* overflow-y: hidden; */
+    /* position: fixed; */
+    /* width: 100%; */
+    background: var(--color-bg-white-1);
+    color: var(--color-txt-black-1);
     font-family: Economica, Arial, 'Helvetica Neue', Helvetica, 'Hiragino Kaku Gothic Pro', 'ヒラギノ角ゴ Pro W3', Meiryo, メイリオ, '游ゴシック Medium', 'Yu Gothic Medium', '游ゴシック体', 'Yu Gothic', YuGothic, 'MS PGothic', Osaka, arial, sans-serif;
     /* reset */
     margin: 0; padding: 0;

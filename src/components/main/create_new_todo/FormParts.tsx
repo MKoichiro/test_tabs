@@ -15,7 +15,7 @@ import styled from 'styled-components';
 import { StatusLiteralsType, PriorityLiteralsType } from '../../../providers/types/categories';
 
 /* --- react-hook-form ----------- */ /* の型 */
-import { FieldValues, UseFormRegister } from 'react-hook-form';
+import { FieldError, FieldErrorsImpl, FieldValues, Merge, UseFormRegister } from 'react-hook-form';
 
 /* --- dev ----------------------- */
 // import { isDebugMode } from '../../../utils/adminDebugMode';
@@ -34,18 +34,29 @@ interface FormPartsProps {
     inputType?: 'text' | 'date' | 'time';
     placeholder?: string;
     selectOptions?: StatusLiteralsType | PriorityLiteralsType;
+    error?: FieldError | Merge<FieldError, FieldErrorsImpl<any>>;
+    isFieldsetBlurred: boolean;
 }
 // =========================================================== TYPE === //
 
 // === FUNCTION ======================================================= //
 export const useFormParts = ({partsFor, register}: Pick<FormPartsProps, 'partsFor' | 'register'>) => {
 
-
-    const { ref, ...rest } = register(partsFor); // 第二引数でrequired などを設定することもできる
-
     const htmlFor = partsFor;
     const id = partsFor;
     const labelTxt = partsFor.charAt(0).toUpperCase() + partsFor.slice(1); // 例: 'Title', ::after で ':' を付与
+
+    let options;
+    switch (partsFor) {
+        case 'title': {
+            options = { required: "Please enter a title" };
+            break;
+        }
+        default: {
+            break;
+        }
+    }
+    const { ref, ...rest } = register(partsFor, options);
 
     return {
         id,
@@ -70,15 +81,21 @@ export const FormParts = (props: FormPartsProps) => {
         inputType,
         placeholder,
         selectOptions,
+        error,
+        isFieldsetBlurred,
     } = props;
 
     const { id, htmlFor, labelTxt, ref, rest } = useFormParts({partsFor, register});
+
+    const toFirstUpperCase = (str: string) => {
+        return str.charAt(0).toUpperCase() + str.slice(1);
+    };
 
 
     return (
         <StyledDiv className={className}>
             <label htmlFor={htmlFor}>
-                <span className="feature">{feature}</span>
+                <span className={feature + ' feature'}>{toFirstUpperCase(feature)}</span>
                 <span className="label-txt">{labelTxt}</span>
             </label>
 
@@ -128,8 +145,10 @@ export const FormParts = (props: FormPartsProps) => {
                         ))}
                     </select>
                 )}
-
-                <p className="error-message">error message</p>
+    
+                <p className="error-message">
+                    {(error && !isFieldsetBlurred) && error.message as React.ReactNode}
+                </p>
             </div>
         </StyledDiv>
     );
@@ -147,6 +166,12 @@ const StyledDiv = styled.div`
     input[type='date']::-webkit-calendar-picker-indicator {
         /* カレンダーピッカーのスタイリング */
         /* background: transparent; */
+    }
+    .error-message {
+        margin-top: 0.2rem;
+        color: tomato;
+        height: 1.6rem;
+        line-height: 1.6rem;
     }
 `;
 // ========================================================= STYLE === //

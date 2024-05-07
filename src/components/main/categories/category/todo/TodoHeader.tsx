@@ -1,12 +1,9 @@
 /**
  * @summary title を表示する todo のヘッダーコンポーネント。
- *
  * @issues
  * - なし
- *
  * @copilot
  * - なし
- *
  * @module
  */
 
@@ -190,18 +187,6 @@ export const TodoHeader = ({ todo, attributes, listeners }: TodoHeaderProps) => 
                             onBlur={handleBlur}
                         />
                     </form>
-                    {/* <IEForm
-                        formProps={{ onSubmit: handleSubmit }}
-                        handleSubmit={handleSubmit}
-                    >
-                        <IEInput
-                            type="text"
-                            value={title}
-                            inputRef={inputRef}
-                            handleChange={handleChange}
-                            handleBlur={handleBlur}
-                        />
-                    </IEForm> */}
                 </div>
             )}
 
@@ -306,6 +291,7 @@ const StyledHeader = styled.header<StyledHeaderType>`
             width: 3.6rem;
             svg {
                 height: 50%;
+                height: 1.6rem;
             }
         }
     }

@@ -67,12 +67,12 @@ const Context = createContext<ContextType>({
 export const CardView: FC<CardViewType> = (props) => {
     const { children } = props;
 
-    // --- Manegiment Items --------------------------------------- //
+    // --- Management Items --------------------------------------- //
     // 1. refs: nodes
     const carouselContainerRef = useRef<HTMLUListElement | null>(null);
     // 2. ref: style factors
     const styleFactors = useRef<StyleMagicsType>(initialStyleFactors);
-    // --------------------------------------- Manegiment Items --- //
+    // --------------------------------------- Management Items --- //
 
     // --- resize-event ------------------------------------------- //
     useEffect(() => {

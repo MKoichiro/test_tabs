@@ -51,9 +51,10 @@ const btnsContainerWidthPx = vw2px(btnsContainerWidthVw);
 // slidable 関連
 const slidableParams: SlidableParamsType = {
     SLIDABLE_LENGTH: btnsContainerWidthPx,
-    GRADIENT_THRESHOLD: 1 / 2,
+    GRADIENT_THRESHOLD: .2,
     TOGGLE_THRESHOLD: btnsContainerWidthPx / 2,
     COMPLEMENT_ANIME_DURATION: 300,
+    SLIDABLE_PLAY: 30,
 };
 // ===================================== CONSTANT Against RENDERING === //
 

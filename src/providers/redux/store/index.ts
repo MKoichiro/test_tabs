@@ -3,12 +3,14 @@ import { useDispatch, useSelector } from 'react-redux';
 import categoriesReducer from '../slices/categoriesSlice';
 import modalsReducer from '../slices/modalSlice';
 import cardReducer from '../slices/cardSlice';
+import windowSizeReducer from '../slices/window_size_slice/windowSizeSlice';
 
 export const store = configureStore({
     reducer: {
         categories: categoriesReducer,
         modals: modalsReducer,
         card: cardReducer,
+        windowSize: windowSizeReducer,
     },
 });
 
@@ -22,6 +24,7 @@ const useAppSelector = useSelector.withTypes<RootState>();
 export const useCategoriesSelector = () => useAppSelector((state) => state.categories);
 export const useModalsSelector = () => useAppSelector((state) => state.modals);
 export const useCardSelector = () => useAppSelector((state) => state.card);
+export const useWindowSizeSelector = () => useAppSelector((state) => state.windowSize);
 
 export const useAppDispatch = useDispatch.withTypes<AppDispatch>();
 // useAppDispatchをuseDispatchとしてexport

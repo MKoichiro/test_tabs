@@ -1,51 +1,16 @@
-/*
-# Slidable Components
-
-### <Slidabele/>
-  - render as: div > div
-  - description: スライド可能なコンテナを提供するコンポーネント。
-### <SlidableMain/>
-  - render as: div
-  - description: 通常時に表示させたいコンテナの子要素。
-### <SlidableHidden/>
-  - render as: div
-  - description: スライドで横から表示させたいコンテナの子要素。
-  
-### USAGE:
-```
-<StyledLi key={  }>
-
-    <Slidable slidableParams={slidableParams}>
-    
-        <SlidableMain className='slidable-main-contents' >
-          <div>
-            something you want to show.
-          </div>
-        </SlidableMain>
-
-        <SlidableHidden className='btns-container' slidableLength={slidableParams.SLIDABLE_LENGTH}>
-          <button>
-            some btns you want to show when slided.
-          </button>
-        </SlidableHidden>
-
-    </Slidable>
-
-</StyledLi>
-```
-*/
-
 /* --- react/styled-components --- */
-import React, { FC } from 'react';
+import React, { PropsWithChildren } from 'react';
 import styled from 'styled-components';
 /* --- hooks --------------------- */
 import { useSlidable } from './Hooks';
 /* --- types --------------------- */
-import { SlidableType, SlidableMainType, SlidableHiddenType } from './Types';
+import { SlidableProps } from './types';
+import { SlidableMainProps, SlidableHiddenProps } from './types';
 
 // === COMPONENT ====================================================== //
 // 1. Slidable
-export const Slidable: FC<SlidableType> = (props) => {
+export const Slidable = (props: PropsWithChildren<SlidableProps>) => {
+
     const { children, className, slidableParams } = props;
 
     const { handleTouchStart, handleTouchMove, handleTouchEnd, containerRef, translateX } =
@@ -59,17 +24,18 @@ export const Slidable: FC<SlidableType> = (props) => {
             onTouchEnd={handleTouchEnd}
         >
             <StyledSlidableContainer
-                className={className}
+                className={`slidable-container ${className ? className : ''}`}
                 ref={containerRef}
                 $translateX={translateX}
-                children={children}
-            />
+            >
+                {children}
+            </StyledSlidableContainer>
         </StyledSlidable>
     );
 };
 
 // 2. SlidableMain
-export const SlidableMain: FC<SlidableMainType> = (props) => {
+export const SlidableMain = (props: PropsWithChildren<SlidableMainProps>) => {
     const { children, className } = props;
 
     return (
@@ -81,7 +47,7 @@ export const SlidableMain: FC<SlidableMainType> = (props) => {
 };
 
 // 3. SlidableHidden
-export const SlidableHidden: FC<SlidableHiddenType> = (props) => {
+export const SlidableHidden = (props: PropsWithChildren<SlidableHiddenProps>) => {
     const { children, className, slidableLength } = props;
 
     return (

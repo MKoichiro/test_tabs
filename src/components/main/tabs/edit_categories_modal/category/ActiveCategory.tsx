@@ -38,7 +38,7 @@ import {
     SlidableMain,
     SlidableHidden,
 } from '../../../../../functions/slidable/Components';
-import { SlidableParamsType } from '../../../../../functions/slidable/Types';
+import { SlidableParamsType } from '../../../../../functions/slidable/types';
 /* immediateEditable */
 import { useImmediateEditable } from '../../../../../functions/immediateEditable/Hooks';
 

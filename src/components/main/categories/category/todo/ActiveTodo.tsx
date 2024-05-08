@@ -35,7 +35,7 @@ import { useCardViewOpener } from '../../../../../providers/context_api/CardView
 /* --- types --------------------- */
 import { TodoType } from '../../../../../providers/types/categories';
 // slidable
-import { SlidableParamsType } from '../../../../../functions/slidable/Types';
+import { SlidableParams } from '../../../../../functions/slidable/types';
 
 /* --- utils --------------------- */
 import { vw2px, getCurrentContentsVw } from '../../../../../utils/converters';
@@ -57,12 +57,12 @@ const contentsWidth = vw2px(getCurrentContentsVw());
 const deleteBtnWidth = contentsWidth * 0.5;
 
 // slidable
-let slidableParams: SlidableParamsType = {
+let slidableParams: SlidableParams = {
     SLIDABLE_LENGTH: deleteBtnWidth,
     GRADIENT_THRESHOLD: 0.3,
     TOGGLE_THRESHOLD: 50,
     COMPLEMENT_ANIME_DURATION: 200,
-    SLIDABLE_PLAY: 20,
+    SLIDABLE_PLAY: 100,
 };
 switch (getCurrentDevice()) {
     case 'pc': {
@@ -76,12 +76,7 @@ switch (getCurrentDevice()) {
         break;
     }
 }
-// const slidableParams: SlidableParamsType = {
-//     SLIDABLE_LENGTH: deleteBtnWidth,
-//     GRADIENT_THRESHOLD: 0.5,
-//     TOGGLE_THRESHOLD: 0.2,
-//     COMPLEMENT_ANIME_DURATION: 200,
-// };
+
 // ===================================== CONSTANT Against RENDERING === //
 
 // === TYPE =========================================================== //

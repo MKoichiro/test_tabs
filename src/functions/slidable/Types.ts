@@ -1,6 +1,9 @@
-import { ReactNode } from 'react';
+// import { ReactNode } from 'react';
+
+
 
 /**
+ * for hooks args
  * @property SLIDABLE_LENGTH
  *     スライドさせる距離 = 「スライドで現れるコンテンツの幅」を指定
  * @property GRADIENT_THRESHOLD
@@ -15,24 +18,48 @@ import { ReactNode } from 'react';
  *  スワイプ開始時に、実際にスライドするかを判定するまでの'遊び'の幅
  * この値を大きくすると、スライドが始まるまでの感覚が大きくなる一方で、スライド可否の判定が正確になる(入射角に依存しにくくなる)
  */
-export interface SlidableParamsType {
+export interface SlidableParams {
     SLIDABLE_LENGTH: number;
-    GRADIENT_THRESHOLD: number;
-    TOGGLE_THRESHOLD: number;
-    COMPLEMENT_ANIME_DURATION: number;
-    SLIDABLE_PLAY: number;
+    GRADIENT_THRESHOLD?: number;
+    TOGGLE_THRESHOLD?: number;
+    COMPLEMENT_ANIME_DURATION?: number;
+    SLIDABLE_PLAY?: number;
 }
 
-// common
-interface SlidableBaseType {
-    children: ReactNode;
+/**
+ * for hooks args
+ * - when define default values
+ */
+export type SlidableParamsOptionalDefault = Required<Omit<SlidableParams, 'SLIDABLE_LENGTH' | 'TOGGLE_THRESHOLD'>>;
+
+
+/**
+ * for component props
+ * - common
+ */
+interface PropsBase {
+    // children: ReactNode;
     className?: string;
 }
-// each
-export interface SlidableType extends SlidableBaseType {
-    slidableParams: SlidableParamsType;
+
+/**
+ * for component props
+ * - Slidable component
+ */
+export interface SlidableProps extends PropsBase {
+    slidableParams: SlidableParams;
 }
-export interface SlidableMainType extends SlidableBaseType {}
-export interface SlidableHiddenType extends SlidableBaseType {
+
+/**
+ * for component props
+ * - SlidableMain component
+ */
+export type SlidableMainProps = PropsBase;
+
+/**
+ * for component props
+ * - SlidableHidden component
+ */
+export interface SlidableHiddenProps extends PropsBase {
     slidableLength: number;
 }

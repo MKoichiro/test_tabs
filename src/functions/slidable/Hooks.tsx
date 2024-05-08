@@ -1,17 +1,28 @@
-import { useRef, useState, TouchEvent, useEffect } from 'react';
-import { SlidableParamsType } from './Types';
+import React, { useRef, useState, useEffect, CSSProperties, useCallback } from 'react';
+import { SlidableParams } from './types';
+import { applyStyles, removeStyles } from './utils';
+import { defaultValForOptionalParams } from './constants';
+import { useWindowSize } from '../../providers/redux/slices/window_size_slice/hook';
 
 
-export const useSlidable = (params: SlidableParamsType) => {
+
+export const useSlidable = (params: SlidableParams) => {
+
     const {
-        SLIDABLE_LENGTH,
-        GRADIENT_THRESHOLD,
-        TOGGLE_THRESHOLD,
-        COMPLEMENT_ANIME_DURATION,
-        SLIDABLE_PLAY,
+        SLIDABLE_LENGTH, // ← これだけ必須で受け取る、以下はoptionalなのでデフォルト値を設定
+        GRADIENT_THRESHOLD = defaultValForOptionalParams.GRADIENT_THRESHOLD,
+        TOGGLE_THRESHOLD = SLIDABLE_LENGTH / 2,
+        COMPLEMENT_ANIME_DURATION = defaultValForOptionalParams.COMPLEMENT_ANIME_DURATION,
+        SLIDABLE_PLAY = defaultValForOptionalParams.SLIDABLE_PLAY,
     } = params;
 
+    const { inner, client } = useWindowSize(); // selector から取得
+
+
     const containerRef = useRef<HTMLDivElement | null>(null);
+    // scrollBarWidthはrendering間で保持しつつ、resize時に更新。
+    const scrollBarWidthRef = useRef<number>(inner.width - client.width);
+    useEffect(() => { scrollBarWidthRef.current = inner.width - client.width }, [inner.width, client.width]);
 
     const [startPosition, setStartPosition] = useState<{x: number | undefined; y: number | undefined}>({ x: undefined, y: undefined });
     const [scrollY, setScrollY] = useState<number | undefined>(0);
@@ -25,24 +36,25 @@ export const useSlidable = (params: SlidableParamsType) => {
      * アニメーションを一時的に有効化して、開閉の終状態まで補完。補完後はアニメーションを再度無効化。
      * ※ 常時アニメーションを有効化していると、touchmove の度にアニメーションが発生してしまうので必要。
      */
-    const enableAnimation = () => {
+    const enableAnimation = useCallback(() => {
         const container = containerRef.current;
         if (!container) return;
         container.style.transition = `transform ${COMPLEMENT_ANIME_DURATION}ms`;
         setTimeout(() => {
             container.style.transition = 'none';
         }, COMPLEMENT_ANIME_DURATION);
-    }
+    }, [COMPLEMENT_ANIME_DURATION]);
+
 
     // --- Event Handlers: bind to <Slidable> ----------------- //
-    const handleTouchStart = (e: TouchEvent<HTMLDivElement>) => {
+    const handleTouchStart = (e: React.TouchEvent<HTMLDivElement>) => {
         // touch 開始時の各種座標を記録
         const touch = e.touches[0];
         setStartPosition({ x: touch.clientX, y: touch.clientY });
         setScrollY(window.scrollY);
     };
 
-    const handleTouchMove = (e: TouchEvent<HTMLElement>) => {
+    const handleTouchMove = (e: React.TouchEvent<HTMLElement>) => {
         // null check
         if (!startPosition.x || !startPosition.y) return;
 
@@ -68,13 +80,14 @@ export const useSlidable = (params: SlidableParamsType) => {
             }
             setIsAllowed(true);
             // 縦スクロールを禁止。スクロールバーが消える副作用があるので、その幅分だけ body を右にずらす。
-            const scrollBarWidth = window.innerWidth - document.documentElement.clientWidth;
-            Object.assign(document.body.style, {
-                paddingRight: `${scrollBarWidth}px`,
+            // spreadでも書けるが、styleのプロパティ量は大量なので丸ごとコピーするのは気持ちが悪い。
+            const stylesForVerticalScrollBlock: CSSProperties = {
+                paddingRight: `${scrollBarWidthRef.current}px`,
                 position: 'fixed',
                 width: '100%',
                 top: `-${scrollY}px`,
-            });
+            };
+            applyStyles(stylesForVerticalScrollBlock);
         }
 
         // スライド実行（※実際は StyledContainer の transform プロパティに translateX を指定して移動）
@@ -88,7 +101,7 @@ export const useSlidable = (params: SlidableParamsType) => {
      * - 各種スタイルの初期化を行う。
      * - 各種stateの初期化を行う。
      */
-    const handleTouchEnd = (e: TouchEvent<HTMLDivElement>) => {
+    const handleTouchEnd = (e: React.TouchEvent<HTMLDivElement>) => {
         // null check
         if (!startPosition.x || !startPosition.y) return;
 
@@ -108,12 +121,7 @@ export const useSlidable = (params: SlidableParamsType) => {
             }
 
             // style の初期化
-            Object.assign(document.body.style, {
-                paddingRight: '',
-                position: '',
-                width: '',
-                top: '',
-            });
+            removeStyles(['paddingRight', 'position', 'width', 'top']);
             if (scrollY) scrollTo(0, scrollY);
         }
 
@@ -126,17 +134,22 @@ export const useSlidable = (params: SlidableParamsType) => {
     // ------------------------------------- Event Handlers --- //
 
     // slide後にユーザーが別の場所を操作した場合、スライドを閉じる
+
+    const resetSlidedState = useCallback((e: MouseEvent | TouchEvent) => {
+        // iOSでうまく動作させるために、setTimeout で処理を遅延させる。遅延させても特に不自然では無い。
+        setTimeout(() => {
+            if (!isSlided) return;
+            // コンテナ内での発火の場合はスライドを閉じない
+            const invokedIn = (e.target as Element).closest('.slidable-container');
+            if (invokedIn === containerRef.current) return;
+            enableAnimation();
+            setIsSlided(false);
+            setTranslateX(0);
+        }, 100);
+    },[isSlided, enableAnimation]);
+
     useEffect(() => {
         if (!isSlided) return;
-        const resetSlidedState = () => {
-            // iOSでうまく動作させるために、setTimeout で処理を遅延させる。遅延させても特に不自然では無い。
-            setTimeout(() => {
-                if (!isSlided) return;
-                enableAnimation();
-                setIsSlided(false);
-                setTranslateX(0);
-            }, 100);
-        };
 
         // このイベントは、slideで表示されるボタンに付与されうるクリックイベントが発火したのちのバブリングフェーズでの発火となるので、
         // (問題なく、) resetSlidedState が実行される前に、ボタンのクリックイベントが発火する。
@@ -151,6 +164,7 @@ export const useSlidable = (params: SlidableParamsType) => {
             document.removeEventListener('click', resetSlidedState);
             // iOS 用の対応
             document.removeEventListener('touchstart', resetSlidedState);
+
         };
     }, [isSlided]);
 

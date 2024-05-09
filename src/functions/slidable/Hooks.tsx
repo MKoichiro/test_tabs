@@ -88,6 +88,9 @@ export const useSlidable = (params: SlidableParams) => {
                 top: `-${scrollY}px`,
             };
             applyStyles(stylesForVerticalScrollBlock);
+            // overscrollBehavior: 'none' はiOSなど引っ張って更新の挙動のために縦スクロールが効いてしまうのを防ぐ。
+            // がこの追加で少なくともiOSではリスト下部の要素がtouchmoveの時に消えたりついたりちらつく挙動が現れるが、動作にあまり問題はないのでそのまま。
+            document.documentElement.style.overscrollBehavior = 'none';
         }
 
         // スライド実行（※実際は StyledContainer の transform プロパティに translateX を指定して移動）
@@ -122,6 +125,7 @@ export const useSlidable = (params: SlidableParams) => {
 
             // style の初期化
             removeStyles(['paddingRight', 'position', 'width', 'top']);
+            document.documentElement.style.overscrollBehavior = 'auto';
             if (scrollY) scrollTo(0, scrollY);
         }
 

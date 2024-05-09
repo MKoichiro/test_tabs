@@ -347,21 +347,24 @@ const StyledForm = styled.form`
                         .feature.optional {
                             font-weight: bold;
                             letter-spacing: 0.1rem;
-                            border: 0.15rem solid black;
+                            border: var(--border-weight) solid #444;
                         }
                         .feature.required {
+                            background: #444;
+                            color: #f9f9f9;
                             font-weight: bold;
                             letter-spacing: 0.1rem;
-                            border: 0.15rem solid tomato;
+                            border: var(--border-weight) solid #444;
                         }
                         .label-txt {
                             flex: 1;
                             display: flex;
                             justify-content: space-between;
+                            font-weight: bold;
+                            font-size: 1.8rem;
                             &::after {
                                 content: ':';
                             }
-                            font-size: 1.8rem;
                             @media (width < 600px) {
                                 justify-content: flex-start;
                                 font-size: 16px;
@@ -375,7 +378,7 @@ const StyledForm = styled.form`
                         select {
                             min-width: 100%;
                             color: var(--color-txt-black-1);
-                            background-color: var(--color-bg-white-2);
+                            background-color: #efefef;
                             padding: 0 .8rem;
                             font-size: 1.8rem;
                             @media (width < 600px) {

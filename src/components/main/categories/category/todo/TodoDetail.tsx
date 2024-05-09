@@ -267,7 +267,7 @@ const StyledSection = styled.section<StyledSectionType>`
             padding: 0.8rem 1.6rem;
             > div {
                 padding-left: 1.6rem;
-                border-left: 0.15rem solid #777;
+                border-left: var(--border-weight) solid #444;
             }
         }
     }

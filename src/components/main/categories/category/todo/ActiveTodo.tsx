@@ -38,7 +38,7 @@ import { TodoType } from '../../../../../providers/types/categories';
 import { SlidableParams } from '../../../../../functions/slidable/types';
 
 /* --- utils --------------------- */
-import { vw2px, getCurrentContentsVw } from '../../../../../utils/converters';
+// import { vw2px, getCurrentContentsVw } from '../../../../../utils/converters';
 
 /* --- font awesome -------------- */
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -47,22 +47,24 @@ import { faTrashCan, faCircleInfo, faCheck } from '@fortawesome/free-solid-svg-i
 /* --- dnd-kit ------------------- */
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
+import { useWindowSizeSelector } from '../../../../../providers/redux/store';
+import { vw2px } from '../../../../../utils/converters';
 
 /* --- dev ----------------------- */
 // import { isDebugMode } from '../../../../../utils/adminDebugMode';
 
 // === CONSTANT Against RENDERING ===================================== //
-const contentsWidth = vw2px(getCurrentContentsVw());
-const deleteBtnWidth = contentsWidth * 0.5;
+// const contentsWidth = vw2px(getCurrentContentsVw());
+// const deleteBtnWidth = contentsWidth * 0.5;
 
 // slidable
-let slidableParams: SlidableParams = {
-    SLIDABLE_LENGTH: deleteBtnWidth,
-    GRADIENT_THRESHOLD: 0.3,
-    TOGGLE_THRESHOLD: 50,
-    COMPLEMENT_ANIME_DURATION: 200,
-    SLIDABLE_PLAY: 100,
-};
+// let slidableParams: SlidableParams = {
+//     SLIDABLE_LENGTH: deleteBtnWidth,
+//     GRADIENT_THRESHOLD: 0.3,
+//     TOGGLE_THRESHOLD: 50,
+//     COMPLEMENT_ANIME_DURATION: 200,
+//     SLIDABLE_PLAY: 100,
+// };
 
 // ===================================== CONSTANT Against RENDERING === //
 
@@ -125,6 +127,11 @@ export const useDndItem = (todoId: string) => {
  */
 export const useActiveTodo = ({todo, activeTodoIdx}: ActiveTodoProps) => {
     const todoId = todo.id;
+
+    const { contentsWidth } = useWindowSizeSelector();
+    const btnContainerWidth = vw2px(contentsWidth) * .5;
+    const slidableParams: SlidableParams = { SLIDABLE_LENGTH: btnContainerWidth };
+
     // dnd-kit
     const { attributes, listeners, setNodeRef, style, isDragging } = useDndItem(todoId);
 
@@ -165,7 +172,9 @@ export const useActiveTodo = ({todo, activeTodoIdx}: ActiveTodoProps) => {
         /** complete ボタンの click handler */
         handleCompleteBtnClick,
         /** archive ボタンの click handler */
-        handleArchiveBtnClick
+        handleArchiveBtnClick,
+        /** Slidable のパラメータ */
+        slidableParams,
     };
 }
 // ======================================================= FUNCTION === //
@@ -195,7 +204,8 @@ export const ActiveTodo = ({ todo, activeTodoIdx }: ActiveTodoProps) => {
         liRef, 
         handleInfoBtnClick, 
         handleCompleteBtnClick, 
-        handleArchiveBtnClick
+        handleArchiveBtnClick,
+        slidableParams,
      } = useActiveTodo({todo, activeTodoIdx});
 
     return (

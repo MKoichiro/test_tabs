@@ -18,7 +18,7 @@ import { CategoryType } from '../../../../../providers/types/categories';
 import { categoryCommonStyles, CategoryCommonStylesType } from './CategoryCommonStyles';
 
 /* --- utils --------------------- */
-import { vw2px } from '../../../../../utils/converters';
+// import { vw2px } from '../../../../../utils/converters';
 
 /* --- font awesome -------------- */
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -38,25 +38,14 @@ import {
     SlidableMain,
     SlidableHidden,
 } from '../../../../../functions/slidable/Components';
-import { SlidableParamsType } from '../../../../../functions/slidable/types';
+import { SlidableParams } from '../../../../../functions/slidable/types';
 /* immediateEditable */
 import { useImmediateEditable } from '../../../../../functions/immediateEditable/Hooks';
+import { vw2px } from '../../../../../utils/converters';
 
 /* --- dev ----------------------- */
 // import { isDebugMode } from '../../../../../utils/adminDebugMode';
 
-// === CONSTANT Against RENDERING ===================================== //
-const btnsContainerWidthVw = 10;
-const btnsContainerWidthPx = vw2px(btnsContainerWidthVw);
-// slidable 関連
-const slidableParams: SlidableParamsType = {
-    SLIDABLE_LENGTH: btnsContainerWidthPx,
-    GRADIENT_THRESHOLD: .2,
-    TOGGLE_THRESHOLD: btnsContainerWidthPx / 2,
-    COMPLEMENT_ANIME_DURATION: 300,
-    SLIDABLE_PLAY: 30,
-};
-// ===================================== CONSTANT Against RENDERING === //
 
 // === TYPE =========================================================== //
 /**
@@ -73,6 +62,14 @@ interface ActiveCategoryProps {
  * @category Custom Hook
  */
 export const useActiveCategory = ({ activeCategory }: ActiveCategoryProps) => {
+    // slidable 関連
+    const btnsContainerWidthVw = 10;
+    const btnsContainerWidthPx = vw2px(btnsContainerWidthVw);
+    const slidableParams: SlidableParams = {
+        SLIDABLE_LENGTH: btnsContainerWidthPx,
+    };
+
+    // dnd-kit
     const { transform, transition, ...rest } = useSortable({ id: activeCategory.id });
 
     const style = {
@@ -84,6 +81,7 @@ export const useActiveCategory = ({ activeCategory }: ActiveCategoryProps) => {
         ...useImmediateEditable({ target: activeCategory, targetProperty: 'name' }),
         ...rest,
         style,
+        slidableParams,
     };
 };
 // ======================================================= FUNCTION === //
@@ -114,6 +112,7 @@ export const ActiveCategory = ({ activeCategory }: ActiveCategoryProps) => {
         attributes,
         setNodeRef,
         style,
+        slidableParams,
     } = useActiveCategory({ activeCategory });
 
     return (

@@ -4,19 +4,24 @@
 // - 移動距離を算出するために必要なのは、styleFactorと、handleScroll。
 //   よって、styleFactorとhandleScrollを分離できれば、純粋にcarouselのロジックだけを提供するproviderになる気がする。
 //   他でも別種のカルーセルを使用するならば、修正を検討してもいいかもしれない。
+//   追記: styleFactorsを引数で受け取るように変更。styleFactorsは、useWindowSizeSelectorで取得する。
+//         これでひとまず、分離したが、本質的には、移動距離計算ロジックがhandleScroll内部で定義されているのが問題。
+//         よって、移動距離計算ロジック部分は関数として引数で受け取るように変更するとcardView特有の処理を完全に外部化できるだろう。
+//         これを経て、本モジュールは、純粋なカルーセルロジックのproviderにできる。
 
 import React, {
     FC,
     MutableRefObject,
     ReactNode,
     createContext,
+    useCallback,
     useContext,
     useEffect,
     useRef,
     useState,
 } from 'react';
 import { vw2px } from '../../utils/converters';
-import { CardCarouselMagic } from '../../data/styleMagics';
+import { CardCarouselMagic, cardCarouselMagics } from '../../data/styleMagics';
 import { useModalOpener } from './ModalElmsRef';
 import { modalNames } from '../../components/common/modal/settings';
 
@@ -102,13 +107,10 @@ export const CardView: FC<CardViewType> = (props) => {
 // === HOOKS ========================================================== //
 // 1. registerContainer: CardsCarousel で使用。carousel container となる ul 要素のコンポーネントで登録
 export const useCardCarouselRegister = () => {
-    const { /* styleFactors, */ carouselContainerRef } = useContext(Context);
+    const { carouselContainerRef } = useContext(Context);
     const { cardCarouselStyleFactors } = useWindowSizeSelector();
 
-    const registerContainer = () => {
-        // コンポーネント側からも styleFactors を更新できるように。
-        // let styleFactors = cardViewStyleFactors;
-        // if (args) styleFactors = args;
+    const registerContainer =() => {
 
         return {
             adjustedPadding_vw: `0 ${cardCarouselStyleFactors.gap_vw * 2}vw`,
@@ -136,18 +138,21 @@ export const useCardScroll = (idx: number) => {
 // 3. useCardViewOpen: ActiveTodo で使用。card view を開くボタンを含むコンポーネントで使用
 export const useCardViewOpener = () => {
     const { handleScroll } = useContext(Context);
-    const { cardCarouselStyleFactors } = useWindowSizeSelector();
+    const { device } = useWindowSizeSelector();
     const modalName = modalNames.cardCarousel;
     const dispatch = useDispatch();
     const openModal = useModalOpener(modalName);
 
-    const cardViewOpen = (idx: number) => {
+    const cardViewOpen = useCallback((idx: number) => {
+        if (!device) return;
+        const cardCarouselStyleFactors = cardCarouselMagics[device];
+
         // idx 番目の card で modal を開く
         openModal();
         dispatch(setActiveIdx(idx));
         // 'instant' でアニメーション無しでスクロール
         handleScroll(idx, 'instant', cardCarouselStyleFactors);
-    };
+    }, [device]);
 
     return { cardViewOpen };
 };

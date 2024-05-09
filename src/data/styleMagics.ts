@@ -5,8 +5,14 @@ const deviceLiterals = [ 'pc', 'tb', 'sp' ] as const;
 export type DeviceUnion = typeof deviceLiterals[number];
 
 
-export type ContentsWidth = Record<DeviceUnion, number>;
-export const $contentsWidth: ContentsWidth = {
+export type FontSizes = Record<DeviceUnion, number>;
+export const fontSizeRatios: ContentsWidths = {
+    pc: 62.5,
+    tb: 50.0,
+    sp: 35.0,
+};
+export type ContentsWidths = FontSizes;
+export const contentsWidths: ContentsWidths = {
     pc: 70,
     tb: 70,
     sp: 90,

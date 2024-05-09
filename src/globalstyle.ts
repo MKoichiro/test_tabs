@@ -1,5 +1,5 @@
 import { createGlobalStyle } from 'styled-components';
-import { $contentsWidth } from './data/styleMagics';
+import { contentsWidths } from './data/styleMagics';
 
 const GlobalStyle = createGlobalStyle`
 
@@ -15,10 +15,10 @@ const GlobalStyle = createGlobalStyle`
     --color-bg-white-1: #e1e1e1;
     --color-bg-white-2: #f9f9f9;
 
-    --contents-width: ${`${$contentsWidth.pc}vw`};
+    --contents-width: ${`${contentsWidths.pc}vw`};
     --border-weight: .15rem;
     @media (width < 600px) {
-      --contents-width: ${`${$contentsWidth.sp}vw`};
+      --contents-width: ${`${contentsWidths.sp}vw`};
       --border-weight: .1rem;
     }
 

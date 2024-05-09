@@ -15,7 +15,7 @@ import styled from 'styled-components';
 
 /* --- redux --------------------- */
 import { register } from '../../../providers/redux/slices/modalSlice';
-import { useCategoriesSelector, useDispatch } from '../../../providers/redux/store';
+import { useCategoriesSelector, useDispatch, useWindowSizeSelector } from '../../../providers/redux/store';
 
 /* --- providers/contexts -------- */
 import { useModalOpener } from '../../../providers/context_api/ModalElmsRef';
@@ -41,6 +41,11 @@ import { EditCategoriesModal } from './edit_categories_modal/EditCategoriesModal
 // interface TabsProps {}
 // =========================================================== TYPE === //
 
+const styleFactors = {
+    modalBtnWidth: 5,
+    tabMinWidth: 15,
+};
+
 // === FUNCTION ======================================================= //
 /**
  * @param arg - {@link Tabs} コンポーネントが受け取る props をそのまま引数として受け取る。
@@ -58,6 +63,8 @@ export const useTabs = () => {
         dispatch(register(modalName));
     }, []);
 
+    const { tabCarouselStyleFactors } = useWindowSizeSelector();
+
     // contexts
     const { categoriesEntity: categories } = useCategoriesSelector();
     const openModal = useModalOpener(modalName);
@@ -70,6 +77,7 @@ export const useTabs = () => {
         ulRef,
         categories,
         openModal,
+        tabCarouselStyleFactors,
     };
 };
 
@@ -91,10 +99,12 @@ export const useTabs = () => {
  * @category Component
  */
 export const Tabs = () => {
-    const { ulRef, categories, openModal } = useTabs();
+    const { ulRef, categories, openModal, tabCarouselStyleFactors } = useTabs();
+
+    const modalBtnWidth = `${tabCarouselStyleFactors.modalBtnWidth}%`;
 
     return (
-        <StyledNav>
+        <StyledNav $modalBtnWidth={modalBtnWidth}>
             <ul
                 ref={ulRef}
             >
@@ -122,15 +132,17 @@ export const Tabs = () => {
 // ====================================================== COMPONENT === //
 
 // === STYLE ========================================================= //
-const StyledNav = styled.nav`
+const StyledNav = styled.nav<{$modalBtnWidth: string}>`
     margin-top: 3.2rem;
     display: flex;
     align-items: center;
     justify-content: center;
-    padding-left: 1.6rem;
     height: 5rem;
+    @media (width < 600px) {
+        height: 4rem;
+    }
     > ul {
-        width: 62vw;
+        width: 100%;
         display: flex;
         height: 100%;
         overflow-x: auto;
@@ -144,13 +156,13 @@ const StyledNav = styled.nav`
     .separator-tabs {
         display: block;
         height: 100%;
-        background: #fff;
-        width: 3px;
+        background: #444;
+        width: var(--border-weight);
         margin-left: 1.6rem;
     }
     > button {
+        width: ${({ $modalBtnWidth }) => $modalBtnWidth};
         display: block;
-        padding: 0 1.6rem;
     }
 `;
 // ========================================================= STYLE === //

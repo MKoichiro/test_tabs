@@ -398,7 +398,7 @@ const StyledTable = styled.table<{ $isDev: boolean }>`
     /* dev --- */
     width: ${({ $isDev }) => ($isDev ? '100%' : '50%')};
     .dev-th, .dev-td {
-        outline: 1px solid #ddd;
+        outline: var(--border-weight) solid #ddd;
     }
     /* --- dev */
 
@@ -407,10 +407,12 @@ const StyledTable = styled.table<{ $isDev: boolean }>`
     height: 100%;
     margin-left: auto;
     border-collapse: collapse; // cell 間の border が2重にならず1本にまとまる
+    display: flex;
+    flex-direction: column;
 
 
     thead, tbody {
-        height: 50%;
+        flex: 1;
     }
     tr {
         height: 100%;
@@ -418,6 +420,7 @@ const StyledTable = styled.table<{ $isDev: boolean }>`
         display: flex;
     }
     thead > tr {
+        border-bottom: var(--border-weight) solid #444;
         // header行は下寄せ
         align-items: flex-end;
     }
@@ -434,21 +437,26 @@ const StyledTable = styled.table<{ $isDev: boolean }>`
         justify-content: center;
         color: #999;
     }
-    th {
-        border-bottom: 1px solid #000;
-    }
 `;
 
 const StyledTh = styled.th<{$isActive: boolean}>`
     ${({ $isActive }) => getActiveStyles($isActive)}
-    border-top: ${({ $isActive }) => ($isActive ? '1px solid #000' : '1px solid transparent')};
-    border-left: ${({ $isActive }) => ($isActive ? '1px solid #000' : '1px solid transparent')};
+    border-top-width: var(--border-weight);
+    border-top-style: solid;
+    border-top-color: ${({ $isActive }) => ($isActive ? '#444' : 'transparent')};
+    border-left-width: var(--border-weight);
+    border-left-style: solid;
+    border-left-color: ${({ $isActive }) => ($isActive ? '#444' : 'transparent')};
     transition: min-height 300ms, border-top-color 1000ms, border-left-color 1000ms, color 1000ms;
 `;
 const StyledTd = styled.td<{$isActive: boolean}>`
     ${({ $isActive }) => getActiveStyles($isActive)}
-    border-bottom: ${({ $isActive }) => ($isActive ? '1px solid #000' : '1px solid transparent')};
-    border-right: ${({ $isActive }) => ($isActive ? '1px solid #000' : '1px solid transparent')};
+    border-bottom-width: var(--border-weight);
+    border-bottom-style: solid;
+    border-bottom-color: ${({ $isActive }) => ($isActive ? '#444' : 'transparent')};
+    border-right-width: var(--border-weight);
+    border-right-style: solid;
+    border-right-color: ${({ $isActive }) => ($isActive ? '#444' : 'transparent')};
     transition: min-height 300ms, border-bottom-color 1000ms, border-right-color 1000ms, color 1000ms;
 
     form {
@@ -463,7 +471,7 @@ const StyledTd = styled.td<{$isActive: boolean}>`
             height: 100%;
             font-size: 1.4rem;
             padding: 0;
-            border: 1px solid #000;
+            border: var(--border-weight) solid #000;
             border-radius: 0;
             outline: 0;
             background-color: transparent;

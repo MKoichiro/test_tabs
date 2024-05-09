@@ -3,7 +3,7 @@
 // なお、window sizeに依存するstyleでもjsからの参照が無いものはシンプルにcssのメディアクエリで対応する
 
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
-import { BREAK_POINTS, CardCarouselMagic, DeviceUnion, cardCarouselMagics, contentsWidths, fontSizeRatios } from "../../../../data/styleMagics";
+import { BREAK_POINTS, CardCarouselMagic, DeviceUnion, TabCarouselMagic, cardCarouselMagics, contentsWidths, fontSizeRatios, tabCarouselMagics } from "../../../../data/styleMagics";
 
 
 interface WindowSizeState {
@@ -19,8 +19,13 @@ interface WindowSizeState {
   fontSizeRatio: number;
   contentsWidth: number;
   cardCarouselStyleFactors: CardCarouselMagic;
+  tabCarouselStyleFactors: TabCarouselMagic;
 }
 type WindowSizePayload = Pick<WindowSizeState, 'inner' | 'client'>;
+
+
+
+
 
 
 // inner, clientの実際の初期値はApp.tsxで設定
@@ -42,6 +47,10 @@ const initialState: WindowSizeState = {
     activeWidth_vw: 0,
     inactiveMagnification: 0
   },
+  tabCarouselStyleFactors: {
+    modalBtnWidth: 0,
+    tabMinWidth: 0
+  }
 };
 
 
@@ -58,27 +67,32 @@ const windowSizeSlice = createSlice({
       let fontSizeRatio: number;
       let contentsWidth: number;
       let cardCarouselStyleFactors: CardCarouselMagic;
+      let tabCarouselStyleFactors: TabCarouselMagic;
 
       if (inner.width > BREAK_POINTS.pc) {
         device = "pc";
         fontSizeRatio = fontSizeRatios.pc;
         contentsWidth = contentsWidths.pc;
         cardCarouselStyleFactors = cardCarouselMagics.pc;
+        tabCarouselStyleFactors =  tabCarouselMagics.pc;
       } else if (inner.width > BREAK_POINTS.tb) {
         device = "tb";
         fontSizeRatio = fontSizeRatios.tb;
         contentsWidth = contentsWidths.tb;
         cardCarouselStyleFactors = cardCarouselMagics.tb;
+        tabCarouselStyleFactors =  tabCarouselMagics.tb;
       } else {
         device = "sp";
         fontSizeRatio = fontSizeRatios.sp;
         contentsWidth = contentsWidths.sp;
         cardCarouselStyleFactors = cardCarouselMagics.sp;
+        tabCarouselStyleFactors =  tabCarouselMagics.sp;
       }
       state.device = device;
       state.fontSizeRatio = fontSizeRatio;
       state.contentsWidth = contentsWidth;
       state.cardCarouselStyleFactors = cardCarouselStyleFactors;
+      state.tabCarouselStyleFactors = tabCarouselStyleFactors;
     }
   }
 });

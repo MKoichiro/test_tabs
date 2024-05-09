@@ -18,11 +18,12 @@ import React, { RefObject } from 'react';
 import styled from 'styled-components';
 
 /* --- redux --------------------- */
-import { useDispatch, useCategoriesSelector } from '../../../providers/redux/store';
+import { useDispatch, useCategoriesSelector, useWindowSizeSelector } from '../../../providers/redux/store';
 import { switchCategory } from '../../../providers/redux/slices/categoriesSlice';
 
 /* --- utils --------------------- */
 import { vw2px } from '../../../utils/converters';
+import { TabCarouselMagic } from '../../../data/styleMagics';
 
 /* --- dev ----------------------- */
 // import { isDebugMode } from '../../../utils/adminDebugMode';
@@ -34,16 +35,18 @@ import { vw2px } from '../../../utils/converters';
  * @property ulRef - TabsContainer(ul要素)への参照。
  * @category Type of Props
  */
-interface TabType {
+interface TabProps {
     idx: number;
     ulRef: RefObject<HTMLUListElement>;
 }
 // =========================================================== TYPE === //
 
+
+
 // === FUNCTION ======================================================= //
 // 1. useTabSwitcher
 /**
- * @param arg - {@link Tab} コンポーネントが受け取る {@link TabType} 型の props をそのまま引数として受け取る。
+ * @param arg - {@link Tab} コンポーネントが受け取る {@link TabProps} 型の props をそのまま引数として受け取る。
  *
  * @summary タブを切り替えの toggleActive 関数を提供するカスタムフック。このカスタムフックは、{@link useTab} のヘルパーフックとして利用される。
  * @remarks
@@ -58,9 +61,10 @@ interface TabType {
  *
  * @category Custom Hook
  */
-export const useTabSwitcher = ({ idx, ulRef }: TabType) => {
+export const useTabSwitcher = ({ idx, ulRef, styleFactors }: TabProps & { styleFactors: TabCarouselMagic }) => {
     const dispatch = useDispatch();
 
+    const { contentsWidth } = useWindowSizeSelector();
     /**
      * toggleActiveで使うヘルパー関数。
      * TODO: magic number (currentContentWidth, 0.15) は別 module に切り出す。
@@ -75,8 +79,8 @@ export const useTabSwitcher = ({ idx, ulRef }: TabType) => {
         }
 
         /** tab の idx と 非アクティブ時の tab の幅を元に、スクロール位置を計算してスムーズスクロール */
-        const currentContentWidth = vw2px(62);
-        const inactiveTabWidth = currentContentWidth * 0.15;
+        const currentContentWidth = vw2px(contentsWidth);
+        const inactiveTabWidth = currentContentWidth * (1 - styleFactors.modalBtnWidth / 100) * (styleFactors.tabMinWidth / 100);
         const targetCoordinate = inactiveTabWidth * idx;
         container.scrollTo({ left: targetCoordinate, behavior: 'smooth' });
     };
@@ -92,7 +96,7 @@ export const useTabSwitcher = ({ idx, ulRef }: TabType) => {
 
 // 2. useTab
 /**
- * @param arg - {@link Tab} コンポーネントが受け取る {@link TabType} 型の props をそのまま引数として受け取る。
+ * @param arg - {@link Tab} コンポーネントが受け取る {@link TabProps} 型の props をそのまま引数として受け取る。
  * 
  * @category Custom Hook
  * @example
@@ -100,8 +104,11 @@ export const useTabSwitcher = ({ idx, ulRef }: TabType) => {
  * const { isActive, isLastItem, categoryId, categoryName, toggleActive } = useTab({ idx, ulRef });
  * ```
  */
-export const useTab = ({ idx, ulRef }: TabType) => {
+export const useTab = ({ idx, ulRef }: TabProps) => {
     const { activeIdx, categoriesEntity: categories } = useCategoriesSelector();
+    const { tabCarouselStyleFactors: styleFactors } = useWindowSizeSelector();
+    // console.log(idx);
+    // console.log(idx === categories.length - 1);
 
     return {
         isActive: activeIdx === idx,
@@ -112,7 +119,8 @@ export const useTab = ({ idx, ulRef }: TabType) => {
         /** タブに表示するカテゴリー名 */
         categoryName: categories[idx].name,
         /** button 要素の onClick にバインドするハンドラ */
-        toggleActive: useTabSwitcher({ idx, ulRef }).toggleActive,
+        toggleActive: useTabSwitcher({ idx, ulRef, styleFactors }).toggleActive,
+        styleFactors,
     };
 };
 // ======================================================= FUNCTION === //
@@ -131,20 +139,24 @@ export const useTab = ({ idx, ulRef }: TabType) => {
  *
  * @category Component
  */
-export const Tab = (props: TabType) => {
-    const { isActive, isLastItem, categoryId, categoryName, toggleActive } = useTab(props);
+export const Tab = (props: TabProps) => {
+    const { isActive, isLastItem, categoryId, categoryName, toggleActive, styleFactors } = useTab(props);
+    // console.log(isLastItem);
+
+    const tabMinWidth = `${styleFactors.tabMinWidth}%`;
 
     return (
         <StyledLi
             key={categoryId}
             $isActive={isActive}
+            $tabMinWidth={tabMinWidth}
         >
             <button
                 children={categoryName}
                 onClick={toggleActive}
             />
 
-            {isLastItem && <span className="separator" />}
+            {/* {!isLastItem && <span className="separator" />} */}
         </StyledLi>
     );
 };
@@ -153,6 +165,7 @@ export const Tab = (props: TabType) => {
 // === STYLE ========================================================= //
 interface StylePropsType {
     $isActive: boolean;
+    $tabMinWidth: string;
 }
 
 const StyledLi = styled.li<StylePropsType>`
@@ -167,7 +180,7 @@ const StyledLi = styled.li<StylePropsType>`
         max-width: ${({ $isActive }) => ($isActive ? `100%` : '15%')};
 
         height: 100%;
-        min-width: 15%;
+        min-width: ${({ $tabMinWidth }) => $tabMinWidth};
     }
 
     button {
@@ -175,23 +188,25 @@ const StyledLi = styled.li<StylePropsType>`
         width: 100%;
         height: 66.7%;
         padding: 0 0.8rem;
+        letter-spacing: 0.15rem;
 
-        background: ${({ $isActive }) => ($isActive ? '#454e70' : '#ddd')};
-        color: ${({ $isActive }) => ($isActive ? '#fff' : '')};
+        background: ${({ $isActive }) => ($isActive ? '#444' : '')};
+        color: ${({ $isActive }) => ($isActive ? '#f9f9f9' : '')};
         margin-left: 0.4rem;
 
         overflow-x: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
         transition: scale 50ms;
+        border: var(--border-weight) solid #444;
     }
     button:active {
-        scale: 0.9;
+        scale: 0.95;
     }
 
     .separator {
         height: 100%;
-        min-width: 0.15rem;
+        min-width: var(--border-weight);
         margin-left: 0.4rem;
 
         background: #fff;

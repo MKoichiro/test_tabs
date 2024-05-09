@@ -47,6 +47,7 @@ interface TodoDetailProps {
 export const useUnsettledHeightAcc = (isOpen: boolean, changeableTxtContentsState: string) => {
     const [height, setHeight] = useState<number | null>(null);
 
+
     const heightGetterRef = useRef<HTMLDivElement | null>(null);
 
     /**
@@ -57,10 +58,13 @@ export const useUnsettledHeightAcc = (isOpen: boolean, changeableTxtContentsStat
      * そのため、やはりheightGetterRef.currentを含めないと、正常な値が取得できない。
      */
     useEffect(() => {
-        if (heightGetterRef.current) {
-            const newHeight = heightGetterRef.current.getBoundingClientRect().height;
-            setHeight(newHeight);
-        }
+        setTimeout(() => {
+            if (heightGetterRef.current) {
+                const newHeight = heightGetterRef.current.getBoundingClientRect().height;
+                setHeight(newHeight);
+                // console.log('newHeight: ', newHeight);
+            }
+        }, 100); // 謎の値。これがないと高さが取得できない。
     }, [isOpen, changeableTxtContentsState, heightGetterRef.current]);
     return { height, heightGetterRef };
 };
@@ -144,6 +148,8 @@ export const TodoDetail = forwardRef<HTMLElement, TodoDetailProps>(({ todo }, re
         executeModalOpen,
         sanitizedDetail
     } = useTodoDetail({ todo }, ref);
+
+    // console.log('height2: ', height);
 
     return (
         <StyledSection

@@ -55,3 +55,24 @@ export const cardCarouselMagics: CardCarouselMagics = {
         inactiveMagnification: 0.5,
     },
 };
+
+
+export interface TabCarouselMagic {
+    modalBtnWidth: number;
+    tabMinWidth: number;
+}
+export type TabCarouselMagics = Record<DeviceUnion, TabCarouselMagic>;
+export const tabCarouselMagics: TabCarouselMagics = {
+    pc: {
+        modalBtnWidth: 5,
+        tabMinWidth: 15,
+    },
+    tb: {
+        modalBtnWidth: 5,
+        tabMinWidth: 15,
+    },
+    sp: {
+        modalBtnWidth: 15,
+        tabMinWidth: 30,
+    },
+};

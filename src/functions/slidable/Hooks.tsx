@@ -2,7 +2,7 @@ import React, { useRef, useState, useEffect, CSSProperties, useCallback } from '
 import { SlidableParams } from './types';
 import { applyStyles, removeStyles } from './utils';
 import { defaultValForOptionalParams } from './constants';
-import { useWindowSize } from '../../providers/redux/slices/window_size_slice/hook';
+import { useWindowSizeSelector } from '../../providers/redux/store';
 
 
 
@@ -16,7 +16,7 @@ export const useSlidable = (params: SlidableParams) => {
         SLIDABLE_PLAY = defaultValForOptionalParams.SLIDABLE_PLAY,
     } = params;
 
-    const { inner, client } = useWindowSize(); // selector から取得
+    const { inner, client } = useWindowSizeSelector(); // selector から取得
 
 
     const containerRef = useRef<HTMLDivElement | null>(null);

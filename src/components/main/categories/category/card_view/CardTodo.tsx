@@ -14,12 +14,13 @@ import styled from 'styled-components';
 /* --- types --------------------- */
 import { TodoType } from '../../../../../providers/types/categories';
 
+/* --- redux --------------------- */
+import { useDispatch, useWindowSizeSelector } from '../../../../../providers/redux/store';
+import { setActiveIdx } from '../../../../../providers/redux/slices/cardSlice';
+
 /* --- providers/contexts -------- */
 import { ScrollableElm } from '../../../../../providers/types/modal';
 import { useCardScroll } from '../../../../../providers/context_api/CardView';
-import { getCardCarouselStyles } from '../../../../../providers/context_api/CardView';
-import { useDispatch } from '../../../../../providers/redux/store';
-import { setActiveIdx } from '../../../../../providers/redux/slices/cardSlice';
 
 /* --- dev ----------------------- */
 // import { isDebugMode } from '../../../../../utils/adminDebugMode';
@@ -57,14 +58,18 @@ export const useCardTodo = ({ todo, idx }: Omit<CardTodoProps, 'addScrollableRef
     const { isActive, handleScroll } = useCardScroll(idx);
     const dispatch = useDispatch();
 
+    // styles
+    const { cardCarouselStyleFactors } = useWindowSizeSelector();
+    const { activeWidth_vw, inactiveMagnification } = cardCarouselStyleFactors;
+
     // handlers
     const handleClick = () => {
-        handleScroll(idx, 'smooth');
+        handleScroll(idx, 'smooth', cardCarouselStyleFactors);
         dispatch(setActiveIdx(idx));
     };
 
-    // styles
-    const { activeWidth_vw, inactiveMagnification } = getCardCarouselStyles();
+    
+
 
     return {
         todoTitle: todo.title,

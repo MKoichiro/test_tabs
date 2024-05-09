@@ -14,9 +14,11 @@ import styled from 'styled-components';
 /* --- child components ---------- */
 import { CardTodo } from './CardTodo';
 
+/* --- redux --------------------- */
+import { useWindowSizeSelector } from '../../../../../providers/redux/store';
+
 /* --- providers/contexts -------- */
 import { useCardCarouselRegister } from '../../../../../providers/context_api/CardView';
-import { getCardCarouselStyles } from '../../../../../providers/context_api/CardView';
 import { ScrollableElm } from '../../../../../providers/types/modal';
 
 /* --- types --------------------- */
@@ -56,7 +58,8 @@ export const useCardCarousel = (category: CategoryType) => {
     const { adjustedPadding_vw, carouselContainerRef } = registerContainer();
 
     // styles
-    const { gap_vw } = getCardCarouselStyles();
+    const { cardCarouselStyleFactors } = useWindowSizeSelector();
+    const { gap_vw } = cardCarouselStyleFactors;
 
     // format todos
     /** TODO: isArchived === true のものを分けて表示する */

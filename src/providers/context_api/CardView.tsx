@@ -16,38 +16,18 @@ import React, {
     useState,
 } from 'react';
 import { vw2px } from '../../utils/converters';
-import {
-    getCurrentDevice,
-    CardCarouselMagicsType as StyleMagicsType,
-    cardCarouselMagics,
-} from '../../data/styleMagics';
+import { CardCarouselMagic } from '../../data/styleMagics';
 import { useModalOpener } from './ModalElmsRef';
 import { modalNames } from '../../components/common/modal/settings';
-import { useCardSelector, useDispatch } from '../redux/store';
-import { setActiveIdx } from '../redux/slices/cardSlice';
 
-let initialStyleFactors: StyleMagicsType;
-switch (getCurrentDevice()) {
-    case 'pc':
-        initialStyleFactors = cardCarouselMagics.pc;
-        break;
-    case 'tb':
-        initialStyleFactors = cardCarouselMagics.tb;
-        break;
-    case 'sp':
-        initialStyleFactors = cardCarouselMagics.sp;
-        break;
-    default:
-        initialStyleFactors = cardCarouselMagics.pc;
-        break;
-}
+import { useCardSelector, useDispatch, useWindowSizeSelector } from '../redux/store';
+import { setActiveIdx } from '../redux/slices/cardSlice';
 
 // === TYPE =========================================================== //
 // - CONTEXT
 interface ContextType {
     carouselContainerRef: MutableRefObject<HTMLUListElement | null> | null;
-    handleScroll: (n: number, behavior: ScrollBehavior) => void;
-    styleFactors: MutableRefObject<StyleMagicsType>;
+    handleScroll: (n: number, behavior: ScrollBehavior, styleFactors: CardCarouselMagic) => void;
 }
 // - PROVIDER
 interface CardViewType {
@@ -59,7 +39,6 @@ interface CardViewType {
 const Context = createContext<ContextType>({
     carouselContainerRef: null,
     handleScroll: () => {},
-    styleFactors: { current: initialStyleFactors },
 });
 // ======================================================== CONTEXT === //
 
@@ -70,54 +49,12 @@ export const CardView: FC<CardViewType> = (props) => {
     // --- Management Items --------------------------------------- //
     // 1. refs: nodes
     const carouselContainerRef = useRef<HTMLUListElement | null>(null);
-    // 2. ref: style factors
-    const styleFactors = useRef<StyleMagicsType>(initialStyleFactors);
     // --------------------------------------- Management Items --- //
 
-    // --- resize-event ------------------------------------------- //
-    useEffect(() => {
-        let resizeTimer: NodeJS.Timeout;
-        const delay = 200;
-
-        const handleResize = () => {
-            if (!styleFactors.current) {
-                return;
-            }
-            switch (getCurrentDevice()) {
-                case 'pc':
-                    styleFactors.current = cardCarouselMagics.pc;
-                    break;
-                case 'tb':
-                    styleFactors.current = cardCarouselMagics.tb;
-                    break;
-                case 'sp':
-                    styleFactors.current = cardCarouselMagics.sp;
-                    break;
-                default:
-                    styleFactors.current = cardCarouselMagics.pc;
-                    break;
-            }
-        };
-
-        const debouncedResize = () => {
-            clearTimeout(resizeTimer);
-            resizeTimer = setTimeout(handleResize, delay); // Adjust the delay time as needed
-        };
-
-        addEventListener('resize', debouncedResize);
-        return () => removeEventListener('resize', debouncedResize);
-    }, []);
-    // ------------------------------------------- resize-event --- //
 
     // --- functions ---------------------------------------------- //
-    const handleScroll = (n: number, behavior: ScrollBehavior) => {
-        // 1. set activeIdx
-        // ここでhooksは呼び出せない。→なぜか調べる
-        // const dispatch = useDispatch();
-        // dispatch(setActiveIdx(n));
-
-        // 2. scroll
-        const { gap_vw, activeWidth_vw, inactiveMagnification } = styleFactors.current;
+    const handleScroll = (n: number, behavior: ScrollBehavior, styleFactors: CardCarouselMagic) => {
+        const { gap_vw, activeWidth_vw, inactiveMagnification } = styleFactors;
         const padding_vw = gap_vw * 2;
         const inactiveWidth_vw = activeWidth_vw * inactiveMagnification;
 
@@ -151,7 +88,6 @@ export const CardView: FC<CardViewType> = (props) => {
     const value = {
         carouselContainerRef,
         handleScroll,
-        styleFactors,
     };
 
     return (
@@ -166,16 +102,16 @@ export const CardView: FC<CardViewType> = (props) => {
 // === HOOKS ========================================================== //
 // 1. registerContainer: CardsCarousel で使用。carousel container となる ul 要素のコンポーネントで登録
 export const useCardCarouselRegister = () => {
-    const { styleFactors, carouselContainerRef } = useContext(Context);
+    const { /* styleFactors, */ carouselContainerRef } = useContext(Context);
+    const { cardCarouselStyleFactors } = useWindowSizeSelector();
 
-    const registerContainer = (args?: StyleMagicsType) => {
-        // コンポーネント側からも styleFactors を更新できるようにしてある
-        if (args) {
-            styleFactors.current = args;
-        }
+    const registerContainer = () => {
+        // コンポーネント側からも styleFactors を更新できるように。
+        // let styleFactors = cardViewStyleFactors;
+        // if (args) styleFactors = args;
 
         return {
-            adjustedPadding_vw: `0 ${styleFactors.current.gap_vw * 2}vw`,
+            adjustedPadding_vw: `0 ${cardCarouselStyleFactors.gap_vw * 2}vw`,
             carouselContainerRef,
         };
     };
@@ -200,6 +136,7 @@ export const useCardScroll = (idx: number) => {
 // 3. useCardViewOpen: ActiveTodo で使用。card view を開くボタンを含むコンポーネントで使用
 export const useCardViewOpener = () => {
     const { handleScroll } = useContext(Context);
+    const { cardCarouselStyleFactors } = useWindowSizeSelector();
     const modalName = modalNames.cardCarousel;
     const dispatch = useDispatch();
     const openModal = useModalOpener(modalName);
@@ -209,15 +146,9 @@ export const useCardViewOpener = () => {
         openModal();
         dispatch(setActiveIdx(idx));
         // 'instant' でアニメーション無しでスクロール
-        handleScroll(idx, 'instant');
+        handleScroll(idx, 'instant', cardCarouselStyleFactors);
     };
 
     return { cardViewOpen };
-};
-
-// 4. getStyleMagics: 任意のコンポーネントで使用。
-export const getCardCarouselStyles = () => {
-    const { styleFactors } = useContext(Context);
-    return styleFactors.current;
 };
 // ========================================================== HOOKS === //

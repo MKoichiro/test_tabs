@@ -16,7 +16,7 @@ import React, { useCallback, useEffect } from 'react';
 import { Header } from './header/Header';
 import { Main } from './main/Main';
 import { Footer } from './footer/Footer';
-import { useDispatch, /* useWindowSizeSelector */ } from '../providers/redux/store';
+import { useDispatch } from '../providers/redux/store';
 import { setWindowSize } from '../providers/redux/slices/window_size_slice/windowSizeSlice';
 
 /* --- dev ----------------------- */

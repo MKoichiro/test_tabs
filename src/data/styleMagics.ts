@@ -1,34 +1,38 @@
 // プロジェクト全体のcssでのみ使いたい場合はglobalStyles.tsに記述
 // ここには、プロジェクト全体のcssとcomponentでも参照したいものを定義
 
-export interface ContentsWidthType {
-    pc: number;
-    tb: number;
-    sp: number;
-}
-export const $contentsWidth: ContentsWidthType = {
+const deviceLiterals = [ 'pc', 'tb', 'sp' ] as const;
+export type DeviceUnion = typeof deviceLiterals[number];
+
+
+export type ContentsWidth = Record<DeviceUnion, number>;
+export const $contentsWidth: ContentsWidth = {
     pc: 70,
     tb: 70,
     sp: 90,
 };
 
-export const getCurrentDevice = (): 'pc' | 'tb' | 'sp' => {
-    if (innerWidth > 1024) {
-        return 'pc';
-    } else if (innerWidth > 600) {
-        return 'tb';
-    } else {
-        return 'sp';
-    }
+
+type BreakPoints = Omit<Record<DeviceUnion, number>, 'sp'>;
+export const BREAK_POINTS: BreakPoints = {
+    pc: 1024,
+    tb: 600,
 };
 
-export interface CardCarouselMagicsType {
-    gap_vw: number; // carousel item 間の間隔
-    activeWidth_vw: number; // active item の幅
-    inactiveMagnification: number; // inactive item の幅を active item の何倍にするか
-}
 
-export const cardCarouselMagics: { [key: string]: CardCarouselMagicsType } = {
+/**
+ * CardCarouselMagicsType
+ * @param gap_vw carousel item 間の間隔
+ * @param activeWidth_vw active item の幅
+ * @param inactiveMagnification inactive item の幅を active item の何倍にするか
+ */
+export interface CardCarouselMagic {
+    gap_vw: number;
+    activeWidth_vw: number;
+    inactiveMagnification: number;
+}
+export type CardCarouselMagics = Record<DeviceUnion, CardCarouselMagic>;
+export const cardCarouselMagics: CardCarouselMagics = {
     pc: {
         gap_vw: 5,
         activeWidth_vw: 80,

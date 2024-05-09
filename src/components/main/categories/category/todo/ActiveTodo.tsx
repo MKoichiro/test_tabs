@@ -47,7 +47,6 @@ import { faTrashCan, faCircleInfo, faCheck } from '@fortawesome/free-solid-svg-i
 /* --- dnd-kit ------------------- */
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import { getCurrentDevice } from '../../../../../data/styleMagics';
 
 /* --- dev ----------------------- */
 // import { isDebugMode } from '../../../../../utils/adminDebugMode';
@@ -64,18 +63,6 @@ let slidableParams: SlidableParams = {
     COMPLEMENT_ANIME_DURATION: 200,
     SLIDABLE_PLAY: 100,
 };
-switch (getCurrentDevice()) {
-    case 'pc': {
-        break;
-    }
-    case 'tb': {
-        break;
-    }
-    case 'sp': {
-        slidableParams.GRADIENT_THRESHOLD = .3;
-        break;
-    }
-}
 
 // ===================================== CONSTANT Against RENDERING === //
 
@@ -234,7 +221,6 @@ export const ActiveTodo = ({ todo, activeTodoIdx }: ActiveTodoProps) => {
 
                     <TodoDetail
                         ref={liRef}
-                        // activeTodoIdx={activeTodoIdx}
                         todo={todo}
                     />
                 </SlidableMain>

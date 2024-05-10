@@ -18,7 +18,6 @@ export const useSlidable = (params: SlidableParams) => {
 
     const { inner, client } = useWindowSizeSelector(); // selector から取得
 
-
     const containerRef = useRef<HTMLDivElement | null>(null);
     // scrollBarWidthはrendering間で保持しつつ、resize時に更新。
     const scrollBarWidthRef = useRef<number>(inner.width - client.width);

@@ -62,7 +62,6 @@ export const useUnsettledHeightAcc = (isOpen: boolean, changeableTxtContentsStat
             if (heightGetterRef.current) {
                 const newHeight = heightGetterRef.current.getBoundingClientRect().height;
                 setHeight(newHeight);
-                // console.log('newHeight: ', newHeight);
             }
         }, 100); // 謎の値。これがないと高さが取得できない。
     }, [isOpen, changeableTxtContentsState, heightGetterRef.current]);
@@ -149,8 +148,6 @@ export const TodoDetail = forwardRef<HTMLElement, TodoDetailProps>(({ todo }, re
         sanitizedDetail
     } = useTodoDetail({ todo }, ref);
 
-    // console.log('height2: ', height);
-
     return (
         <StyledSection
             $isOpen={isOpen}
@@ -194,14 +191,14 @@ const StyledSection = styled.section<StyledSectionType>`
     contain: paint;
 
     .table-container {
-        height: 9.6rem;
+        height: 8.0rem;
         display: flex;
         justify-content: center;
         align-items: center;
         max-width: 75%;
         margin-left: auto;
         @media (width < 600px) {
-            height: 6.4rem;
+            height: 4.8rem;
             max-width: 100%;
         }
     }
@@ -267,7 +264,7 @@ const StyledSection = styled.section<StyledSectionType>`
             padding: 0.8rem 1.6rem;
             > div {
                 padding-left: 1.6rem;
-                border-left: var(--border-weight) solid #444;
+                border-left: var(--border-weight) solid var(--color-black-1);
             }
         }
     }

@@ -10,6 +10,9 @@
  */
 
 /* --- react/styled-components --- */
+import { faChevronDown } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { TaskAlt } from '@mui/icons-material';
 import React from 'react';
 import styled from 'styled-components';
 
@@ -40,7 +43,17 @@ import styled from 'styled-components';
 export const Footer = () => {
     return (
         <StyledFooter>
-            <h3 children="Todo By React x TypeScript x styled-components" />
+            <div className="footer-container">
+                <div className='footer-toggle-icon'>
+                    <FontAwesomeIcon icon={faChevronDown} />
+                </div>
+                <h4>
+                    WEB CAT Todo
+                </h4>
+                <div className='footer-grip-icon'>
+                    <TaskAlt/>
+                </div>
+            </div>
         </StyledFooter>
     );
 };
@@ -48,26 +61,43 @@ export const Footer = () => {
 
 // === STYLE ========================================================= //
 const StyledFooter = styled.footer`
-    display: flex;
-    margin-top: auto;
-    height: 15vh;
-    width: 100%;
-    color: #777;
-    background: #fcfcfc;
-    clip-path: polygon(0 5vw, 100% 0, 100% 100%, 0 100%);
-    @media (width < 600px) {
-        height: 10vh;
-    }
+    margin-top: 3.2rem;
+    background-color: var(--color-black-1);
+    font-size: 1.6rem;
+    font-weight: bold;
 
-    h3 {
-        padding: 0 0.8rem;
-        align-self: flex-end;
-        margin: 0 auto 0;
+    .footer-container {
+        border: var(--border-weight) solid var(--color-white-1);
+        border-radius: .25rem;
+        background-color: var(--color-black-1);
+        color: var(--color-white-1);
+        margin: 1.6rem auto;
         width: var(--contents-width);
-        line-height: 5rem;
-        text-align: right;
-        @media (width < 1024px) {
-            width: 90%;
+        display: flex;
+
+        .footer-grip-icon {
+            padding-right: .6rem;
+            svg {
+                font-size: inherit;
+                height: 100%;
+            }
+        }
+
+        h4 {
+            padding: .6rem;
+            letter-spacing: 0.15rem;
+            text-align: right;
+            flex: 1;
+            text-decoration: line-through;
+        }
+
+        .footer-toggle-icon {
+            display: flex;
+            align-items: center;
+            padding: 0 .8rem;
+            svg {
+                height: .75em;
+            }
         }
     }
 `;

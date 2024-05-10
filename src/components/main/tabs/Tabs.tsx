@@ -156,7 +156,7 @@ const StyledNav = styled.nav<{$modalBtnWidth: string}>`
     .separator-tabs {
         display: block;
         height: 100%;
-        background: #444;
+        background: var(--color-black-1);
         width: var(--border-weight);
         margin-left: 1.6rem;
     }

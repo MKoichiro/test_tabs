@@ -5,32 +5,44 @@ const GlobalStyle = createGlobalStyle`
 
 /* reset css などの共通スタイル */
   :root {
-    --eng-ff-1:                            Arial, 'Helvetica Neue', Helvetica, sans-serif;
-    --eng-ff-2: 'Times NewRoman', 'Times', Arial, 'Helvetica Neue', Helvetica, sans-serif;
-    --eng-ff-3: 'Economica'              , Arial, 'Helvetica Neue', Helvetica, sans-serif;
-
-    
-    --color-txt-black-1: #444;
-    --color-txt-black-2: #262626;
-
-    --color-bg-white-1: #e1e1e1;
-    --color-bg-white-2: #f9f9f9;
-
+    /* width of main, header, footer contents */
     --contents-width: ${`${contentsWidths.pc}vw`};
-    --border-weight: .15rem;
     @media (width < 600px) {
       --contents-width: ${`${contentsWidths.sp}vw`};
+    }
+
+
+    /* font-family */
+    --ff-1:                            Arial, 'Helvetica Neue', Helvetica, sans-serif;
+    --ff-2: 'Times NewRoman', 'Times', Arial, 'Helvetica Neue', Helvetica, sans-serif;
+    --ff-3: 'Economica'              , Arial, 'Helvetica Neue', Helvetica, sans-serif;
+
+    /* color */
+    --color-black-1: #444;
+    --color-black-2: #262626;
+
+    --color-white-1: #e1e1e1;
+    --color-white-2: #f9f9f9;
+
+
+    /* border */
+    --border-1: var(--border-weight) solid var(--color-black-1);
+    --border-weight: .15rem;
+    @media (width < 600px) {
       --border-weight: .1rem;
     }
 
+
+    /* font-size */
+    --fs-header: 3.2rem;
     --fs-form: 2rem;
     @media (width < 600px) {
       --fs-form: 16px;
     }
 
   }
-  
 
+  /* reset */
   * { box-sizing: border-box }
     
   html {
@@ -39,13 +51,9 @@ const GlobalStyle = createGlobalStyle`
   }
 
   body {
-    /* overflow-y: hidden; */
-    /* position: fixed; */
-    /* width: 100%; */
-    background: var(--color-bg-white-1);
-    color: var(--color-txt-black-1);
+    background: var(--color-white-1);
+    color: var(--color-black-1);
     font-family: Economica, Arial, 'Helvetica Neue', Helvetica, 'Hiragino Kaku Gothic Pro', 'ヒラギノ角ゴ Pro W3', Meiryo, メイリオ, '游ゴシック Medium', 'Yu Gothic Medium', '游ゴシック体', 'Yu Gothic', YuGothic, 'MS PGothic', Osaka, arial, sans-serif;
-    /* reset */
     margin: 0; padding: 0;
   }
   #root {
@@ -63,12 +71,12 @@ const GlobalStyle = createGlobalStyle`
 
 
   button {
-    color: #444;
+    color: var(--color-black-1);
     background: none;
     border: none;
     font-size: inherit;
     cursor: pointer;
-    font-family: Economica, Arial, 'Helvetica Neue';
+    font-family: var(--ff-3);
     font-weight: 700;
     user-select: none;
     touch-action: manipulation; /* Modern browsers */

@@ -182,23 +182,24 @@ const StyledLi = styled.li<StylePropsType>`
         height: 100%;
         min-width: ${({ $tabMinWidth }) => $tabMinWidth};
     }
-
+    
     button {
+        border-radius: .1rem;
         display: block;
         width: 100%;
         height: 66.7%;
         padding: 0 0.8rem;
         letter-spacing: 0.15rem;
 
-        background: ${({ $isActive }) => ($isActive ? '#444' : '')};
-        color: ${({ $isActive }) => ($isActive ? '#f9f9f9' : '')};
+        background: ${({ $isActive }) => ($isActive ? 'var(--color-black-1)' : '')};
+        color: ${({ $isActive }) => ($isActive ? 'var(--color-white-2)' : '')};
         margin-left: 0.4rem;
 
         overflow-x: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
         transition: scale 50ms;
-        border: var(--border-weight) solid #444;
+        border: var(--border-weight) solid var(--color-black-1);
     }
     button:active {
         scale: 0.95;

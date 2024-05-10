@@ -27,6 +27,8 @@ import { useForm } from 'react-hook-form';
 
 /* --- utils --------------------- */
 import { generateUUID } from '../../../../utils/generateUUID';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faPlus } from '@fortawesome/free-solid-svg-icons';
 
 /* --- dev ----------------------- */
 // import { isDebugMode } from '../../../../utils/adminDebugMode';
@@ -169,7 +171,13 @@ export const CreateNewCategory = () => {
                     </div>
                 </div>
 
-                <button className="btn-add">ADD</button>
+                {/* <button className="btn-add">ADD</button> */}
+                <div className="btn-submit-container">
+                    <button>
+                        <FontAwesomeIcon icon={faPlus} />
+                        ADD
+                    </button>
+                </div>
             </fieldset>
         </StyledForm>
     );
@@ -183,9 +191,11 @@ const StyledForm = styled.form`
         border: none;
         padding: 0;
         margin: 0;
+        color: var(--color-black-1);
 
         legend {
             padding: 0; // reset
+            font-weight: bold;
             font-size: 2rem;
         }
 
@@ -198,9 +208,16 @@ const StyledForm = styled.form`
             label {
                 display: flex;
                 gap: 0.8rem;
+                font-weight: bold;
                 .input-feature {
-                    background: pink;
-                    padding: 0 1em;
+                    font-size: .9em;
+                    padding: .2rem .6rem;
+
+                    background: var(--color-black-1);
+                    color: var(--color-white-2);
+                    font-weight: bold;
+                    letter-spacing: 0.1rem;
+                    border: var(--border-weight) solid var(--color-black-1);
                 }
             }
 
@@ -208,7 +225,6 @@ const StyledForm = styled.form`
                 flex: 1;
                 input {
                     font-size: var(--fs-form);
-                    /* height: 4rem; */
                     line-height: 3.6rem;
                     width: 100%;
                     border-radius: 0;
@@ -237,15 +253,21 @@ const StyledForm = styled.form`
             }
         }
 
-        .btn-add {
-            background: #fff;
-
-            display: block;
-            width: fit-content;
-            height: fit-content;
+        .btn-submit-container {
             margin-top: 1.6rem;
-            margin-left: auto;
-            padding: 0.4rem 0.8rem;
+            button {
+                display: block;
+                margin-left: auto;
+                padding: 0.4rem 0.8rem;
+                border: var(--border-1);
+                .fa-plus {
+                    margin-right: 0.8rem;
+                }
+            }
+            button:active {
+                scale: .9;
+                transition: scale 50ms;
+            }
         }
     }
 `;

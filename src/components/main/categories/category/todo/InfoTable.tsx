@@ -420,7 +420,7 @@ const StyledTable = styled.table<{ $isDev: boolean }>`
         display: flex;
     }
     thead > tr {
-        border-bottom: var(--border-weight) solid #444;
+        border-bottom: var(--border-weight) solid var(--color-black-1);
         // header行は下寄せ
         align-items: flex-end;
     }
@@ -432,6 +432,7 @@ const StyledTable = styled.table<{ $isDev: boolean }>`
         flex: 1;
         height: 67%;
         font-size: 1.4rem;
+        letter-spacing: .05em;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -443,20 +444,20 @@ const StyledTh = styled.th<{$isActive: boolean}>`
     ${({ $isActive }) => getActiveStyles($isActive)}
     border-top-width: var(--border-weight);
     border-top-style: solid;
-    border-top-color: ${({ $isActive }) => ($isActive ? '#444' : 'transparent')};
+    border-top-color: ${({ $isActive }) => ($isActive ? 'var(--color-black-1)' : 'transparent')};
     border-left-width: var(--border-weight);
     border-left-style: solid;
-    border-left-color: ${({ $isActive }) => ($isActive ? '#444' : 'transparent')};
+    border-left-color: ${({ $isActive }) => ($isActive ? 'var(--color-black-1)' : 'transparent')};
     transition: min-height 300ms, border-top-color 1000ms, border-left-color 1000ms, color 1000ms;
 `;
 const StyledTd = styled.td<{$isActive: boolean}>`
     ${({ $isActive }) => getActiveStyles($isActive)}
     border-bottom-width: var(--border-weight);
     border-bottom-style: solid;
-    border-bottom-color: ${({ $isActive }) => ($isActive ? '#444' : 'transparent')};
+    border-bottom-color: ${({ $isActive }) => ($isActive ? 'var(--color-black-1)' : 'transparent')};
     border-right-width: var(--border-weight);
     border-right-style: solid;
-    border-right-color: ${({ $isActive }) => ($isActive ? '#444' : 'transparent')};
+    border-right-color: ${({ $isActive }) => ($isActive ? 'var(--color-black-1)' : 'transparent')};
     transition: min-height 300ms, border-bottom-color 1000ms, border-right-color 1000ms, color 1000ms;
 
     form {
@@ -466,16 +467,29 @@ const StyledTd = styled.td<{$isActive: boolean}>`
         width: 100%;
         height: 100%;
         input, select {
+            font-family: var(--ff-3);
+            font-weight: bold;
+            letter-spacing: .05em;
+            text-align-last: center;
+            color: tomato;
             user-select: none;
             width: 100%;
             height: 100%;
             font-size: 1.4rem;
             padding: 0;
-            border: var(--border-weight) solid #000;
+            border: none;
             border-radius: 0;
             outline: 0;
             background-color: transparent;
+            animation: blinking 1500ms infinite;
         }
+    }
+
+    @keyframes blinking {
+        0% { opacity: 0; }
+        40% { opacity: 1; }
+        60% { opacity: 1; }
+        100% { opacity: 0; }
     }
 `;
 

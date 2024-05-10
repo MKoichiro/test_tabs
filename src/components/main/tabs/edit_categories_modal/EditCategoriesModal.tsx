@@ -123,6 +123,8 @@ const StyledModal = styled(Modal)<StyledModalType>`
     &[open] {
         display: flex;
     }
+    color: var(--color-black-1);
+
 
     .edit-categories-modal-mask {
         --bdf: ${(props) => (props.isOpen ? 'blur(2px)' : 'blur(0)')};
@@ -151,7 +153,7 @@ const StyledModal = styled(Modal)<StyledModalType>`
         > * {
             background: rgba(255 255 255 / 0.85);
             padding: 0.8rem;
-            border-radius: 0.4rem;
+            border-radius: .2rem;
         }
         .modal-heading {
             grid-area: heading;

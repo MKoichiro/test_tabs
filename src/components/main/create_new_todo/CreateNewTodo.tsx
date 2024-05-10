@@ -347,14 +347,14 @@ const StyledForm = styled.form`
                         .feature.optional {
                             font-weight: bold;
                             letter-spacing: 0.1rem;
-                            border: var(--border-weight) solid #444;
+                            border: var(--border-weight) solid var(--color-black-1);
                         }
                         .feature.required {
-                            background: #444;
-                            color: #f9f9f9;
+                            background: var(--color-black-1);
+                            color: var(--color-white-2);
                             font-weight: bold;
                             letter-spacing: 0.1rem;
-                            border: var(--border-weight) solid #444;
+                            border: var(--border-weight) solid var(--color-black-1);
                         }
                         .label-txt {
                             flex: 1;
@@ -377,7 +377,7 @@ const StyledForm = styled.form`
                         textarea,
                         select {
                             min-width: 100%;
-                            color: var(--color-txt-black-1);
+                            color: var(--color-black-1);
                             background-color: #efefef;
                             padding: 0 .8rem;
                             font-size: 1.8rem;
@@ -439,7 +439,7 @@ const StyledForm = styled.form`
                         content: '';
                         display: block;
                         height: 80%;
-                        border-left: 0.2rem solid black;
+                        border-left: var(--border-1);
                     }
                 }
                 @media (width < 600px) {
@@ -466,7 +466,7 @@ const StyledForm = styled.form`
                 display: block;
                 margin-left: auto;
                 padding: 0.4rem 0.8rem;
-                border: 0.15rem solid black;
+                border: var(--border-1);
                 .fa-plus {
                     margin-right: 0.8rem;
                 }

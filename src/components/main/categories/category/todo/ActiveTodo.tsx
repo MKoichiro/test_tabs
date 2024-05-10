@@ -49,24 +49,12 @@ import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { useWindowSizeSelector } from '../../../../../providers/redux/store';
 import { vw2px } from '../../../../../utils/converters';
+import { useHeightGetter } from '../../../../../functions/height_getter/heightGetter';
+import { ViewArray, ViewArrayOutlined, ViewArrayRounded } from '@mui/icons-material';
 
 /* --- dev ----------------------- */
 // import { isDebugMode } from '../../../../../utils/adminDebugMode';
 
-// === CONSTANT Against RENDERING ===================================== //
-// const contentsWidth = vw2px(getCurrentContentsVw());
-// const deleteBtnWidth = contentsWidth * 0.5;
-
-// slidable
-// let slidableParams: SlidableParams = {
-//     SLIDABLE_LENGTH: deleteBtnWidth,
-//     GRADIENT_THRESHOLD: 0.3,
-//     TOGGLE_THRESHOLD: 50,
-//     COMPLEMENT_ANIME_DURATION: 200,
-//     SLIDABLE_PLAY: 100,
-// };
-
-// ===================================== CONSTANT Against RENDERING === //
 
 // === TYPE =========================================================== //
 /**
@@ -77,6 +65,7 @@ import { vw2px } from '../../../../../utils/converters';
 interface ActiveTodoProps {
     todo: TodoType;
     activeTodoIdx: number;
+    isGloballyDragging: boolean;
 }
 // =========================================================== TYPE === //
 
@@ -99,6 +88,7 @@ export const useDndItem = (todoId: string) => {
     const style = {
         transform: CSS.Transform.toString(transform),
         transition,
+        height: isDragging ? '3.2rem' : 'auto',
     };
 
     return { attributes, listeners, setNodeRef, style, isDragging };
@@ -125,7 +115,7 @@ export const useDndItem = (todoId: string) => {
  * } = useActiveTodo({todo, activeTodoIdx});
  * ```
  */
-export const useActiveTodo = ({todo, activeTodoIdx}: ActiveTodoProps) => {
+export const useActiveTodo = ({todo, activeTodoIdx}: Omit<ActiveTodoProps, 'isGloballyDragging'>) => {
     const todoId = todo.id;
 
     const { contentsWidth } = useWindowSizeSelector();
@@ -193,7 +183,7 @@ export const useActiveTodo = ({todo, activeTodoIdx}: ActiveTodoProps) => {
  *
  * @category Component
  */
-export const ActiveTodo = ({ todo, activeTodoIdx }: ActiveTodoProps) => {
+export const ActiveTodo = ({ todo, activeTodoIdx, isGloballyDragging }: ActiveTodoProps) => {
     const {
         todoId,
         attributes, 
@@ -207,6 +197,7 @@ export const ActiveTodo = ({ todo, activeTodoIdx }: ActiveTodoProps) => {
         handleArchiveBtnClick,
         slidableParams,
      } = useActiveTodo({todo, activeTodoIdx});
+
 
     return (
         <StyledLi
@@ -232,6 +223,7 @@ export const ActiveTodo = ({ todo, activeTodoIdx }: ActiveTodoProps) => {
                     <TodoDetail
                         ref={liRef}
                         todo={todo}
+                        isGloballyDragging={isGloballyDragging}
                     />
                 </SlidableMain>
 
@@ -245,7 +237,7 @@ export const ActiveTodo = ({ todo, activeTodoIdx }: ActiveTodoProps) => {
                         <button
                             className={'each-btn btn-info'}
                             onClick={handleInfoBtnClick}
-                            children={<FontAwesomeIcon icon={faCircleInfo} />}
+                            children={<ViewArrayOutlined/>}
                         />
                     </div>
 
@@ -276,16 +268,19 @@ export const ActiveTodo = ({ todo, activeTodoIdx }: ActiveTodoProps) => {
 // === STYLE ========================================================= //
 interface StyledLiType {
     $isDragging: boolean;
+    // $isGlobalDragging: boolean;
+    // $height: number | null;
 }
 
 const StyledLi = styled.li<StyledLiType>`
-    background: #efefef;
+    background: var(--color-white-3);
     border-radius: 0.4rem;
 
     margin: 1.6rem 0;
-    opacity: ${(props) => (props.$isDragging ? 0.5 : 1)};
+    opacity: ${({$isDragging}) => ($isDragging ? 0.5 : 1)};
     overflow-x: hidden;
     width: 100%;
+
     -ms-overflow-style: none;
     scrollbar-width: none;
     &:-webkit-scrollbar {
@@ -295,6 +290,10 @@ const StyledLi = styled.li<StyledLiType>`
     .btns-container {
         z-index: 100;
         display: flex;
+        .each-btn-container:active {
+            scale: 0.95;
+            transition: scale 100ms;
+        }
         .each-btn-container {
             flex: 1;
             display: flex;
@@ -305,17 +304,24 @@ const StyledLi = styled.li<StyledLiType>`
                 display: block;
                 width: 95%;
                 height: 95%;
+                border:  var(--border-1);
+                border-radius: 0.2rem;
+                @media (width < 600px) {
+                    border-radius: 0.15rem;
+                }
             }
+
             .btn-info {
-                color: #0b4906;
-                border: 0.2rem solid #0b4906;
+                color: pink;
+                svg {
+                    font-size: 2.4rem;
+                }
             }
             .btn-check {
-                color: #454e70;
-                border: 0.2rem solid #454e70;
+                color: tomato;
             }
             .btn-delete {
-                border: 0.2rem solid #8c1111;
+                color: maroon;
             }
         }
     }

@@ -23,6 +23,7 @@ const GlobalStyle = createGlobalStyle`
 
     --color-white-1: #e1e1e1;
     --color-white-2: #f9f9f9;
+    --color-white-3: #efefef;
 
 
     /* border */

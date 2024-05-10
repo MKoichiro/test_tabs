@@ -67,7 +67,7 @@ interface CategoryProps {
  * @param todos - カテゴリーに含まれる todo のリスト
  * @returns
  */
-export const useDNDSortable = (todos: TodoType[]) => {
+export const useDndSortable = (todos: TodoType[]) => {
     const dispatch = useDispatch();
 
     // sensor 登録
@@ -98,6 +98,7 @@ export const useDNDSortable = (todos: TodoType[]) => {
         setActiveId(null);
     };
 
+
     return { sensors, activeId, handleDragStart, handleDragEnd };
 };
 
@@ -109,7 +110,7 @@ export const useDNDSortable = (todos: TodoType[]) => {
 export const useCategory = (props: CategoryProps) => {
     const { category } = props;
     const todos = category.todos;
-    const { sensors, activeId, handleDragStart, handleDragEnd } = useDNDSortable(todos);
+    const { sensors, activeId, handleDragStart, handleDragEnd } = useDndSortable(todos);
 
     return {
         /** カテゴリーに含まれる todo のリスト */
@@ -121,7 +122,10 @@ export const useCategory = (props: CategoryProps) => {
         /** ドラッグ開始時の handler */
         handleDragStart,
         /** ドラッグ終了時の handler */
-        handleDragEnd
+        handleDragEnd,
+
+        isGloballyDragging: (activeId !== null),
+
     };
 };
 // ====================================================== FUNCTIONS === //
@@ -133,7 +137,7 @@ export const useCategory = (props: CategoryProps) => {
  * @returns
  */
 export const Category = (props: CategoryProps) => {
-    const { todos, sensors, activeId, handleDragStart, handleDragEnd } = useCategory(props);
+    const { todos, sensors, activeId, handleDragStart, handleDragEnd, isGloballyDragging } = useCategory(props);
 
     return (
         <StyledUl>
@@ -154,6 +158,7 @@ export const Category = (props: CategoryProps) => {
                                     key={todo.id}
                                     activeTodoIdx={i}
                                     todo={todo}
+                                    isGloballyDragging={isGloballyDragging}
                                 />
                             )
                     )}
@@ -167,6 +172,7 @@ export const Category = (props: CategoryProps) => {
                         {activeId ? (
                             <GhostTodo
                                 todo={todos.filter((todo) => todo.id === activeId)[0]}
+                                isGloballyDragging={isGloballyDragging}
                             />
                         ) : null}
                     </DragOverlay>,

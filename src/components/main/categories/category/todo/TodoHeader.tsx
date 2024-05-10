@@ -221,8 +221,8 @@ const StyledHeader = styled.header<StyledHeaderType>`
     display: flex;
     align-items: center;
     font-size: 2rem;
-    line-height: 1.6em;
-    height: 1.6em;
+    line-height: 3.2rem;
+    height: 3.2rem;
     @media (width < 600px) {
         font-size: 16px;
     }

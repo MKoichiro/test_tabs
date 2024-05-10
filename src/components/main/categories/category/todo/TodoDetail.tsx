@@ -10,7 +10,7 @@
  */
 
 /* --- react/styled-components --- */
-import React, { useContext, useLayoutEffect, useRef, useState, forwardRef, useEffect, Ref } from 'react';
+import React, { useContext, useLayoutEffect, useState, forwardRef, Ref, RefObject } from 'react';
 import styled from 'styled-components';
 
 /* --- child components ---------- */
@@ -25,6 +25,7 @@ import { TodoType } from '../../../../../providers/types/categories';
 /* --- utils --------------------- */
 import { scrollToRef } from '../../../../../utils/smoothScrollToRef';
 import { getSanitizedDetail } from '../../../../../utils/todoPropsHandler';
+import { useHeightGetter } from '../../../../../functions/height_getter/heightGetter';
 
 /* --- dev ----------------------- */
 // import { isDebugMode } from '../../../../../utils/adminDebugMode';
@@ -36,38 +37,11 @@ import { getSanitizedDetail } from '../../../../../utils/todoPropsHandler';
  */
 interface TodoDetailProps {
     todo: TodoType;
+    isGloballyDragging: boolean;
 }
 // =========================================================== TYPE === //
 
 // === FUNCTION ======================================================= //
-// useUnsettledHeightAcc: 内容物の高さが可変のアコーディオンを実装するためのカスタムフック
-//                        open/close 状態を保持する isOpen state は保守性のため(今後、外部でも使用することも考えられるため)、外部で定義して渡す。
-//                        また、内容物の文字列が変更された時にも高さを再取得する必要があるため、
-//                        state 管理されたテキストコンテンツを changeableTxtContentsState を引数で渡す必要がある。
-export const useUnsettledHeightAcc = (isOpen: boolean, changeableTxtContentsState: string) => {
-    const [height, setHeight] = useState<number | null>(null);
-
-
-    const heightGetterRef = useRef<HTMLDivElement | null>(null);
-
-    /**
-     * useEffect自体はレンダリング後に実行されるため、
-     * 依存配列に heightGetterRef.current を含める必要は無いように思われるが、
-     * transition や animation はレンダリングと非同期で実行されるため、
-     * レンダリング完了後にheightが確定している保証は無い。
-     * そのため、やはりheightGetterRef.currentを含めないと、正常な値が取得できない。
-     */
-    useEffect(() => {
-        setTimeout(() => {
-            if (heightGetterRef.current) {
-                const newHeight = heightGetterRef.current.getBoundingClientRect().height;
-                setHeight(newHeight);
-            }
-        }, 100); // 謎の値。これがないと高さが取得できない。
-    }, [isOpen, changeableTxtContentsState, heightGetterRef.current]);
-    return { height, heightGetterRef };
-};
-
 /**
  * @param arg
  * 
@@ -84,11 +58,11 @@ export const useUnsettledHeightAcc = (isOpen: boolean, changeableTxtContentsStat
  * } = useTodoDetail({ todo }, ref);
  * ```
  */
-export const useTodoDetail = ({ todo }: TodoDetailProps, ref: Ref<HTMLElement> ) => {
+export const useTodoDetail = ({ todo }: Omit<TodoDetailProps, 'isGloballyDragging'>, ref: Ref<HTMLElement> ) => {
     const { inEditing, handleModalOpen } = useContext(MdeContext);
 
-    const { detail, isOpen } = todo;
-    const { height, heightGetterRef } = useUnsettledHeightAcc(isOpen, detail);
+    const { isOpen } = todo;
+    const { height, heightGetterRef } = useHeightGetter();
 
     const executeModalOpen = () => {
         handleModalOpen(todo.id);
@@ -138,25 +112,27 @@ export const useTodoDetail = ({ todo }: TodoDetailProps, ref: Ref<HTMLElement> )
  *
  * @category Component
  */
-export const TodoDetail = forwardRef<HTMLElement, TodoDetailProps>(({ todo }, ref) => {
+export const TodoDetail = forwardRef<HTMLElement, TodoDetailProps>(({ todo, isGloballyDragging }, ref) => {
     const {
         isOpen,
         inEditing,
         height,
         heightGetterRef,
         executeModalOpen,
-        sanitizedDetail
+        sanitizedDetail,
     } = useTodoDetail({ todo }, ref);
+    console.log('isGloballyDragging', isGloballyDragging);
 
     return (
         <StyledSection
             $isOpen={isOpen}
             $height={height}
             $inEditing={inEditing}
+            $isGloballyDragging={isGloballyDragging}
         >
             <div
                 className="children-height-getter"
-                ref={heightGetterRef}
+                ref={heightGetterRef as RefObject<HTMLDivElement>}
             >
                 <section
                     className="detail-container"
@@ -183,10 +159,19 @@ interface StyledSectionType {
     $isOpen: boolean;
     $height: number | null;
     $inEditing: boolean;
+    $isGloballyDragging: boolean;
 }
 
 const StyledSection = styled.section<StyledSectionType>`
-    height: ${(props) => (props.$isOpen ? `${props.$height}px` : '0')};
+    height: ${({$isOpen, $isGloballyDragging, $height}) => {
+        if ($isGloballyDragging) {
+            return '0';
+        } else if ($isOpen) {
+            return `${$height}px`;
+        } else {
+            return '0';
+        }
+    }};
     transition: height 500ms;
     contain: paint;
 

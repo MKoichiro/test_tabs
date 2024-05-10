@@ -31,6 +31,7 @@ import { TodoType } from '../../../../../providers/types/categories';
  */
 interface GhostTodoProps {
     todo: TodoType;
+    isGloballyDragging: boolean;
 }
 // =========================================================== TYPE === //
 
@@ -48,16 +49,16 @@ interface GhostTodoProps {
  *
  * @category Component
  */
-export const GhostTodo = forwardRef<HTMLDivElement, GhostTodoProps >(({ todo }, ref) => {
+export const GhostTodo = forwardRef<HTMLDivElement, GhostTodoProps>((props, ref) => {
 
         return (
             <StyledDiv ref={ref}>
                 <TodoHeader
                     attributes={'ghost'}
-                    todo={todo}
+                    todo={props.todo}
                 />
 
-                <TodoDetail todo={todo} />
+                <TodoDetail {...props} />
             </StyledDiv>
         );
     }

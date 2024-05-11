@@ -37,20 +37,17 @@ import { TodoType } from '../../../../../providers/types/categories';
 // slidable
 import { SlidableParams } from '../../../../../functions/slidable/types';
 
-/* --- utils --------------------- */
-// import { vw2px, getCurrentContentsVw } from '../../../../../utils/converters';
 
 /* --- font awesome -------------- */
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTrashCan, faCircleInfo, faCheck } from '@fortawesome/free-solid-svg-icons';
+import { faTrashCan, faCheck } from '@fortawesome/free-solid-svg-icons';
 
 /* --- dnd-kit ------------------- */
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { useWindowSizeSelector } from '../../../../../providers/redux/store';
 import { vw2px } from '../../../../../utils/converters';
-import { useHeightGetter } from '../../../../../functions/height_getter/heightGetter';
-import { ViewArray, ViewArrayOutlined, ViewArrayRounded } from '@mui/icons-material';
+import { ViewArrayOutlined } from '@mui/icons-material';
 
 /* --- dev ----------------------- */
 // import { isDebugMode } from '../../../../../utils/adminDebugMode';
@@ -85,9 +82,14 @@ export const useDndItem = (todoId: string) => {
     const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
         id: todoId,
     });
+
+    // liに適用するstyle
     const style = {
         transform: CSS.Transform.toString(transform),
         transition,
+        // drag中に折りたたんだときのcollision判定に使われる実体の高さをスタイルと一致させる。
+        // これがないと、drag中に折りたたんでいるのに、展開時の大きさでcollision判定が発生し挙動が不安定になる。
+        // 3.2remは今のところmagicなので、後で変数で管理し、TodoHeaderと共有する。
         height: isDragging ? '3.2rem' : 'auto',
     };
 
@@ -211,13 +213,17 @@ export const ActiveTodo = ({ todo, activeTodoIdx, isGloballyDragging }: ActiveTo
             {...attributes}
         >
             {/* slidable: li内をスライド可能にするためのコンテナ */}
-            <Slidable slidableParams={slidableParams}>
+            <Slidable
+                slidableParams={slidableParams}
+                skipCondition={isGloballyDragging}
+            >
                 {/* slidable: 通常時に表示されている要素 */}
                 <SlidableMain className="slidable-main-contents">
                     <TodoHeader
                         attributes={'active'}
                         listeners={listeners}
                         todo={todo}
+                        isGloballyDragging={isGloballyDragging}
                     />
 
                     <TodoDetail
@@ -250,7 +256,7 @@ export const ActiveTodo = ({ todo, activeTodoIdx, isGloballyDragging }: ActiveTo
                         />
                     </div>
 
-                    {/* 3. todo をアーカイブ(isArchived === true に)する */}
+                    {/* 3. todo をアーカイブ(isArchived === true)にする */}
                     <div className="each-btn-container delete-btn-container">
                         <button
                             className={'each-btn btn-delete'}
@@ -268,8 +274,6 @@ export const ActiveTodo = ({ todo, activeTodoIdx, isGloballyDragging }: ActiveTo
 // === STYLE ========================================================= //
 interface StyledLiType {
     $isDragging: boolean;
-    // $isGlobalDragging: boolean;
-    // $height: number | null;
 }
 
 const StyledLi = styled.li<StyledLiType>`

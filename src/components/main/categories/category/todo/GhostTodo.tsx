@@ -56,6 +56,7 @@ export const GhostTodo = forwardRef<HTMLDivElement, GhostTodoProps>((props, ref)
                 <TodoHeader
                     attributes={'ghost'}
                     todo={props.todo}
+                    isGloballyDragging={props.isGloballyDragging}
                 />
 
                 <TodoDetail {...props} />

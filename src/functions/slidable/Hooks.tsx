@@ -6,7 +6,12 @@ import { useWindowSizeSelector } from '../../providers/redux/store';
 
 
 
-export const useSlidable = (params: SlidableParams) => {
+interface Slidable {
+    params: SlidableParams;
+    skipCondition?: boolean;
+}
+
+export const useSlidable = ({params, skipCondition}: Slidable) => {
 
     const {
         SLIDABLE_LENGTH, // ← これだけ必須で受け取る、以下はoptionalなのでデフォルト値を設定
@@ -47,6 +52,7 @@ export const useSlidable = (params: SlidableParams) => {
 
     // --- Event Handlers: bind to <Slidable> ----------------- //
     const handleTouchStart = (e: React.TouchEvent<HTMLDivElement>) => {
+        if (skipCondition) return;
         // touch 開始時の各種座標を記録
         const touch = e.touches[0];
         setStartPosition({ x: touch.clientX, y: touch.clientY });
@@ -54,6 +60,7 @@ export const useSlidable = (params: SlidableParams) => {
     };
 
     const handleTouchMove = (e: React.TouchEvent<HTMLElement>) => {
+        if (skipCondition) return;
         // null check
         if (!startPosition.x || !startPosition.y) return;
 
@@ -85,11 +92,14 @@ export const useSlidable = (params: SlidableParams) => {
                 position: 'fixed',
                 width: '100%',
                 top: `-${scrollY}px`,
+                height: '100lvh',
             };
             applyStyles(stylesForVerticalScrollBlock);
             // overscrollBehavior: 'none' はiOSなど引っ張って更新の挙動のために縦スクロールが効いてしまうのを防ぐ。
             // がこの追加で少なくともiOSではリスト下部の要素がtouchmoveの時に消えたりついたりちらつく挙動が現れるが、動作にあまり問題はないのでそのまま。
+            // 追記: heightを明示的に100lvhとすることで、この挙動は低減された。
             document.documentElement.style.overscrollBehavior = 'none';
+            document.documentElement.style.height = '100lvh';
         }
 
         // スライド実行（※実際は StyledContainer の transform プロパティに translateX を指定して移動）
@@ -104,6 +114,7 @@ export const useSlidable = (params: SlidableParams) => {
      * - 各種stateの初期化を行う。
      */
     const handleTouchEnd = (e: React.TouchEvent<HTMLDivElement>) => {
+        if (skipCondition) return;
         // null check
         if (!startPosition.x || !startPosition.y) return;
 
@@ -123,8 +134,9 @@ export const useSlidable = (params: SlidableParams) => {
             }
 
             // style の初期化
-            removeStyles(['paddingRight', 'position', 'width', 'top']);
+            removeStyles(['paddingRight', 'position', 'width', 'top', 'height']);
             document.documentElement.style.overscrollBehavior = 'auto';
+            document.documentElement.style.height = 'auto';
             if (scrollY) scrollTo(0, scrollY);
         }
 

@@ -48,6 +48,7 @@ interface TodoHeaderProps {
     todo: TodoType;
     attributes: 'active' | 'ghost' | 'archived'; // 3種類の親要素で、表示内容を変える
     listeners?: SyntheticListenerMap;
+    isGloballyDragging: boolean;
 }
 // =========================================================== TYPE === //
 
@@ -134,7 +135,7 @@ const useTodoHeader = (todo: TodoType) => {
  *
  * @category Component
  */
-export const TodoHeader = ({ todo, attributes, listeners }: TodoHeaderProps) => {
+export const TodoHeader = ({ todo, attributes, listeners, isGloballyDragging }: TodoHeaderProps) => {
 
     const {
         inEditing,
@@ -155,6 +156,8 @@ export const TodoHeader = ({ todo, attributes, listeners }: TodoHeaderProps) => 
             $isCompleted={isCompleted}
             $inEditing={inEditing}
             $isOpen={isOpen}
+            $isGloballyDragging={isGloballyDragging}
+            $isExpired={isExpired}
         >
             {/* 1. グリップ可能を示す、six-dots icon */}
             <span
@@ -198,14 +201,12 @@ export const TodoHeader = ({ todo, attributes, listeners }: TodoHeaderProps) => 
             )}
 
             {/* 4. detail 開閉ボタン */}
-            <div className="btn-container">
-                <button
-                    className="btn-toggle-detail"
-                    onClick={attributes !== 'ghost' ? () => toggleOpen() : undefined} // Ghost要素に、detail開閉機能は不要。
-                >
-                    <FontAwesomeIcon icon={faChevronUp} />
-                </button>
-            </div>
+            <button
+                className="btn-toggle-detail"
+                onClick={attributes !== 'ghost' ? () => toggleOpen() : undefined} // Ghost要素に、detail開閉機能は不要。
+            >
+                <FontAwesomeIcon icon={faChevronUp} />
+            </button>
         </StyledHeader>
     );
 };
@@ -216,13 +217,25 @@ interface StyledHeaderType {
     $isCompleted: boolean;
     $inEditing: boolean;
     $isOpen: boolean;
+    $isGloballyDragging: boolean;
+    $isExpired: boolean;
 }
 const StyledHeader = styled.header<StyledHeaderType>`
+    --title-line-height: 3.2rem;
     display: flex;
     align-items: center;
     font-size: 2rem;
-    line-height: 3.2rem;
-    height: 3.2rem;
+    line-height: var(--title-line-height);
+
+    --icons-width: ${({$isExpired}) => {
+        if ($isExpired) { return '3.2rem' }
+        else { return '0px' }
+    }};
+    --btn-width: 3.6rem;
+    --btns-width: calc(var(--btn-width) * 2);
+    --title-width: calc(100% - var(--icons-width) - var(--btns-width));
+
+
     @media (width < 600px) {
         font-size: 16px;
     }
@@ -230,9 +243,10 @@ const StyledHeader = styled.header<StyledHeaderType>`
     .gripper {
         display: flex;
         align-items: center;
+        justify-content: center;
         height: 100%;
+        width: var(--btn-width);
         touch-action: none;
-        padding: 0 0.8rem;
         cursor: grab;
         svg {
             font-size: inherit;
@@ -242,58 +256,52 @@ const StyledHeader = styled.header<StyledHeaderType>`
         }
     }
 
-    .icon-expired {
-        color: #b00;
+    /* .icon-expired と .btn-toggle-open 共通 */
+    button:has(svg[class*="fa-"]) {
         display: flex;
         align-items: center;
-        height: 100%;
-        padding-right: 0.8rem;
+        justify-content: center;
+        height: var(--title-line-height);
         svg {
-            height: 50%;
+            height: 1.6rem;
         }
+    }
+
+    .icon-expired {
+        color: #b00;
+        width: var(--icons-width);
     }
 
     .main-container {
         flex: 1;
+        max-width: var(--title-width);
+        border-bottom: ${({$inEditing}) => ($inEditing ? 'var(--border-1)' : 'var(--border-weight) solid transparent')};
         h4,
         input {
             font-size: inherit;
             line-height: inherit;
-            padding: 0;
         }
         h4 {
-            display: ${(props) => (props.$inEditing ? 'none' : 'block')};
-            text-decoration: ${(props) => (props.$isCompleted ? 'line-through' : '')};
+            display: ${({$inEditing}) => ($inEditing ? 'none' : 'block')};
+            text-decoration: ${({$isCompleted}) => ($isCompleted ? 'line-through' : '')};
+            color: ${({$isCompleted}) => ($isCompleted ? 'var(--color-gray-1)' : 'var(--color-black-1)')};
             cursor: pointer;
+            max-width: 100%;
+            height: ${({$isGloballyDragging}) => ($isGloballyDragging ? 'var(--title-line-height)' : 'auto')};
+            text-overflow: ${({$isGloballyDragging}) => ($isGloballyDragging ? 'ellipsis' : 'clip')};
+            overflow: ${({$isGloballyDragging}) => ($isGloballyDragging ? 'hidden' : 'visible')};
+            white-space: ${({$isGloballyDragging}) => ($isGloballyDragging ? 'nowrap' : 'normal')};
         }
         input {
-            border: none;
-            outline: none;
-            background: none;
-            border-bottom: 1px solid #000;
-            border-radius: 0;
-            display: ${(props) => (props.$inEditing ? 'block' : 'none')};
+            display: ${({$inEditing}) => ($inEditing ? 'block' : 'none')};
             width: 100%;
         }
     }
 
-    .btn-container {
-        display: flex;
-        > button {
-            height: 100%;
-        }
-        .btn-toggle-detail {
-            scale: ${(props) => (props.$isOpen ? '1 1' : '1 -1')};
-            transition: scale 500ms;
-            display: flex;
-            align-items: center;
-            padding: 0 0.8rem;
-            width: 3.6rem;
-            svg {
-                height: 50%;
-                height: 1.6rem;
-            }
-        }
+    .btn-toggle-detail {
+        width: var(--btn-width);
+        scale: ${({$isOpen}) => ($isOpen ? '1 1' : '1 -1')};
+        transition: scale 500ms;
     }
 `;
 // ========================================================= STYLE === //

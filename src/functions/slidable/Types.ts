@@ -44,10 +44,12 @@ interface PropsBase {
 
 /**
  * for component props
- * - Slidable component
+ * @property slidableParams: {@link SlidableParams}
+ * @property skipCondition: スライドの挙動を無効化したいときに true を返すstateなどを指定
  */
 export interface SlidableProps extends PropsBase {
     slidableParams: SlidableParams;
+    skipCondition?: boolean;
 }
 
 /**

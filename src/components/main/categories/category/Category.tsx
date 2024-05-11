@@ -11,7 +11,7 @@
  */
 
 /* --- react/styled-components --- */
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 
 /* --- child components ---------- */
@@ -98,8 +98,20 @@ export const useDndSortable = (todos: TodoType[]) => {
         setActiveId(null);
     };
 
+    const isGloballyDragging = (activeId !== null);
+    // ドラッグ中はユーザー選択を無効化。
+    // ドラッグ中に停止していると長押し判定が出て意図せず選択されてしまうため。
+    // 完ぺきではないが、これでかなりその挙動が低減される。
+    useEffect(() => {
+        if (isGloballyDragging) {
+            document.documentElement.classList.add('no-user-select');
+        } else {
+            document.documentElement.classList.remove('no-user-select');
+        }
+    }, [isGloballyDragging]);
 
-    return { sensors, activeId, handleDragStart, handleDragEnd };
+
+    return { sensors, activeId, handleDragStart, handleDragEnd, isGloballyDragging };
 };
 
 /**
@@ -110,7 +122,7 @@ export const useDndSortable = (todos: TodoType[]) => {
 export const useCategory = (props: CategoryProps) => {
     const { category } = props;
     const todos = category.todos;
-    const { sensors, activeId, handleDragStart, handleDragEnd } = useDndSortable(todos);
+    const { sensors, activeId, handleDragStart, handleDragEnd, isGloballyDragging } = useDndSortable(todos);
 
     return {
         /** カテゴリーに含まれる todo のリスト */
@@ -124,7 +136,7 @@ export const useCategory = (props: CategoryProps) => {
         /** ドラッグ終了時の handler */
         handleDragEnd,
 
-        isGloballyDragging: (activeId !== null),
+        isGloballyDragging,
 
     };
 };

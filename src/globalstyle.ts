@@ -25,6 +25,8 @@ const GlobalStyle = createGlobalStyle`
     --color-white-2: #f9f9f9;
     --color-white-3: #efefef;
 
+    --color-gray-1: #888;
+
 
     /* border */
     --border-1: var(--border-weight) solid var(--color-black-1);
@@ -102,6 +104,10 @@ const GlobalStyle = createGlobalStyle`
   input {
     margin: 0;
     padding: 0;
+    border: none;
+    outline: none;
+    background: none;
+    border-radius: 0;
   }
   textarea {
     resize: none;
@@ -118,6 +124,14 @@ const GlobalStyle = createGlobalStyle`
   h6 { font-size: 1.0rem }
   p,
   a, button, label { font-size: 1.6rem }
+
+
+  .no-user-select {
+    user-select: none;
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+  }
 
 
 

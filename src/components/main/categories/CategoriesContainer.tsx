@@ -28,7 +28,7 @@ import { MdeModal } from './MdeModal';
 /**
  * @param props
  * @returns
- * 
+ *
  * @renderAs
  * - `<div/>`
  * @example

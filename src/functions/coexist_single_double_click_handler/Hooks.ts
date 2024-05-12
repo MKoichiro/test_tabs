@@ -1,12 +1,11 @@
 import { MouseEvent, useState } from 'react';
 
-
-interface Handlers <T,U>{
+interface Handlers<T, U> {
     single: (e: MouseEvent, singleArgs?: T) => void;
     double: (e: MouseEvent, doubleArgs?: U) => void;
 }
-interface Args <T,U>{
-    handlers: Handlers<T,U>;
+interface Args<T, U> {
+    handlers: Handlers<T, U>;
     delay: number;
 }
 /**
@@ -31,7 +30,7 @@ interface Args <T,U>{
  *     );
  * };
  * ```
- * 
+ *
  * #### Advanced Usage
  * If you want to pass some additional arguments to the handlers, you can do like this:
  * ```tsx
@@ -41,7 +40,7 @@ interface Args <T,U>{
  * interface Double {
  *     id: number;
  * }
- * 
+ *
  * const MyComponent = () => {
  *     const netClickHandler       = (e: MouseEvent, args: Single) => console.log('single clicked: ', e.target, args);
  *     const netDoubleClickHandler = (e: MouseEvent, args: Double) => console.log('double clicked: ', e.target, args);
@@ -49,7 +48,7 @@ interface Args <T,U>{
  *         single: netClickHandler,
  *         double: netDoubleClickHandler,
  *     };
- *     
+ *
  *     // You should pass the type of the additional arguments in '<>' to the generic type of the hook.
  *     const handleClick = useCoexistSingleDoubleClickHandler<Single, Double>({ handlers });
  *     const handleClickForBind = (e: MouseEvent) => handleClick(e, { singleArgs: { id: 1 }, doubleArgs: { id: 2 } });
@@ -60,14 +59,13 @@ interface Args <T,U>{
  *     );
  * };
  * ```
- * 
+ *
  */
-export const useCoexistSingleDoubleClickHandler = <T, U>({ handlers, delay = 200 }: Args<T,U>) => {
+export const useCoexistSingleDoubleClickHandler = <T, U>({ handlers, delay = 200 }: Args<T, U>) => {
     const [clickCount, setClickCount] = useState(0);
     const [timer, setTimer] = useState<NodeJS.Timeout | null>(null);
 
-    return (e: MouseEvent, {singleArgs, doubleArgs}: {singleArgs?: T, doubleArgs?: U} = {}) => {
-
+    return (e: MouseEvent, { singleArgs, doubleArgs }: { singleArgs?: T; doubleArgs?: U } = {}) => {
         if (timer !== null) clearTimeout(timer);
         const newCount = clickCount + 1;
         setClickCount(newCount);

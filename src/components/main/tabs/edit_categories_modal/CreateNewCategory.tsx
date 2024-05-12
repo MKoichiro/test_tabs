@@ -64,7 +64,6 @@ interface DataType {
  * @category Custom Hook
  */
 export const useCreateNewCategory = () => {
-    
     const { categoriesEntity: categories } = useCategoriesSelector();
     const dispatch = useDispatch();
 
@@ -126,7 +125,7 @@ export const useCreateNewCategory = () => {
 /**
  * @param props
  * @returns
- * 
+ *
  * @renderAs
  * - `<form/>`
  * @example
@@ -137,14 +136,8 @@ export const useCreateNewCategory = () => {
  * @category Component
  */
 export const CreateNewCategory = () => {
-    const {
-        handleSubmit,
-        executeSubmit,
-        errors,
-        refForName,
-        restForName,
-        nameRef,
-    } = useCreateNewCategory();
+    const { handleSubmit, executeSubmit, errors, refForName, restForName, nameRef } =
+        useCreateNewCategory();
 
     return (
         <StyledForm onSubmit={handleSubmit(executeSubmit)}>
@@ -210,8 +203,8 @@ const StyledForm = styled.form`
                 gap: 0.8rem;
                 font-weight: bold;
                 .input-feature {
-                    font-size: .9em;
-                    padding: .2rem .6rem;
+                    font-size: 0.9em;
+                    padding: 0.2rem 0.6rem;
 
                     background: var(--color-black-1);
                     color: var(--color-white-2);
@@ -266,7 +259,7 @@ const StyledForm = styled.form`
                 }
             }
             button:active {
-                scale: .9;
+                scale: 0.9;
                 transition: scale 50ms;
             }
         }

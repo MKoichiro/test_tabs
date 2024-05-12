@@ -1,7 +1,6 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from 'react';
 
 export const useHeightGetter = (skipCondition?: boolean) => {
-
     const [height, setHeight] = useState<number | null>(null);
     const heightGetterRef = useRef<HTMLElement | null>(null);
 
@@ -16,7 +15,6 @@ export const useHeightGetter = (skipCondition?: boolean) => {
         if (heightGetterRef.current) observer.observe(heightGetterRef.current);
 
         return () => observer.disconnect();
-
     }, []);
 
     return { height, heightGetterRef };

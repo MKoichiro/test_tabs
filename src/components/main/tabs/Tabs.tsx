@@ -15,7 +15,11 @@ import styled from 'styled-components';
 
 /* --- redux --------------------- */
 import { register } from '../../../providers/redux/slices/modalSlice';
-import { useCategoriesSelector, useDispatch, useWindowSizeSelector } from '../../../providers/redux/store';
+import {
+    useCategoriesSelector,
+    useDispatch,
+    useWindowSizeSelector,
+} from '../../../providers/redux/store';
 
 /* --- providers/contexts -------- */
 import { useModalOpener } from '../../../providers/context_api/ModalElmsRef';
@@ -41,11 +45,10 @@ import { EditCategoriesModal } from './edit_categories_modal/EditCategoriesModal
 // interface TabsProps {}
 // =========================================================== TYPE === //
 
-
 // === FUNCTION ======================================================= //
 /**
  * @param arg - {@link Tabs} コンポーネントが受け取る props をそのまま引数として受け取る。
- * 
+ *
  * @category Custom Hook
  * @example
  * ```tsx
@@ -77,14 +80,13 @@ export const useTabs = () => {
     };
 };
 
-
 // ======================================================= FUNCTION === //
 
 // === COMPONENT ====================================================== //
 /**
  * @param props
  * @returns
- * 
+ *
  * @renderAs
  * - `<nav/>`
  * @example
@@ -98,22 +100,20 @@ export const Tabs = () => {
     const { ulRef, categories, openModal, tabCarouselStyleFactors } = useTabs();
 
     const modalBtnWidth = `${tabCarouselStyleFactors.modalBtnWidth}%`;
-    console.log('rerendered');
-    categories.filter((category) => !category.isArchived).map((category) => {console.log(category.name)});
 
     return (
         <StyledNav $modalBtnWidth={modalBtnWidth}>
-            <ul
-                ref={ulRef}
-            >
-                {categories.filter((category) => !category.isArchived).map((category, i) => (
-                    <Tab
-                        key={category.id}
-                        ulRef={ulRef}
-                        idx={i}
-                        category={category}
-                    />
-                ))}
+            <ul ref={ulRef}>
+                {categories
+                    .filter((category) => !category.isArchived)
+                    .map((category, i) => (
+                        <Tab
+                            key={category.id}
+                            ulRef={ulRef}
+                            idx={i}
+                            category={category}
+                        />
+                    ))}
             </ul>
 
             <span className={'separator-tabs'} />
@@ -129,7 +129,7 @@ export const Tabs = () => {
 // ====================================================== COMPONENT === //
 
 // === STYLE ========================================================= //
-const StyledNav = styled.nav<{$modalBtnWidth: string}>`
+const StyledNav = styled.nav<{ $modalBtnWidth: string }>`
     margin-top: 3.2rem;
     display: flex;
     align-items: center;

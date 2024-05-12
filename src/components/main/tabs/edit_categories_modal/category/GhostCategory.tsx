@@ -37,7 +37,7 @@ interface GhostCategoryType {
 /**
  * @param props
  * @returns
- * 
+ *
  * @renderAs
  * - `<div/>`
  * @example
@@ -47,7 +47,8 @@ interface GhostCategoryType {
  *
  * @category Component
  */
-export const GhostCategory = forwardRef<HTMLDivElement, GhostCategoryType>(({ draggingCategory }, ref) => {
+export const GhostCategory = forwardRef<HTMLDivElement, GhostCategoryType>(
+    ({ draggingCategory }, ref) => {
         return (
             <StyledDiv ref={ref}>
                 <span className="gripper">

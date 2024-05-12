@@ -1,7 +1,5 @@
 // import { ReactNode } from 'react';
 
-
-
 /**
  * for hooks args
  * @property SLIDABLE_LENGTH
@@ -30,8 +28,9 @@ export interface SlidableParams {
  * for hooks args
  * - when define default values
  */
-export type SlidableParamsOptionalDefault = Required<Omit<SlidableParams, 'SLIDABLE_LENGTH' | 'TOGGLE_THRESHOLD'>>;
-
+export type SlidableParamsOptionalDefault = Required<
+    Omit<SlidableParams, 'SLIDABLE_LENGTH' | 'TOGGLE_THRESHOLD'>
+>;
 
 /**
  * for component props

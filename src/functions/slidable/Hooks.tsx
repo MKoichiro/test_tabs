@@ -4,15 +4,12 @@ import { applyStyles, removeStyles } from './utils';
 import { defaultValForOptionalParams } from './constants';
 import { useWindowSizeSelector } from '../../providers/redux/store';
 
-
-
 interface Slidable {
     params: SlidableParams;
     skipCondition?: boolean;
 }
 
-export const useSlidable = ({params, skipCondition}: Slidable) => {
-
+export const useSlidable = ({ params, skipCondition }: Slidable) => {
     const {
         SLIDABLE_LENGTH, // ← これだけ必須で受け取る、以下はoptionalなのでデフォルト値を設定
         GRADIENT_THRESHOLD = defaultValForOptionalParams.GRADIENT_THRESHOLD,
@@ -26,9 +23,14 @@ export const useSlidable = ({params, skipCondition}: Slidable) => {
     const containerRef = useRef<HTMLDivElement | null>(null);
     // scrollBarWidthはrendering間で保持しつつ、resize時に更新。
     const scrollBarWidthRef = useRef<number>(inner.width - client.width);
-    useEffect(() => { scrollBarWidthRef.current = inner.width - client.width }, [inner.width, client.width]);
+    useEffect(() => {
+        scrollBarWidthRef.current = inner.width - client.width;
+    }, [inner.width, client.width]);
 
-    const [startPosition, setStartPosition] = useState<{x: number | undefined; y: number | undefined}>({ x: undefined, y: undefined });
+    const [startPosition, setStartPosition] = useState<{
+        x: number | undefined;
+        y: number | undefined;
+    }>({ x: undefined, y: undefined });
     const [scrollY, setScrollY] = useState<number | undefined>(0);
     const [translateX, setTranslateX] = useState(0);
     const [isSlided, setIsSlided] = useState(false);
@@ -48,7 +50,6 @@ export const useSlidable = ({params, skipCondition}: Slidable) => {
             container.style.transition = 'none';
         }, COMPLEMENT_ANIME_DURATION);
     }, [COMPLEMENT_ANIME_DURATION]);
-
 
     // --- Event Handlers: bind to <Slidable> ----------------- //
     const handleTouchStart = (e: React.TouchEvent<HTMLDivElement>) => {
@@ -78,7 +79,7 @@ export const useSlidable = ({params, skipCondition}: Slidable) => {
         // 初回のみの処理: 縦方向のスクロールかどうかの判定, 縦方向のスクロールの場合は reject
         const isFirstInvoke = !isAllowed && !isRejected;
         if (isFirstInvoke) {
-            const gradient = Math.abs(Math.tan(diffY / diffX))
+            const gradient = Math.abs(Math.tan(diffY / diffX));
             if (gradient > GRADIENT_THRESHOLD) {
                 // 傾きの絶対値が閾値を超えた場合は reject
                 setIsRejected(true);
@@ -105,7 +106,7 @@ export const useSlidable = ({params, skipCondition}: Slidable) => {
         // スライド実行（※実際は StyledContainer の transform プロパティに translateX を指定して移動）
         isSlided
             ? setTranslateX(diffX - SLIDABLE_LENGTH) // sliding to "Right" to "Close"
-            : setTranslateX(diffX);                  // sliding to "Left"  to "Open"
+            : setTranslateX(diffX); // sliding to "Left"  to "Open"
     };
 
     /**
@@ -123,7 +124,7 @@ export const useSlidable = ({params, skipCondition}: Slidable) => {
         // 開閉判定
         if (isAllowed) {
             const diffX = e.changedTouches[0].clientX - startPosition.x;
-            if (diffX < - TOGGLE_THRESHOLD) {
+            if (diffX < -TOGGLE_THRESHOLD) {
                 // Open Completely
                 setTranslateX(-SLIDABLE_LENGTH);
                 setIsSlided(true);
@@ -150,18 +151,21 @@ export const useSlidable = ({params, skipCondition}: Slidable) => {
 
     // slide後にユーザーが別の場所を操作した場合、スライドを閉じる
 
-    const resetSlidedState = useCallback((e: MouseEvent | TouchEvent) => {
-        // iOSでうまく動作させるために、setTimeout で処理を遅延させる。遅延させても特に不自然では無い。
-        setTimeout(() => {
-            if (!isSlided) return;
-            // コンテナ内での発火の場合はスライドを閉じない
-            const invokedIn = (e.target as Element).closest('.slidable-container');
-            if (invokedIn === containerRef.current) return;
-            enableAnimation();
-            setIsSlided(false);
-            setTranslateX(0);
-        }, 100);
-    },[isSlided, enableAnimation]);
+    const resetSlidedState = useCallback(
+        (e: MouseEvent | TouchEvent) => {
+            // iOSでうまく動作させるために、setTimeout で処理を遅延させる。遅延させても特に不自然では無い。
+            setTimeout(() => {
+                if (!isSlided) return;
+                // コンテナ内での発火の場合はスライドを閉じない
+                const invokedIn = (e.target as Element).closest('.slidable-container');
+                if (invokedIn === containerRef.current) return;
+                enableAnimation();
+                setIsSlided(false);
+                setTranslateX(0);
+            }, 100);
+        },
+        [isSlided, enableAnimation]
+    );
 
     useEffect(() => {
         if (!isSlided) return;
@@ -179,7 +183,6 @@ export const useSlidable = ({params, skipCondition}: Slidable) => {
             document.removeEventListener('click', resetSlidedState);
             // iOS 用の対応
             document.removeEventListener('touchstart', resetSlidedState);
-
         };
     }, [isSlided]);
 

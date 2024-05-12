@@ -68,9 +68,6 @@ export const useCardTodo = ({ todo, idx }: Omit<CardTodoProps, 'addScrollableRef
         dispatch(setActiveIdx(idx));
     };
 
-    
-
-
     return {
         todoTitle: todo.title,
         todoDetail: todo.detail,
@@ -79,14 +76,14 @@ export const useCardTodo = ({ todo, idx }: Omit<CardTodoProps, 'addScrollableRef
         activeWidth_vw,
         inactiveMagnification,
     };
-}
+};
 // ======================================================= FUNCTION === //
 
 // === COMPONENT ====================================================== //
 /**
  * @param props
  * @returns
- * 
+ *
  * @renderAs
  * - `<li/>`
  * @example
@@ -97,14 +94,8 @@ export const useCardTodo = ({ todo, idx }: Omit<CardTodoProps, 'addScrollableRef
  * @category Component
  */
 export const CardTodo = ({ todo, idx, addScrollableRef }: CardTodoProps) => {
-    const {
-        todoTitle,
-        todoDetail,
-        isActive,
-        handleClick,
-        activeWidth_vw,
-        inactiveMagnification
-    } = useCardTodo({ todo, idx });
+    const { todoTitle, todoDetail, isActive, handleClick, activeWidth_vw, inactiveMagnification } =
+        useCardTodo({ todo, idx });
 
     return (
         <StyledLi

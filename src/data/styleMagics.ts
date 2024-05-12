@@ -1,9 +1,8 @@
 // プロジェクト全体のcssでのみ使いたい場合はglobalStyles.tsに記述
 // ここには、プロジェクト全体のcssとcomponentでも参照したいものを定義
 
-const deviceLiterals = [ 'pc', 'tb', 'sp' ] as const;
-export type DeviceUnion = typeof deviceLiterals[number];
-
+const deviceLiterals = ['pc', 'tb', 'sp'] as const;
+export type DeviceUnion = (typeof deviceLiterals)[number];
 
 export type FontSizes = Record<DeviceUnion, number>;
 export const fontSizeRatios: ContentsWidths = {
@@ -18,13 +17,11 @@ export const contentsWidths: ContentsWidths = {
     sp: 90,
 };
 
-
 type BreakPoints = Omit<Record<DeviceUnion, number>, 'sp'>;
 export const BREAK_POINTS: BreakPoints = {
     pc: 1024,
     tb: 600,
 };
-
 
 /**
  * CardCarouselMagicsType
@@ -55,7 +52,6 @@ export const cardCarouselMagics: CardCarouselMagics = {
         inactiveMagnification: 0.5,
     },
 };
-
 
 export interface TabCarouselMagic {
     modalBtnWidth: number;

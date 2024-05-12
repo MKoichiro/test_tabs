@@ -27,7 +27,6 @@ import { CategoryType } from '../../../../../providers/types/categories';
 /* --- dev ----------------------- */
 // import { isDebugMode } from '../../../../../utils/adminDebugMode';
 
-
 // === TYPE =========================================================== //
 /**
  * @property category - カテゴリー の情報
@@ -43,7 +42,7 @@ interface CardsCarouselProps {
 // === FUNCTION ======================================================= //
 /**
  * @param arg - hogehoge
- * 
+ *
  * @category Custom Hook
  * @example
  * ```tsx
@@ -75,14 +74,14 @@ export const useCardCarousel = (category: CategoryType) => {
         /** フォーマット済みの todos */
         todosFormatted,
     };
-}
+};
 // ======================================================= FUNCTION === //
 
 // === COMPONENT ====================================================== //
 /**
  * @param props
  * @returns
- * 
+ *
  * @renderAs
  * - `<ul/>`
  * @example
@@ -93,12 +92,8 @@ export const useCardCarousel = (category: CategoryType) => {
  * @category Component
  */
 export const CardCarousel = ({ category, addScrollableRef }: CardsCarouselProps) => {
-    const {
-        adjustedPadding_vw,
-        gap_vw,
-        carouselContainerRef,
-        todosFormatted,
-    } = useCardCarousel(category);
+    const { adjustedPadding_vw, gap_vw, carouselContainerRef, todosFormatted } =
+        useCardCarousel(category);
 
     return (
         <StyledUl

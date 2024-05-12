@@ -62,14 +62,14 @@ export const useCategoryContainer = (props: CategoryContainerProps) => {
         /** categoriesSliceから取得するカテゴリー情報 */
         category,
     };
-}
+};
 // ======================================================= FUNCTION === //
 
 // === COMPONENT ====================================================== //
 /**
  * @param props
  * @returns
- * 
+ *
  * @renderAs
  * - `<div/>`
  * @example

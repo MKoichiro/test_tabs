@@ -40,7 +40,6 @@ export interface CategoryType extends CommonType {
     todos: TodoType[];
 }
 
-
 // export interface TodoType {
 //     id: string;
 //     createdDate: string;

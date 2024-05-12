@@ -30,7 +30,7 @@ import styled from 'styled-components';
 /**
  * @param props
  * @returns
- * 
+ *
  * @renderAs
  * - `<header/>`
  * @example
@@ -44,13 +44,11 @@ export const Header = () => {
     return (
         <StyledHeader>
             <div className="header-container">
-                <div className='header-grip-icon'>
-                    <RadioButtonUnchecked/>
+                <div className="header-grip-icon">
+                    <RadioButtonUnchecked />
                 </div>
-                <h1>
-                    WEB CAT Todo
-                </h1>
-                <div className='header-toggle-icon'>
+                <h1>WEB CAT Todo</h1>
+                <div className="header-toggle-icon">
                     <FontAwesomeIcon icon={faChevronDown} />
                 </div>
             </div>
@@ -67,7 +65,7 @@ const StyledHeader = styled.header`
 
     .header-container {
         border: var(--border-weight) solid var(--color-white-1);
-        border-radius: .25rem;
+        border-radius: 0.25rem;
         background-color: var(--color-black-1);
         color: var(--color-white-1);
         margin: 1.6rem auto;
@@ -75,7 +73,7 @@ const StyledHeader = styled.header`
         display: flex;
 
         .header-grip-icon {
-            padding-left: .8rem;
+            padding-left: 0.8rem;
             svg {
                 font-size: inherit;
                 height: 100%;
@@ -83,7 +81,7 @@ const StyledHeader = styled.header`
         }
 
         h1 {
-            padding: .8rem;
+            padding: 0.8rem;
             letter-spacing: 0.15rem;
             flex: 1;
         }
@@ -91,9 +89,9 @@ const StyledHeader = styled.header`
         .header-toggle-icon {
             display: flex;
             align-items: center;
-            padding: 0 .8rem;
+            padding: 0 0.8rem;
             svg {
-                height: .75em;
+                height: 0.75em;
             }
         }
     }

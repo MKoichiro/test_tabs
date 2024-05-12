@@ -40,8 +40,10 @@ interface FormPartsProps {
 // =========================================================== TYPE === //
 
 // === FUNCTION ======================================================= //
-export const useFormParts = ({partsFor, register}: Pick<FormPartsProps, 'partsFor' | 'register'>) => {
-
+export const useFormParts = ({
+    partsFor,
+    register,
+}: Pick<FormPartsProps, 'partsFor' | 'register'>) => {
     const htmlFor = partsFor;
     const id = partsFor;
     const labelTxt = partsFor.charAt(0).toUpperCase() + partsFor.slice(1); // 例: 'Title', ::after で ':' を付与
@@ -49,7 +51,7 @@ export const useFormParts = ({partsFor, register}: Pick<FormPartsProps, 'partsFo
     let options;
     switch (partsFor) {
         case 'title': {
-            options = { required: "Please enter a title" };
+            options = { required: 'Please enter a title' };
             break;
         }
         default: {
@@ -85,12 +87,11 @@ export const FormParts = (props: FormPartsProps) => {
         isFieldsetBlurred,
     } = props;
 
-    const { id, htmlFor, labelTxt, ref, rest } = useFormParts({partsFor, register});
+    const { id, htmlFor, labelTxt, ref, rest } = useFormParts({ partsFor, register });
 
     const toFirstUpperCase = (str: string) => {
         return str.charAt(0).toUpperCase() + str.slice(1);
     };
-
 
     return (
         <StyledDiv className={className}>
@@ -145,9 +146,9 @@ export const FormParts = (props: FormPartsProps) => {
                         ))}
                     </select>
                 )}
-    
+
                 <p className="error-message">
-                    {(error && !isFieldsetBlurred) && error.message as React.ReactNode}
+                    {error && !isFieldsetBlurred && (error.message as React.ReactNode)}
                 </p>
             </div>
         </StyledDiv>

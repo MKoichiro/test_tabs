@@ -12,7 +12,6 @@
 //     return pxValue;
 // };
 
-
 export const vw2px = (vw: number): number => {
     return innerWidth * (vw / 100);
 };

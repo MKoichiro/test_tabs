@@ -37,21 +37,19 @@ import { TodoType } from '../../../../../providers/types/categories';
 // slidable
 import { SlidableParams } from '../../../../../functions/slidable/types';
 
-
 /* --- font awesome -------------- */
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTrashCan, faCheck } from '@fortawesome/free-solid-svg-icons';
+import { faCheck } from '@fortawesome/free-solid-svg-icons';
 
 /* --- dnd-kit ------------------- */
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { useWindowSizeSelector } from '../../../../../providers/redux/store';
 import { vw2px } from '../../../../../utils/converters';
-import { ViewArrayOutlined } from '@mui/icons-material';
+import { Inventory2Outlined, ViewArrayOutlined } from '@mui/icons-material';
 
 /* --- dev ----------------------- */
 // import { isDebugMode } from '../../../../../utils/adminDebugMode';
-
 
 // === TYPE =========================================================== //
 /**
@@ -72,7 +70,7 @@ interface ActiveTodoProps {
  * dnd-kit の useSortable を使って、drag される要素の情報を取得する。
  * {@link useActiveTodo} のヘルパーとして使用。
  * @param arg
- * 
+ *
  * @category Custom Hook
  * @example
  * ```tsx
@@ -100,29 +98,17 @@ export const useDndItem = (todoId: string) => {
 /**
  * ActiveTodo コンポーネントのロジックを担当。
  * @param arg
- * 
+ *
  * @category Custom Hook
- * @example
- * ```tsx
- * const {
- *      todoId,
- *      attributes, 
- *      listeners, 
- *      setNodeRef, 
- *      style, 
- *      isDragging, 
- *      liRef, 
- *      handleInfoBtnClick, 
- *      handleCompleteBtnClick, 
- *      handleArchiveBtnClick
- * } = useActiveTodo({todo, activeTodoIdx});
- * ```
  */
-export const useActiveTodo = ({todo, activeTodoIdx}: Omit<ActiveTodoProps, 'isGloballyDragging' | 'handleMouseDown'>) => {
+export const useActiveTodo = ({
+    todo,
+    activeTodoIdx,
+}: Omit<ActiveTodoProps, 'isGloballyDragging' | 'handleMouseDown'>) => {
     const todoId = todo.id;
 
     const { contentsWidth } = useWindowSizeSelector();
-    const btnContainerWidth = vw2px(contentsWidth) * .5;
+    const btnContainerWidth = vw2px(contentsWidth) * 0.5;
     const slidableParams: SlidableParams = { SLIDABLE_LENGTH: btnContainerWidth };
 
     // dnd-kit
@@ -169,14 +155,14 @@ export const useActiveTodo = ({todo, activeTodoIdx}: Omit<ActiveTodoProps, 'isGl
         /** Slidable のパラメータ */
         slidableParams,
     };
-}
+};
 // ======================================================= FUNCTION === //
 
 // === COMPONENT ====================================================== //
 /**
  * @param props
  * @returns
- * 
+ *
  * @renderAs
  * - `<li/>`
  * @example
@@ -186,21 +172,25 @@ export const useActiveTodo = ({todo, activeTodoIdx}: Omit<ActiveTodoProps, 'isGl
  *
  * @category Component
  */
-export const ActiveTodo = ({ todo, activeTodoIdx, isGloballyDragging, handleMouseDown }: ActiveTodoProps) => {
+export const ActiveTodo = ({
+    todo,
+    activeTodoIdx,
+    isGloballyDragging,
+    handleMouseDown,
+}: ActiveTodoProps) => {
     const {
         todoId,
-        attributes, 
-        listeners, 
-        setNodeRef, 
-        style, 
-        isDragging, 
-        liRef, 
-        handleInfoBtnClick, 
-        handleCompleteBtnClick, 
+        attributes,
+        listeners,
+        setNodeRef,
+        style,
+        isDragging,
+        liRef,
+        handleInfoBtnClick,
+        handleCompleteBtnClick,
         handleArchiveBtnClick,
         slidableParams,
-     } = useActiveTodo({todo, activeTodoIdx});
-
+    } = useActiveTodo({ todo, activeTodoIdx });
 
     return (
         <StyledLi
@@ -212,7 +202,6 @@ export const ActiveTodo = ({ todo, activeTodoIdx, isGloballyDragging, handleMous
                 liRef.current = e;
             }}
             {...attributes}
-
         >
             {/* slidable: li内をスライド可能にするためのコンテナ */}
             <Slidable
@@ -246,7 +235,7 @@ export const ActiveTodo = ({ todo, activeTodoIdx, isGloballyDragging, handleMous
                         <button
                             className={'each-btn btn-info'}
                             onClick={handleInfoBtnClick}
-                            children={<ViewArrayOutlined/>}
+                            children={<ViewArrayOutlined />}
                         />
                     </div>
 
@@ -264,7 +253,7 @@ export const ActiveTodo = ({ todo, activeTodoIdx, isGloballyDragging, handleMous
                         <button
                             className={'each-btn btn-delete'}
                             onClick={handleArchiveBtnClick}
-                            children={<FontAwesomeIcon icon={faTrashCan} />}
+                            children={<Inventory2Outlined />}
                         />
                     </div>
                 </SlidableHidden>
@@ -284,7 +273,7 @@ const StyledLi = styled.li<StyledLiType>`
     border-radius: 0.4rem;
 
     margin: 1.6rem 0;
-    opacity: ${({$isDragging}) => ($isDragging ? 0.5 : 1)};
+    opacity: ${({ $isDragging }) => ($isDragging ? 0.5 : 1)};
     overflow-x: hidden;
     width: 100%;
 
@@ -311,24 +300,27 @@ const StyledLi = styled.li<StyledLiType>`
                 display: block;
                 width: 95%;
                 height: 95%;
-                border:  var(--border-1);
+                border: var(--border-1);
                 border-radius: 0.2rem;
                 @media (width < 600px) {
                     border-radius: 0.15rem;
                 }
             }
 
-            .btn-info {
-                color: pink;
+            .each-btn:has([class^='MuiSvgIcon']) {
                 svg {
                     font-size: 2.4rem;
                 }
+            }
+
+            .btn-info {
+                color: tomato;
             }
             .btn-check {
                 color: tomato;
             }
             .btn-delete {
-                color: maroon;
+                color: tomato;
             }
         }
     }

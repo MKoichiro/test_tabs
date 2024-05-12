@@ -18,7 +18,11 @@ import React, { RefObject } from 'react';
 import styled from 'styled-components';
 
 /* --- redux --------------------- */
-import { useDispatch, useCategoriesSelector, useWindowSizeSelector } from '../../../providers/redux/store';
+import {
+    useDispatch,
+    useCategoriesSelector,
+    useWindowSizeSelector,
+} from '../../../providers/redux/store';
 import { switchCategory } from '../../../providers/redux/slices/categoriesSlice';
 
 /* --- utils --------------------- */
@@ -43,8 +47,6 @@ interface TabProps {
 }
 // =========================================================== TYPE === //
 
-
-
 // === FUNCTION ======================================================= //
 // 1. useTabSwitcher
 /**
@@ -63,7 +65,11 @@ interface TabProps {
  *
  * @category Custom Hook
  */
-export const useTabSwitcher = ({ idx, ulRef, styleFactors }: Omit<TabProps, 'category'> & { styleFactors: TabCarouselMagic }) => {
+export const useTabSwitcher = ({
+    idx,
+    ulRef,
+    styleFactors,
+}: Omit<TabProps, 'category'> & { styleFactors: TabCarouselMagic }) => {
     const dispatch = useDispatch();
 
     const { contentsWidth } = useWindowSizeSelector();
@@ -82,7 +88,10 @@ export const useTabSwitcher = ({ idx, ulRef, styleFactors }: Omit<TabProps, 'cat
 
         /** tab の idx と 非アクティブ時の tab の幅を元に、スクロール位置を計算してスムーズスクロール */
         const currentContentWidth = vw2px(contentsWidth);
-        const inactiveTabWidth = currentContentWidth * (1 - styleFactors.modalBtnWidth / 100) * (styleFactors.tabMinWidth / 100);
+        const inactiveTabWidth =
+            currentContentWidth *
+            (1 - styleFactors.modalBtnWidth / 100) *
+            (styleFactors.tabMinWidth / 100);
         const targetCoordinate = inactiveTabWidth * idx;
         container.scrollTo({ left: targetCoordinate, behavior: 'smooth' });
     };
@@ -99,7 +108,7 @@ export const useTabSwitcher = ({ idx, ulRef, styleFactors }: Omit<TabProps, 'cat
 // 2. useTab
 /**
  * @param arg - {@link Tab} コンポーネントが受け取る {@link TabProps} 型の props をそのまま引数として受け取る。
- * 
+ *
  * @category Custom Hook
  * @example
  * ```tsx
@@ -127,7 +136,7 @@ export const useTab = ({ idx, ulRef, category }: TabProps) => {
 /**
  * @param props
  * @returns
- * 
+ *
  * @renderAs
  * - `<li/>`
  * @example
@@ -142,7 +151,6 @@ export const Tab = (props: TabProps) => {
 
     const tabMinWidth = `${styleFactors.tabMinWidth}%`;
 
-
     return (
         <StyledLi
             key={categoryId}
@@ -153,7 +161,6 @@ export const Tab = (props: TabProps) => {
                 children={categoryName}
                 onClick={toggleActive}
             />
-
         </StyledLi>
     );
 };
@@ -179,9 +186,9 @@ const StyledLi = styled.li<StylePropsType>`
         height: 100%;
         min-width: ${({ $tabMinWidth }) => $tabMinWidth};
     }
-    
+
     button {
-        border-radius: .1rem;
+        border-radius: 0.1rem;
         display: block;
         width: 100%;
         height: 66.7%;

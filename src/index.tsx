@@ -35,7 +35,9 @@ if (rootDiv) {
 
     root.render(
         <>
-            <StrictMode> {/* 本番ビルド(npm run build)では自動的に無効になる */}
+            <StrictMode>
+                {' '}
+                {/* 本番ビルド(npm run build)では自動的に無効になる */}
                 <GlobalStyle />
                 <Providers>
                     <App />
@@ -44,4 +46,7 @@ if (rootDiv) {
         </>
     );
 } else {
-    console.error('The element with the id "root" is not found. Please ensure that the element exists in your HTML.');}
+    console.error(
+        'The element with the id "root" is not found. Please ensure that the element exists in your HTML.'
+    );
+}

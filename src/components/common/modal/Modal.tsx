@@ -109,7 +109,6 @@ const StyledDialog = styled.dialog<StyledDialogType>`
     background-color: transparent; // 背景を透過するために指定
 `;
 
-
 interface StyledMaskType {
     $isOpen: boolean;
 }

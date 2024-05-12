@@ -71,7 +71,7 @@ export const useCardModal = () => {
 /**
  * @param props
  * @returns
- * 
+ *
  * @renderAs
  * - `<dialog/>`
  * @example

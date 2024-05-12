@@ -1,5 +1,3 @@
-
-
 /* --- react/styled-components --- */
 import React from 'react';
 import styled from 'styled-components';
@@ -23,7 +21,6 @@ import { faXmark } from '@fortawesome/free-solid-svg-icons';
 /* --- dev ----------------------- */
 // import { isDebugMode } from '../../../../utils/adminDebugMode';
 
-
 // === TYPE =========================================================== //
 /**
  * @property className - modal (dialog 要素)に付与するクラス名
@@ -39,7 +36,6 @@ interface EditCategoriesModalProps {
  * @category Custom Hook
  */
 export const useEditCategoriesModal = () => {
-    
     const modalName = modalNames.editCategories;
     const isOpen = useModalsSelector().modalStates[modalName]?.isOpen;
     const { setBasicsRef, addScrollableRef } = useModalRegistrant(modalName);
@@ -59,7 +55,7 @@ export const useEditCategoriesModal = () => {
 /**
  * @param props
  * @returns
- * 
+ *
  * @renderAs
  * - `<dialog/>`
  * @example
@@ -69,14 +65,9 @@ export const useEditCategoriesModal = () => {
  *
  * @category Component
  */
-export const EditCategoriesModal = ({className}: EditCategoriesModalProps) => {
-    const {
-        modalName,
-        isOpen,
-        setBasicsRef,
-        addScrollableRef,
-        closeModal,
-    } = useEditCategoriesModal();
+export const EditCategoriesModal = ({ className }: EditCategoriesModalProps) => {
+    const { modalName, isOpen, setBasicsRef, addScrollableRef, closeModal } =
+        useEditCategoriesModal();
 
     return (
         <StyledModal
@@ -125,7 +116,6 @@ const StyledModal = styled(Modal)<StyledModalType>`
     }
     color: var(--color-black-1);
 
-
     .edit-categories-modal-mask {
         --bdf: ${(props) => (props.isOpen ? 'blur(2px)' : 'blur(0)')};
         --bgc: ${(props) => (props.isOpen ? 'rgba(69 78 112 / .5)' : 'rgba(69 78 112 / 0)')};
@@ -153,7 +143,7 @@ const StyledModal = styled(Modal)<StyledModalType>`
         > * {
             background: var(--color-white-1);
             padding: 0.8rem;
-            border-radius: .2rem;
+            border-radius: 0.2rem;
         }
         .modal-heading {
             grid-area: heading;

@@ -33,15 +33,14 @@ const useApp = () => {
     const dispatchWindowSize = useCallback(() => {
         const inner = {
             width: window.innerWidth,
-            height: window.innerHeight
+            height: window.innerHeight,
         };
         const client = {
             width: document.documentElement.clientWidth,
-            height: document.documentElement.clientHeight
+            height: document.documentElement.clientHeight,
         };
         dispatch(setWindowSize({ inner, client }));
     }, []);
-
 
     useEffect(() => {
         // window サイズ初期値のdispatch
@@ -56,14 +55,14 @@ const useApp = () => {
         addEventListener('resize', handleResize);
         return () => removeEventListener('resize', handleResize);
     }, []);
-}
+};
 // ======================================================= FUNCTION === //
 
 // === COMPONENT ====================================================== //
 /**
  * @param props
  * @returns
- * 
+ *
  * @renderAs
  * - `</>` > `<header/>`, `<main/>`, `<footer/>`
  * @example

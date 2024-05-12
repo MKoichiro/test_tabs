@@ -9,7 +9,6 @@ export const storedActiveIdx = 0;
 
 const categoriesRandDates = new Array(11).fill(null).map(() => getCategoryRandDates());
 
-
 export const storedCategories: CategoryType[] = [
     {
         id: generateUUID(),

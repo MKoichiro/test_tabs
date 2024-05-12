@@ -10,10 +10,10 @@ import { SlidableMainProps, SlidableHiddenProps } from './types';
 // === COMPONENT ====================================================== //
 // 1. Slidable
 export const Slidable = (props: PropsWithChildren<SlidableProps>) => {
-
     const { children, className, slidableParams, skipCondition } = props;
 
-    const { handleTouchStart, handleTouchMove, handleTouchEnd, containerRef, translateX } = useSlidable({params: slidableParams, skipCondition});
+    const { handleTouchStart, handleTouchMove, handleTouchEnd, containerRef, translateX } =
+        useSlidable({ params: slidableParams, skipCondition });
 
     return (
         <StyledSlidable

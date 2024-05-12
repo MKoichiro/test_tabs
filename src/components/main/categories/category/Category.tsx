@@ -52,8 +52,6 @@ import { DirectionsWalkOutlined, Inventory2Outlined } from '@mui/icons-material'
 /* --- dev ----------------------- */
 // import { isDebugMode } from '../../../../utils/adminDebugMode';
 
-
-
 // === TYPE =========================================================== //
 /**
  * @property category - categoriesSlice から取得したカテゴリー情報
@@ -70,7 +68,7 @@ interface CategoryProps {
  * @param todos - カテゴリーに含まれる todo のリスト
  * @returns
  */
-export const useDndSortable = (props: CategoryProps) => {
+export const useCategory = (props: CategoryProps) => {
     const { category } = props;
     const todos = category.todos;
     const dispatch = useDispatch();
@@ -91,7 +89,7 @@ export const useDndSortable = (props: CategoryProps) => {
     // handlers
     const handleMouseDown = () => {
         setIsGloballyDragging(true);
-    }
+    };
 
     const handleDragStart = (e: DragStartEvent) => {
         const { active } = e;
@@ -109,7 +107,6 @@ export const useDndSortable = (props: CategoryProps) => {
         setIsGloballyDragging(false);
     };
 
-
     // const isGloballyDragging = (activeId !== null);
     // ドラッグ中はユーザー選択を無効化。
     // ドラッグ中に停止していると長押し判定が出て意図せず選択されてしまうため。
@@ -122,37 +119,16 @@ export const useDndSortable = (props: CategoryProps) => {
         }
     }, [isGloballyDragging]);
 
-
-    return { todos, sensors, activeId, handleDragStart, handleDragEnd, isGloballyDragging, handleMouseDown };
+    return {
+        todos,
+        sensors,
+        activeId,
+        handleDragStart,
+        handleDragEnd,
+        isGloballyDragging,
+        handleMouseDown,
+    };
 };
-
-/**
- * @summary カテゴリーの情報を取得するためのカスタムフック
- * @param props - カテゴリー情報
- * @returns
- */
-// export const useCategory = (props: CategoryProps) => {
-
-//     const { todos, sensors, activeId, handleDragStart, handleDragEnd, isGloballyDragging, setNodeRef } = useDndSortable(props);
-
-//     return {
-//         /** カテゴリーに含まれる todo のリスト */
-//         todos,
-//         /** dnd-kit/sortable で使用する sensor のリスト */
-//         sensors,
-//         /** ドラッグ中の todo の id */
-//         activeId,
-//         /** ドラッグ開始時の handler */
-//         handleDragStart,
-//         /** ドラッグ終了時の handler */
-//         handleDragEnd,
-
-//         isGloballyDragging,
-
-//         /** dnd-kit/droppable で使用する ref */
-//         setNodeRef,
-//     };
-// };
 // ====================================================== FUNCTIONS === //
 
 // === COMPONENT ====================================================== //
@@ -170,7 +146,7 @@ export const Category = (props: CategoryProps) => {
         handleDragEnd,
         isGloballyDragging,
         handleMouseDown,
-    } = useDndSortable(props);
+    } = useCategory(props);
 
     return (
         <StyledUl>
@@ -180,7 +156,6 @@ export const Category = (props: CategoryProps) => {
                 onDragStart={handleDragStart}
                 onDragEnd={handleDragEnd}
             >
-
                 <SortableContext
                     items={todos.filter((todo) => !todo.isArchived)}
                     strategy={verticalListSortingStrategy}
@@ -189,15 +164,17 @@ export const Category = (props: CategoryProps) => {
                         <DirectionsWalkOutlined />
                         <span className="attr-name">Active</span>
                     </span>
-                    {todos.filter((todo) => !todo.isArchived).map((todo, i) => (
-                        <ActiveTodo
-                            key={todo.id}
-                            activeTodoIdx={i}
-                            todo={todo}
-                            isGloballyDragging={isGloballyDragging}
-                            handleMouseDown={handleMouseDown}
-                        />
-                    ))}
+                    {todos
+                        .filter((todo) => !todo.isArchived)
+                        .map((todo, i) => (
+                            <ActiveTodo
+                                key={todo.id}
+                                activeTodoIdx={i}
+                                todo={todo}
+                                isGloballyDragging={isGloballyDragging}
+                                handleMouseDown={handleMouseDown}
+                            />
+                        ))}
                 </SortableContext>
 
                 <div>
@@ -205,16 +182,17 @@ export const Category = (props: CategoryProps) => {
                         <Inventory2Outlined />
                         <span className="attr-name">Archive</span>
                     </span>
-                    {todos.filter((todo) => todo.isArchived).map((todo, i) => (
-                        <ArchivedTodo
-                            key={todo.id}
-                            activeTodoIdx={i}
-                            todo={todo}
-                            isGloballyDragging={isGloballyDragging}
-                        />
-                    ))}
+                    {todos
+                        .filter((todo) => todo.isArchived)
+                        .map((todo, i) => (
+                            <ArchivedTodo
+                                key={todo.id}
+                                activeTodoIdx={i}
+                                todo={todo}
+                                isGloballyDragging={isGloballyDragging}
+                            />
+                        ))}
                 </div>
-
 
                 {/* dnd-kit/sortable: createPortalでラップして、
                 第二引数に body を指定すればこれを基準に要素が配置されるようになる。
@@ -230,8 +208,6 @@ export const Category = (props: CategoryProps) => {
                     </DragOverlay>,
                     document.body
                 )}
-
-
             </DndContext>
         </StyledUl>
     );
@@ -272,7 +248,7 @@ const StyledUl = styled.ul`
             letter-spacing: 0.1rem;
             font-weight: 700;
             color: var(--color-black-1);
-            margin-left:.8rem;
+            margin-left: 0.8rem;
         }
     }
 `;

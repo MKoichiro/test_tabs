@@ -1,7 +1,6 @@
 // ダミーデータ生成用の関数
 
-import { notSet } from "./types/type";
-
+import { notSet } from './types/type';
 
 const getRandISOStr = (baseISOStr?: string) => {
     const baseDate = baseISOStr || new Date().toISOString();
@@ -50,8 +49,8 @@ const getRandDeadline = (baseISOStr: string) => {
     const baseDate = baseISOStr ? getRandISOStr(baseISOStr) : getRandISOStr();
     let deadlineDate: string;
     randBoolUseTime
-        ? deadlineDate = baseDate
-        : deadlineDate = new Date(baseDate).toISOString().slice(0, 10) + 'T23:59:59.999Z';
+        ? (deadlineDate = baseDate)
+        : (deadlineDate = new Date(baseDate).toISOString().slice(0, 10) + 'T23:59:59.999Z');
     const deadline = { date: deadlineDate, use_time: randBoolUseTime };
 
     return deadline;
@@ -59,13 +58,12 @@ const getRandDeadline = (baseISOStr: string) => {
 
 const getCategoryRandDates = () => {
     return getRandDates();
-}
+};
 const getTodoRandDates = (categoryCreatedISOStr: string) => {
     const { createdDate, updatedDate } = getRandDates(categoryCreatedISOStr);
     const deadline = getRandDeadline(createdDate);
 
     return { createdDate, updatedDate, deadline };
-}
-
+};
 
 export { getCategoryRandDates, getTodoRandDates };

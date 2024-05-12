@@ -14,7 +14,11 @@ import React, { ChangeEvent, useEffect, useRef, useState } from 'react';
 import styled, { css } from 'styled-components';
 
 /* --- types --------------------- */
-import { TodoType, priorityLiterals, statusLiterals } from '../../../../../providers/types/categories';
+import {
+    TodoType,
+    priorityLiterals,
+    statusLiterals,
+} from '../../../../../providers/types/categories';
 
 /* --- utils --------------------- */
 import { DLFormatters, statusCheckers } from '../../../../../utils/todoPropsHandler';
@@ -31,7 +35,7 @@ const displayMoreInfo = false;
 /**
  * @property todo - todo の情報
  * @category Type of Props
-*/
+ */
 interface InfoTableProps {
     todo: TodoType;
 }
@@ -63,34 +67,34 @@ const getActiveIdx = (e: React.MouseEvent): number => {
 
     // key will be got like following: 'info-head priority' -> 'priority', 'info-value priority' -> 'priority'
     const classNames = targetCell.className.split(' ');
-    const key = classNames.filter(className => DISPLAY_ORDER.includes(className))[0];
+    const key = classNames.filter((className) => DISPLAY_ORDER.includes(className))[0];
 
     return DISPLAY_ORDER.indexOf(key);
 };
 
 const useInfoTable = (todo: TodoType) => {
-
     const [activeIdx, setActiveIdx] = useState<number | undefined>(undefined);
 
-    const deadlineIE = useImmediateEditable({target: todo, targetProperty: 'deadline'});
-    const statusIE = useImmediateEditable({target: todo, targetProperty: 'status'});
-    const priorityIE = useImmediateEditable({target: todo, targetProperty: 'priority'});
+    const deadlineIE = useImmediateEditable({ target: todo, targetProperty: 'deadline' });
+    const statusIE = useImmediateEditable({ target: todo, targetProperty: 'status' });
+    const priorityIE = useImmediateEditable({ target: todo, targetProperty: 'priority' });
     const inEditingStates = [deadlineIE.inEditing, statusIE.inEditing, priorityIE.inEditing];
 
     // handleOutsideClickは、よく使うのでhooks化するべきかも
     const tableRef = useRef<HTMLTableElement>(null);
     const handleOutsideClick = (e: MouseEvent) => {
-        if (tableRef.current && !tableRef.current.contains(e.target as Node)) setActiveIdx(undefined);
+        if (tableRef.current && !tableRef.current.contains(e.target as Node))
+            setActiveIdx(undefined);
     };
     useEffect(() => {
         activeIdx !== undefined
-        ? document.addEventListener('mousedown', handleOutsideClick)
-        : document.removeEventListener('mousedown', handleOutsideClick); // cleanup
+            ? document.addEventListener('mousedown', handleOutsideClick)
+            : document.removeEventListener('mousedown', handleOutsideClick); // cleanup
     }, [activeIdx]);
 
     const toggleActiveKey = (e: React.MouseEvent): void => {
         const newIdx = getActiveIdx(e);
-        if (activeIdx === newIdx  && !inEditingStates[activeIdx]) {
+        if (activeIdx === newIdx && !inEditingStates[activeIdx]) {
             setActiveIdx(undefined);
         } else {
             setActiveIdx(newIdx);
@@ -153,20 +157,19 @@ const useInfoTable = (todo: TodoType) => {
         if (deadlineIE.inputRef && deadlineIE.inputRef.current) {
             deadlineIE.inputRef.current.blur();
         }
-    }
+    };
     const handleStatusChange = (e: ChangeEvent<HTMLSelectElement>) => {
         statusIE.handleChange(e);
         if (statusIE.selectRef && statusIE.selectRef.current) {
             statusIE.selectRef.current.blur();
         }
-    }
+    };
     const handlePriorityChange = (e: ChangeEvent<HTMLSelectElement>) => {
         priorityIE.handleChange(e);
         if (priorityIE.selectRef && priorityIE.selectRef.current) {
             priorityIE.selectRef.current.blur();
         }
-    }
-
+    };
 
     return {
         deadlineIE,
@@ -185,14 +188,14 @@ const useInfoTable = (todo: TodoType) => {
         ...getFormattedInfo(todo),
         activeIdx,
     };
-}
+};
 // ======================================================= FUNCTION === //
 
 // === COMPONENT ====================================================== //
 /**
  * @param props
  * @returns
- * 
+ *
  * @renderAs
  * - `<table/>`
  * @example
@@ -231,7 +234,10 @@ export const InfoTable = ({ todo }: InfoTableProps) => {
     } = useInfoTable(todo);
 
     return (
-        <StyledTable $isDev={isDebugMode} ref={tableRef}>
+        <StyledTable
+            $isDev={isDebugMode}
+            ref={tableRef}
+        >
             <thead className="info-heads-container">
                 <tr className="info-heads">
                     <StyledTh
@@ -260,7 +266,7 @@ export const InfoTable = ({ todo }: InfoTableProps) => {
                         className="info-head"
                         children="updated"
                     />
-                    {(isDebugMode && displayMoreInfo) && (
+                    {isDebugMode && displayMoreInfo && (
                         <>
                             <th
                                 className="dev-th info-head"
@@ -320,7 +326,13 @@ export const InfoTable = ({ todo }: InfoTableProps) => {
                                     onChange={handleStatusChange}
                                     onBlur={handleStatusBlur}
                                 >
-                                    {statusLiterals.map(option => <option key={option} defaultValue={option} children={option} /> )}
+                                    {statusLiterals.map((option) => (
+                                        <option
+                                            key={option}
+                                            defaultValue={option}
+                                            children={option}
+                                        />
+                                    ))}
                                 </select>
                             </form>
                         ) : (
@@ -340,12 +352,18 @@ export const InfoTable = ({ todo }: InfoTableProps) => {
                                     onChange={handlePriorityChange}
                                     onBlur={handlePriorityBlur}
                                 >
-                                    {priorityLiterals.map(option => <option key={option} defaultValue={option} children={option} /> )}
+                                    {priorityLiterals.map((option) => (
+                                        <option
+                                            key={option}
+                                            defaultValue={option}
+                                            children={option}
+                                        />
+                                    ))}
                                 </select>
                             </form>
                         ) : (
                             <span children={priority} />
-                            )}
+                        )}
                     </StyledTd>
                     <td
                         className="info-value"
@@ -355,7 +373,7 @@ export const InfoTable = ({ todo }: InfoTableProps) => {
                         className="info-value"
                         children={updatedDate}
                     />
-                    {(isDebugMode && displayMoreInfo) && (
+                    {isDebugMode && displayMoreInfo && (
                         <>
                             <td
                                 className="dev-td info-value"
@@ -389,7 +407,8 @@ export const InfoTable = ({ todo }: InfoTableProps) => {
 // === STYLE ========================================================= //
 const StyledTable = styled.table<{ $isDev: boolean }>`
     /* reset --- */
-    th, td {
+    th,
+    td {
         padding: 0;
         display: block;
     }
@@ -397,11 +416,11 @@ const StyledTable = styled.table<{ $isDev: boolean }>`
     /* --- reset */
     /* dev --- */
     width: ${({ $isDev }) => ($isDev ? '100%' : '50%')};
-    .dev-th, .dev-td {
+    .dev-th,
+    .dev-td {
         outline: var(--border-weight) solid #ddd;
     }
     /* --- dev */
-
 
     width: 100%;
     height: 100%;
@@ -410,8 +429,8 @@ const StyledTable = styled.table<{ $isDev: boolean }>`
     display: flex;
     flex-direction: column;
 
-
-    thead, tbody {
+    thead,
+    tbody {
         flex: 1;
     }
     tr {
@@ -428,11 +447,12 @@ const StyledTable = styled.table<{ $isDev: boolean }>`
         // value行は上寄せ
         align-items: flex-start;
     }
-    th, td {
+    th,
+    td {
         flex: 1;
         height: 67%;
         font-size: 1.4rem;
-        letter-spacing: .05em;
+        letter-spacing: 0.05em;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -440,7 +460,7 @@ const StyledTable = styled.table<{ $isDev: boolean }>`
     }
 `;
 
-const StyledTh = styled.th<{$isActive: boolean}>`
+const StyledTh = styled.th<{ $isActive: boolean }>`
     ${({ $isActive }) => getActiveStyles($isActive)}
     border-top-width: var(--border-weight);
     border-top-style: solid;
@@ -448,9 +468,13 @@ const StyledTh = styled.th<{$isActive: boolean}>`
     border-left-width: var(--border-weight);
     border-left-style: solid;
     border-left-color: ${({ $isActive }) => ($isActive ? 'var(--color-black-1)' : 'transparent')};
-    transition: min-height 300ms, border-top-color 1000ms, border-left-color 1000ms, color 1000ms;
+    transition:
+        min-height 300ms,
+        border-top-color 1000ms,
+        border-left-color 1000ms,
+        color 1000ms;
 `;
-const StyledTd = styled.td<{$isActive: boolean}>`
+const StyledTd = styled.td<{ $isActive: boolean }>`
     ${({ $isActive }) => getActiveStyles($isActive)}
     border-bottom-width: var(--border-weight);
     border-bottom-style: solid;
@@ -458,7 +482,11 @@ const StyledTd = styled.td<{$isActive: boolean}>`
     border-right-width: var(--border-weight);
     border-right-style: solid;
     border-right-color: ${({ $isActive }) => ($isActive ? 'var(--color-black-1)' : 'transparent')};
-    transition: min-height 300ms, border-bottom-color 1000ms, border-right-color 1000ms, color 1000ms;
+    transition:
+        min-height 300ms,
+        border-bottom-color 1000ms,
+        border-right-color 1000ms,
+        color 1000ms;
 
     form {
         display: flex;
@@ -466,10 +494,11 @@ const StyledTd = styled.td<{$isActive: boolean}>`
         justify-content: center;
         width: 100%;
         height: 100%;
-        input, select {
+        input,
+        select {
             font-family: var(--ff-3);
             font-weight: bold;
-            letter-spacing: .05em;
+            letter-spacing: 0.05em;
             text-align-last: center;
             color: tomato;
             user-select: none;
@@ -486,10 +515,18 @@ const StyledTd = styled.td<{$isActive: boolean}>`
     }
 
     @keyframes blinking {
-        0% { opacity: 0; }
-        40% { opacity: 1; }
-        60% { opacity: 1; }
-        100% { opacity: 0; }
+        0% {
+            opacity: 0;
+        }
+        40% {
+            opacity: 1;
+        }
+        60% {
+            opacity: 1;
+        }
+        100% {
+            opacity: 0;
+        }
     }
 `;
 
@@ -504,7 +541,6 @@ const getActiveStyles = ($isActive: boolean) => css`
 `;
 // ========================================================= STYLE === //
 
-
 // memo: React.MouseEvent と MouseEvent の違い
 // そもそも'MouseEvent'には二種類存在する。
 // 1. 'MouseEvent': これはブラウザネイティブのAPIから提供されている型定義で、Reactのイベントとは関係ない。
@@ -514,4 +550,3 @@ const getActiveStyles = ($isActive: boolean) => css`
 // 1. 'MouseEvent': vanilla.js の add(/remove)EventListener に渡す関数の型定義として使う。
 // 2. 'React.MouseEvent': JSX の 例えば onClick などのReactのイベントハンドラに渡す関数の型定義として使う。
 // 混同すると、これらは相互に互換性がないため、エラーが発生する。
-

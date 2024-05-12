@@ -48,11 +48,20 @@ const categories = createSlice({
             action: PayloadAction<{ categoryId: string; update: Partial<CategoryType> }>
         ) => {
             const { categoryId, update } = action.payload;
-            const categoryIdx = state.categoriesEntity.findIndex(category => category.id === categoryId);
+            const categoryIdx = state.categoriesEntity.findIndex(
+                (category) => category.id === categoryId
+            );
             const targetCategory = state.categoriesEntity[categoryIdx];
             Object.assign(targetCategory, update);
         },
 
+        deleteCategory: (state, action: PayloadAction<{ categoryId: string }>) => {
+            const { categoryId } = action.payload;
+            const removedCategories = state.categoriesEntity.filter(
+                (category) => category.id !== categoryId
+            );
+            state.categoriesEntity = removedCategories;
+        },
 
         // Todoより深層の更新
 
@@ -93,7 +102,7 @@ const categories = createSlice({
             state.categoriesEntity[state.activeIdx].todos.push(newTodo);
         },
 
-        removeTodo: (state, action: PayloadAction<{ todoId: string }>) => {
+        deleteTodo: (state, action: PayloadAction<{ todoId: string }>) => {
             const { todoId } = action.payload;
             const currentCategory = getCurrentCategory(state);
             const newTodos = currentCategory.todos.filter((todo) => todo.id !== todoId);
@@ -107,11 +116,12 @@ export const {
     switchCategory,
     updateCategories,
     updateCategoryProps,
+    deleteCategory,
     updateTodo,
     replaceTodos,
     updateTodoProps,
     addTodo,
-    removeTodo,
+    deleteTodo,
 } = categories.actions;
 
 export default categories.reducer;

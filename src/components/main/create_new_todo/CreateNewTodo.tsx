@@ -113,7 +113,7 @@ export const useCreateNewTodo = () => {
     const executeSubmit = (inputData: InputDataType) => {
         formInitializer(); // 1. form の初期化
         addNewTodo(inputData); // 2. newTodo を categories に追加
-        resetField("title", {keepError: false}); // 3. react-hook-form の form をリセット(エラーメッセージの表示など、これをしないと「エラーで拒絶→正常な入力でsubmit」の次回以降の入力時、フォーカスしただけでエラーメッセージが表示されてしまう)
+        resetField('title', { keepError: false }); // 3. react-hook-form の form をリセット(エラーメッセージの表示など、これをしないと「エラーで拒絶→正常な入力でsubmit」の次回以降の入力時、フォーカスしただけでエラーメッセージが表示されてしまう)
     };
     // ------------------------------------------ submit で実行 --- //
 
@@ -130,7 +130,7 @@ export const useCreateNewTodo = () => {
         errors,
         resetField,
     };
-}
+};
 
 // ======================================================= FUNCTION === //
 
@@ -167,13 +167,16 @@ export const CreateNewTodo = () => {
     };
     const handleBlur = () => {
         setIsFieldsetBlurred(true);
-        resetField("title", {keepError: false});
+        resetField('title', { keepError: false });
     };
-
 
     return (
         <StyledForm onSubmit={handleSubmit(executeSubmit)}>
-            <fieldset className="parent-field" onBlur={handleBlur} onFocus={handleFocus}>
+            <fieldset
+                className="parent-field"
+                onBlur={handleBlur}
+                onFocus={handleFocus}
+            >
                 <legend className="form-legend">CREATE NEW TODO</legend>
 
                 <fieldset className="child-field">
@@ -296,7 +299,6 @@ const StyledForm = styled.form`
         border: none;
         border-radius: 0;
         outline: none;
-
     }
     input[type='date'],
     input[type='time'] {
@@ -305,7 +307,7 @@ const StyledForm = styled.form`
     /* reset */
 
     .parent-field {
-        margin: 0 .8rem;
+        margin: 0 0.8rem;
 
         legend {
             font-weight: bold;
@@ -319,8 +321,7 @@ const StyledForm = styled.form`
             margin-top: 1.6rem;
             .child-legend {
                 font-size: 2rem;
-                margin-bottom: .8rem;
-
+                margin-bottom: 0.8rem;
             }
 
             /* common */
@@ -328,7 +329,7 @@ const StyledForm = styled.form`
                 display: flex;
                 .parts {
                     display: flex;
-                    gap: .8rem;
+                    gap: 0.8rem;
                     @media (width < 600px) {
                         flex-direction: column;
                         gap: 0.4rem;
@@ -341,8 +342,8 @@ const StyledForm = styled.form`
                         gap: 0.4rem;
                         .feature {
                             height: 100%;
-                            font-size: .9em;
-                            padding: .2rem .6rem;
+                            font-size: 0.9em;
+                            padding: 0.2rem 0.6rem;
                         }
                         .feature.optional {
                             font-weight: bold;
@@ -379,7 +380,7 @@ const StyledForm = styled.form`
                             min-width: 100%;
                             color: var(--color-black-1);
                             background-color: #efefef;
-                            padding: 0 .8rem;
+                            padding: 0 0.8rem;
                             font-size: 1.8rem;
                             @media (width < 600px) {
                                 font-size: 16px;
@@ -472,11 +473,10 @@ const StyledForm = styled.form`
                 }
             }
             button:active {
-                scale: .9;
+                scale: 0.9;
                 transition: scale 50ms;
             }
         }
     }
-
 `;
 // ========================================================= STYLE === //

@@ -47,8 +47,6 @@ import {
     sortableKeyboardCoordinates,
     verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faArchive } from '@fortawesome/free-solid-svg-icons';
 import { DirectionsWalkOutlined, Inventory2Outlined } from '@mui/icons-material';
 
 /* --- dev ----------------------- */
@@ -126,7 +124,7 @@ export const useCategories = () => {
 /**
  * @param props
  * @returns
- * 
+ *
  * @renderAs
  * - `<div/>`
  * @example
@@ -166,12 +164,13 @@ export const Categories = () => {
                             <span className="attr-name">Active</span>
                         </span>
 
-                        {categories.filter((category) => !category.isArchived).map((category) => (
-                            <ActiveCategory
-                                key={category.id}
-                                activeCategory={category}
-                            />
-                        ))}
+                        {activeCategories
+                            .map((category) => (
+                                <ActiveCategory
+                                    key={category.id}
+                                    activeCategory={category}
+                                />
+                            ))}
                     </SortableContext>
 
                     {/* GhostCategory: drag中のみ表示、カーソルやタッチ位置に追従するゴースト要素 */}
@@ -192,7 +191,6 @@ export const Categories = () => {
                 <span className="attr-name">Archive</span>
             </span>
             <ul className="archived-categories-container">
-                {/* ArchivedCategory:  */}
                 {archivedCategories.map((category) => (
                     <ArchivedCategory
                         key={category.id}
@@ -242,7 +240,7 @@ const StyledDiv = styled.div`
             letter-spacing: 0.1rem;
             font-weight: 700;
             color: var(--color-black-1);
-            margin-left:.8rem;
+            margin-left: 0.8rem;
         }
     }
 `;

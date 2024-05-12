@@ -56,38 +56,16 @@ interface TodoHeaderProps {
 // === FUNCTION ======================================================= //
 /**
  * @param arg
- * 
+ *
  * @category Custom Hook
- * @example
- * ```tsx
- * const {
- *     inEditing,
- *     inputRef,
- *     handleDoubleClick,
- *     handleSubmit,
- *     handleChange,
- *     handleBlur,
- *     title,
- *     isExpired,
- *     isCompleted,
- *     isOpen,
- *     toggleOpen,
- * } = useTodoHeader(todo);
- * ```
  */
-const useTodoHeader = ({todo, attributes}: Pick<TodoHeaderProps, 'todo' | 'attributes'>) => {
+const useTodoHeader = ({ todo, attributes }: Pick<TodoHeaderProps, 'todo' | 'attributes'>) => {
     const { checkIsCompleted, checkIsExpired } = statusCheckers;
     const dispatch = useDispatch();
 
     // 'double clickで編集' の hooks
-    const {
-        inEditing,
-        inputRef,
-        handleDoubleClick,
-        handleSubmit,
-        handleChange,
-        handleBlur
-    } = useImmediateEditable({target: todo, targetProperty: 'title'});
+    const { inEditing, inputRef, handleDoubleClick, handleSubmit, handleChange, handleBlur } =
+        useImmediateEditable({ target: todo, targetProperty: 'title' });
 
     // todo の各 property を取得
     const { title, isOpen } = todo;
@@ -100,10 +78,6 @@ const useTodoHeader = ({todo, attributes}: Pick<TodoHeaderProps, 'todo' | 'attri
             ? dispatch(updateTodoProps({ todoId: todo.id, update: { isOpen: false } }))
             : dispatch(updateTodoProps({ todoId: todo.id, update: { isOpen: true } }));
     };
-
-    const reviveTodo = () => {
-        dispatch(updateTodoProps({ todoId: todo.id, update: { isArchived: false } }));
-    }
 
     return {
         inEditing,
@@ -122,7 +96,6 @@ const useTodoHeader = ({todo, attributes}: Pick<TodoHeaderProps, 'todo' | 'attri
         isCompleted,
         isOpen,
         toggleOpen,
-        reviveTodo,
         isArchived: todo.isArchived,
         isActive: !todo.isArchived,
         isGhost: attributes === 'ghost',
@@ -134,7 +107,7 @@ const useTodoHeader = ({todo, attributes}: Pick<TodoHeaderProps, 'todo' | 'attri
 /**
  * @param props
  * @returns
- * 
+ *
  * @renderAs
  * - `<header/>`
  * @example
@@ -144,8 +117,13 @@ const useTodoHeader = ({todo, attributes}: Pick<TodoHeaderProps, 'todo' | 'attri
  *
  * @category Component
  */
-export const TodoHeader = ({ todo, attributes, listeners, isGloballyDragging, handleMouseDown }: TodoHeaderProps) => {
-
+export const TodoHeader = ({
+    todo,
+    attributes,
+    listeners,
+    isGloballyDragging,
+    handleMouseDown,
+}: TodoHeaderProps) => {
     const {
         inEditing,
         inputRef,
@@ -158,11 +136,10 @@ export const TodoHeader = ({ todo, attributes, listeners, isGloballyDragging, ha
         isCompleted,
         isOpen,
         toggleOpen,
-        reviveTodo,
         isArchived,
         isActive,
         isGhost,
-    } = useTodoHeader({todo, attributes});
+    } = useTodoHeader({ todo, attributes });
 
     return (
         <StyledHeader
@@ -211,7 +188,7 @@ export const TodoHeader = ({ todo, attributes, listeners, isGloballyDragging, ha
             )}
 
             {/* 3.2 Ghost要素、Archived要素には、編集フォームは不要。 */}
-            {(!isActive) && (
+            {!isActive && (
                 <div className="main-container">
                     <h4 children={title} />
                 </div>
@@ -220,9 +197,9 @@ export const TodoHeader = ({ todo, attributes, listeners, isGloballyDragging, ha
             {/* 4. detail 開閉ボタン */}
             <button
                 className="btn-toggle-detail"
-                onClick={isActive ? () => toggleOpen() : (isArchived ? reviveTodo : undefined)} // Ghost要素、Archived要素に、detail開閉機能は不要。
+                onClick={isActive ? () => toggleOpen() : undefined} // Ghost要素、Archived要素に、detail開閉機能は不要。
             >
-                {isArchived ? <ArrowUpward/> : <ExpandLess />}
+                {!isArchived && <ExpandLess />}
             </button>
         </StyledHeader>
     );
@@ -246,28 +223,30 @@ const StyledHeader = styled.header<StyledHeaderType>`
     font-size: 2rem;
     line-height: var(--title-line-height);
 
-    --icons-width: ${({$isExpired, $isArchived}) => {
-        if ($isArchived) { return '0px' }
-        else if ($isExpired) { return '3.2rem' }
-        else { return '0px' }
+    --icons-width: ${({ $isExpired, $isArchived }) => {
+        if ($isArchived) {
+            return '0px';
+        } else if ($isExpired) {
+            return '3.2rem';
+        } else {
+            return '0px';
+        }
     }};
     --btn-width: 3.6rem;
     --btns-width: calc(var(--btn-width) * 2);
     --title-width: calc(100% - var(--icons-width) - var(--btns-width));
 
-
     @media (width < 600px) {
         font-size: 16px;
     }
 
-    :has([class*="MuiSvgIcon"]) {
+    :has([class*='MuiSvgIcon']) {
         width: var(--btn-width);
         display: flex;
         align-items: center;
         justify-content: center;
         height: 100%;
         svg {
-
         }
     }
     .gripper {
@@ -281,9 +260,8 @@ const StyledHeader = styled.header<StyledHeaderType>`
         }
     }
 
-
     /* .icon-expired と .btn-toggle-open 共通 */
-    :has(svg[class*="fa-"]) {
+    :has(svg[class*='fa-']) {
         display: flex;
         align-items: center;
         justify-content: center;
@@ -301,31 +279,37 @@ const StyledHeader = styled.header<StyledHeaderType>`
     .main-container {
         flex: 1;
         max-width: var(--title-width);
-        border-bottom: ${({$inEditing}) => ($inEditing ? 'var(--border-1)' : 'var(--border-weight) solid transparent')};
+        border-bottom: ${({ $inEditing }) =>
+            $inEditing ? 'var(--border-1)' : 'var(--border-weight) solid transparent'};
         h4,
         input {
             font-size: inherit;
             line-height: inherit;
         }
         h4 {
-            cursor: ${({$isActive}) => ($isActive ? 'pointer' : 'default')};
-            display: ${({$inEditing}) => ($inEditing ? 'none' : 'block')};
-            text-decoration: ${({$isCompleted}) => ($isCompleted ? 'line-through' : '')};
-            color: ${({$isCompleted, $isArchived}) => (($isCompleted || $isArchived) ? 'var(--color-gray-1)' : 'var(--color-black-1)')};
+            cursor: ${({ $isActive }) => ($isActive ? 'pointer' : 'default')};
+            display: ${({ $inEditing }) => ($inEditing ? 'none' : 'block')};
+            text-decoration: ${({ $isCompleted }) => ($isCompleted ? 'line-through' : '')};
+            color: ${({ $isCompleted, $isArchived }) =>
+                $isCompleted || $isArchived ? 'var(--color-gray-1)' : 'var(--color-black-1)'};
             max-width: 100%;
-            height: ${({$isGloballyDragging, $isArchived}) => (($isGloballyDragging || $isArchived) ? 'var(--title-line-height)' : 'auto')};
-            text-overflow: ${({$isGloballyDragging, $isArchived}) => (($isGloballyDragging || $isArchived) ? 'ellipsis' : 'clip')};
-            overflow: ${({$isGloballyDragging, $isArchived}) => (($isGloballyDragging || $isArchived) ? 'hidden' : 'visible')};
-            white-space: ${({$isGloballyDragging, $isArchived}) => (($isGloballyDragging || $isArchived) ? 'nowrap' : 'normal')};
+            height: ${({ $isGloballyDragging, $isArchived }) =>
+                $isGloballyDragging || $isArchived ? 'var(--title-line-height)' : 'auto'};
+            text-overflow: ${({ $isGloballyDragging, $isArchived }) =>
+                $isGloballyDragging || $isArchived ? 'ellipsis' : 'clip'};
+            overflow: ${({ $isGloballyDragging, $isArchived }) =>
+                $isGloballyDragging || $isArchived ? 'hidden' : 'visible'};
+            white-space: ${({ $isGloballyDragging, $isArchived }) =>
+                $isGloballyDragging || $isArchived ? 'nowrap' : 'normal'};
         }
         input {
-            display: ${({$inEditing}) => ($inEditing ? 'block' : 'none')};
+            display: ${({ $inEditing }) => ($inEditing ? 'block' : 'none')};
             width: 100%;
         }
     }
 
     .btn-toggle-detail {
-        scale: ${({$isOpen}) => ($isOpen ? '1 1' : '1 -1')};
+        scale: ${({ $isOpen }) => ($isOpen ? '1 1' : '1 -1')};
         transition: scale 500ms;
         svg {
             font-size: 3rem;
@@ -337,10 +321,7 @@ const StyledHeader = styled.header<StyledHeaderType>`
 `;
 // ========================================================= STYLE === //
 
-const commonStyle = ($isGloballyDragging: boolean) => css`
-
-
-`;
+const commonStyle = ($isGloballyDragging: boolean) => css``;
 
 // memo: オブジェクトマッピング
 

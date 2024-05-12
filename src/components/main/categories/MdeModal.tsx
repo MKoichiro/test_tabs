@@ -79,14 +79,14 @@ export const useMdeModal = () => {
         /** editor をスクロール可否判定の際に、コンテンツのオーバーフローを確認するのに使用 */
         hasEditorOverflow,
     };
-}
+};
 // ======================================================= FUNCTION === //
 
 // === COMPONENT ====================================================== //
 /**
  * @param props
  * @returns
- * 
+ *
  * @renderAs
  * - </> > `<div/>`(modal), (`<div/>`(mask))
  * @example

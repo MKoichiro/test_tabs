@@ -1,4 +1,3 @@
-
 // const date = new Date();
 // const formattedDate1 = date.toISOString();
 // const revivedDate1 = new Date(formattedDate1);
@@ -38,10 +37,9 @@
 // console.log(revivedDate6);
 // console.log('---------------------------------');
 
-
 const getFormattedTime = (dateISO: string) => {
-  const date = new Date(dateISO);
-  return `${date.getHours()}:${date.getMinutes()}`;
+    const date = new Date(dateISO);
+    return `${date.getHours()}:${date.getMinutes()}`;
 };
 
 const dateISOStr = '2026-01-31T21:26:56.039Z';

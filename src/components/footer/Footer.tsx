@@ -30,7 +30,7 @@ import styled from 'styled-components';
 /**
  * @param props
  * @returns
- * 
+ *
  * @renderAs
  * - `<footer/>`
  * @example
@@ -44,14 +44,12 @@ export const Footer = () => {
     return (
         <StyledFooter>
             <div className="footer-container">
-                <div className='footer-toggle-icon'>
+                <div className="footer-toggle-icon">
                     <FontAwesomeIcon icon={faChevronDown} />
                 </div>
-                <h4>
-                    WEB CAT Todo
-                </h4>
-                <div className='footer-grip-icon'>
-                    <TaskAlt/>
+                <h4>WEB CAT Todo</h4>
+                <div className="footer-grip-icon">
+                    <TaskAlt />
                 </div>
             </div>
         </StyledFooter>
@@ -68,7 +66,7 @@ const StyledFooter = styled.footer`
 
     .footer-container {
         border: var(--border-weight) solid var(--color-white-1);
-        border-radius: .25rem;
+        border-radius: 0.25rem;
         background-color: var(--color-black-1);
         color: var(--color-white-1);
         margin: 1.6rem auto;
@@ -76,7 +74,7 @@ const StyledFooter = styled.footer`
         display: flex;
 
         .footer-grip-icon {
-            padding-right: .6rem;
+            padding-right: 0.6rem;
             svg {
                 font-size: inherit;
                 height: 100%;
@@ -84,7 +82,7 @@ const StyledFooter = styled.footer`
         }
 
         h4 {
-            padding: .6rem;
+            padding: 0.6rem;
             letter-spacing: 0.15rem;
             text-align: right;
             flex: 1;
@@ -94,9 +92,9 @@ const StyledFooter = styled.footer`
         .footer-toggle-icon {
             display: flex;
             align-items: center;
-            padding: 0 .8rem;
+            padding: 0 0.8rem;
             svg {
-                height: .75em;
+                height: 0.75em;
             }
         }
     }

@@ -38,7 +38,7 @@ interface GhostTodoProps {
 /**
  * @param props
  * @returns
- * 
+ *
  * @renderAs
  * - `<div/>`
  * @example
@@ -49,18 +49,16 @@ interface GhostTodoProps {
  * @category Component
  */
 export const GhostTodo = forwardRef<HTMLDivElement, GhostTodoProps>((props, ref) => {
-
-        return (
-            <StyledDiv ref={ref}>
-                <TodoHeader
-                    attributes={'ghost'}
-                    todo={props.todo}
-                    isGloballyDragging={props.isGloballyDragging}
-                />
-            </StyledDiv>
-        );
-    }
-);
+    return (
+        <StyledDiv ref={ref}>
+            <TodoHeader
+                attributes={'ghost'}
+                todo={props.todo}
+                isGloballyDragging={props.isGloballyDragging}
+            />
+        </StyledDiv>
+    );
+});
 // ====================================================== COMPONENT === //
 
 // === STYLE ========================================================= //

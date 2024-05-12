@@ -44,7 +44,7 @@ interface TodoDetailProps {
 // === FUNCTION ======================================================= //
 /**
  * @param arg
- * 
+ *
  * @category Custom Hook
  * @example
  * ```tsx
@@ -58,7 +58,10 @@ interface TodoDetailProps {
  * } = useTodoDetail({ todo }, ref);
  * ```
  */
-export const useTodoDetail = ({ todo }: Omit<TodoDetailProps, 'isGloballyDragging'>, ref: Ref<HTMLElement> ) => {
+export const useTodoDetail = (
+    { todo }: Omit<TodoDetailProps, 'isGloballyDragging'>,
+    ref: Ref<HTMLElement>
+) => {
     const { inEditing, handleModalOpen } = useContext(MdeContext);
 
     const { isOpen } = todo;
@@ -102,7 +105,7 @@ export const useTodoDetail = ({ todo }: Omit<TodoDetailProps, 'isGloballyDraggin
 /**
  * @param props
  * @returns
- * 
+ *
  * @renderAs
  * - `<section/>`
  * @example
@@ -112,45 +115,41 @@ export const useTodoDetail = ({ todo }: Omit<TodoDetailProps, 'isGloballyDraggin
  *
  * @category Component
  */
-export const TodoDetail = forwardRef<HTMLElement, TodoDetailProps>(({ todo, isGloballyDragging }, ref) => {
-    const {
-        isOpen,
-        inEditing,
-        height,
-        heightGetterRef,
-        executeModalOpen,
-        sanitizedDetail,
-    } = useTodoDetail({ todo }, ref);
+export const TodoDetail = forwardRef<HTMLElement, TodoDetailProps>(
+    ({ todo, isGloballyDragging }, ref) => {
+        const { isOpen, inEditing, height, heightGetterRef, executeModalOpen, sanitizedDetail } =
+            useTodoDetail({ todo }, ref);
 
-    return (
-        <StyledSection
-            $isOpen={isOpen}
-            $height={height}
-            $inEditing={inEditing}
-            $isGloballyDragging={isGloballyDragging}
-        >
-            <div
-                className="children-height-getter"
-                ref={heightGetterRef as RefObject<HTMLDivElement>}
+        return (
+            <StyledSection
+                $isOpen={isOpen}
+                $height={height}
+                $inEditing={inEditing}
+                $isGloballyDragging={isGloballyDragging}
             >
-                <section
-                    className="detail-container"
-                    onDoubleClick={executeModalOpen}
+                <div
+                    className="children-height-getter"
+                    ref={heightGetterRef as RefObject<HTMLDivElement>}
                 >
-                    <div
-                        dangerouslySetInnerHTML={{
-                            __html: sanitizedDetail,
-                        }}
-                    />
-                </section>
+                    <section
+                        className="detail-container"
+                        onDoubleClick={executeModalOpen}
+                    >
+                        <div
+                            dangerouslySetInnerHTML={{
+                                __html: sanitizedDetail,
+                            }}
+                        />
+                    </section>
 
-                <div className='table-container'>
-                    <InfoTable todo={todo} />
+                    <div className="table-container">
+                        <InfoTable todo={todo} />
+                    </div>
                 </div>
-            </div>
-        </StyledSection>
-    );
-});
+            </StyledSection>
+        );
+    }
+);
 // ====================================================== COMPONENT === //
 
 // === STYLE ========================================================= //
@@ -162,7 +161,7 @@ interface StyledSectionType {
 }
 
 const StyledSection = styled.section<StyledSectionType>`
-    height: ${({$isOpen, $isGloballyDragging, $height}) => {
+    height: ${({ $isOpen, $isGloballyDragging, $height }) => {
         if ($isGloballyDragging) {
             return '0';
         } else if ($isOpen) {
@@ -175,7 +174,7 @@ const StyledSection = styled.section<StyledSectionType>`
     contain: paint;
 
     .table-container {
-        height: 8.0rem;
+        height: 8rem;
         display: flex;
         justify-content: center;
         align-items: center;

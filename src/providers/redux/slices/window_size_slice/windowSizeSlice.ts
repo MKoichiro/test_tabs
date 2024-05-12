@@ -2,99 +2,101 @@
 // window sizeに強く依存するstyleの内jsからも頻繁に参照される値を保持する
 // なお、window sizeに依存するstyleでもjsからの参照が無いものはシンプルにcssのメディアクエリで対応する
 
-import { PayloadAction, createSlice } from "@reduxjs/toolkit";
-import { BREAK_POINTS, CardCarouselMagic, DeviceUnion, TabCarouselMagic, cardCarouselMagics, contentsWidths, fontSizeRatios, tabCarouselMagics } from "../../../../data/styleMagics";
-
+import { PayloadAction, createSlice } from '@reduxjs/toolkit';
+import {
+    BREAK_POINTS,
+    CardCarouselMagic,
+    DeviceUnion,
+    TabCarouselMagic,
+    cardCarouselMagics,
+    contentsWidths,
+    fontSizeRatios,
+    tabCarouselMagics,
+} from '../../../../data/styleMagics';
 
 interface WindowSizeState {
-  inner: {
-    width: number;
-    height: number;
-  },
-  client: {
-    width: number;
-    height: number;
-  },
-  device?: DeviceUnion;
-  fontSizeRatio: number;
-  contentsWidth: number;
-  cardCarouselStyleFactors: CardCarouselMagic;
-  tabCarouselStyleFactors: TabCarouselMagic;
+    inner: {
+        width: number;
+        height: number;
+    };
+    client: {
+        width: number;
+        height: number;
+    };
+    device?: DeviceUnion;
+    fontSizeRatio: number;
+    contentsWidth: number;
+    cardCarouselStyleFactors: CardCarouselMagic;
+    tabCarouselStyleFactors: TabCarouselMagic;
 }
 type WindowSizePayload = Pick<WindowSizeState, 'inner' | 'client'>;
-
-
-
-
-
 
 // inner, clientの実際の初期値はApp.tsxで設定
 // ここで設定してもレンダリング前なので正常な値が取れない(試してみると、innerとclientが全く同じになった。)
 const initialState: WindowSizeState = {
-  inner: {
-    width: 0,
-    height: 0
-  },
-  client: {
-    width: 0,
-    height: 0
-  },
-  device: undefined,
-  fontSizeRatio: 0,
-  contentsWidth: 0,
-  cardCarouselStyleFactors: {
-    gap_vw: 0,
-    activeWidth_vw: 0,
-    inactiveMagnification: 0
-  },
-  tabCarouselStyleFactors: {
-    modalBtnWidth: 0,
-    tabMinWidth: 0
-  }
+    inner: {
+        width: 0,
+        height: 0,
+    },
+    client: {
+        width: 0,
+        height: 0,
+    },
+    device: undefined,
+    fontSizeRatio: 0,
+    contentsWidth: 0,
+    cardCarouselStyleFactors: {
+        gap_vw: 0,
+        activeWidth_vw: 0,
+        inactiveMagnification: 0,
+    },
+    tabCarouselStyleFactors: {
+        modalBtnWidth: 0,
+        tabMinWidth: 0,
+    },
 };
 
-
 const windowSizeSlice = createSlice({
-  name: "windowSize",
-  initialState,
-  reducers: {
-    setWindowSize: (state, action: PayloadAction<WindowSizePayload>) => {
-      const { inner, client } = action.payload;
-      state.inner = inner;
-      state.client = client;
+    name: 'windowSize',
+    initialState,
+    reducers: {
+        setWindowSize: (state, action: PayloadAction<WindowSizePayload>) => {
+            const { inner, client } = action.payload;
+            state.inner = inner;
+            state.client = client;
 
-      let device: DeviceUnion;
-      let fontSizeRatio: number;
-      let contentsWidth: number;
-      let cardCarouselStyleFactors: CardCarouselMagic;
-      let tabCarouselStyleFactors: TabCarouselMagic;
+            let device: DeviceUnion;
+            let fontSizeRatio: number;
+            let contentsWidth: number;
+            let cardCarouselStyleFactors: CardCarouselMagic;
+            let tabCarouselStyleFactors: TabCarouselMagic;
 
-      if (inner.width > BREAK_POINTS.pc) {
-        device = "pc";
-        fontSizeRatio = fontSizeRatios.pc;
-        contentsWidth = contentsWidths.pc;
-        cardCarouselStyleFactors = cardCarouselMagics.pc;
-        tabCarouselStyleFactors =  tabCarouselMagics.pc;
-      } else if (inner.width > BREAK_POINTS.tb) {
-        device = "tb";
-        fontSizeRatio = fontSizeRatios.tb;
-        contentsWidth = contentsWidths.tb;
-        cardCarouselStyleFactors = cardCarouselMagics.tb;
-        tabCarouselStyleFactors =  tabCarouselMagics.tb;
-      } else {
-        device = "sp";
-        fontSizeRatio = fontSizeRatios.sp;
-        contentsWidth = contentsWidths.sp;
-        cardCarouselStyleFactors = cardCarouselMagics.sp;
-        tabCarouselStyleFactors =  tabCarouselMagics.sp;
-      }
-      state.device = device;
-      state.fontSizeRatio = fontSizeRatio;
-      state.contentsWidth = contentsWidth;
-      state.cardCarouselStyleFactors = cardCarouselStyleFactors;
-      state.tabCarouselStyleFactors = tabCarouselStyleFactors;
-    }
-  }
+            if (inner.width > BREAK_POINTS.pc) {
+                device = 'pc';
+                fontSizeRatio = fontSizeRatios.pc;
+                contentsWidth = contentsWidths.pc;
+                cardCarouselStyleFactors = cardCarouselMagics.pc;
+                tabCarouselStyleFactors = tabCarouselMagics.pc;
+            } else if (inner.width > BREAK_POINTS.tb) {
+                device = 'tb';
+                fontSizeRatio = fontSizeRatios.tb;
+                contentsWidth = contentsWidths.tb;
+                cardCarouselStyleFactors = cardCarouselMagics.tb;
+                tabCarouselStyleFactors = tabCarouselMagics.tb;
+            } else {
+                device = 'sp';
+                fontSizeRatio = fontSizeRatios.sp;
+                contentsWidth = contentsWidths.sp;
+                cardCarouselStyleFactors = cardCarouselMagics.sp;
+                tabCarouselStyleFactors = tabCarouselMagics.sp;
+            }
+            state.device = device;
+            state.fontSizeRatio = fontSizeRatio;
+            state.contentsWidth = contentsWidth;
+            state.cardCarouselStyleFactors = cardCarouselStyleFactors;
+            state.tabCarouselStyleFactors = tabCarouselStyleFactors;
+        },
+    },
 });
 
 export const { setWindowSize } = windowSizeSlice.actions;

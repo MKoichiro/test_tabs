@@ -21,7 +21,6 @@ const statusCheckers = {
     checkIsExpired,
 };
 
-
 /**
  * @summary deadline を保存用フォーマット(ISO形式のstring)へ変換
  * @discussion Sliceのインデックスの意味
@@ -29,14 +28,17 @@ const statusCheckers = {
  * 0-9が日付, 10は区切り文字'T', 11-23が時刻
  * 0から10文字取りたいので、slice(0, 10)とする。
  */
-const toSaveDeadline = (dateInput: string | undefined, timeInput: string | undefined): DeadlineType => {
+const toSaveDeadline = (
+    dateInput: string | undefined,
+    timeInput: string | undefined
+): DeadlineType => {
     const deadlineDate: string = dateInput || new Date().toISOString().slice(0, 10);
     const deadlineTime: string = timeInput || '23:59:59.999Z';
 
     let deadline: DeadlineType;
-    (dateInput || timeInput)
-        ? deadline = { date: `${deadlineDate}T${deadlineTime}`, use_time: Boolean(timeInput) }
-        : deadline = notSet;
+    dateInput || timeInput
+        ? (deadline = { date: `${deadlineDate}T${deadlineTime}`, use_time: Boolean(timeInput) })
+        : (deadline = notSet);
 
     return deadline;
 };
@@ -49,11 +51,11 @@ const toDispDeadline = (todo: TodoType) => {
 
     const date = deadline.date;
     let displayFormat: string;
-    
+
     deadline.use_time
-        ? displayFormat = `${getFormattedDate(date)} ${getFormattedTime(date)}`     // 例: 2021/8/1 12:34
-        : displayFormat = `${getFormattedDate(date)}`;                              // 例: 2021/8/1
-    
+        ? (displayFormat = `${getFormattedDate(date)} ${getFormattedTime(date)}`) // 例: 2021/8/1 12:34
+        : (displayFormat = `${getFormattedDate(date)}`); // 例: 2021/8/1
+
     return displayFormat;
 };
 const DLFormatters = {

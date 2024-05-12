@@ -56,7 +56,6 @@ export const CardView: FC<CardViewType> = (props) => {
     const carouselContainerRef = useRef<HTMLUListElement | null>(null);
     // --------------------------------------- Management Items --- //
 
-
     // --- functions ---------------------------------------------- //
     const handleScroll = (n: number, behavior: ScrollBehavior, styleFactors: CardCarouselMagic) => {
         const { gap_vw, activeWidth_vw, inactiveMagnification } = styleFactors;
@@ -110,8 +109,7 @@ export const useCardCarouselRegister = () => {
     const { carouselContainerRef } = useContext(Context);
     const { cardCarouselStyleFactors } = useWindowSizeSelector();
 
-    const registerContainer =() => {
-
+    const registerContainer = () => {
         return {
             adjustedPadding_vw: `0 ${cardCarouselStyleFactors.gap_vw * 2}vw`,
             carouselContainerRef,
@@ -143,16 +141,19 @@ export const useCardViewOpener = () => {
     const dispatch = useDispatch();
     const openModal = useModalOpener(modalName);
 
-    const cardViewOpen = useCallback((idx: number) => {
-        if (!device) return;
-        const cardCarouselStyleFactors = cardCarouselMagics[device];
+    const cardViewOpen = useCallback(
+        (idx: number) => {
+            if (!device) return;
+            const cardCarouselStyleFactors = cardCarouselMagics[device];
 
-        // idx 番目の card で modal を開く
-        openModal();
-        dispatch(setActiveIdx(idx));
-        // 'instant' でアニメーション無しでスクロール
-        handleScroll(idx, 'instant', cardCarouselStyleFactors);
-    }, [device]);
+            // idx 番目の card で modal を開く
+            openModal();
+            dispatch(setActiveIdx(idx));
+            // 'instant' でアニメーション無しでスクロール
+            handleScroll(idx, 'instant', cardCarouselStyleFactors);
+        },
+        [device]
+    );
 
     return { cardViewOpen };
 };

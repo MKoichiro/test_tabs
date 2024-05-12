@@ -20,10 +20,6 @@ import { categoryCommonStyles, CategoryCommonStylesType } from './CategoryCommon
 /* --- utils --------------------- */
 // import { vw2px } from '../../../../../utils/converters';
 
-/* --- font awesome -------------- */
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faArchive } from '@fortawesome/free-solid-svg-icons';
-
 /* --- material icons ------------ */
 import { DragIndicator, Inventory2Outlined } from '@mui/icons-material';
 
@@ -42,12 +38,11 @@ import { SlidableParams } from '../../../../../functions/slidable/types';
 /* immediateEditable */
 import { useImmediateEditable } from '../../../../../functions/immediateEditable/Hooks';
 import { vw2px } from '../../../../../utils/converters';
-import { useCategoriesSelector, useDispatch } from '../../../../../providers/redux/store';
+import { useDispatch, useWindowSizeSelector } from '../../../../../providers/redux/store';
 import { updateCategoryProps } from '../../../../../providers/redux/slices/categoriesSlice';
 
 /* --- dev ----------------------- */
 // import { isDebugMode } from '../../../../../utils/adminDebugMode';
-
 
 // === TYPE =========================================================== //
 /**
@@ -64,13 +59,12 @@ interface ActiveCategoryProps {
  * @category Custom Hook
  */
 export const useActiveCategory = ({ activeCategory }: ActiveCategoryProps) => {
-    const {categoriesEntity} = useCategoriesSelector();
     const categoryId = activeCategory.id;
     const dispatch = useDispatch();
+    const { contentsWidth } = useWindowSizeSelector();
 
     // slidable 関連
-    const btnsContainerWidthVw = 10;
-    const btnsContainerWidthPx = vw2px(btnsContainerWidthVw);
+    const btnsContainerWidthPx = vw2px(contentsWidth) * 0.20;
     const slidableParams: SlidableParams = {
         SLIDABLE_LENGTH: btnsContainerWidthPx,
     };
@@ -85,12 +79,8 @@ export const useActiveCategory = ({ activeCategory }: ActiveCategoryProps) => {
 
     // archive button handler
     const handleDeleteBtnClick = () => {
-        console.log(activeCategory.name, ' isArchived');
-        const test = categoriesEntity.findIndex((category) => category.id === categoryId);
-        console.log(categoriesEntity[test].name);
         dispatch(updateCategoryProps({ categoryId, update: { isArchived: true } }));
     };
-
 
     return {
         ...useImmediateEditable({ target: activeCategory, targetProperty: 'name' }),
@@ -166,7 +156,10 @@ export const ActiveCategory = ({ activeCategory }: ActiveCategoryProps) => {
                     className="slidable-hidden-contents"
                     slidableLength={slidableParams.SLIDABLE_LENGTH}
                 >
-                    <button onClick={handleDeleteBtnClick}>
+                    <button
+                        className="btn-archive"
+                        onClick={handleDeleteBtnClick}
+                    >
                         <Inventory2Outlined />
                     </button>
                 </SlidableHidden>
@@ -178,7 +171,11 @@ export const ActiveCategory = ({ activeCategory }: ActiveCategoryProps) => {
 
 // === STYLE ========================================================= //
 const StyledLi = styled.li<CategoryCommonStylesType>`
+    margin-top: 0.8rem;
+    padding-right: .8rem;
     touch-action: auto;
+    background-color: var(--color-white-2);
+
 
     .slidable-main-contents {
         ${categoryCommonStyles}
@@ -190,8 +187,15 @@ const StyledLi = styled.li<CategoryCommonStylesType>`
         }
 
         .category-name-container {
-            border-bottom: ${(props) =>
-                props.$inEditing ? '2px solid #000' : '2px solid transparent'};
+            border-bottom: ${({$inEditing}) => $inEditing ? 'var(--border-1)' : 'var(--border-weight) solid transparent'};
+            margin: 1rem 0;
+            > * {
+                font-size: 2rem;
+                line-height: 2em;
+                @media (width < 600px) {
+                    font-size: 16px;
+                }
+            }
             p {
                 display: ${(props) => (props.$inEditing ? 'none' : 'block')};
             }
@@ -208,12 +212,21 @@ const StyledLi = styled.li<CategoryCommonStylesType>`
         }
     }
     .slidable-hidden-contents {
-        background: violet;
         display: flex;
-        align-items: center;
-        button {
+        .btn-archive {
             display: block;
-            flex: 1;
+            width: 100%;
+            margin: 0.4rem;
+            border: var(--border-1);
+            border-radius: 0.2rem;
+            svg {
+                color: tomato;
+                font-size: 2rem;
+            }
+        }
+        .btn-archive:active {
+            scale: 0.95;
+            transition: scale 100ms;
         }
     }
 `;

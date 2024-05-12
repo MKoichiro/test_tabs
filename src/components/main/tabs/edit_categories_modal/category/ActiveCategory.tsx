@@ -25,7 +25,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArchive } from '@fortawesome/free-solid-svg-icons';
 
 /* --- material icons ------------ */
-import { DragIndicator } from '@mui/icons-material';
+import { DragIndicator, Inventory2Outlined } from '@mui/icons-material';
 
 /* --- dnd-kit ------------------- */
 import { useSortable } from '@dnd-kit/sortable';
@@ -42,6 +42,8 @@ import { SlidableParams } from '../../../../../functions/slidable/types';
 /* immediateEditable */
 import { useImmediateEditable } from '../../../../../functions/immediateEditable/Hooks';
 import { vw2px } from '../../../../../utils/converters';
+import { useCategoriesSelector, useDispatch } from '../../../../../providers/redux/store';
+import { updateCategoryProps } from '../../../../../providers/redux/slices/categoriesSlice';
 
 /* --- dev ----------------------- */
 // import { isDebugMode } from '../../../../../utils/adminDebugMode';
@@ -62,6 +64,10 @@ interface ActiveCategoryProps {
  * @category Custom Hook
  */
 export const useActiveCategory = ({ activeCategory }: ActiveCategoryProps) => {
+    const {categoriesEntity} = useCategoriesSelector();
+    const categoryId = activeCategory.id;
+    const dispatch = useDispatch();
+
     // slidable 関連
     const btnsContainerWidthVw = 10;
     const btnsContainerWidthPx = vw2px(btnsContainerWidthVw);
@@ -70,18 +76,28 @@ export const useActiveCategory = ({ activeCategory }: ActiveCategoryProps) => {
     };
 
     // dnd-kit
-    const { transform, transition, ...rest } = useSortable({ id: activeCategory.id });
+    const { transform, transition, ...rest } = useSortable({ id: categoryId });
 
     const style = {
         transform: CSS.Transform.toString(transform),
         transition,
     };
 
+    // archive button handler
+    const handleDeleteBtnClick = () => {
+        console.log(activeCategory.name, ' isArchived');
+        const test = categoriesEntity.findIndex((category) => category.id === categoryId);
+        console.log(categoriesEntity[test].name);
+        dispatch(updateCategoryProps({ categoryId, update: { isArchived: true } }));
+    };
+
+
     return {
         ...useImmediateEditable({ target: activeCategory, targetProperty: 'name' }),
         ...rest,
         style,
         slidableParams,
+        handleDeleteBtnClick,
     };
 };
 // ======================================================= FUNCTION === //
@@ -113,6 +129,7 @@ export const ActiveCategory = ({ activeCategory }: ActiveCategoryProps) => {
         setNodeRef,
         style,
         slidableParams,
+        handleDeleteBtnClick,
     } = useActiveCategory({ activeCategory });
 
     return (
@@ -149,8 +166,8 @@ export const ActiveCategory = ({ activeCategory }: ActiveCategoryProps) => {
                     className="slidable-hidden-contents"
                     slidableLength={slidableParams.SLIDABLE_LENGTH}
                 >
-                    <button>
-                        <FontAwesomeIcon icon={faArchive} />
+                    <button onClick={handleDeleteBtnClick}>
+                        <Inventory2Outlined />
                     </button>
                 </SlidableHidden>
             </Slidable>

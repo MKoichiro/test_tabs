@@ -151,7 +151,7 @@ const StyledModal = styled(Modal)<StyledModalType>`
             / 1fr 3rem;
 
         > * {
-            background: rgba(255 255 255 / 0.85);
+            background: var(--color-white-1);
             padding: 0.8rem;
             border-radius: .2rem;
         }

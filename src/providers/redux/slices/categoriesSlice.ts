@@ -43,17 +43,16 @@ const categories = createSlice({
             state.categoriesEntity = action.payload;
         },
 
-        updateCategoryName: (
+        updateCategoryProps: (
             state,
-            action: PayloadAction<{ categoryId: string; newName: string }>
+            action: PayloadAction<{ categoryId: string; update: Partial<CategoryType> }>
         ) => {
-            const { categoryId, newName } = action.payload;
-            const categoryIdx = state.categoriesEntity.findIndex(
-                (category) => category.id === categoryId
-            );
+            const { categoryId, update } = action.payload;
+            const categoryIdx = state.categoriesEntity.findIndex(category => category.id === categoryId);
             const targetCategory = state.categoriesEntity[categoryIdx];
-            targetCategory.name = newName;
+            Object.assign(targetCategory, update);
         },
+
 
         // Todoより深層の更新
 
@@ -107,7 +106,7 @@ const categories = createSlice({
 export const {
     switchCategory,
     updateCategories,
-    updateCategoryName,
+    updateCategoryProps,
     updateTodo,
     replaceTodos,
     updateTodoProps,

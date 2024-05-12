@@ -1,7 +1,7 @@
 import { useState, useRef, FormEvent, ChangeEvent, useEffect } from 'react';
 import { CategoryType, PriorityUnionType, StatusUnionType, TodoType } from '../../providers/types/categories';
 import { useDispatch } from 'react-redux';
-import { updateCategoryName, updateTodoProps } from '../../providers/redux/slices/categoriesSlice';
+import { updateCategoryProps, updateTodoProps } from '../../providers/redux/slices/categoriesSlice';
 
 
 
@@ -12,7 +12,7 @@ type Arg =
     | { target: CategoryType, targetProperty: categoryProp }
     | { target: TodoType,     targetProperty: todoProp     };
 type PossibleChangeEvent = ChangeEvent<HTMLInputElement | HTMLSelectElement>;
-type actionType = ReturnType<typeof updateCategoryName> | ReturnType<typeof updateTodoProps>;
+type actionType = ReturnType<typeof updateCategoryProps> | ReturnType<typeof updateTodoProps>;
 
 /**
  * 
@@ -33,7 +33,7 @@ export const useImmediateEditable = ({target, targetProperty}: Arg) => {
 
     switch (targetProperty) {
         case 'name': {
-            actionCreator = (e) => updateCategoryName({ categoryId: target.id, newName: e.target.value });
+            actionCreator = (e) => updateCategoryProps({ categoryId: target.id, update: { name: e.target.value } });
             break;
         }
         case 'title': {

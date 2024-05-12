@@ -49,6 +49,7 @@ import {
 } from '@dnd-kit/sortable';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArchive } from '@fortawesome/free-solid-svg-icons';
+import { DirectionsWalkOutlined, Inventory2Outlined } from '@mui/icons-material';
 
 /* --- dev ----------------------- */
 // import { isDebugMode } from '../../../../utils/adminDebugMode';
@@ -109,9 +110,8 @@ export const useDndSortable = () => {
  */
 export const useCategories = () => {
     const { categoriesEntity: categories } = useCategoriesSelector();
-    const clone = [...categories];
-    const activeCategories = clone.filter((category) => category.isArchived === false);
-    const archivedCategories = clone.filter((category) => category.isArchived === true);
+    const activeCategories = categories.filter((category) => !category.isArchived);
+    const archivedCategories = categories.filter((category) => category.isArchived);
 
     return {
         ...useDndSortable(),
@@ -161,7 +161,12 @@ export const Categories = () => {
                         items={categories}
                         strategy={verticalListSortingStrategy}
                     >
-                        {activeCategories.map((category) => (
+                        <span className="attr-separator">
+                            <DirectionsWalkOutlined />
+                            <span className="attr-name">Active</span>
+                        </span>
+
+                        {categories.filter((category) => !category.isArchived).map((category) => (
                             <ActiveCategory
                                 key={category.id}
                                 activeCategory={category}
@@ -182,8 +187,9 @@ export const Categories = () => {
                 </DndContext>
             </ul>
 
-            <span className="separator">
-                <FontAwesomeIcon icon={faArchive} />
+            <span className="attr-separator">
+                <Inventory2Outlined />
+                <span className="attr-name">Archive</span>
             </span>
             <ul className="archived-categories-container">
                 {/* ArchivedCategory:  */}
@@ -204,18 +210,39 @@ const StyledDiv = styled.div`
     --fs-category-name: 2rem;
     font-size: var(--fs-category-name);
 
-    .separator {
-        opacity: 0.5;
+    .attr-separator {
         display: flex;
+        justify-content: center;
         align-items: center;
+        height: 2.4rem;
+        margin: 0 1.6rem;
+
         &::before,
         &::after {
             content: '';
             display: block;
             flex: 1;
-            background: #000;
-            height: 0.15rem;
-            margin: 1.6rem;
+            height: var(--border-weight);
+            background-color: var(--color-black-1);
+        }
+        &::before {
+            margin-right: 1.6rem;
+        }
+        &::after {
+            margin-left: 1.6rem;
+        }
+
+        svg {
+            font-size: 2rem;
+            color: var(--color-black-1);
+        }
+
+        .attr-name {
+            font-size: 1.6rem;
+            letter-spacing: 0.1rem;
+            font-weight: 700;
+            color: var(--color-black-1);
+            margin-left:.8rem;
         }
     }
 `;

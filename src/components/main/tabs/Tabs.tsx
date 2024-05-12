@@ -41,10 +41,6 @@ import { EditCategoriesModal } from './edit_categories_modal/EditCategoriesModal
 // interface TabsProps {}
 // =========================================================== TYPE === //
 
-const styleFactors = {
-    modalBtnWidth: 5,
-    tabMinWidth: 15,
-};
 
 // === FUNCTION ======================================================= //
 /**
@@ -102,21 +98,22 @@ export const Tabs = () => {
     const { ulRef, categories, openModal, tabCarouselStyleFactors } = useTabs();
 
     const modalBtnWidth = `${tabCarouselStyleFactors.modalBtnWidth}%`;
+    console.log('rerendered');
+    categories.filter((category) => !category.isArchived).map((category) => {console.log(category.name)});
 
     return (
         <StyledNav $modalBtnWidth={modalBtnWidth}>
             <ul
                 ref={ulRef}
             >
-                {categories.map((category, i) => {
-                    return (
-                        <Tab
-                            key={category.id}
-                            ulRef={ulRef}
-                            idx={i}
-                        />
-                    );
-                })}
+                {categories.filter((category) => !category.isArchived).map((category, i) => (
+                    <Tab
+                        key={category.id}
+                        ulRef={ulRef}
+                        idx={i}
+                        category={category}
+                    />
+                ))}
             </ul>
 
             <span className={'separator-tabs'} />

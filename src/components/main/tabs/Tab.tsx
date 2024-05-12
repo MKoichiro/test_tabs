@@ -24,6 +24,7 @@ import { switchCategory } from '../../../providers/redux/slices/categoriesSlice'
 /* --- utils --------------------- */
 import { vw2px } from '../../../utils/converters';
 import { TabCarouselMagic } from '../../../data/styleMagics';
+import { CategoryType } from '../../../providers/types/categories';
 
 /* --- dev ----------------------- */
 // import { isDebugMode } from '../../../utils/adminDebugMode';
@@ -38,6 +39,7 @@ import { TabCarouselMagic } from '../../../data/styleMagics';
 interface TabProps {
     idx: number;
     ulRef: RefObject<HTMLUListElement>;
+    category: CategoryType;
 }
 // =========================================================== TYPE === //
 
@@ -61,7 +63,7 @@ interface TabProps {
  *
  * @category Custom Hook
  */
-export const useTabSwitcher = ({ idx, ulRef, styleFactors }: TabProps & { styleFactors: TabCarouselMagic }) => {
+export const useTabSwitcher = ({ idx, ulRef, styleFactors }: Omit<TabProps, 'category'> & { styleFactors: TabCarouselMagic }) => {
     const dispatch = useDispatch();
 
     const { contentsWidth } = useWindowSizeSelector();
@@ -104,20 +106,16 @@ export const useTabSwitcher = ({ idx, ulRef, styleFactors }: TabProps & { styleF
  * const { isActive, isLastItem, categoryId, categoryName, toggleActive } = useTab({ idx, ulRef });
  * ```
  */
-export const useTab = ({ idx, ulRef }: TabProps) => {
-    const { activeIdx, categoriesEntity: categories } = useCategoriesSelector();
+export const useTab = ({ idx, ulRef, category }: TabProps) => {
+    const { activeIdx } = useCategoriesSelector();
     const { tabCarouselStyleFactors: styleFactors } = useWindowSizeSelector();
-    // console.log(idx);
-    // console.log(idx === categories.length - 1);
 
     return {
         isActive: activeIdx === idx,
-        /** 末尾のタブ間セパレーターはレンダリングしたくないので必要 */
-        isLastItem: idx === categories.length - 1,
         /** タブに紐づくカテゴリーID */
-        categoryId: categories[idx].id,
+        categoryId: category.id,
         /** タブに表示するカテゴリー名 */
-        categoryName: categories[idx].name,
+        categoryName: category.name,
         /** button 要素の onClick にバインドするハンドラ */
         toggleActive: useTabSwitcher({ idx, ulRef, styleFactors }).toggleActive,
         styleFactors,
@@ -140,10 +138,10 @@ export const useTab = ({ idx, ulRef }: TabProps) => {
  * @category Component
  */
 export const Tab = (props: TabProps) => {
-    const { isActive, isLastItem, categoryId, categoryName, toggleActive, styleFactors } = useTab(props);
-    // console.log(isLastItem);
+    const { isActive, categoryId, categoryName, toggleActive, styleFactors } = useTab(props);
 
     const tabMinWidth = `${styleFactors.tabMinWidth}%`;
+
 
     return (
         <StyledLi
@@ -156,7 +154,6 @@ export const Tab = (props: TabProps) => {
                 onClick={toggleActive}
             />
 
-            {/* {!isLastItem && <span className="separator" />} */}
         </StyledLi>
     );
 };

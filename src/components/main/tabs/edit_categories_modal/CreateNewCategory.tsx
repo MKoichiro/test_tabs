@@ -231,6 +231,7 @@ const StyledForm = styled.form`
                     border: none;
                     outline: none;
                     padding: 0 0.8rem;
+                    background: var(--color-white-3);
                 }
                 p {
                     margin-left: auto;

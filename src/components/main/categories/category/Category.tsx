@@ -203,7 +203,7 @@ export const Category = (props: CategoryProps) => {
                 <div>
                     <span className="attr-separator">
                         <Inventory2Outlined />
-                        <span className="attr-name">Archived</span>
+                        <span className="attr-name">Archive</span>
                     </span>
                     {todos.filter((todo) => todo.isArchived).map((todo, i) => (
                         <ArchivedTodo

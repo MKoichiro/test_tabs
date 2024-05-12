@@ -22,7 +22,7 @@ import { useDispatch } from 'react-redux';
 import { replaceTodos } from '../../../../providers/redux/slices/categoriesSlice';
 
 /* --- types --------------------- */
-import { CategoryType, TodoType } from '../../../../providers/types/categories';
+import { CategoryType } from '../../../../providers/types/categories';
 
 /* --- dnd-kit ------------------- */
 import { createPortal } from 'react-dom';
@@ -33,6 +33,7 @@ import {
     DragOverlay,
     DragStartEvent,
     KeyboardSensor,
+    MouseSensor,
     PointerSensor,
     TouchSensor,
     UniqueIdentifier,
@@ -45,6 +46,8 @@ import {
     sortableKeyboardCoordinates,
     verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
+import { ArchivedTodo } from './todo/ArchivedTodo';
+import { DirectionsWalkOutlined, Inventory2Outlined } from '@mui/icons-material';
 
 /* --- dev ----------------------- */
 // import { isDebugMode } from '../../../../utils/adminDebugMode';
@@ -67,11 +70,17 @@ interface CategoryProps {
  * @param todos - カテゴリーに含まれる todo のリスト
  * @returns
  */
-export const useDndSortable = (todos: TodoType[]) => {
+export const useDndSortable = (props: CategoryProps) => {
+    const { category } = props;
+    const todos = category.todos;
     const dispatch = useDispatch();
+
+    const [activeId, setActiveId] = useState<UniqueIdentifier | null>(null);
+    const [isGloballyDragging, setIsGloballyDragging] = useState(false);
 
     // sensor 登録
     const sensors = useSensors(
+        useSensor(MouseSensor),
         useSensor(PointerSensor),
         useSensor(TouchSensor),
         useSensor(KeyboardSensor, {
@@ -79,15 +88,16 @@ export const useDndSortable = (todos: TodoType[]) => {
         })
     );
 
-    // `<DragOverlay/>` で使用
-    const [activeId, setActiveId] = useState<UniqueIdentifier | null>(null);
-    // `<DragOverlay/>` で使用する dragStart event の handler
+    // handlers
+    const handleMouseDown = () => {
+        setIsGloballyDragging(true);
+    }
+
     const handleDragStart = (e: DragStartEvent) => {
         const { active } = e;
         setActiveId(active.id);
     };
 
-    // dnd-kit/sortable で必須の dragEnd event の handler
     const handleDragEnd = (e: DragEndEvent) => {
         const { active, over } = e;
         if (active.id !== over?.id) {
@@ -96,9 +106,11 @@ export const useDndSortable = (todos: TodoType[]) => {
             dispatch(replaceTodos({ oldIdx, newIdx }));
         }
         setActiveId(null);
+        setIsGloballyDragging(false);
     };
 
-    const isGloballyDragging = (activeId !== null);
+
+    // const isGloballyDragging = (activeId !== null);
     // ドラッグ中はユーザー選択を無効化。
     // ドラッグ中に停止していると長押し判定が出て意図せず選択されてしまうため。
     // 完ぺきではないが、これでかなりその挙動が低減される。
@@ -111,7 +123,7 @@ export const useDndSortable = (todos: TodoType[]) => {
     }, [isGloballyDragging]);
 
 
-    return { sensors, activeId, handleDragStart, handleDragEnd, isGloballyDragging };
+    return { todos, sensors, activeId, handleDragStart, handleDragEnd, isGloballyDragging, handleMouseDown };
 };
 
 /**
@@ -119,27 +131,28 @@ export const useDndSortable = (todos: TodoType[]) => {
  * @param props - カテゴリー情報
  * @returns
  */
-export const useCategory = (props: CategoryProps) => {
-    const { category } = props;
-    const todos = category.todos;
-    const { sensors, activeId, handleDragStart, handleDragEnd, isGloballyDragging } = useDndSortable(todos);
+// export const useCategory = (props: CategoryProps) => {
 
-    return {
-        /** カテゴリーに含まれる todo のリスト */
-        todos,
-        /** dnd-kit/sortable で使用する sensor のリスト */
-        sensors,
-        /** ドラッグ中の todo の id */
-        activeId,
-        /** ドラッグ開始時の handler */
-        handleDragStart,
-        /** ドラッグ終了時の handler */
-        handleDragEnd,
+//     const { todos, sensors, activeId, handleDragStart, handleDragEnd, isGloballyDragging, setNodeRef } = useDndSortable(props);
 
-        isGloballyDragging,
+//     return {
+//         /** カテゴリーに含まれる todo のリスト */
+//         todos,
+//         /** dnd-kit/sortable で使用する sensor のリスト */
+//         sensors,
+//         /** ドラッグ中の todo の id */
+//         activeId,
+//         /** ドラッグ開始時の handler */
+//         handleDragStart,
+//         /** ドラッグ終了時の handler */
+//         handleDragEnd,
 
-    };
-};
+//         isGloballyDragging,
+
+//         /** dnd-kit/droppable で使用する ref */
+//         setNodeRef,
+//     };
+// };
 // ====================================================== FUNCTIONS === //
 
 // === COMPONENT ====================================================== //
@@ -149,7 +162,15 @@ export const useCategory = (props: CategoryProps) => {
  * @returns
  */
 export const Category = (props: CategoryProps) => {
-    const { todos, sensors, activeId, handleDragStart, handleDragEnd, isGloballyDragging } = useCategory(props);
+    const {
+        todos,
+        sensors,
+        activeId,
+        handleDragStart,
+        handleDragEnd,
+        isGloballyDragging,
+        handleMouseDown,
+    } = useDndSortable(props);
 
     return (
         <StyledUl>
@@ -159,29 +180,48 @@ export const Category = (props: CategoryProps) => {
                 onDragStart={handleDragStart}
                 onDragEnd={handleDragEnd}
             >
+
                 <SortableContext
-                    items={todos}
+                    items={todos.filter((todo) => !todo.isArchived)}
                     strategy={verticalListSortingStrategy}
                 >
-                    {todos.map(
-                        (todo, i) =>
-                            !todo.isArchived && (
-                                <ActiveTodo
-                                    key={todo.id}
-                                    activeTodoIdx={i}
-                                    todo={todo}
-                                    isGloballyDragging={isGloballyDragging}
-                                />
-                            )
-                    )}
+                    <span className="attr-separator">
+                        <DirectionsWalkOutlined />
+                        <span className="attr-name">Active</span>
+                    </span>
+                    {todos.filter((todo) => !todo.isArchived).map((todo, i) => (
+                        <ActiveTodo
+                            key={todo.id}
+                            activeTodoIdx={i}
+                            todo={todo}
+                            isGloballyDragging={isGloballyDragging}
+                            handleMouseDown={handleMouseDown}
+                        />
+                    ))}
                 </SortableContext>
 
+                <div>
+                    <span className="attr-separator">
+                        <Inventory2Outlined />
+                        <span className="attr-name">Archived</span>
+                    </span>
+                    {todos.filter((todo) => todo.isArchived).map((todo, i) => (
+                        <ArchivedTodo
+                            key={todo.id}
+                            activeTodoIdx={i}
+                            todo={todo}
+                            isGloballyDragging={isGloballyDragging}
+                        />
+                    ))}
+                </div>
+
+
                 {/* dnd-kit/sortable: createPortalでラップして、
-            第二引数に body を指定すればこれを基準に要素が配置されるようになる。
-            transform が body 基準になるのでカーソルからずれなくなる。 */}
+                第二引数に body を指定すればこれを基準に要素が配置されるようになる。
+                transform が body 基準になるのでカーソルからずれなくなる。 */}
                 {createPortal(
                     <DragOverlay>
-                        {activeId ? (
+                        {isGloballyDragging ? (
                             <GhostTodo
                                 todo={todos.filter((todo) => todo.id === activeId)[0]}
                                 isGloballyDragging={isGloballyDragging}
@@ -190,6 +230,8 @@ export const Category = (props: CategoryProps) => {
                     </DragOverlay>,
                     document.body
                 )}
+
+
             </DndContext>
         </StyledUl>
     );
@@ -197,5 +239,41 @@ export const Category = (props: CategoryProps) => {
 // ====================================================== COMPONENT === //
 
 // === STYLE ========================================================= //
-const StyledUl = styled.ul``;
+const StyledUl = styled.ul`
+    .attr-separator {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 2.4rem;
+        margin: 0 1.6rem;
+
+        &::before,
+        &::after {
+            content: '';
+            display: block;
+            flex: 1;
+            height: var(--border-weight);
+            background-color: var(--color-black-1);
+        }
+        &::before {
+            margin-right: 1.6rem;
+        }
+        &::after {
+            margin-left: 1.6rem;
+        }
+
+        svg {
+            font-size: 2rem;
+            color: var(--color-black-1);
+        }
+
+        .attr-name {
+            font-size: 1.6rem;
+            letter-spacing: 0.1rem;
+            font-weight: 700;
+            color: var(--color-black-1);
+            margin-left:.8rem;
+        }
+    }
+`;
 // ========================================================= STYLE === //

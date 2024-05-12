@@ -63,6 +63,7 @@ interface ActiveTodoProps {
     todo: TodoType;
     activeTodoIdx: number;
     isGloballyDragging: boolean;
+    handleMouseDown: (e: React.MouseEvent | React.TouchEvent) => void;
 }
 // =========================================================== TYPE === //
 
@@ -117,7 +118,7 @@ export const useDndItem = (todoId: string) => {
  * } = useActiveTodo({todo, activeTodoIdx});
  * ```
  */
-export const useActiveTodo = ({todo, activeTodoIdx}: Omit<ActiveTodoProps, 'isGloballyDragging'>) => {
+export const useActiveTodo = ({todo, activeTodoIdx}: Omit<ActiveTodoProps, 'isGloballyDragging' | 'handleMouseDown'>) => {
     const todoId = todo.id;
 
     const { contentsWidth } = useWindowSizeSelector();
@@ -185,7 +186,7 @@ export const useActiveTodo = ({todo, activeTodoIdx}: Omit<ActiveTodoProps, 'isGl
  *
  * @category Component
  */
-export const ActiveTodo = ({ todo, activeTodoIdx, isGloballyDragging }: ActiveTodoProps) => {
+export const ActiveTodo = ({ todo, activeTodoIdx, isGloballyDragging, handleMouseDown }: ActiveTodoProps) => {
     const {
         todoId,
         attributes, 
@@ -211,6 +212,7 @@ export const ActiveTodo = ({ todo, activeTodoIdx, isGloballyDragging }: ActiveTo
                 liRef.current = e;
             }}
             {...attributes}
+
         >
             {/* slidable: li内をスライド可能にするためのコンテナ */}
             <Slidable
@@ -224,6 +226,7 @@ export const ActiveTodo = ({ todo, activeTodoIdx, isGloballyDragging }: ActiveTo
                         listeners={listeners}
                         todo={todo}
                         isGloballyDragging={isGloballyDragging}
+                        handleMouseDown={handleMouseDown}
                     />
 
                     <TodoDetail

@@ -121,7 +121,6 @@ export const TodoDetail = forwardRef<HTMLElement, TodoDetailProps>(({ todo, isGl
         executeModalOpen,
         sanitizedDetail,
     } = useTodoDetail({ todo }, ref);
-    console.log('isGloballyDragging', isGloballyDragging);
 
     return (
         <StyledSection

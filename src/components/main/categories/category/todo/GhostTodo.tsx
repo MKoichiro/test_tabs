@@ -14,7 +14,6 @@ import React, { forwardRef } from 'react';
 import styled from 'styled-components';
 
 /* --- child components ---------- */
-import { TodoDetail } from './TodoDetail';
 import { TodoHeader } from './TodoHeader';
 
 /* --- types --------------------- */
@@ -58,8 +57,6 @@ export const GhostTodo = forwardRef<HTMLDivElement, GhostTodoProps>((props, ref)
                     todo={props.todo}
                     isGloballyDragging={props.isGloballyDragging}
                 />
-
-                <TodoDetail {...props} />
             </StyledDiv>
         );
     }
@@ -79,26 +76,8 @@ const StyledDiv = styled.div`
         display: flex;
     }
 
-    h4 {
-    }
     .icon-expired {
         color: red;
-    }
-
-    .detail-container {
-        .todo-info {
-            width: 20%;
-            margin: 0 1.6rem 0 auto;
-            .info-item {
-                width: 100%;
-                display: flex;
-                justify-content: space-between;
-                .info-label {
-                }
-                .info-value {
-                }
-            }
-        }
     }
 `;
 // ========================================================= STYLE === //

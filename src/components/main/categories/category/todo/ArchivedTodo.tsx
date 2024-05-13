@@ -34,7 +34,7 @@ export const ArchivedTodo = (props: ArchivedTodoProps) => {
     };
     const handleDeleteBtnClick = () => {
         const ok = confirm('Are you sure you want to delete this todo?');
-        if (ok) dispatch(deleteTodo({ todoId: todo.id}));
+        if (ok) dispatch(deleteTodo({ todoId: todo.id }));
     };
 
     return (
@@ -77,7 +77,6 @@ const StyledLi = styled.li`
     width: 95%;
     margin: 1.6rem auto;
 
-
     .btns-container {
         display: flex;
 
@@ -98,11 +97,9 @@ const StyledLi = styled.li`
         }
 
         .btn-unarchive {
-
         }
         .btn-delete {
             border-color: tomato;
         }
-        
     }
 `;

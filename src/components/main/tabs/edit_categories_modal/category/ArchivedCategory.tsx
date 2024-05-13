@@ -16,10 +16,17 @@ import { CategoryType } from '../../../../../providers/types/categories';
 
 /* --- styles -------------------- */
 import { categoryCommonStyles, CategoryCommonStylesType } from './CategoryCommonStyles';
-import { Slidable, SlidableHidden, SlidableMain } from '../../../../../functions/slidable/Components';
+import {
+    Slidable,
+    SlidableHidden,
+    SlidableMain,
+} from '../../../../../functions/slidable/Components';
 import { useDispatch, useWindowSizeSelector } from '../../../../../providers/redux/store';
 import { ArrowUpward, DeleteOutline } from '@mui/icons-material';
-import { deleteCategory, updateCategoryProps } from '../../../../../providers/redux/slices/categoriesSlice';
+import {
+    deleteCategory,
+    updateCategoryProps,
+} from '../../../../../providers/redux/slices/categoriesSlice';
 import { vw2px } from '../../../../../utils/converters';
 
 /* --- dev ----------------------- */
@@ -57,12 +64,14 @@ export const ArchivedCategory = ({ archivedCategory }: ArchivedCategoryProps) =>
     const dispatch = useDispatch();
 
     const handleUnarchiveBtnClick = () => {
-        dispatch(updateCategoryProps({ categoryId: archivedCategory.id, update: { isArchived: false } }));
+        dispatch(
+            updateCategoryProps({ categoryId: archivedCategory.id, update: { isArchived: false } })
+        );
     };
 
     const handleDeleteBtnClick = () => {
         dispatch(deleteCategory({ categoryId: archivedCategory.id }));
-    }
+    };
 
     return (
         <StyledLi>
@@ -78,13 +87,13 @@ export const ArchivedCategory = ({ archivedCategory }: ArchivedCategoryProps) =>
                     slidableLength={slidableParams.SLIDABLE_LENGTH}
                 >
                     <button
-                        className='btn btn-unarchive'
+                        className="btn btn-unarchive"
                         onClick={handleUnarchiveBtnClick}
                     >
                         <ArrowUpward />
                     </button>
                     <button
-                        className='btn btn-delete'
+                        className="btn btn-delete"
                         onClick={handleDeleteBtnClick}
                     >
                         <DeleteOutline />
@@ -98,7 +107,6 @@ export const ArchivedCategory = ({ archivedCategory }: ArchivedCategoryProps) =>
 
 // === STYLE ========================================================= //
 const StyledLi = styled.li<CategoryCommonStylesType>`
-
     background-color: var(--color-white-3);
     border-radius: 0.2rem;
     width: 95%;
@@ -109,9 +117,9 @@ const StyledLi = styled.li<CategoryCommonStylesType>`
         p {
             font-size: 2rem;
             line-height: 2em;
-            padding-left: .8rem;
+            padding-left: 0.8rem;
             @media (width < 600px) {
-                    font-size: 16px;
+                font-size: 16px;
             }
         }
     }
@@ -136,12 +144,10 @@ const StyledLi = styled.li<CategoryCommonStylesType>`
         }
 
         .btn-unarchive {
-
         }
         .btn-delete {
             border-color: tomato;
         }
-        
     }
 `;
 // ========================================================= STYLE === //

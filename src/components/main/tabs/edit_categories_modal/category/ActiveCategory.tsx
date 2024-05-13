@@ -17,9 +17,6 @@ import { CategoryType } from '../../../../../providers/types/categories';
 /* --- styles -------------------- */
 import { categoryCommonStyles, CategoryCommonStylesType } from './CategoryCommonStyles';
 
-/* --- utils --------------------- */
-// import { vw2px } from '../../../../../utils/converters';
-
 /* --- material icons ------------ */
 import { DragIndicator, Inventory2Outlined } from '@mui/icons-material';
 
@@ -64,7 +61,7 @@ export const useActiveCategory = ({ activeCategory }: ActiveCategoryProps) => {
     const { contentsWidth } = useWindowSizeSelector();
 
     // slidable 関連
-    const btnsContainerWidthPx = vw2px(contentsWidth) * 0.20;
+    const btnsContainerWidthPx = vw2px(contentsWidth) * 0.2;
     const slidableParams: SlidableParams = {
         SLIDABLE_LENGTH: btnsContainerWidthPx,
     };
@@ -78,7 +75,7 @@ export const useActiveCategory = ({ activeCategory }: ActiveCategoryProps) => {
     };
 
     // archive button handler
-    const handleDeleteBtnClick = () => {
+    const handleDeleteBtnClick = (): void => {
         dispatch(updateCategoryProps({ categoryId, update: { isArchived: true } }));
     };
 
@@ -172,10 +169,9 @@ export const ActiveCategory = ({ activeCategory }: ActiveCategoryProps) => {
 // === STYLE ========================================================= //
 const StyledLi = styled.li<CategoryCommonStylesType>`
     margin-top: 0.8rem;
-    padding-right: .8rem;
+    padding-right: 0.8rem;
     touch-action: auto;
     background-color: var(--color-white-2);
-
 
     .slidable-main-contents {
         ${categoryCommonStyles}
@@ -187,7 +183,8 @@ const StyledLi = styled.li<CategoryCommonStylesType>`
         }
 
         .category-name-container {
-            border-bottom: ${({$inEditing}) => $inEditing ? 'var(--border-1)' : 'var(--border-weight) solid transparent'};
+            border-bottom: ${({ $inEditing }) =>
+                $inEditing ? 'var(--border-1)' : 'var(--border-weight) solid transparent'};
             margin: 1rem 0;
             > * {
                 font-size: 2rem;

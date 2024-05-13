@@ -57,6 +57,7 @@ export const Main = () => {
 
 // === STYLE ========================================================= //
 const StyledMain = styled.main`
+    position: relative;
     width: var(--contents-width);
     margin: 0 auto;
 `;

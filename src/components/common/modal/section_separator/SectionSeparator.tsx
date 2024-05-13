@@ -1,11 +1,33 @@
-import { DirectionsWalkOutlined, Inventory2Outlined } from '@mui/icons-material';
+/* --- react/styled-components --- */
 import React from 'react';
 import styled from 'styled-components';
 
+/* --- MUI ----------------------- */
+import { DirectionsWalkOutlined, Inventory2Outlined } from '@mui/icons-material';
+
+// === TYPE =========================================================== //
+/**
+ * @property sectionName - セクション名
+ * @category Type of Props
+ */
 interface SectionSeparatorProps {
     sectionName: string;
 }
+// =========================================================== TYPE === //
 
+// === COMPONENT ====================================================== //
+/**
+ * @param props
+ * @returns
+ *
+ * @renderAs
+ * - `<h4/>`
+ * @example
+ * ```tsx
+ * <SectionSeparator sectionName={} />
+ * ```
+ *
+ */
 export const SectionSeparator = ({ sectionName }: SectionSeparatorProps) => {
     const sectionNameFormatted = sectionName.toUpperCase();
 
@@ -16,7 +38,9 @@ export const SectionSeparator = ({ sectionName }: SectionSeparatorProps) => {
         </StyledH4>
     );
 };
+// ====================================================== COMPONENT === //
 
+// === STYLE ========================================================== //
 const StyledH4 = styled.h4`
     display: flex;
     justify-content: center;
@@ -52,3 +76,4 @@ const StyledH4 = styled.h4`
         margin-left: 0.8rem;
     }
 `;
+// ========================================================= STYLE === //

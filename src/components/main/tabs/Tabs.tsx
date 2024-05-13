@@ -130,6 +130,10 @@ export const Tabs = () => {
 
 // === STYLE ========================================================= //
 const StyledNav = styled.nav<{ $modalBtnWidth: string }>`
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: var(--color-white-1);
     margin-top: 3.2rem;
     display: flex;
     align-items: center;

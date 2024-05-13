@@ -612,6 +612,10 @@ var Q=Y,Z=Symbol.for("react.element"),J=Symbol.for("react.fragment"),ee=Object.p
         }
     }
 `,sL=()=>{const{ulRef:e,categories:t,openModal:n,tabCarouselStyleFactors:r}=(()=>{const e=eO,t=qF();Y.useEffect((()=>{t(SD(e))}),[]);const{tabCarouselStyleFactors:n}=VF(),{categoriesEntity:r}=WF(),i=ZF(e);return{ulRef:Y.useRef(null),categories:r,openModal:i,tabCarouselStyleFactors:n}})(),i=`${r.modalBtnWidth}%`;return ie.jsxs(uL,{$modalBtnWidth:i,children:[ie.jsx("ul",{ref:e,children:t.filter((e=>!e.isArchived)).map(((t,n)=>ie.jsx(iO,{ulRef:e,idx:n,category:t},t.id)))}),ie.jsx("span",{className:"separator-tabs"}),ie.jsx("button",{onClick:n,children:ie.jsx(Yv,{icon:ph})}),ie.jsx(aL,{})]})},uL=Qp.nav`
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: var(--color-white-1);
     margin-top: 3.2rem;
     display: flex;
     align-items: center;
@@ -1430,6 +1434,7 @@ var Q=Y,Z=Symbol.for("react.element"),J=Symbol.for("react.fragment"),ee=Object.p
         }
     }
 `,iz=()=>ie.jsxs(oz,{children:[ie.jsxs("section",{className:"todos-display-container",children:[ie.jsx(sL,{}),ie.jsx($I,{})]}),ie.jsx("section",{className:"form-create-new-todos-container",children:ie.jsx(nz,{})})]}),oz=Qp.main`
+    position: relative;
     width: var(--contents-width);
     margin: 0 auto;
 `,az=()=>ie.jsx(lz,{children:ie.jsxs("div",{className:"footer-container",children:[ie.jsx("div",{className:"footer-toggle-icon",children:ie.jsx(Yv,{icon:hh})}),ie.jsx("h4",{children:"WEB CAT Todo"}),ie.jsx("div",{className:"footer-grip-icon",children:ie.jsx(BS,{})})]})}),lz=Qp.footer`

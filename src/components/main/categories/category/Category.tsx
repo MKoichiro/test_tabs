@@ -15,41 +15,12 @@ import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 
 /* --- child components ---------- */
-import { GhostTodo } from './todo/GhostTodo';
-
-/* --- redux --------------------- */
-import { useDispatch } from 'react-redux';
-import { replaceTodos } from '../../../../providers/redux/slices/categoriesSlice';
+import { ActiveTodos } from './ActiveTodos';
+import { ArchivedTodos } from './ArchivedTodos';
 
 /* --- types --------------------- */
 import { CategoryType } from '../../../../providers/types/categories';
 
-/* --- dnd-kit ------------------- */
-import { createPortal } from 'react-dom';
-import { ActiveTodo } from './todo/ActiveTodo';
-import {
-    DndContext,
-    DragEndEvent,
-    DragOverlay,
-    DragStartEvent,
-    KeyboardSensor,
-    MouseSensor,
-    PointerSensor,
-    TouchSensor,
-    UniqueIdentifier,
-    closestCenter,
-    useSensor,
-    useSensors,
-} from '@dnd-kit/core';
-import {
-    SortableContext,
-    sortableKeyboardCoordinates,
-    verticalListSortingStrategy,
-} from '@dnd-kit/sortable';
-import { ArchivedTodo } from './todo/ArchivedTodo';
-import { DirectionsWalkOutlined, Inventory2Outlined } from '@mui/icons-material';
-import { ActiveTodos } from './ActiveTodos';
-import { ArchivedTodos } from './ArchivedTodos';
 
 /* --- dev ----------------------- */
 // import { isDebugMode } from '../../../../utils/adminDebugMode';

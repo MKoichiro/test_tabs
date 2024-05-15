@@ -28,6 +28,7 @@ import {
     updateCategoryProps,
 } from '../../../../../providers/redux/slices/categoriesSlice';
 import { vw2px } from '../../../../../utils/converters';
+import { useSlidableRegister } from '../../../../../functions/slidable/Hooks';
 
 /* --- dev ----------------------- */
 // import { isDebugMode } from '../../../../../utils/adminDebugMode';
@@ -57,12 +58,18 @@ interface ArchivedCategoryProps {
  * @category Component
  */
 export const ArchivedCategory = ({ archivedCategory }: ArchivedCategoryProps) => {
-    const { contentsWidth } = useWindowSizeSelector();
-    const btnContainerWidth = vw2px(contentsWidth) * 0.33;
-    const slidableParams = { SLIDABLE_LENGTH: btnContainerWidth };
-
     const dispatch = useDispatch();
 
+    // slidable hook
+    const { contentsWidth } = useWindowSizeSelector();
+    const btnsContainerWidth = vw2px(contentsWidth) * 0.33;
+    const SLIDABLE_LENGTH = btnsContainerWidth;
+    const SLIDABLE_PARAMS = { SLIDABLE_LENGTH };
+    const { isSlided, slide, unSlide, register } = useSlidableRegister({
+        params: SLIDABLE_PARAMS,
+    });
+
+    // handlers
     const handleUnarchiveBtnClick = () => {
         dispatch(
             updateCategoryProps({ categoryId: archivedCategory.id, update: { isArchived: false } })
@@ -75,7 +82,7 @@ export const ArchivedCategory = ({ archivedCategory }: ArchivedCategoryProps) =>
 
     return (
         <StyledLi>
-            <Slidable slidableParams={slidableParams}>
+            <Slidable {...register}>
                 <SlidableMain>
                     <div className="category-name-container">
                         <p>{archivedCategory.name}</p>
@@ -84,7 +91,7 @@ export const ArchivedCategory = ({ archivedCategory }: ArchivedCategoryProps) =>
 
                 <SlidableHidden
                     className="btns-container"
-                    slidableLength={slidableParams.SLIDABLE_LENGTH}
+                    slidableLength={SLIDABLE_LENGTH}
                 >
                     <button
                         className="btn btn-unarchive"

@@ -24,6 +24,7 @@ const GlobalStyle = createGlobalStyle`
     --color-white-1: #e1e1e1;
     --color-white-2: #f9f9f9;
     --color-white-3: #efefef;
+    --color-white-4: #f5f5f5;
 
     --color-gray-1: #888;
 
@@ -131,7 +132,23 @@ const GlobalStyle = createGlobalStyle`
     -moz-user-select: none;
     -webkit-user-select: none;
     -ms-user-select: none;
+    & * {
+      cursor: grabbing !important;
+    }
   }
+
+  /* .btn-slide {
+        --btn-width: 2.4rem;
+        position: absolute;
+        top: 20rem;
+        left: calc((100% - var(--contents-width)) / 2 - var(--btn-width));
+        height: 100%;
+        width: var(--btn-width);
+        background: var(--color-white-3);
+        border: var(--border-1);
+        border-radius: 0.2rem;
+        padding: 0.4rem;
+    } */
 
 
 

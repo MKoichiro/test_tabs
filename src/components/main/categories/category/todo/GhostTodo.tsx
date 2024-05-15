@@ -67,7 +67,6 @@ const StyledDiv = styled.div`
 
     .gripper {
         padding: 0 0.8rem;
-        cursor: grabbing;
     }
 
     header {

@@ -12,6 +12,7 @@ import { ArrowUpward, DeleteOutline } from '@mui/icons-material';
 import { useDispatch, useWindowSizeSelector } from '../../../../../providers/redux/store';
 import { deleteTodo, updateTodoProps } from '../../../../../providers/redux/slices/categoriesSlice';
 import { vw2px } from '../../../../../utils/converters';
+import { useSlidableRegister } from '../../../../../functions/slidable/Hooks';
 
 interface ArchivedTodoProps {
     key: string;
@@ -24,11 +25,16 @@ export const ArchivedTodo = (props: ArchivedTodoProps) => {
     const { todo } = props;
     const dispatch = useDispatch();
 
+    // slidable hook
     const { contentsWidth } = useWindowSizeSelector();
+    const btnsContainerWidth = vw2px(contentsWidth) * 0.33;
+    const SLIDABLE_LENGTH = btnsContainerWidth;
+    const SLIDABLE_PARAMS: SlidableParams = { SLIDABLE_LENGTH };
+    const { isSlided, slide, unSlide, register } = useSlidableRegister({
+        params: SLIDABLE_PARAMS,
+    });
 
-    const btnContainerWidth = vw2px(contentsWidth) * 0.33;
-    const slidableParams: SlidableParams = { SLIDABLE_LENGTH: btnContainerWidth };
-
+    // handlers
     const handleUnarchiveBtnClick = () => {
         dispatch(updateTodoProps({ todoId: todo.id, update: { isArchived: false } }));
     };
@@ -39,7 +45,7 @@ export const ArchivedTodo = (props: ArchivedTodoProps) => {
 
     return (
         <StyledLi>
-            <Slidable slidableParams={slidableParams}>
+            <Slidable {...register}>
                 <SlidableMain>
                     <TodoHeader
                         attributes={'archived'}
@@ -50,7 +56,7 @@ export const ArchivedTodo = (props: ArchivedTodoProps) => {
 
                 <SlidableHidden
                     className="btns-container"
-                    slidableLength={slidableParams.SLIDABLE_LENGTH}
+                    slidableLength={SLIDABLE_LENGTH}
                 >
                     <button
                         className="btn btn-unarchive"

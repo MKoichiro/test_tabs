@@ -37,6 +37,7 @@ import { useImmediateEditable } from '../../../../../functions/immediateEditable
 import { vw2px } from '../../../../../utils/converters';
 import { useDispatch, useWindowSizeSelector } from '../../../../../providers/redux/store';
 import { updateCategoryProps } from '../../../../../providers/redux/slices/categoriesSlice';
+import { useSlidableRegister } from '../../../../../functions/slidable/Hooks';
 
 /* --- dev ----------------------- */
 // import { isDebugMode } from '../../../../../utils/adminDebugMode';
@@ -62,9 +63,13 @@ export const useActiveCategory = ({ activeCategory }: ActiveCategoryProps) => {
 
     // slidable 関連
     const btnsContainerWidthPx = vw2px(contentsWidth) * 0.2;
-    const slidableParams: SlidableParams = {
-        SLIDABLE_LENGTH: btnsContainerWidthPx,
+    const SLIDABLE_LENGTH = btnsContainerWidthPx;
+    const SLIDABLE_PARAMS: SlidableParams = {
+        SLIDABLE_LENGTH,
     };
+    const { isSlided, slide, unSlide, register } = useSlidableRegister({
+        params: SLIDABLE_PARAMS,
+    });
 
     // dnd-kit
     const { transform, transition, ...rest } = useSortable({ id: categoryId });
@@ -83,8 +88,9 @@ export const useActiveCategory = ({ activeCategory }: ActiveCategoryProps) => {
         ...useImmediateEditable({ target: activeCategory, targetProperty: 'name' }),
         ...rest,
         style,
-        slidableParams,
+        SLIDABLE_LENGTH,
         handleDeleteBtnClick,
+        register,
     };
 };
 // ======================================================= FUNCTION === //
@@ -115,8 +121,9 @@ export const ActiveCategory = ({ activeCategory }: ActiveCategoryProps) => {
         attributes,
         setNodeRef,
         style,
-        slidableParams,
+        SLIDABLE_LENGTH,
         handleDeleteBtnClick,
+        register,
     } = useActiveCategory({ activeCategory });
 
     return (
@@ -127,7 +134,7 @@ export const ActiveCategory = ({ activeCategory }: ActiveCategoryProps) => {
             $isDragging={isDragging}
             {...attributes}
         >
-            <Slidable slidableParams={slidableParams}>
+            <Slidable {...register}>
                 <SlidableMain className="slidable-main-contents">
                     <span
                         className="gripper"
@@ -151,7 +158,7 @@ export const ActiveCategory = ({ activeCategory }: ActiveCategoryProps) => {
 
                 <SlidableHidden
                     className="slidable-hidden-contents"
-                    slidableLength={slidableParams.SLIDABLE_LENGTH}
+                    slidableLength={SLIDABLE_LENGTH}
                 >
                     <button
                         className="btn-archive"

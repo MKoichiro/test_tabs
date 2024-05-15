@@ -11,7 +11,7 @@
  */
 
 /* --- react/styled-components --- */
-import React, { useRef } from 'react';
+import React, { MouseEvent, TouchEvent, useRef } from 'react';
 import styled from 'styled-components';
 
 /* --- child components ---------- */
@@ -46,7 +46,13 @@ import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { useWindowSizeSelector } from '../../../../../providers/redux/store';
 import { vw2px } from '../../../../../utils/converters';
-import { Inventory2Outlined, ViewArrayOutlined } from '@mui/icons-material';
+import {
+    Inventory2Outlined,
+    ViewArrayOutlined,
+} from '@mui/icons-material';
+import { useSlidableRegister } from '../../../../../functions/slidable/Hooks';
+import { isTouchDevice } from '../../../../../data/constants/constants';
+import { ControlPanel } from './ControlPanel';
 
 /* --- dev ----------------------- */
 // import { isDebugMode } from '../../../../../utils/adminDebugMode';
@@ -61,7 +67,7 @@ interface ActiveTodoProps {
     todo: TodoType;
     activeTodoIdx: number;
     isGloballyDragging: boolean;
-    handleMouseDown: (e: React.MouseEvent | React.TouchEvent) => void;
+    handleMouseDown: (e: MouseEvent | TouchEvent) => void;
 }
 // =========================================================== TYPE === //
 
@@ -104,12 +110,19 @@ export const useDndItem = (todoId: string) => {
 export const useActiveTodo = ({
     todo,
     activeTodoIdx,
-}: Omit<ActiveTodoProps, 'isGloballyDragging' | 'handleMouseDown'>) => {
+    isGloballyDragging,
+}: Omit<ActiveTodoProps, 'handleMouseDown'>) => {
     const todoId = todo.id;
 
     const { contentsWidth } = useWindowSizeSelector();
-    const btnContainerWidth = vw2px(contentsWidth) * 0.5;
-    const slidableParams: SlidableParams = { SLIDABLE_LENGTH: btnContainerWidth };
+    const btnsContainerWidthPx = vw2px(contentsWidth) * 0.5;
+    const SLIDABLE_LENGTH = btnsContainerWidthPx;
+    const SLIDABLE_PARAMS: SlidableParams = { SLIDABLE_LENGTH };
+
+    const { isSlided, slide, unSlide, addSlidableBtn, register } = useSlidableRegister({
+        params: SLIDABLE_PARAMS,
+        skipCondition: isGloballyDragging,
+    });
 
     // dnd-kit
     const { attributes, listeners, setNodeRef, style, isDragging } = useDndItem(todoId);
@@ -152,8 +165,14 @@ export const useActiveTodo = ({
         handleCompleteBtnClick,
         /** archive ボタンの click handler */
         handleArchiveBtnClick,
-        /** Slidable のパラメータ */
-        slidableParams,
+        /** Slidable のパラメータ: slide距離 */
+        SLIDABLE_LENGTH,
+        /** Slidable登録用 */
+        register,
+
+        slide,
+        unSlide,
+        addSlidableBtn,
     };
 };
 // ======================================================= FUNCTION === //
@@ -189,14 +208,24 @@ export const ActiveTodo = ({
         handleInfoBtnClick,
         handleCompleteBtnClick,
         handleArchiveBtnClick,
-        slidableParams,
-    } = useActiveTodo({ todo, activeTodoIdx });
+        SLIDABLE_LENGTH,
+        register,
+        slide,
+        unSlide,
+        addSlidableBtn,
+    } = useActiveTodo({ todo, activeTodoIdx, isGloballyDragging });
+
+    const { device } = useWindowSizeSelector();
+
+    const isOpen = todo.isOpen;
 
     return (
         <StyledLi
             key={todoId}
             style={style}
             $isDragging={isDragging}
+            $isGlobalDragging={isGloballyDragging}
+            $isOpen={isOpen}
             ref={(e) => {
                 setNodeRef(e);
                 liRef.current = e;
@@ -204,31 +233,43 @@ export const ActiveTodo = ({
             {...attributes}
         >
             {/* slidable: li内をスライド可能にするためのコンテナ */}
-            <Slidable
-                slidableParams={slidableParams}
-                skipCondition={isGloballyDragging}
-            >
+            <Slidable {...register}>
+
                 {/* slidable: 通常時に表示されている要素 */}
                 <SlidableMain className="slidable-main-contents">
-                    <TodoHeader
-                        attributes={'active'}
-                        listeners={listeners}
-                        todo={todo}
-                        isGloballyDragging={isGloballyDragging}
-                        handleMouseDown={handleMouseDown}
-                    />
 
-                    <TodoDetail
-                        ref={liRef}
-                        todo={todo}
-                        isGloballyDragging={isGloballyDragging}
-                    />
+                    {/* spサイズのタッチデバイスでは非表示 / pcでもタッチデバイスならリサイズで小さくなっている場合には非表示 */}
+                    {!(isTouchDevice && device === 'sp') && (
+                        <ControlPanel
+                            attrs={['drag', 'slide']}
+                            isGloballyDragging={isGloballyDragging}
+                            isOpen={isOpen}
+                            drag={{ handleMouseDown, listeners }}
+                            slide={{ slide, addSlidableBtn }}
+                        />
+                    )}
+
+                    <div className="contents">
+                        <TodoHeader
+                            attributes={'active'}
+                            listeners={listeners}
+                            todo={todo}
+                            isGloballyDragging={isGloballyDragging}
+                            handleMouseDown={handleMouseDown}
+                        />
+
+                        <TodoDetail
+                            ref={liRef}
+                            todo={todo}
+                            isGloballyDragging={isGloballyDragging}
+                        />
+                    </div>
                 </SlidableMain>
 
                 {/* slidable: スライドで右から出てくる要素 */}
                 <SlidableHidden
                     className="btns-container"
-                    slidableLength={slidableParams.SLIDABLE_LENGTH}
+                    slidableLength={SLIDABLE_LENGTH}
                 >
                     {/* 1. cards modal を表示する */}
                     <div className="each-btn-container info-btn-container">
@@ -266,6 +307,8 @@ export const ActiveTodo = ({
 // === STYLE ========================================================= //
 interface StyledLiType {
     $isDragging: boolean;
+    $isOpen: boolean;
+    $isGlobalDragging: boolean;
 }
 
 const StyledLi = styled.li<StyledLiType>`
@@ -281,6 +324,14 @@ const StyledLi = styled.li<StyledLiType>`
     scrollbar-width: none;
     &:-webkit-scrollbar {
         display: none;
+    }
+
+    .slidable-main-contents {
+        display: flex;
+
+        .contents {
+            flex: 1;
+        }
     }
 
     .btns-container {
@@ -324,5 +375,7 @@ const StyledLi = styled.li<StyledLiType>`
             }
         }
     }
+
+    /* position: relative; */
 `;
 // ========================================================= STYLE === //

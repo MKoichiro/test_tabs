@@ -1,5 +1,7 @@
 // import { ReactNode } from 'react';
 
+import { MutableRefObject, Dispatch, SetStateAction } from 'react';
+
 /**
  * for hooks args
  * @property SLIDABLE_LENGTH
@@ -46,10 +48,19 @@ interface PropsBase {
  * @property slidableParams: {@link SlidableParams}
  * @property skipCondition: スライドの挙動を無効化したいときに true を返すstateなどを指定
  */
-export interface SlidableProps extends PropsBase {
-    slidableParams: SlidableParams;
+export interface SlidableRegister {
+    className?: string;
+    SLIDABLE_PRAMS: SlidableParams;
+    translateXState: [number, Dispatch<SetStateAction<number>>];
+    isSlidedState: [boolean, Dispatch<SetStateAction<boolean>>];
+    containerRef: MutableRefObject<HTMLDivElement | null>;
     skipCondition?: boolean;
+    btnsRef: MutableRefObject<HTMLButtonElement[] | null>;
 }
+// export interface SlidableProps extends PropsBase {
+//     slidableParams: SlidableParams;
+//     skipCondition?: boolean;
+// }
 
 /**
  * for component props

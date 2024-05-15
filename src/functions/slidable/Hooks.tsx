@@ -1,15 +1,117 @@
-import React, { useRef, useState, useEffect, CSSProperties, useCallback } from 'react';
+import React, {
+    useRef,
+    useState,
+    useEffect,
+    CSSProperties,
+    useCallback,
+    Dispatch,
+    SetStateAction,
+    MutableRefObject,
+} from 'react';
 import { SlidableParams } from './types';
 import { applyStyles, removeStyles } from './utils';
 import { defaultValForOptionalParams } from './constants';
 import { useWindowSizeSelector } from '../../providers/redux/store';
 
+const enableAnimation = (container: HTMLElement, duration: number) => {
+    if (!container) return;
+    container.style.transition = `transform ${duration}ms`;
+    setTimeout(() => {
+        container.style.transition = 'none';
+    }, duration);
+};
+
+// state作成はここで行い、最低限のhandlerやstateを返して外部で利用可能にしておく。
+export const useSlidableRegister = ({
+    params,
+    skipCondition,
+}: {
+    params: SlidableParams;
+    skipCondition?: boolean;
+}) => {
+    const {
+        SLIDABLE_LENGTH,
+        GRADIENT_THRESHOLD = defaultValForOptionalParams.GRADIENT_THRESHOLD,
+        TOGGLE_THRESHOLD = SLIDABLE_LENGTH / 2,
+        COMPLEMENT_ANIME_DURATION = defaultValForOptionalParams.COMPLEMENT_ANIME_DURATION,
+        SLIDABLE_PLAY = defaultValForOptionalParams.SLIDABLE_PLAY,
+    } = params;
+
+    const isSlidedState = useState(false);
+    const [isSlided, setIsSlided] = isSlidedState;
+    const translateXState = useState(0);
+    const [, setTranslateX] = translateXState;
+    const containerRef = useRef<HTMLDivElement | null>(null);
+    const btnsRef = useRef<HTMLButtonElement[] | null>(null);
+
+    const addSlidableBtn = (el: HTMLButtonElement) => {
+        if (el === null) return;
+        if (!btnsRef.current) {
+            btnsRef.current = [el];
+        } else {
+            btnsRef.current.push(el);
+        }
+    };
+
+    const slide = () => {
+        if (isSlided) return;
+        const container = containerRef.current;
+        if (container === null) return;
+
+        enableAnimation(container, COMPLEMENT_ANIME_DURATION);
+        setIsSlided(true);
+        setTranslateX(-SLIDABLE_LENGTH);
+    };
+
+    const unSlide = () => {
+        if (!isSlided) return;
+        const container = containerRef.current;
+        if (container === null) return;
+
+        enableAnimation(container, COMPLEMENT_ANIME_DURATION);
+        setIsSlided(false);
+        setTranslateX(0);
+    };
+
+    return {
+        register: {
+            SLIDABLE_PRAMS: {
+                SLIDABLE_LENGTH,
+                GRADIENT_THRESHOLD,
+                TOGGLE_THRESHOLD,
+                COMPLEMENT_ANIME_DURATION,
+                SLIDABLE_PLAY,
+            },
+            translateXState,
+            isSlidedState,
+            containerRef,
+            skipCondition,
+            btnsRef,
+        },
+        isSlided,
+        slide,
+        unSlide,
+        addSlidableBtn,
+    };
+};
+
 interface Slidable {
     params: SlidableParams;
     skipCondition?: boolean;
+    translateXState: [number, Dispatch<SetStateAction<number>>];
+    isSlidedState: [boolean, Dispatch<SetStateAction<boolean>>];
+    containerRef: MutableRefObject<HTMLDivElement | null>;
+    btnsRef: MutableRefObject<HTMLElement[] | null>;
 }
 
-export const useSlidable = ({ params, skipCondition }: Slidable) => {
+export const useSlidable = ({
+    params,
+    skipCondition,
+    translateXState,
+    isSlidedState,
+    containerRef,
+    btnsRef,
+}: Slidable) => {
     const {
         SLIDABLE_LENGTH, // ← これだけ必須で受け取る、以下はoptionalなのでデフォルト値を設定
         GRADIENT_THRESHOLD = defaultValForOptionalParams.GRADIENT_THRESHOLD,
@@ -20,7 +122,6 @@ export const useSlidable = ({ params, skipCondition }: Slidable) => {
 
     const { inner, client } = useWindowSizeSelector(); // selector から取得
 
-    const containerRef = useRef<HTMLDivElement | null>(null);
     // scrollBarWidthはrendering間で保持しつつ、resize時に更新。
     const scrollBarWidthRef = useRef<number>(inner.width - client.width);
     useEffect(() => {
@@ -32,8 +133,8 @@ export const useSlidable = ({ params, skipCondition }: Slidable) => {
         y: number | undefined;
     }>({ x: undefined, y: undefined });
     const [scrollY, setScrollY] = useState<number | undefined>(0);
-    const [translateX, setTranslateX] = useState(0);
-    const [isSlided, setIsSlided] = useState(false);
+    const [translateX, setTranslateX] = translateXState;
+    const [isSlided, setIsSlided] = isSlidedState;
     const [isRejected, setIsRejected] = useState(false);
     const [isAllowed, setIsAllowed] = useState(false);
 
@@ -86,6 +187,7 @@ export const useSlidable = ({ params, skipCondition }: Slidable) => {
                 return;
             }
             setIsAllowed(true);
+
             // 縦スクロールを禁止。スクロールバーが消える副作用があるので、その幅分だけ body を右にずらす。
             // spreadでも書けるが、styleのプロパティ量は大量なので丸ごとコピーするのは気持ちが悪い。
             const stylesForVerticalScrollBlock: CSSProperties = {
@@ -150,15 +252,28 @@ export const useSlidable = ({ params, skipCondition }: Slidable) => {
     // ------------------------------------- Event Handlers --- //
 
     // slide後にユーザーが別の場所を操作した場合、スライドを閉じる
-
     const resetSlidedState = useCallback(
         (e: MouseEvent | TouchEvent) => {
             // iOSでうまく動作させるために、setTimeout で処理を遅延させる。遅延させても特に不自然では無い。
             setTimeout(() => {
                 if (!isSlided) return;
-                // コンテナ内での発火の場合はスライドを閉じない
-                const invokedIn = (e.target as Element).closest('.slidable-container');
-                if (invokedIn === containerRef.current) return;
+
+                // skip close if invoked in the <SlidableMain /> container
+                const invokedInSlidableContainer =
+                    (e.target as Element).closest('.slidable-container') === containerRef.current;
+                const invokedInSlidableHiddenContainer = (e.target as Element).closest(
+                    '.slidable-hidden-container'
+                );
+                const invokedInSlidableMainContainer =
+                    invokedInSlidableContainer && !invokedInSlidableHiddenContainer;
+                if (invokedInSlidableMainContainer) return;
+
+                // skip close if invoked in the added buttons
+                const btnEls = btnsRef.current;
+                const invokedInAddedBtns =
+                    btnEls && btnEls.some((btn) => btn.contains(e.target as Node));
+                if (invokedInAddedBtns) return;
+
                 enableAnimation();
                 setIsSlided(false);
                 setTranslateX(0);

@@ -29,10 +29,21 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCircleExclamation } from '@fortawesome/free-solid-svg-icons';
 
 /* --- material icons ------------ */
-import { ArrowUpward, DragIndicator, ExpandLess } from '@mui/icons-material';
+import {
+    ArrowBackIos,
+    ArrowForward,
+    Circle,
+    CircleOutlined,
+    DragIndicator,
+    ErrorOutline,
+    ExpandLess,
+    HorizontalRule,
+} from '@mui/icons-material';
 
 /* --- dnd-kit ------------------- */
 import { SyntheticListenerMap } from '@dnd-kit/core/dist/hooks/utilities';
+import { useWindowSizeSelector } from '../../../../../providers/redux/store';
+import { isTouchDevice } from '../../../../../data/constants/constants';
 
 /* --- dev ----------------------- */
 // import { isDebugMode } from '../../../../../utils/adminDebugMode';
@@ -141,6 +152,8 @@ export const TodoHeader = ({
         isGhost,
     } = useTodoHeader({ todo, attributes });
 
+    const { device } = useWindowSizeSelector();
+
     return (
         <StyledHeader
             $isCompleted={isCompleted}
@@ -152,19 +165,26 @@ export const TodoHeader = ({
             $isArchived={isArchived}
         >
             {/* 1. グリップ可能を示す、six-dots icon */}
-            <span
-                className="gripper"
-                {...listeners}
-                onMouseDown={handleMouseDown}
-                onTouchStart={handleMouseDown}
-            >
-                <DragIndicator />
-            </span>
+            {isTouchDevice && device === 'sp' ? (
+                <span
+                    className="gripper"
+                    {...listeners}
+                    onMouseDown={handleMouseDown}
+                    onTouchStart={handleMouseDown}
+                >
+                    <DragIndicator />
+                </span>
+            ) : (
+                <span className="bullet">
+                    <HorizontalRule />
+                </span>
+            )}
 
             {/* 2. 期限切れアイコン */}
             {isExpired && (
                 <span className="icon-expired">
-                    <FontAwesomeIcon icon={faCircleExclamation} />
+                    {/* <FontAwesomeIcon icon={faCircleExclamation} /> */}
+                    <ErrorOutline />
                 </span>
             )}
 
@@ -227,31 +247,26 @@ const StyledHeader = styled.header<StyledHeaderType>`
         if ($isArchived) {
             return '0px';
         } else if ($isExpired) {
-            return '3.2rem';
+            return '3.6rem';
         } else {
             return '0px';
         }
     }};
     --btn-width: 3.6rem;
     --btns-width: calc(var(--btn-width) * 2);
-    --title-width: calc(100% - var(--icons-width) - var(--btns-width));
+    --title-width: calc(var(--contents-width) - var(--icons-width) - var(--btns-width));
 
     @media (width < 600px) {
         font-size: 16px;
     }
 
+    /* icons & buttons */
     :has([class*='MuiSvgIcon']) {
         width: var(--btn-width);
         display: flex;
         align-items: center;
         justify-content: center;
         height: 100%;
-        svg {
-        }
-    }
-    .gripper {
-        touch-action: none;
-        cursor: grab;
         svg {
             font-size: inherit;
             @media (width < 600px) {
@@ -260,20 +275,27 @@ const StyledHeader = styled.header<StyledHeaderType>`
         }
     }
 
-    /* .icon-expired と .btn-toggle-open 共通 */
-    :has(svg[class*='fa-']) {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        height: var(--title-line-height);
-        svg {
-            height: 1.6rem;
-        }
+    .gripper {
+        touch-action: none;
+        cursor: grab;
+    }
+
+    .bullet {
     }
 
     .icon-expired {
-        color: #b00;
-        width: var(--icons-width);
+        color: tomato;
+    }
+
+    .btn-toggle-detail {
+        scale: ${({ $isOpen }) => ($isOpen ? '1 1' : '1 -1')};
+        transition: scale 500ms;
+        svg {
+            font-size: 3.2rem;
+            @media (width < 600px) {
+                font-size: 16px;
+            }
+        }
     }
 
     .main-container {
@@ -287,35 +309,30 @@ const StyledHeader = styled.header<StyledHeaderType>`
             line-height: inherit;
         }
         h4 {
+            max-width: 100%;
             cursor: ${({ $isActive }) => ($isActive ? 'pointer' : 'default')};
             display: ${({ $inEditing }) => ($inEditing ? 'none' : 'block')};
             text-decoration: ${({ $isCompleted }) => ($isCompleted ? 'line-through' : '')};
+
             color: ${({ $isCompleted, $isArchived }) =>
-                $isCompleted || $isArchived ? 'var(--color-gray-1)' : 'var(--color-black-1)'};
-            max-width: 100%;
+                $isCompleted || $isArchived ? 'var(--color-gray-1)' : 'var(--color-black-1)'
+            };
             height: ${({ $isGloballyDragging, $isArchived }) =>
-                $isGloballyDragging || $isArchived ? 'var(--title-line-height)' : 'auto'};
+                $isGloballyDragging || $isArchived ? 'var(--title-line-height)' : 'auto'
+            };
             text-overflow: ${({ $isGloballyDragging, $isArchived }) =>
-                $isGloballyDragging || $isArchived ? 'ellipsis' : 'clip'};
+                $isGloballyDragging || $isArchived ? 'ellipsis' : 'clip'
+            };
             overflow: ${({ $isGloballyDragging, $isArchived }) =>
-                $isGloballyDragging || $isArchived ? 'hidden' : 'visible'};
+                $isGloballyDragging || $isArchived ? 'hidden' : 'visible'
+            };
             white-space: ${({ $isGloballyDragging, $isArchived }) =>
-                $isGloballyDragging || $isArchived ? 'nowrap' : 'normal'};
+                $isGloballyDragging || $isArchived ? 'nowrap' : 'normal'
+            };
         }
         input {
             display: ${({ $inEditing }) => ($inEditing ? 'block' : 'none')};
             width: 100%;
-        }
-    }
-
-    .btn-toggle-detail {
-        scale: ${({ $isOpen }) => ($isOpen ? '1 1' : '1 -1')};
-        transition: scale 500ms;
-        svg {
-            font-size: 3rem;
-            @media (width < 600px) {
-                font-size: 14px;
-            }
         }
     }
 `;

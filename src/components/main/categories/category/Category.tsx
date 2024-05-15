@@ -21,7 +21,6 @@ import { ArchivedTodos } from './ArchivedTodos';
 /* --- types --------------------- */
 import { CategoryType } from '../../../../providers/types/categories';
 
-
 /* --- dev ----------------------- */
 // import { isDebugMode } from '../../../../utils/adminDebugMode';
 

@@ -4,16 +4,31 @@ import styled from 'styled-components';
 /* --- hooks --------------------- */
 import { useSlidable } from './Hooks';
 /* --- types --------------------- */
-import { SlidableProps } from './types';
+import { SlidableRegister } from './types';
 import { SlidableMainProps, SlidableHiddenProps } from './types';
 
 // === COMPONENT ====================================================== //
 // 1. Slidable
-export const Slidable = (props: PropsWithChildren<SlidableProps>) => {
-    const { children, className, slidableParams, skipCondition } = props;
+export const Slidable = (props: PropsWithChildren<SlidableRegister>) => {
+    const {
+        children,
+        className,
+        SLIDABLE_PRAMS,
+        skipCondition,
+        translateXState,
+        isSlidedState,
+        containerRef,
+        btnsRef,
+    } = props;
 
-    const { handleTouchStart, handleTouchMove, handleTouchEnd, containerRef, translateX } =
-        useSlidable({ params: slidableParams, skipCondition });
+    const { handleTouchStart, handleTouchMove, handleTouchEnd, translateX } = useSlidable({
+        params: SLIDABLE_PRAMS,
+        skipCondition,
+        translateXState,
+        isSlidedState,
+        containerRef,
+        btnsRef,
+    });
 
     return (
         <StyledSlidable
@@ -51,7 +66,7 @@ export const SlidableHidden = (props: PropsWithChildren<SlidableHiddenProps>) =>
 
     return (
         <StyledSlidableHidden
-            className={className}
+            className={`slidable-hidden-container ${className ? className : ''}`}
             $slidableLength={slidableLength}
             children={children}
         />

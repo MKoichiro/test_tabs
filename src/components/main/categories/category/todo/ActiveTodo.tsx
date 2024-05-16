@@ -12,7 +12,7 @@
 
 /* --- react/styled-components --- */
 import React, { MouseEvent, TouchEvent, useRef } from 'react';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
 /* --- child components ---------- */
 import { TodoDetail } from './TodoDetail';
@@ -46,13 +46,12 @@ import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { useWindowSizeSelector } from '../../../../../providers/redux/store';
 import { vw2px } from '../../../../../utils/converters';
-import {
-    Inventory2Outlined,
-    ViewArrayOutlined,
-} from '@mui/icons-material';
+import { Inventory2Outlined, ViewArrayOutlined } from '@mui/icons-material';
 import { useSlidableRegister } from '../../../../../functions/slidable/Hooks';
 import { isTouchDevice } from '../../../../../data/constants/constants';
-import { ControlPanel } from './ControlPanel';
+import { ControlPanel } from '../../../../common/list_control_panel/ControlPanel';
+import { activeListCommon, draggingItemStyle, marginBetweenLiEls } from '../../../../../globalStyle';
+// import { SerializedStyles, css } from '@emotion/react';
 
 /* --- dev ----------------------- */
 // import { isDebugMode } from '../../../../../utils/adminDebugMode';
@@ -170,6 +169,7 @@ export const useActiveTodo = ({
         /** Slidable登録用 */
         register,
 
+        isSlided,
         slide,
         unSlide,
         addSlidableBtn,
@@ -210,6 +210,7 @@ export const ActiveTodo = ({
         handleArchiveBtnClick,
         SLIDABLE_LENGTH,
         register,
+        isSlided,
         slide,
         unSlide,
         addSlidableBtn,
@@ -234,18 +235,17 @@ export const ActiveTodo = ({
         >
             {/* slidable: li内をスライド可能にするためのコンテナ */}
             <Slidable {...register}>
-
                 {/* slidable: 通常時に表示されている要素 */}
                 <SlidableMain className="slidable-main-contents">
-
                     {/* spサイズのタッチデバイスでは非表示 / pcでもタッチデバイスならリサイズで小さくなっている場合には非表示 */}
                     {!(isTouchDevice && device === 'sp') && (
                         <ControlPanel
+                            // className="todo-control-panel"
                             attrs={['drag', 'slide']}
                             isGloballyDragging={isGloballyDragging}
                             isOpen={isOpen}
                             drag={{ handleMouseDown, listeners }}
-                            slide={{ slide, addSlidableBtn }}
+                            slide={{ isSlided, slide, addSlidableBtn }}
                         />
                     )}
 
@@ -311,20 +311,13 @@ interface StyledLiType {
     $isGlobalDragging: boolean;
 }
 
+
 const StyledLi = styled.li<StyledLiType>`
-    background: var(--color-white-3);
-    border-radius: 0.4rem;
+    ${marginBetweenLiEls()}
+    ${activeListCommon({ type: 'todo' })}
+    ${({ $isDragging }) => draggingItemStyle($isDragging)}
 
-    margin: 1.6rem 0;
-    opacity: ${({ $isDragging }) => ($isDragging ? 0.5 : 1)};
-    overflow-x: hidden;
-    width: 100%;
 
-    -ms-overflow-style: none;
-    scrollbar-width: none;
-    &:-webkit-scrollbar {
-        display: none;
-    }
 
     .slidable-main-contents {
         display: flex;
@@ -378,4 +371,6 @@ const StyledLi = styled.li<StyledLiType>`
 
     /* position: relative; */
 `;
+
+
 // ========================================================= STYLE === //

@@ -17,7 +17,7 @@ import styled from 'styled-components';
 
 /* --- child components ---------- */
 import { ArchivedTodo } from './todo/ArchivedTodo';
-import { SectionSeparator } from '../../../common/modal/section_separator/SectionSeparator';
+import { SectionSeparator } from '../../../common/section_separator/SectionSeparator';
 
 /* --- types --------------------- */
 import { TodoType } from '../../../../providers/types/categories';
@@ -90,6 +90,5 @@ export const ArchivedTodos = ({ todos, isGloballyDraggingState }: ActiveTodosPro
 
 // === STYLE ========================================================== //
 const StyledSection = styled.section`
-    margin-top: 3.2rem;
 `;
 // ========================================================= STYLE === //

@@ -15,20 +15,24 @@ import styled from 'styled-components';
 import { CategoryType } from '../../../../../providers/types/categories';
 
 /* --- styles -------------------- */
-import { categoryCommonStyles, CategoryCommonStylesType } from './CategoryCommonStyles';
+import { CategoryCommonStylesType } from './CategoryCommonStyles';
 import {
     Slidable,
     SlidableHidden,
     SlidableMain,
 } from '../../../../../functions/slidable/Components';
 import { useDispatch, useWindowSizeSelector } from '../../../../../providers/redux/store';
-import { ArrowUpward, DeleteOutline } from '@mui/icons-material';
+import { ArrowUpward, DeleteOutline, HorizontalRule } from '@mui/icons-material';
 import {
     deleteCategory,
     updateCategoryProps,
 } from '../../../../../providers/redux/slices/categoriesSlice';
 import { vw2px } from '../../../../../utils/converters';
 import { useSlidableRegister } from '../../../../../functions/slidable/Hooks';
+import { ControlPanel } from '../../../../common/list_control_panel/ControlPanel';
+import { isTouchDevice } from '../../../../../data/constants/constants';
+import { BulletIcon } from '../../../../common/btns_icons/bullet_icon/BulletIcon';
+import { archivedListCommon, listTitleFont, marginBetweenLiEls } from '../../../../../globalStyle';
 
 /* --- dev ----------------------- */
 // import { isDebugMode } from '../../../../../utils/adminDebugMode';
@@ -61,11 +65,11 @@ export const ArchivedCategory = ({ archivedCategory }: ArchivedCategoryProps) =>
     const dispatch = useDispatch();
 
     // slidable hook
-    const { contentsWidth } = useWindowSizeSelector();
+    const { contentsWidth, device } = useWindowSizeSelector();
     const btnsContainerWidth = vw2px(contentsWidth) * 0.33;
     const SLIDABLE_LENGTH = btnsContainerWidth;
     const SLIDABLE_PARAMS = { SLIDABLE_LENGTH };
-    const { isSlided, slide, unSlide, register } = useSlidableRegister({
+    const { isSlided, slide, unSlide, addSlidableBtn, register } = useSlidableRegister({
         params: SLIDABLE_PARAMS,
     });
 
@@ -83,7 +87,15 @@ export const ArchivedCategory = ({ archivedCategory }: ArchivedCategoryProps) =>
     return (
         <StyledLi>
             <Slidable {...register}>
-                <SlidableMain>
+                <SlidableMain className="slidable-main-container">
+                    {/* spサイズのタッチデバイスでは非表示 / pcでもタッチデバイスならリサイズで小さくなっている場合には非表示 */}
+                    {!(isTouchDevice && device === 'sp') && (
+                        <ControlPanel
+                            attrs={['slide']}
+                            slide={{ isSlided, slide, addSlidableBtn }}
+                        />
+                    )}
+                    <BulletIcon />
                     <div className="category-name-container">
                         <p>{archivedCategory.name}</p>
                     </div>
@@ -114,19 +126,24 @@ export const ArchivedCategory = ({ archivedCategory }: ArchivedCategoryProps) =>
 
 // === STYLE ========================================================= //
 const StyledLi = styled.li<CategoryCommonStylesType>`
-    background-color: var(--color-white-3);
-    border-radius: 0.2rem;
-    width: 95%;
-    margin: 0 auto;
-    margin-top: 0.8rem;
-    .category-name-container {
-        margin: 1rem 0;
-        p {
-            font-size: 2rem;
-            line-height: 2em;
-            padding-left: 0.8rem;
-            @media (width < 600px) {
-                font-size: 16px;
+    ${marginBetweenLiEls()}
+    ${archivedListCommon({ type: 'category' })}
+
+    .slidable-main-container {
+        display: flex;
+        .category-name-container {
+            --num-of-icons: 1;
+            --icon-widths: calc(var(--icon-size-1) * var(--num-of-icons));
+            width: calc(100% - var(--icon-widths));
+            margin: 0.4rem 5rem 0.4rem 0;
+    
+            > * {
+                ${listTitleFont()}
+            }
+            p {
+                // 半角英数字の文字列、の場合にも折り返しを行う
+                overflow-wrap: break-word;
+                word-wrap: break-word;
             }
         }
     }

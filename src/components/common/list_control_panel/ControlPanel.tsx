@@ -1,34 +1,32 @@
 import { SyntheticListenerMap } from '@dnd-kit/core/dist/hooks/utilities';
 import { DragIndicator, ChevronLeftOutlined } from '@mui/icons-material';
-import React from 'react';
+import React, { MouseEvent, TouchEvent } from 'react';
 import styled from 'styled-components';
+import { DragBtn } from '../btns_icons/drag_btn/DragBtn';
 
 interface DragProps {
-    handleMouseDown: (e: React.MouseEvent | React.TouchEvent) => void;
+    handleMouseDown: (e: MouseEvent | TouchEvent) => void;
     listeners?: SyntheticListenerMap;
 }
 interface SlideProps {
+    isSlided: boolean;
     slide: () => void;
     addSlidableBtn: (el: HTMLButtonElement) => void;
-}
-interface BulletProps {
 }
 
 type Funcs = {
     drag?: DragProps;
     slide?: SlideProps;
-    bullet?: BulletProps;
-}
+};
 
 type Attrs = keyof Funcs;
 type AttrArray = Attrs[];
 
 type ControlPanelProps = {
     attrs: AttrArray;
-    isGloballyDragging: boolean;
-    isOpen: boolean;
+    isGloballyDragging?: boolean;
+    isOpen?: boolean;
 } & Funcs;
-
 
 export const ControlPanel = ({
     attrs,
@@ -36,25 +34,23 @@ export const ControlPanel = ({
     isOpen,
     ...restProps
 }: ControlPanelProps) => {
-
     const { handleMouseDown, listeners } = restProps.drag || {};
-    const { slide, addSlidableBtn } = restProps.slide || {};
+    const { isSlided, slide, addSlidableBtn } = restProps.slide || {};
 
     return (
         <StyledDiv
             $isOpen={isOpen}
             $isGlobalDragging={isGloballyDragging}
+            $isSlided={isSlided}
         >
             <div className="hover-listener" />
             <div className="todo-control-panel">
                 {attrs.includes('drag') && (
-                    <button className="btn-gripper">
-                        <DragIndicator
-                            {...listeners}
-                            onMouseDown={handleMouseDown}
-                            onTouchStart={handleMouseDown}
-                        />
-                    </button>
+                    <DragBtn
+                        className="btn-gripper"
+                        listeners={listeners}
+                        handleMouseDown={handleMouseDown}
+                    />
                 )}
                 {attrs.includes('slide') && (
                     <button
@@ -70,20 +66,22 @@ export const ControlPanel = ({
     );
 };
 
-
 interface StyledDivProps {
-    $isOpen: boolean;
-    $isGlobalDragging: boolean;
+    $isOpen?: boolean;
+    $isGlobalDragging?: boolean;
+    $isSlided?: boolean;
 }
 
 const StyledDiv = styled.div<StyledDivProps>`
-    display: ${({ $isGlobalDragging }) => ($isGlobalDragging ? 'none' : 'block')};
+    display: ${({ $isGlobalDragging, $isSlided }) =>
+        $isGlobalDragging || $isSlided ? 'none' : 'block'};
+    height: 100%;
     .hover-listener {
         position: absolute;
         top: 0;
         left: 0;
         z-index: 5;
-        width: 3.6rem;
+        width: var(--icon-size-1);
         height: 100%;
         pointer-events: ${({ $isGlobalDragging }) => ($isGlobalDragging ? 'none' : 'auto')};
     }
@@ -106,10 +104,11 @@ const StyledDiv = styled.div<StyledDivProps>`
         justify-content: center;
         align-items: center;
         background: var(--color-black-1);
-        .btn-slide,
-        .btn-gripper {
+        border-radius: .2rem 0 0 .2rem;
+        
+        .btn-slide {
             flex: 1;
-            width: 3.2rem;
+            width: var(--icon-size-1);
             display: flex;
             justify-content: center;
             align-items: center;
@@ -118,9 +117,12 @@ const StyledDiv = styled.div<StyledDivProps>`
                 font-size: 2.4rem;
             }
         }
+        
         .btn-gripper {
+            touch-action: none;
+            flex: 1;
+            color: var(--color-white-1);
             cursor: default;
-
             svg {
                 cursor: grab;
             }

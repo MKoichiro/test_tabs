@@ -75,7 +75,7 @@ export const Category = (props: CategoryProps) => {
     const { todos, isGloballyDraggingState } = useCategory(props);
 
     return (
-        <StyledUl>
+        <StyledDiv>
             <ActiveTodos
                 todos={todos}
                 isGloballyDraggingState={isGloballyDraggingState}
@@ -85,11 +85,11 @@ export const Category = (props: CategoryProps) => {
                 todos={todos}
                 isGloballyDraggingState={isGloballyDraggingState}
             />
-        </StyledUl>
+        </StyledDiv>
     );
 };
 // ====================================================== COMPONENT === //
 
 // === STYLE ========================================================== //
-const StyledUl = styled.ul``;
+const StyledDiv = styled.div``;
 // ========================================================= STYLE === //

@@ -8,7 +8,7 @@
  */
 
 /* --- react/styled-components --- */
-import React from 'react';
+import React, { MouseEvent, TouchEvent } from 'react';
 import styled from 'styled-components';
 
 /* --- types --------------------- */
@@ -18,7 +18,7 @@ import { CategoryType } from '../../../../../providers/types/categories';
 import { categoryCommonStyles, CategoryCommonStylesType } from './CategoryCommonStyles';
 
 /* --- material icons ------------ */
-import { DragIndicator, Inventory2Outlined } from '@mui/icons-material';
+import { Inventory2Outlined } from '@mui/icons-material';
 
 /* --- dnd-kit ------------------- */
 import { useSortable } from '@dnd-kit/sortable';
@@ -38,6 +38,11 @@ import { vw2px } from '../../../../../utils/converters';
 import { useDispatch, useWindowSizeSelector } from '../../../../../providers/redux/store';
 import { updateCategoryProps } from '../../../../../providers/redux/slices/categoriesSlice';
 import { useSlidableRegister } from '../../../../../functions/slidable/Hooks';
+import { ControlPanel } from '../../../../common/list_control_panel/ControlPanel';
+import { isTouchDevice } from '../../../../../data/constants/constants';
+import { BulletIcon } from '../../../../common/btns_icons/bullet_icon/BulletIcon';
+import { DragBtn } from '../../../../common/btns_icons/drag_btn/DragBtn';
+import { activeListCommon, draggingItemStyle, listTitleFont, marginBetweenLiEls } from '../../../../../globalStyle';
 
 /* --- dev ----------------------- */
 // import { isDebugMode } from '../../../../../utils/adminDebugMode';
@@ -49,6 +54,8 @@ import { useSlidableRegister } from '../../../../../functions/slidable/Hooks';
  */
 interface ActiveCategoryProps {
     activeCategory: CategoryType;
+    isGloballyDragging: boolean;
+    handleMouseDown: (e: MouseEvent | TouchEvent) => void;
 }
 // =========================================================== TYPE === //
 
@@ -56,10 +63,13 @@ interface ActiveCategoryProps {
 /**
  * @category Custom Hook
  */
-export const useActiveCategory = ({ activeCategory }: ActiveCategoryProps) => {
+export const useActiveCategory = ({
+    activeCategory,
+    isGloballyDragging,
+}: Pick<ActiveCategoryProps, 'activeCategory' | 'isGloballyDragging'>) => {
     const categoryId = activeCategory.id;
     const dispatch = useDispatch();
-    const { contentsWidth } = useWindowSizeSelector();
+    const { contentsWidth, device } = useWindowSizeSelector();
 
     // slidable 関連
     const btnsContainerWidthPx = vw2px(contentsWidth) * 0.2;
@@ -67,12 +77,13 @@ export const useActiveCategory = ({ activeCategory }: ActiveCategoryProps) => {
     const SLIDABLE_PARAMS: SlidableParams = {
         SLIDABLE_LENGTH,
     };
-    const { isSlided, slide, unSlide, register } = useSlidableRegister({
+    const { isSlided, slide, unSlide, register, addSlidableBtn } = useSlidableRegister({
         params: SLIDABLE_PARAMS,
+        skipCondition: isGloballyDragging,
     });
 
     // dnd-kit
-    const { transform, transition, ...rest } = useSortable({ id: categoryId });
+    const { transform, transition, isDragging, ...rest } = useSortable({ id: categoryId });
 
     const style = {
         transform: CSS.Transform.toString(transform),
@@ -86,11 +97,16 @@ export const useActiveCategory = ({ activeCategory }: ActiveCategoryProps) => {
 
     return {
         ...useImmediateEditable({ target: activeCategory, targetProperty: 'name' }),
+        isDragging,
         ...rest,
         style,
         SLIDABLE_LENGTH,
         handleDeleteBtnClick,
         register,
+        isSlided,
+        slide,
+        addSlidableBtn,
+        device,
     };
 };
 // ======================================================= FUNCTION === //
@@ -107,7 +123,11 @@ export const useActiveCategory = ({ activeCategory }: ActiveCategoryProps) => {
  * ```
  * @category Component
  */
-export const ActiveCategory = ({ activeCategory }: ActiveCategoryProps) => {
+export const ActiveCategory = ({
+    activeCategory,
+    isGloballyDragging,
+    handleMouseDown,
+}: ActiveCategoryProps) => {
     const {
         inEditing,
         inputRef,
@@ -124,7 +144,11 @@ export const ActiveCategory = ({ activeCategory }: ActiveCategoryProps) => {
         SLIDABLE_LENGTH,
         handleDeleteBtnClick,
         register,
-    } = useActiveCategory({ activeCategory });
+        isSlided,
+        slide,
+        addSlidableBtn,
+        device,
+    } = useActiveCategory({ activeCategory, isGloballyDragging });
 
     return (
         <StyledLi
@@ -136,12 +160,26 @@ export const ActiveCategory = ({ activeCategory }: ActiveCategoryProps) => {
         >
             <Slidable {...register}>
                 <SlidableMain className="slidable-main-contents">
-                    <span
-                        className="gripper"
-                        {...listeners}
-                    >
-                        <DragIndicator />
-                    </span>
+                    {/* spサイズのタッチデバイスでは非表示 / pcでもタッチデバイスならリサイズで小さくなっている場合には非表示 */}
+                    {!(isTouchDevice && device === 'sp') ? (
+                        <>
+                            <ControlPanel
+                                attrs={['drag', 'slide']}
+                                isGloballyDragging={isGloballyDragging}
+                                drag={{ handleMouseDown, listeners }}
+                                slide={{ isSlided, slide, addSlidableBtn }}
+                            />
+                            <BulletIcon />
+                        </>
+                    ) : (
+                        <DragBtn
+                            className='btn-gripper'
+                            listeners={listeners}
+                            handleMouseDown={handleMouseDown}
+                        />
+                    )}
+
+
                     <div className="category-name-container">
                         <p onDoubleClick={handleDoubleClick}>{activeCategory.name}</p>
                         <form onSubmit={handleSubmit}>
@@ -174,43 +212,41 @@ export const ActiveCategory = ({ activeCategory }: ActiveCategoryProps) => {
 // ====================================================== COMPONENT === //
 
 // === STYLE ========================================================= //
-const StyledLi = styled.li<CategoryCommonStylesType>`
-    margin-top: 0.8rem;
-    padding-right: 0.8rem;
-    touch-action: auto;
-    background-color: var(--color-white-2);
+interface StyledLiProps {
+    $inEditing: boolean;
+    $isDragging: boolean;
+}
+const StyledLi = styled.li<StyledLiProps>`
+    ${marginBetweenLiEls()}
+    ${activeListCommon({ type: 'category' })}
+    ${({$isDragging}) => draggingItemStyle($isDragging)}
 
     .slidable-main-contents {
-        ${categoryCommonStyles}
-
-        opacity: ${(props) => (props.$isDragging ? 0.5 : 1)};
-        .gripper {
-            touch-action: none;
-            cursor: grab;
-        }
+        display: flex;
+        align-items: center;
 
         .category-name-container {
+            --num-of-icons: 1;
+            --icon-widths: calc(var(--icon-size-1) * var(--num-of-icons));
+            width: calc(100% - var(--icon-widths));
+            margin: 0.4rem 0.8rem 0.4rem 0;
             border-bottom: ${({ $inEditing }) =>
                 $inEditing ? 'var(--border-1)' : 'var(--border-weight) solid transparent'};
-            margin: 1rem 0;
             > * {
-                font-size: 2rem;
-                line-height: 2em;
-                @media (width < 600px) {
-                    font-size: 16px;
-                }
+                ${listTitleFont()}
             }
             p {
-                display: ${(props) => (props.$inEditing ? 'none' : 'block')};
+                cursor: pointer;
+                display: ${({ $inEditing }) => ($inEditing ? 'none' : 'block')};
+
+                // 半角英数字の文字列、の場合にも折り返しを行う
+                overflow-wrap: break-word;
+                word-wrap: break-word;
             }
             form {
-                display: ${(props) => (props.$inEditing ? 'block' : 'none')};
+                display: ${({ $inEditing }) => ($inEditing ? 'block' : 'none')};
                 input {
                     width: 100%;
-                    outline: none;
-                    border: none;
-                    border-radius: 0;
-                    background: none;
                 }
             }
         }

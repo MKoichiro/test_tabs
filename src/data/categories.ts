@@ -127,7 +127,7 @@ export const storedCategories: CategoryType[] = [
         id: generateUUID(),
         ...categoriesRandDates[2],
         isArchived: false,
-        name: 'category-2category-2category-2category-2category-2category-2category-2category-2category-2category-2',
+        name: 'category-2 category-2 category-2 category-2 category-2 category-2 category-2 category-2 category-2 category-2 category-2 category-2 category-2 category-2 category-2 category-2 category-2 category-2 category-2 category-2 ',
         todos: [
             {
                 id: generateUUID(),
@@ -372,7 +372,7 @@ export const storedCategories: CategoryType[] = [
         id: generateUUID(),
         ...categoriesRandDates[9],
         isArchived: false,
-        name: 'category-9',
+        name: '99999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999',
         todos: [
             {
                 id: generateUUID(),

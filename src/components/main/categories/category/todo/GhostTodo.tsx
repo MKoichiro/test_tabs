@@ -18,6 +18,7 @@ import { TodoHeader } from './TodoHeader';
 
 /* --- types --------------------- */
 import { TodoType } from '../../../../../providers/types/categories';
+import { draggingItemStyle } from '../../../../../globalStyle';
 
 /* --- dev ----------------------- */
 // import { isDebugMode } from '../../../../../utils/adminDebugMode';
@@ -63,18 +64,10 @@ export const GhostTodo = forwardRef<HTMLDivElement, GhostTodoProps>((props, ref)
 
 // === STYLE ========================================================= //
 const StyledDiv = styled.div`
-    background: grey;
+    ${draggingItemStyle(true, true)}
 
-    .gripper {
-        padding: 0 0.8rem;
-    }
-
-    header {
-        display: flex;
-    }
-
-    .icon-expired {
-        color: red;
-    }
+    /* background-color: var(--color-white-2);
+    opacity: 0.8; */
+    border-radius: .2rem;
 `;
 // ========================================================= STYLE === //

@@ -24,26 +24,16 @@ import { statusCheckers } from '../../../../../utils/todoPropsHandler';
 /* --- hooks --------------------- */
 import { useImmediateEditable } from '../../../../../functions/immediateEditable/Hooks';
 
-/* --- font awesome -------------- */
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCircleExclamation } from '@fortawesome/free-solid-svg-icons';
-
 /* --- material icons ------------ */
-import {
-    ArrowBackIos,
-    ArrowForward,
-    Circle,
-    CircleOutlined,
-    DragIndicator,
-    ErrorOutline,
-    ExpandLess,
-    HorizontalRule,
-} from '@mui/icons-material';
+import { DragIndicator, ErrorOutline, ExpandLess, HorizontalRule } from '@mui/icons-material';
 
 /* --- dnd-kit ------------------- */
 import { SyntheticListenerMap } from '@dnd-kit/core/dist/hooks/utilities';
 import { useWindowSizeSelector } from '../../../../../providers/redux/store';
 import { isTouchDevice } from '../../../../../data/constants/constants';
+import { BulletIcon } from '../../../../common/btns_icons/bullet_icon/BulletIcon';
+import { DragBtn } from '../../../../common/btns_icons/drag_btn/DragBtn';
+import { listTitleFont } from '../../../../../globalStyle';
 
 /* --- dev ----------------------- */
 // import { isDebugMode } from '../../../../../utils/adminDebugMode';
@@ -164,26 +154,20 @@ export const TodoHeader = ({
             $isExpired={isExpired}
             $isArchived={isArchived}
         >
-            {/* 1. グリップ可能を示す、six-dots icon */}
-            {isTouchDevice && device === 'sp' ? (
-                <span
-                    className="gripper"
-                    {...listeners}
-                    onMouseDown={handleMouseDown}
-                    onTouchStart={handleMouseDown}
-                >
-                    <DragIndicator />
-                </span>
+            {/* 1. title 直前の icon */}
+            {(isTouchDevice && device === 'sp' && !isArchived) ? (
+                <DragBtn
+                    className="btn-gripper"
+                    listeners={listeners}
+                    handleMouseDown={handleMouseDown}
+                />
             ) : (
-                <span className="bullet">
-                    <HorizontalRule />
-                </span>
+                <BulletIcon />
             )}
 
             {/* 2. 期限切れアイコン */}
             {isExpired && (
                 <span className="icon-expired">
-                    {/* <FontAwesomeIcon icon={faCircleExclamation} /> */}
                     <ErrorOutline />
                 </span>
             )}
@@ -237,50 +221,43 @@ interface StyledHeaderType {
     $isArchived: boolean;
 }
 const StyledHeader = styled.header<StyledHeaderType>`
-    --title-line-height: 3.2rem;
-    display: flex;
-    align-items: center;
-    font-size: 2rem;
-    line-height: var(--title-line-height);
-
-    --icons-width: ${({ $isExpired, $isArchived }) => {
+    /* set variables */
+    --expired-width: ${({ $isExpired, $isArchived }) => {
         if ($isArchived) {
             return '0px';
         } else if ($isExpired) {
-            return '3.6rem';
+            return 'var(--icon-size-1)';
         } else {
             return '0px';
         }
     }};
-    --btn-width: 3.6rem;
-    --btns-width: calc(var(--btn-width) * 2);
-    --title-width: calc(var(--contents-width) - var(--icons-width) - var(--btns-width));
+    --num-of-btns: ${({ $isActive }) => ($isActive ? 2 : 1)};
+    --btns-width: calc(var(--icon-size-1) * var(--num-of-btns));
+    --todo-container-width: ${({ $isArchived }) =>
+        !$isArchived ? 'var(--active-todo-width)' : 'var(--archived-todo-width)'};
+    --title-width: calc(var(--todo-container-width) - var(--expired-width) - var(--btns-width));
 
-    @media (width < 600px) {
-        font-size: 16px;
-    }
+
+
+    display: flex;
+    align-items: center;
+    ${listTitleFont()}
+    color: ${({ $isCompleted, $isArchived }) =>
+        $isCompleted || $isArchived ? 'var(--color-gray-1)' : 'var(--color-black-1)'};
 
     /* icons & buttons */
     :has([class*='MuiSvgIcon']) {
-        width: var(--btn-width);
+        min-width: var(--icon-size-1);
         display: flex;
         align-items: center;
         justify-content: center;
         height: 100%;
         svg {
-            font-size: inherit;
+            font-size: 2rem;
             @media (width < 600px) {
                 font-size: 14px;
             }
         }
-    }
-
-    .gripper {
-        touch-action: none;
-        cursor: grab;
-    }
-
-    .bullet {
     }
 
     .icon-expired {
@@ -303,32 +280,25 @@ const StyledHeader = styled.header<StyledHeaderType>`
         max-width: var(--title-width);
         border-bottom: ${({ $inEditing }) =>
             $inEditing ? 'var(--border-1)' : 'var(--border-weight) solid transparent'};
+        
         h4,
         input {
             font-size: inherit;
             line-height: inherit;
         }
         h4 {
-            max-width: 100%;
             cursor: ${({ $isActive }) => ($isActive ? 'pointer' : 'default')};
             display: ${({ $inEditing }) => ($inEditing ? 'none' : 'block')};
             text-decoration: ${({ $isCompleted }) => ($isCompleted ? 'line-through' : '')};
 
-            color: ${({ $isCompleted, $isArchived }) =>
-                $isCompleted || $isArchived ? 'var(--color-gray-1)' : 'var(--color-black-1)'
-            };
             height: ${({ $isGloballyDragging, $isArchived }) =>
-                $isGloballyDragging || $isArchived ? 'var(--title-line-height)' : 'auto'
-            };
+                $isGloballyDragging || $isArchived ? 'var(--list-title-line-height)' : 'auto'};
             text-overflow: ${({ $isGloballyDragging, $isArchived }) =>
-                $isGloballyDragging || $isArchived ? 'ellipsis' : 'clip'
-            };
+                $isGloballyDragging || $isArchived ? 'ellipsis' : 'clip'};
             overflow: ${({ $isGloballyDragging, $isArchived }) =>
-                $isGloballyDragging || $isArchived ? 'hidden' : 'visible'
-            };
+                $isGloballyDragging || $isArchived ? 'hidden' : 'visible'};
             white-space: ${({ $isGloballyDragging, $isArchived }) =>
-                $isGloballyDragging || $isArchived ? 'nowrap' : 'normal'
-            };
+                $isGloballyDragging || $isArchived ? 'nowrap' : 'normal'};
         }
         input {
             display: ${({ $inEditing }) => ($inEditing ? 'block' : 'none')};
@@ -337,8 +307,6 @@ const StyledHeader = styled.header<StyledHeaderType>`
     }
 `;
 // ========================================================= STYLE === //
-
-const commonStyle = ($isGloballyDragging: boolean) => css``;
 
 // memo: オブジェクトマッピング
 

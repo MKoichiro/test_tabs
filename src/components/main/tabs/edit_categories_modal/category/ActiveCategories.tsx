@@ -12,7 +12,7 @@
  */
 
 /* --- react/styled-components --- */
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 
 /* --- dnd-kit ------------------- */
@@ -52,8 +52,7 @@ import {
 } from '../../../../../providers/redux/slices/categoriesSlice';
 
 /* --- MUI ------------------------ */
-import { DirectionsWalkOutlined } from '@mui/icons-material';
-import { SectionSeparator } from '../../../../common/modal/section_separator/SectionSeparator';
+import { SectionSeparator } from '../../../../common/section_separator/SectionSeparator';
 
 /* --- dev ----------------------- */
 // import { isDebugMode } from '../../../../../utils/adminDebugMode';
@@ -81,6 +80,11 @@ export const useActiveCategories = () => {
 
     const [isDragging, setIsDragging] = useState(false);
     const [activeId, setActiveId] = useState<UniqueIdentifier | null>(null);
+    const [isGloballyDragging, setIsGloballyDragging] = useState(false);
+
+    const handleMouseDown = () => {
+        setIsGloballyDragging(true);
+    };
 
     const handleDragStart = (e: DragStartEvent) => {
         const { active } = e;
@@ -99,14 +103,29 @@ export const useActiveCategories = () => {
         }
         setActiveId(null);
         setIsDragging(false);
+        setIsGloballyDragging(false);
     };
+
+    // ドラッグ中はユーザー選択を無効化。
+    // ドラッグ中に停止していると長押し判定が出て意図せず選択されてしまうため。
+    // 完ぺきではないが、これでかなりその挙動が低減される。
+    useEffect(() => {
+        if (isGloballyDragging) {
+            document.documentElement.classList.add('no-user-select');
+        } else {
+            document.documentElement.classList.remove('no-user-select');
+        }
+    }, [isGloballyDragging]);
+    
 
     return {
         sensors,
         isDragging,
         activeId,
+        handleMouseDown,
         handleDragStart,
         handleDragEnd,
+        isGloballyDragging,
     };
 };
 // ======================================================= FUNCTION === //
@@ -126,7 +145,14 @@ export const useActiveCategories = () => {
  * @category Component
  */
 export const ActiveCategories = ({ activeCategories }: ActiveCategoriesProps) => {
-    const { sensors, activeId, handleDragStart, handleDragEnd } = useActiveCategories();
+    const {
+        sensors,
+        activeId,
+        handleMouseDown,
+        handleDragStart,
+        handleDragEnd,
+        isGloballyDragging,
+    } = useActiveCategories();
 
     return (
         <StyledSection>
@@ -147,6 +173,8 @@ export const ActiveCategories = ({ activeCategories }: ActiveCategoriesProps) =>
                             <ActiveCategory
                                 key={category.id}
                                 activeCategory={category}
+                                isGloballyDragging={isGloballyDragging}
+                                handleMouseDown={handleMouseDown}
                             />
                         ))}
                     </ul>
@@ -170,8 +198,6 @@ export const ActiveCategories = ({ activeCategories }: ActiveCategoriesProps) =>
 
 // === STYLE ========================================================== //
 const StyledSection = styled.section`
-    .active-categories-container {
-        margin-top: 1.6rem;
-    }
+
 `;
 // ========================================================= STYLE === //

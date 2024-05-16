@@ -46,7 +46,7 @@ const StyledH4 = styled.h4`
     justify-content: center;
     align-items: center;
     height: 2.4rem;
-    margin: 0 1.6rem;
+    margin: 2.4rem 0 1.6rem;
 
     &::before,
     &::after {

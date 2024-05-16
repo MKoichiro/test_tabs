@@ -22,8 +22,7 @@ import { ArchivedCategory } from './ArchivedCategory';
 import { CategoryType } from '../../../../../providers/types/categories';
 
 /* --- MUI ----------------------- */
-import { Inventory2Outlined } from '@mui/icons-material';
-import { SectionSeparator } from '../../../../common/modal/section_separator/SectionSeparator';
+import { SectionSeparator } from '../../../../common/section_separator/SectionSeparator';
 
 /* --- dev ----------------------- */
 // import { isDebugMode } from '../../../../../utils/adminDebugMode';
@@ -73,9 +72,6 @@ export const ArchivedCategories = ({ archivedCategories }: ArchivedCategoriesPro
 
 // === STYLE ========================================================== //
 const StyledSection = styled.section`
-    margin-top: 3.2rem;
-    .archived-categories-container {
-        margin-top: 1.6rem;
-    }
+
 `;
 // ========================================================= STYLE === //

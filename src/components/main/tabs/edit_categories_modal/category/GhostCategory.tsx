@@ -15,10 +15,14 @@ import styled from 'styled-components';
 import { CategoryType } from '../../../../../providers/types/categories';
 
 /* --- styles -------------------- */
-import { categoryCommonStyles, CategoryCommonStylesType } from './CategoryCommonStyles';
+import { CategoryCommonStylesType } from './CategoryCommonStyles';
 
 /* --- material icons ------------ */
-import { DragIndicator } from '@mui/icons-material';
+import { DragBtn } from '../../../../common/btns_icons/drag_btn/DragBtn';
+import { isTouchDevice } from '../../../../../data/constants/constants';
+import { useWindowSizeSelector } from '../../../../../providers/redux/store';
+import { BulletIcon } from '../../../../common/btns_icons/bullet_icon/BulletIcon';
+import { draggingItemStyle } from '../../../../../globalStyle';
 
 /* --- dev ----------------------- */
 // import { isDebugMode } from '../../../../../utils/adminDebugMode';
@@ -49,11 +53,15 @@ interface GhostCategoryType {
  */
 export const GhostCategory = forwardRef<HTMLDivElement, GhostCategoryType>(
     ({ draggingCategory }, ref) => {
+
+        const { device } = useWindowSizeSelector();
+
         return (
             <StyledDiv ref={ref}>
-                <span className="gripper">
-                    <DragIndicator />
-                </span>
+                {!(isTouchDevice && device === 'sp')
+                    ? ( <BulletIcon/> )
+                    : ( <DragBtn className="icon-gripper" /> )
+                }
                 <p children={draggingCategory.name} />
             </StyledDiv>
         );
@@ -63,14 +71,21 @@ export const GhostCategory = forwardRef<HTMLDivElement, GhostCategoryType>(
 
 // === STYLE ========================================================= //
 const StyledDiv = styled.div<CategoryCommonStylesType>`
-    ${categoryCommonStyles}
-    .gripper {
+    ${draggingItemStyle(true, true)}
+    .icon-gripper {
         cursor: grabbing;
     }
-    .category-name-container {
-        p {
-            display: block;
+    padding: .4rem 0;
+    border-radius: .2rem;
+    width: 100%;
+    display: flex;
+    p {
+        font-size: 2rem;
+        line-height: 2em;
+        @media (width < 600px) {
+            font-size: 16px;
         }
     }
+    
 `;
 // ========================================================= STYLE === //

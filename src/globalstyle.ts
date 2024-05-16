@@ -1,4 +1,4 @@
-import { createGlobalStyle } from 'styled-components';
+import { createGlobalStyle, css } from 'styled-components';
 import { contentsWidths } from './data/styleMagics';
 
 const GlobalStyle = createGlobalStyle`
@@ -36,13 +36,20 @@ const GlobalStyle = createGlobalStyle`
       --border-weight: .1rem;
     }
 
+    /* icon size */
+    --icon-size-1: 3.2rem;
 
-    /* font-size */
-    --fs-header: 3.2rem;
-    --fs-form: 2rem;
+    /* list */
+    --active-todo-width: var(--contents-width);
+    --archived-todo-width: calc(var(--active-todo-width) * .95);
+    --active-category-width: 100%;
+    --archived-category-width: calc(var(--active-category-width) * .95);
+    --list-title-line-height: 3.2rem;
     @media (width < 600px) {
-      --fs-form: 16px;
+      --list-title-line-height: 24px;
     }
+
+
 
   }
 
@@ -50,7 +57,6 @@ const GlobalStyle = createGlobalStyle`
   * { box-sizing: border-box }
     
   html {
-    /* overflow-y: hidden; */
     font-size: 62.5%;
   }
 
@@ -137,19 +143,6 @@ const GlobalStyle = createGlobalStyle`
     }
   }
 
-  /* .btn-slide {
-        --btn-width: 2.4rem;
-        position: absolute;
-        top: 20rem;
-        left: calc((100% - var(--contents-width)) / 2 - var(--btn-width));
-        height: 100%;
-        width: var(--btn-width);
-        background: var(--color-white-3);
-        border: var(--border-1);
-        border-radius: 0.2rem;
-        padding: 0.4rem;
-    } */
-
 
 
   @media (max-width: 1024px) {
@@ -162,3 +155,43 @@ const GlobalStyle = createGlobalStyle`
 `;
 
 export default GlobalStyle;
+
+
+export const marginBetweenLiEls = () => css`
+    li + & {
+        margin-top: 1.4rem;
+        @media (width < 600px) {
+            margin-top: .8rem;
+        }
+    }
+`;
+
+export const activeListCommon = ({ type }: { type: 'todo' | 'category' }) => css`
+  border-radius: 0.2rem;
+  background: var(--color-white-2);
+  width: ${type === 'todo' ? 'var(--active-todo-width)' : 'var(--active-category-width)'};
+`;
+
+export const archivedListCommon = ({ type }: { type: 'todo' | 'category' }) => css`
+  border-radius: 0.2rem;
+  background-color: var(--color-white-3);
+  width: ${type === 'todo' ? 'var(--archived-todo-width)' : 'var(--archived-category-width)'};
+  margin-right: auto;
+  margin-left: auto;
+`;
+export const listTitleFont = () => css`
+    font-size: 2rem;
+    line-height: var(--list-title-line-height);
+    @media (width < 600px) {
+        font-size: 16px;
+    }
+
+`;
+
+export const draggingItemStyle = ($isDragging: boolean, $isGhost = false) => css`
+    background: ${$isDragging ? 'var(--color-black-1)' : ''};
+    & * {
+        color: ${$isDragging ? 'var(--color-white-1) !important' : ''};
+    }
+    opacity: ${$isGhost ? 0.8 : 1};
+`;

@@ -244,9 +244,9 @@ const StyledSection = styled.section<StyledSectionType>`
         margin-bottom: 0;
 
         .detail-container {
-            padding: 0.8rem 1.8rem;
+            padding: 0.8rem calc(var(--icon-size-1) / 2);
             > div {
-                padding-left: 1.8rem;
+                padding-left: calc(var(--icon-size-1) / 2);
                 border-left: var(--border-weight) solid var(--color-black-1);
             }
         }

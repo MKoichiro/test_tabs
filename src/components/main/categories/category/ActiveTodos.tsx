@@ -19,7 +19,7 @@ import styled from 'styled-components';
 /* --- child components ---------- */
 import { ActiveTodo } from './todo/ActiveTodo';
 import { GhostTodo } from './todo/GhostTodo';
-import { SectionSeparator } from '../../../common/modal/section_separator/SectionSeparator';
+import { SectionSeparator } from '../../../common/section_separator/SectionSeparator';
 
 /* --- redux --------------------- */
 import { useDispatch } from '../../../../providers/redux/store';
@@ -48,6 +48,7 @@ import {
     sortableKeyboardCoordinates,
     verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
+import { restrictToVerticalAxis, restrictToWindowEdges } from '@dnd-kit/modifiers';
 
 /* --- dev ----------------------- */
 // import { isDebugMode } from '../../../../utils/adminDebugMode';
@@ -153,6 +154,7 @@ export const ActiveTodos = ({ todos, isGloballyDraggingState }: ActiveTodosProps
                 collisionDetection={closestCenter}
                 onDragStart={handleDragStart}
                 onDragEnd={handleDragEnd}
+                // modifiers={[restrictToVerticalAxis]}
             >
                 <SortableContext
                     items={todos.filter((todo) => !todo.isArchived)}
@@ -193,6 +195,5 @@ export const ActiveTodos = ({ todos, isGloballyDraggingState }: ActiveTodosProps
 
 // === STYLE ========================================================== //
 const StyledSection = styled.section`
-    margin-top: 3.2rem;
 `;
 // ========================================================= STYLE === //

@@ -13,6 +13,9 @@ import { useDispatch, useWindowSizeSelector } from '../../../../../providers/red
 import { deleteTodo, updateTodoProps } from '../../../../../providers/redux/slices/categoriesSlice';
 import { vw2px } from '../../../../../utils/converters';
 import { useSlidableRegister } from '../../../../../functions/slidable/Hooks';
+import { isTouchDevice } from '../../../../../data/constants/constants';
+import { ControlPanel } from '../../../../common/list_control_panel/ControlPanel';
+import { archivedListCommon, marginBetweenLiEls } from '../../../../../globalStyle';
 
 interface ArchivedTodoProps {
     key: string;
@@ -22,15 +25,16 @@ interface ArchivedTodoProps {
 }
 
 export const ArchivedTodo = (props: ArchivedTodoProps) => {
-    const { todo } = props;
+    const { todo, isGloballyDragging } = props;
+    const isOpen = todo.isOpen;
     const dispatch = useDispatch();
 
     // slidable hook
-    const { contentsWidth } = useWindowSizeSelector();
+    const { contentsWidth, device } = useWindowSizeSelector();
     const btnsContainerWidth = vw2px(contentsWidth) * 0.33;
     const SLIDABLE_LENGTH = btnsContainerWidth;
     const SLIDABLE_PARAMS: SlidableParams = { SLIDABLE_LENGTH };
-    const { isSlided, slide, unSlide, register } = useSlidableRegister({
+    const { isSlided, slide, unSlide, addSlidableBtn, register } = useSlidableRegister({
         params: SLIDABLE_PARAMS,
     });
 
@@ -46,7 +50,16 @@ export const ArchivedTodo = (props: ArchivedTodoProps) => {
     return (
         <StyledLi>
             <Slidable {...register}>
-                <SlidableMain>
+                <SlidableMain className="archive-slidable-main">
+                    {/* spサイズのタッチデバイスでは非表示 / pcでもタッチデバイスならリサイズで小さくなっている場合には非表示 */}
+                    {!(isTouchDevice && device === 'sp') && (
+                        <ControlPanel
+                            attrs={['slide']}
+                            isGloballyDragging={isGloballyDragging}
+                            isOpen={isOpen}
+                            slide={{ isSlided, slide, addSlidableBtn }}
+                        />
+                    )}
                     <TodoHeader
                         attributes={'archived'}
                         todo={props.todo}
@@ -77,11 +90,15 @@ export const ArchivedTodo = (props: ArchivedTodoProps) => {
 };
 
 const StyledLi = styled.li`
-    margin-top: 0.8rem;
-    background-color: var(--color-white-3);
-    border-radius: 0.2rem;
-    width: 95%;
-    margin: 1.6rem auto;
+    ${marginBetweenLiEls()}
+    ${archivedListCommon({type: 'todo'})}
+
+    /* width: var(--archived-todo-width); */
+
+    .archive-slidable-main {
+        display: flex;
+        width: 100%;
+    }
 
     .btns-container {
         display: flex;

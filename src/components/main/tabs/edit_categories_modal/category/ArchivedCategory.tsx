@@ -136,7 +136,7 @@ const StyledLi = styled.li<CategoryCommonStylesType>`
             --icon-widths: calc(var(--icon-size-1) * var(--num-of-icons));
             width: calc(100% - var(--icon-widths));
             margin: 0.4rem 5rem 0.4rem 0;
-    
+
             > * {
                 ${listTitleFont()}
             }

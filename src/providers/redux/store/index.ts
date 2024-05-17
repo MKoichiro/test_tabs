@@ -4,6 +4,8 @@ import categoriesReducer from '../slices/categoriesSlice';
 import modalsReducer from '../slices/modalSlice';
 import cardReducer from '../slices/cardSlice';
 import windowSizeReducer from '../slices/window_size_slice/windowSizeSlice';
+import immediateEditableReducer from '../slices/immediateEditableSlice';
+import infoTableActiveIdxReducer from '../slices/infoTableActiveIdx';
 
 export const store = configureStore({
     reducer: {
@@ -11,6 +13,8 @@ export const store = configureStore({
         modals: modalsReducer,
         card: cardReducer,
         windowSize: windowSizeReducer,
+        immediateEditable: immediateEditableReducer,
+        infoTableActiveIdx: infoTableActiveIdxReducer,
     },
 });
 
@@ -25,6 +29,11 @@ export const useCategoriesSelector = () => useAppSelector((state) => state.categ
 export const useModalsSelector = () => useAppSelector((state) => state.modals);
 export const useCardSelector = () => useAppSelector((state) => state.card);
 export const useWindowSizeSelector = () => useAppSelector((state) => state.windowSize);
+export const useImmediateEditableSelector = () =>
+    useAppSelector((state) => state.immediateEditable);
+export const useInfoTableActiveIdxSelector = (id: string) => useAppSelector((state) => {
+    return state.infoTableActiveIdx.find((item) => item.todoId === id);
+});
 
 export const useAppDispatch = useDispatch.withTypes<AppDispatch>();
 // useAppDispatchをuseDispatchとしてexport

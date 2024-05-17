@@ -25,7 +25,7 @@ import { statusCheckers } from '../../../../../utils/todoPropsHandler';
 import { useImmediateEditable } from '../../../../../functions/immediateEditable/Hooks';
 
 /* --- material icons ------------ */
-import { DragIndicator, ErrorOutline, ExpandLess, HorizontalRule } from '@mui/icons-material';
+import { ErrorOutline, ExpandLess } from '@mui/icons-material';
 
 /* --- dnd-kit ------------------- */
 import { SyntheticListenerMap } from '@dnd-kit/core/dist/hooks/utilities';
@@ -34,6 +34,7 @@ import { isTouchDevice } from '../../../../../data/constants/constants';
 import { BulletIcon } from '../../../../common/btns_icons/bullet_icon/BulletIcon';
 import { DragBtn } from '../../../../common/btns_icons/drag_btn/DragBtn';
 import { listTitleFont } from '../../../../../globalStyle';
+import { useImmediateInputEditable } from '../../../../../functions/immediateEditable/Hooks_ver2';
 
 /* --- dev ----------------------- */
 // import { isDebugMode } from '../../../../../utils/adminDebugMode';
@@ -66,7 +67,7 @@ const useTodoHeader = ({ todo, attributes }: Pick<TodoHeaderProps, 'todo' | 'att
 
     // 'double clickで編集' の hooks
     const { inEditing, inputRef, handleDoubleClick, handleSubmit, handleChange, handleBlur } =
-        useImmediateEditable({ target: todo, targetProperty: 'title' });
+        useImmediateInputEditable({ target: todo, targetProperty: 'title' });
 
     // todo の各 property を取得
     const { title, isOpen } = todo;
@@ -155,7 +156,7 @@ export const TodoHeader = ({
             $isArchived={isArchived}
         >
             {/* 1. title 直前の icon */}
-            {(isTouchDevice && device === 'sp' && !isArchived) ? (
+            {isTouchDevice && device === 'sp' && !isArchived ? (
                 <DragBtn
                     className="btn-gripper"
                     listeners={listeners}
@@ -182,7 +183,7 @@ export const TodoHeader = ({
                     <form onSubmit={handleSubmit}>
                         <input
                             type="text"
-                            ref={inputRef}
+                            ref={inputRef.setRef}
                             defaultValue={title}
                             onChange={handleChange}
                             onBlur={handleBlur}
@@ -237,8 +238,6 @@ const StyledHeader = styled.header<StyledHeaderType>`
         !$isArchived ? 'var(--active-todo-width)' : 'var(--archived-todo-width)'};
     --title-width: calc(var(--todo-container-width) - var(--expired-width) - var(--btns-width));
 
-
-
     display: flex;
     align-items: center;
     ${listTitleFont()}
@@ -280,7 +279,7 @@ const StyledHeader = styled.header<StyledHeaderType>`
         max-width: var(--title-width);
         border-bottom: ${({ $inEditing }) =>
             $inEditing ? 'var(--border-1)' : 'var(--border-weight) solid transparent'};
-        
+
         h4,
         input {
             font-size: inherit;

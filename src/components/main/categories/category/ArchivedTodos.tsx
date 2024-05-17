@@ -89,6 +89,5 @@ export const ArchivedTodos = ({ todos, isGloballyDraggingState }: ActiveTodosPro
 // ====================================================== COMPONENT === //
 
 // === STYLE ========================================================== //
-const StyledSection = styled.section`
-`;
+const StyledSection = styled.section``;
 // ========================================================= STYLE === //

@@ -116,7 +116,6 @@ export const useActiveCategories = () => {
             document.documentElement.classList.remove('no-user-select');
         }
     }, [isGloballyDragging]);
-    
 
     return {
         sensors,
@@ -197,7 +196,5 @@ export const ActiveCategories = ({ activeCategories }: ActiveCategoriesProps) =>
 // ====================================================== COMPONENT === //
 
 // === STYLE ========================================================== //
-const StyledSection = styled.section`
-
-`;
+const StyledSection = styled.section``;
 // ========================================================= STYLE === //

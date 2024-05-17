@@ -71,7 +71,5 @@ export const ArchivedCategories = ({ archivedCategories }: ArchivedCategoriesPro
 // ====================================================== COMPONENT === //
 
 // === STYLE ========================================================== //
-const StyledSection = styled.section`
-
-`;
+const StyledSection = styled.section``;
 // ========================================================= STYLE === //

@@ -53,15 +53,15 @@ interface GhostCategoryType {
  */
 export const GhostCategory = forwardRef<HTMLDivElement, GhostCategoryType>(
     ({ draggingCategory }, ref) => {
-
         const { device } = useWindowSizeSelector();
 
         return (
             <StyledDiv ref={ref}>
-                {!(isTouchDevice && device === 'sp')
-                    ? ( <BulletIcon/> )
-                    : ( <DragBtn className="icon-gripper" /> )
-                }
+                {!(isTouchDevice && device === 'sp') ? (
+                    <BulletIcon />
+                ) : (
+                    <DragBtn className="icon-gripper" />
+                )}
                 <p children={draggingCategory.name} />
             </StyledDiv>
         );
@@ -75,8 +75,8 @@ const StyledDiv = styled.div<CategoryCommonStylesType>`
     .icon-gripper {
         cursor: grabbing;
     }
-    padding: .4rem 0;
-    border-radius: .2rem;
+    padding: 0.4rem 0;
+    border-radius: 0.2rem;
     width: 100%;
     display: flex;
     p {
@@ -86,6 +86,5 @@ const StyledDiv = styled.div<CategoryCommonStylesType>`
             font-size: 16px;
         }
     }
-    
 `;
 // ========================================================= STYLE === //

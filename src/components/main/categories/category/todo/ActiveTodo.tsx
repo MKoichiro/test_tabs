@@ -27,13 +27,14 @@ import {
 /* --- redux --------------------- */
 import { useDispatch } from 'react-redux';
 import { updateTodoProps } from '../../../../../providers/redux/slices/categoriesSlice';
-import { setActiveIdx } from '../../../../../providers/redux/slices/cardSlice';
+import { setActiveIdx as setCardViewActiveIdx } from '../../../../../providers/redux/slices/cardSlice';
+import { setActiveIdx as setInfoTableActiveIdx } from '../../../../../providers/redux/slices/infoTableActiveIdx';
 
 /* --- providers/contexts -------- */
 import { useCardViewOpener } from '../../../../../providers/context_api/CardView';
 
 /* --- types --------------------- */
-import { TodoType } from '../../../../../providers/types/categories';
+import { TodoType, notSet } from '../../../../../providers/types/categories';
 // slidable
 import { SlidableParams } from '../../../../../functions/slidable/types';
 
@@ -46,11 +47,22 @@ import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { useWindowSizeSelector } from '../../../../../providers/redux/store';
 import { vw2px } from '../../../../../utils/converters';
-import { Inventory2Outlined, ViewArrayOutlined } from '@mui/icons-material';
+import {
+    Inventory2Outlined,
+    TaskAltOutlined,
+    UnpublishedOutlined,
+    ViewArrayOutlined,
+} from '@mui/icons-material';
 import { useSlidableRegister } from '../../../../../functions/slidable/Hooks';
 import { isTouchDevice } from '../../../../../data/constants/constants';
 import { ControlPanel } from '../../../../common/list_control_panel/ControlPanel';
-import { activeListCommon, draggingItemStyle, marginBetweenLiEls } from '../../../../../globalStyle';
+import {
+    activeListCommon,
+    draggingItemStyle,
+    marginBetweenLiEls,
+} from '../../../../../globalStyle';
+// import { useGlobalSelectRef } from '../../../../../providers/context_api/global_ref/GlobalSelectRef';
+import { setInEditing } from '../../../../../providers/redux/slices/immediateEditableSlice';
 // import { SerializedStyles, css } from '@emotion/react';
 
 /* --- dev ----------------------- */
@@ -112,6 +124,7 @@ export const useActiveTodo = ({
     isGloballyDragging,
 }: Omit<ActiveTodoProps, 'handleMouseDown'>) => {
     const todoId = todo.id;
+    const isCompleted = todo.status === 'completed';
 
     const { contentsWidth } = useWindowSizeSelector();
     const btnsContainerWidthPx = vw2px(contentsWidth) * 0.5;
@@ -135,10 +148,17 @@ export const useActiveTodo = ({
     // handlers
     const handleInfoBtnClick = () => {
         cardViewOpen(activeTodoIdx);
-        dispatch(setActiveIdx(activeTodoIdx));
+        dispatch(setCardViewActiveIdx(activeTodoIdx));
     };
+    
     const handleCompleteBtnClick = () => {
-        dispatch(updateTodoProps({ todoId, update: { status: 'completed' } }));
+        if (isCompleted) {
+            dispatch(setInEditing({ property: 'status', newState: { id: todoId, inEditing: true } }));
+            dispatch(updateTodoProps({ todoId, update: { status: notSet } }));
+            dispatch(setInfoTableActiveIdx({ todoId: todo.id, activeIdx: 1 }));
+        } else {
+            dispatch(updateTodoProps({ todoId, update: { status: 'completed' } }));
+        }
     };
     const handleArchiveBtnClick = () => {
         dispatch(updateTodoProps({ todoId, update: { isArchived: true } }));
@@ -146,6 +166,7 @@ export const useActiveTodo = ({
 
     return {
         todoId,
+        isCompleted,
         /** dnd-kit: dnd-kit の仕様上必要。 */
         attributes,
         /** dnd-kit: `<TodoHeader/>` に渡して、最終的に dnd 時にグリッパーとなる span 要素にバインド。 */
@@ -199,6 +220,7 @@ export const ActiveTodo = ({
 }: ActiveTodoProps) => {
     const {
         todoId,
+        isCompleted,
         attributes,
         listeners,
         setNodeRef,
@@ -285,7 +307,7 @@ export const ActiveTodo = ({
                         <button
                             className={'each-btn btn-check'}
                             onClick={handleCompleteBtnClick}
-                            children={<FontAwesomeIcon icon={faCheck} />}
+                            children={!isCompleted ? <TaskAltOutlined /> : <UnpublishedOutlined />}
                         />
                     </div>
 
@@ -310,7 +332,6 @@ interface StyledLiType {
     $isOpen: boolean;
     $isGlobalDragging: boolean;
 }
-
 
 const StyledLi = styled.li<StyledLiType>`
     ${marginBetweenLiEls()}
@@ -371,6 +392,5 @@ const StyledLi = styled.li<StyledLiType>`
 
     /* position: relative; */
 `;
-
 
 // ========================================================= STYLE === //

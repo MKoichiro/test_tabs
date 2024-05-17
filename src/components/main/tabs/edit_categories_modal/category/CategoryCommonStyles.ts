@@ -17,7 +17,6 @@ export const categoryCommonStyles = css<{ $isDragging?: boolean; $inEditing?: bo
         line-height: 4rem;
     }
 
-
     .category-name-container {
         flex: 1;
     }

@@ -156,28 +156,27 @@ const GlobalStyle = createGlobalStyle`
 
 export default GlobalStyle;
 
-
 export const marginBetweenLiEls = () => css`
     li + & {
         margin-top: 1.4rem;
         @media (width < 600px) {
-            margin-top: .8rem;
+            margin-top: 0.8rem;
         }
     }
 `;
 
 export const activeListCommon = ({ type }: { type: 'todo' | 'category' }) => css`
-  border-radius: 0.2rem;
-  background: var(--color-white-2);
-  width: ${type === 'todo' ? 'var(--active-todo-width)' : 'var(--active-category-width)'};
+    border-radius: 0.2rem;
+    background: var(--color-white-2);
+    width: ${type === 'todo' ? 'var(--active-todo-width)' : 'var(--active-category-width)'};
 `;
 
 export const archivedListCommon = ({ type }: { type: 'todo' | 'category' }) => css`
-  border-radius: 0.2rem;
-  background-color: var(--color-white-3);
-  width: ${type === 'todo' ? 'var(--archived-todo-width)' : 'var(--archived-category-width)'};
-  margin-right: auto;
-  margin-left: auto;
+    border-radius: 0.2rem;
+    background-color: var(--color-white-3);
+    width: ${type === 'todo' ? 'var(--archived-todo-width)' : 'var(--archived-category-width)'};
+    margin-right: auto;
+    margin-left: auto;
 `;
 export const listTitleFont = () => css`
     font-size: 2rem;
@@ -185,7 +184,6 @@ export const listTitleFont = () => css`
     @media (width < 600px) {
         font-size: 16px;
     }
-
 `;
 
 export const draggingItemStyle = ($isDragging: boolean, $isGhost = false) => css`

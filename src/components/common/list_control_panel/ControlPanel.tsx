@@ -104,8 +104,8 @@ const StyledDiv = styled.div<StyledDivProps>`
         justify-content: center;
         align-items: center;
         background: var(--color-black-1);
-        border-radius: .2rem 0 0 .2rem;
-        
+        border-radius: 0.2rem 0 0 0.2rem;
+
         .btn-slide {
             flex: 1;
             width: var(--icon-size-1);
@@ -117,7 +117,7 @@ const StyledDiv = styled.div<StyledDivProps>`
                 font-size: 2.4rem;
             }
         }
-        
+
         .btn-gripper {
             touch-action: none;
             flex: 1;

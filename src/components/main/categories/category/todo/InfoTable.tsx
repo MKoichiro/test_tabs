@@ -28,6 +28,9 @@ import { getFormattedDate } from '../../../../../utils/dateFormatter';
 import { isDebugMode } from '../../../../../utils/adminDebugMode';
 import { useImmediateEditable } from '../../../../../functions/immediateEditable/Hooks';
 import { useCoexistSingleDoubleClickHandler } from '../../../../../functions/coexist_single_double_click_handler/Hooks';
+import { useImmediateInputEditable, useImmediateSelectEditable } from '../../../../../functions/immediateEditable/Hooks_ver2';
+import { useDispatch, useInfoTableActiveIdxSelector } from '../../../../../providers/redux/store';
+import { setActiveIdx } from '../../../../../providers/redux/slices/infoTableActiveIdx';
 
 const displayMoreInfo = false;
 
@@ -73,18 +76,23 @@ const getActiveIdx = (e: React.MouseEvent): number => {
 };
 
 const useInfoTable = (todo: TodoType) => {
-    const [activeIdx, setActiveIdx] = useState<number | undefined>(undefined);
+    const dispatch = useDispatch();
+    const activeIdx = useInfoTableActiveIdxSelector(todo.id)?.activeIdx;
 
-    const deadlineIE = useImmediateEditable({ target: todo, targetProperty: 'deadline' });
-    const statusIE = useImmediateEditable({ target: todo, targetProperty: 'status' });
-    const priorityIE = useImmediateEditable({ target: todo, targetProperty: 'priority' });
+    const deadlineIE = useImmediateInputEditable({ target: todo, targetProperty: 'deadline' });
+    const statusIE = useImmediateSelectEditable({ target: todo, targetProperty: 'status' });
+    const priorityIE = useImmediateSelectEditable({ target: todo, targetProperty: 'priority' });
     const inEditingStates = [deadlineIE.inEditing, statusIE.inEditing, priorityIE.inEditing];
 
     // handleOutsideClickは、よく使うのでhooks化するべきかも
     const tableRef = useRef<HTMLTableElement>(null);
     const handleOutsideClick = (e: MouseEvent) => {
-        if (tableRef.current && !tableRef.current.contains(e.target as Node))
-            setActiveIdx(undefined);
+        if (tableRef.current && !tableRef.current.contains(e.target as Node)) {
+            dispatch(setActiveIdx({ todoId: todo.id, activeIdx: undefined }));
+            deadlineIE.handleBlur();
+            statusIE.handleBlur();
+            priorityIE.handleBlur();
+        }
     };
     useEffect(() => {
         activeIdx !== undefined
@@ -95,14 +103,14 @@ const useInfoTable = (todo: TodoType) => {
     const toggleActiveKey = (e: React.MouseEvent): void => {
         const newIdx = getActiveIdx(e);
         if (activeIdx === newIdx && !inEditingStates[activeIdx]) {
-            setActiveIdx(undefined);
+            dispatch(setActiveIdx({ todoId: todo.id, activeIdx: undefined }));
         } else {
-            setActiveIdx(newIdx);
+            dispatch(setActiveIdx({ todoId: todo.id, activeIdx: newIdx }));
         }
     };
     const activateKey = (e: React.MouseEvent): void => {
         const newIdx = getActiveIdx(e);
-        if (activeIdx !== newIdx) setActiveIdx(newIdx);
+        if (activeIdx !== newIdx) dispatch(setActiveIdx({ todoId: todo.id, activeIdx: newIdx }));
     };
 
     const handleDeadlineDoubleClick = (e: React.MouseEvent) => {
@@ -141,15 +149,15 @@ const useInfoTable = (todo: TodoType) => {
 
     const handleDeadlineBlur = () => {
         deadlineIE.handleBlur();
-        setActiveIdx(undefined);
+        dispatch(setActiveIdx({ todoId: todo.id, activeIdx: undefined }));
     };
     const handleStatusBlur = () => {
         statusIE.handleBlur();
-        setActiveIdx(undefined);
+        dispatch(setActiveIdx({ todoId: todo.id, activeIdx: undefined }));
     };
     const handlePriorityBlur = () => {
         priorityIE.handleBlur();
-        setActiveIdx(undefined);
+        dispatch(setActiveIdx({ todoId: todo.id, activeIdx: undefined }));
     };
 
     const handleDeadlineChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -303,7 +311,7 @@ export const InfoTable = ({ todo }: InfoTableProps) => {
                             <form onSubmit={deadlineIE.handleSubmit}>
                                 <input
                                     type="date"
-                                    ref={deadlineIE.inputRef}
+                                    ref={deadlineIE.inputRef.setRef}
                                     defaultValue={deadline}
                                     onChange={handleDeadlineChange}
                                     onBlur={handleDeadlineBlur}
@@ -321,7 +329,7 @@ export const InfoTable = ({ todo }: InfoTableProps) => {
                         {statusIE.inEditing ? (
                             <form onSubmit={statusIE.handleSubmit}>
                                 <select
-                                    ref={statusIE.selectRef}
+                                    ref={statusIE.selectRef.setRef}
                                     defaultValue={status}
                                     onChange={handleStatusChange}
                                     onBlur={handleStatusBlur}
@@ -347,7 +355,7 @@ export const InfoTable = ({ todo }: InfoTableProps) => {
                         {priorityIE.inEditing ? (
                             <form onSubmit={priorityIE.handleSubmit}>
                                 <select
-                                    ref={priorityIE.selectRef}
+                                    ref={priorityIE.selectRef.setRef}
                                     defaultValue={priority}
                                     onChange={handlePriorityChange}
                                     onBlur={handlePriorityBlur}

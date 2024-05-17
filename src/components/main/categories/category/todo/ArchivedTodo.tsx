@@ -91,7 +91,7 @@ export const ArchivedTodo = (props: ArchivedTodoProps) => {
 
 const StyledLi = styled.li`
     ${marginBetweenLiEls()}
-    ${archivedListCommon({type: 'todo'})}
+    ${archivedListCommon({ type: 'todo' })}
 
     /* width: var(--archived-todo-width); */
 

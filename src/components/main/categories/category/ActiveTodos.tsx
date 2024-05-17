@@ -194,6 +194,5 @@ export const ActiveTodos = ({ todos, isGloballyDraggingState }: ActiveTodosProps
 // ====================================================== COMPONENT === //
 
 // === STYLE ========================================================== //
-const StyledSection = styled.section`
-`;
+const StyledSection = styled.section``;
 // ========================================================= STYLE === //

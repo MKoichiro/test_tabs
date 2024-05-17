@@ -33,7 +33,7 @@ import {
 } from '../../../../../functions/slidable/Components';
 import { SlidableParams } from '../../../../../functions/slidable/types';
 /* immediateEditable */
-import { useImmediateEditable } from '../../../../../functions/immediateEditable/Hooks';
+import { useImmediateInputEditable } from '../../../../../functions/immediateEditable/Hooks_ver2';
 import { vw2px } from '../../../../../utils/converters';
 import { useDispatch, useWindowSizeSelector } from '../../../../../providers/redux/store';
 import { updateCategoryProps } from '../../../../../providers/redux/slices/categoriesSlice';
@@ -42,7 +42,12 @@ import { ControlPanel } from '../../../../common/list_control_panel/ControlPanel
 import { isTouchDevice } from '../../../../../data/constants/constants';
 import { BulletIcon } from '../../../../common/btns_icons/bullet_icon/BulletIcon';
 import { DragBtn } from '../../../../common/btns_icons/drag_btn/DragBtn';
-import { activeListCommon, draggingItemStyle, listTitleFont, marginBetweenLiEls } from '../../../../../globalStyle';
+import {
+    activeListCommon,
+    draggingItemStyle,
+    listTitleFont,
+    marginBetweenLiEls,
+} from '../../../../../globalStyle';
 
 /* --- dev ----------------------- */
 // import { isDebugMode } from '../../../../../utils/adminDebugMode';
@@ -96,7 +101,7 @@ export const useActiveCategory = ({
     };
 
     return {
-        ...useImmediateEditable({ target: activeCategory, targetProperty: 'name' }),
+        ...useImmediateInputEditable({ target: activeCategory, targetProperty: 'name' }),
         isDragging,
         ...rest,
         style,
@@ -173,19 +178,18 @@ export const ActiveCategory = ({
                         </>
                     ) : (
                         <DragBtn
-                            className='btn-gripper'
+                            className="btn-gripper"
                             listeners={listeners}
                             handleMouseDown={handleMouseDown}
                         />
                     )}
-
 
                     <div className="category-name-container">
                         <p onDoubleClick={handleDoubleClick}>{activeCategory.name}</p>
                         <form onSubmit={handleSubmit}>
                             <input
                                 type={'text'}
-                                ref={inputRef}
+                                ref={inputRef.setRef}
                                 value={activeCategory.name}
                                 onChange={handleChange}
                                 onBlur={handleBlur}
@@ -219,7 +223,7 @@ interface StyledLiProps {
 const StyledLi = styled.li<StyledLiProps>`
     ${marginBetweenLiEls()}
     ${activeListCommon({ type: 'category' })}
-    ${({$isDragging}) => draggingItemStyle($isDragging)}
+    ${({ $isDragging }) => draggingItemStyle($isDragging)}
 
     .slidable-main-contents {
         display: flex;

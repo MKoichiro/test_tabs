@@ -154,8 +154,14 @@ export const useActiveTodo = ({
     const handleCompleteBtnClick = () => {
         if (isCompleted) {
             dispatch(setInEditing({ property: 'status', newState: { id: todoId, inEditing: true } }));
-            dispatch(updateTodoProps({ todoId, update: { status: notSet } }));
-            dispatch(setInfoTableActiveIdx({ todoId: todo.id, activeIdx: 1 }));
+            dispatch(setInfoTableActiveIdx({ todoId: todoId, activeIdx: 1 }));
+            dispatch(updateTodoProps({
+                todoId,
+                update: {
+                    status: notSet,
+                    isOpen: true,
+                }
+            }));
         } else {
             dispatch(updateTodoProps({ todoId, update: { status: 'completed' } }));
         }

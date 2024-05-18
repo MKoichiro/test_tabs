@@ -14,11 +14,7 @@ import React, { ChangeEvent, useEffect, useRef, useState } from 'react';
 import styled, { css } from 'styled-components';
 
 /* --- types --------------------- */
-import {
-    TodoType,
-    priorityLiterals,
-    statusLiterals,
-} from '../../../../../providers/types/categories';
+import { TodoType, priorityLiterals, statusLiterals } from '../../../../../providers/types/categories';
 
 /* --- utils --------------------- */
 import { DLFormatters, statusCheckers } from '../../../../../utils/todoPropsHandler';
@@ -28,9 +24,12 @@ import { getFormattedDate } from '../../../../../utils/dateFormatter';
 import { isDebugMode } from '../../../../../utils/adminDebugMode';
 import { useImmediateEditable } from '../../../../../functions/immediateEditable/Hooks';
 import { useCoexistSingleDoubleClickHandler } from '../../../../../functions/coexist_single_double_click_handler/Hooks';
-import { useImmediateInputEditable, useImmediateSelectEditable } from '../../../../../functions/immediateEditable/Hooks_ver2';
+import {
+    useImmediateInputEditable,
+    useImmediateSelectEditable,
+} from '../../../../../functions/immediateEditable/Hooks_ver2';
 import { useDispatch, useInfoTableActiveIdxSelector } from '../../../../../providers/redux/store';
-import { setActiveIdx } from '../../../../../providers/redux/slices/infoTableActiveIdx';
+import { setActiveIdx } from '../../../../../providers/redux/slices/infoTableActiveIdxSlice';
 
 const displayMoreInfo = false;
 

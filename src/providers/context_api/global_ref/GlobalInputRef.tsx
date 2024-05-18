@@ -60,10 +60,7 @@ interface GlobalInputRefArg {
     propertyName: PropertyNames;
     id: string;
 }
-export const useGlobalInputRef = ({
-    propertyName,
-    id,
-}: GlobalInputRefArg) => {
+export const useGlobalInputRef = ({ propertyName, id }: GlobalInputRefArg) => {
     const context = useContext(Context);
     const { set, get } = context[propertyName];
 

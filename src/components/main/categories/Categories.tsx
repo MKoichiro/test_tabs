@@ -10,14 +10,15 @@
  */
 
 /* --- react/styled-components --- */
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 
 /* --- redux --------------------- */
-import { useCategoriesSelector } from '../../../providers/redux/store';
+import { useCategoriesSelector, useIsGloballyDragging, useWindowSizeSelector } from '../../../providers/redux/store';
 
 /* --- child components ---------- */
 import { CategoryContainer } from './category/CategoryContainer';
+import { vw2px } from '../../../utils/converters';
 
 /* --- dev ----------------------- */
 // import { isDebugMode } from '../../../utils/adminDebugMode';
@@ -42,9 +43,19 @@ import { CategoryContainer } from './category/CategoryContainer';
  */
 export const Categories = () => {
     const { activeIdx, categoriesEntity: categories } = useCategoriesSelector();
+    const { contentsWidth } = useWindowSizeSelector();
+    const contentsWidthPx = vw2px(contentsWidth);
+    const [translateX, setTranslateX] = useState(0);
+
+    useEffect(() => {
+        setTranslateX(-1 * activeIdx * contentsWidthPx);
+    }, [activeIdx]);
 
     return (
-        <StyledUl $activeIndex={activeIdx}>
+        <StyledUl
+            $activeIndex={activeIdx}
+            $translateX={translateX}
+        >
             {categories.map((category, i) => {
                 return (
                     <li key={category.id}>
@@ -61,10 +72,10 @@ export const Categories = () => {
 // ====================================================== COMPONENT === //
 
 // === STYLE ========================================================= //
-const StyledUl = styled.ul<{ $activeIndex: number }>`
+const StyledUl = styled.ul<{ $activeIndex: number; $translateX: number }>`
     display: flex;
-    transition: transform 750ms;
-    transform: ${(props) => `translateX(calc(-1 * var(--contents-width) * ${props.$activeIndex}))`};
+    transform: ${({ $translateX }) => `translateX(${$translateX}px) !important`};
+    transition: transform 500ms;
     > li {
         min-width: 100%;
     }

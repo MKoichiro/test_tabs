@@ -46,10 +46,7 @@ import { CategoryType } from '../../../../../providers/types/categories';
 
 /* --- redux --------------------- */
 import { useCategoriesSelector, useDispatch } from '../../../../../providers/redux/store';
-import {
-    switchCategory,
-    updateCategories,
-} from '../../../../../providers/redux/slices/categoriesSlice';
+import { switchCategory, updateCategories } from '../../../../../providers/redux/slices/categoriesSlice';
 
 /* --- MUI ------------------------ */
 import { SectionSeparator } from '../../../../common/section_separator/SectionSeparator';
@@ -144,14 +141,8 @@ export const useActiveCategories = () => {
  * @category Component
  */
 export const ActiveCategories = ({ activeCategories }: ActiveCategoriesProps) => {
-    const {
-        sensors,
-        activeId,
-        handleMouseDown,
-        handleDragStart,
-        handleDragEnd,
-        isGloballyDragging,
-    } = useActiveCategories();
+    const { sensors, activeId, handleMouseDown, handleDragStart, handleDragEnd, isGloballyDragging } =
+        useActiveCategories();
 
     return (
         <StyledSection>
@@ -183,9 +174,7 @@ export const ActiveCategories = ({ activeCategories }: ActiveCategoriesProps) =>
                 <DragOverlay>
                     {activeId ? (
                         <GhostCategory
-                            draggingCategory={
-                                activeCategories.filter((category) => category.id === activeId)[0]
-                            }
+                            draggingCategory={activeCategories.filter((category) => category.id === activeId)[0]}
                         />
                     ) : null}
                 </DragOverlay>

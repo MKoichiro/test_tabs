@@ -119,13 +119,7 @@ const useTodoHeader = ({ todo, attributes }: Pick<TodoHeaderProps, 'todo' | 'att
  *
  * @category Component
  */
-export const TodoHeader = ({
-    todo,
-    attributes,
-    listeners,
-    isGloballyDragging,
-    handleMouseDown,
-}: TodoHeaderProps) => {
+export const TodoHeader = ({ todo, attributes, listeners, isGloballyDragging, handleMouseDown }: TodoHeaderProps) => {
     const {
         inEditing,
         inputRef,

@@ -58,10 +58,7 @@ interface TodoDetailProps {
  * } = useTodoDetail({ todo }, ref);
  * ```
  */
-export const useTodoDetail = (
-    { todo }: Omit<TodoDetailProps, 'isGloballyDragging'>,
-    ref: Ref<HTMLElement>
-) => {
+export const useTodoDetail = ({ todo }: Omit<TodoDetailProps, 'isGloballyDragging'>, ref: Ref<HTMLElement>) => {
     const { inEditing, handleModalOpen } = useContext(MdeContext);
 
     const { isOpen } = todo;
@@ -115,41 +112,41 @@ export const useTodoDetail = (
  *
  * @category Component
  */
-export const TodoDetail = forwardRef<HTMLElement, TodoDetailProps>(
-    ({ todo, isGloballyDragging }, ref) => {
-        const { isOpen, inEditing, height, heightGetterRef, executeModalOpen, sanitizedDetail } =
-            useTodoDetail({ todo }, ref);
+export const TodoDetail = forwardRef<HTMLElement, TodoDetailProps>(({ todo, isGloballyDragging }, ref) => {
+    const { isOpen, inEditing, height, heightGetterRef, executeModalOpen, sanitizedDetail } = useTodoDetail(
+        { todo },
+        ref
+    );
 
-        return (
-            <StyledSection
-                $isOpen={isOpen}
-                $height={height}
-                $inEditing={inEditing}
-                $isGloballyDragging={isGloballyDragging}
+    return (
+        <StyledSection
+            $isOpen={isOpen}
+            $height={height}
+            $inEditing={inEditing}
+            $isGloballyDragging={isGloballyDragging}
+        >
+            <div
+                className="children-height-getter"
+                ref={heightGetterRef as RefObject<HTMLDivElement>}
             >
-                <div
-                    className="children-height-getter"
-                    ref={heightGetterRef as RefObject<HTMLDivElement>}
+                <section
+                    className="detail-container"
+                    onDoubleClick={executeModalOpen}
                 >
-                    <section
-                        className="detail-container"
-                        onDoubleClick={executeModalOpen}
-                    >
-                        <div
-                            dangerouslySetInnerHTML={{
-                                __html: sanitizedDetail,
-                            }}
-                        />
-                    </section>
+                    <div
+                        dangerouslySetInnerHTML={{
+                            __html: sanitizedDetail,
+                        }}
+                    />
+                </section>
 
-                    <div className="table-container">
-                        <InfoTable todo={todo} />
-                    </div>
+                <div className="table-container">
+                    <InfoTable todo={todo} />
                 </div>
-            </StyledSection>
-        );
-    }
-);
+            </div>
+        </StyledSection>
+    );
+});
 // ====================================================== COMPONENT === //
 
 // === STYLE ========================================================= //

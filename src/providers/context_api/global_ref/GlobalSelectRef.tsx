@@ -47,15 +47,11 @@ export const GlobalSelectRef = ({ children }: PropsWithChildren<GlobalRefProps>)
     return <Context.Provider value={value}>{children}</Context.Provider>;
 };
 
-
 interface GlobalSelectRefArg {
     propertyName: PropertyNames;
     id: string;
 }
-export const useGlobalSelectRef = ({
-    propertyName,
-    id,
-}: GlobalSelectRefArg) => {
+export const useGlobalSelectRef = ({ propertyName, id }: GlobalSelectRefArg) => {
     const context = useContext(Context);
     const { set, get } = context[propertyName];
 

@@ -28,12 +28,7 @@ type ControlPanelProps = {
     isOpen?: boolean;
 } & Funcs;
 
-export const ControlPanel = ({
-    attrs,
-    isGloballyDragging,
-    isOpen,
-    ...restProps
-}: ControlPanelProps) => {
+export const ControlPanel = ({ attrs, isGloballyDragging, isOpen, ...restProps }: ControlPanelProps) => {
     const { handleMouseDown, listeners } = restProps.drag || {};
     const { isSlided, slide, addSlidableBtn } = restProps.slide || {};
 
@@ -73,8 +68,7 @@ interface StyledDivProps {
 }
 
 const StyledDiv = styled.div<StyledDivProps>`
-    display: ${({ $isGlobalDragging, $isSlided }) =>
-        $isGlobalDragging || $isSlided ? 'none' : 'block'};
+    display: ${({ $isGlobalDragging, $isSlided }) => ($isGlobalDragging || $isSlided ? 'none' : 'block')};
     height: 100%;
     .hover-listener {
         position: absolute;

@@ -5,8 +5,7 @@
                 s.r(t);
             },
             393: (e, t, s) => {
-                Object.defineProperty(t, '__esModule', { value: !0 }),
-                    (t.HierarchyManager = void 0);
+                Object.defineProperty(t, '__esModule', { value: !0 }), (t.HierarchyManager = void 0);
                 const a = s(98);
                 t.HierarchyManager = class {
                     constructor() {
@@ -24,17 +23,13 @@
                         const t = document.querySelector(`${this.listSelector}[data-id="${e}"]`);
                         t &&
                             (t.classList.add('_open'),
-                            t.parentNode
-                                ?.querySelector(this.titleSelector)
-                                ?.classList.add('_open'));
+                            t.parentNode?.querySelector(this.titleSelector)?.classList.add('_open'));
                     }
                     closePath(e) {
                         const t = document.querySelector(`${this.listSelector}[data-id="${e}"]`);
                         t &&
                             (t.classList.remove('_open'),
-                            t.parentNode
-                                ?.querySelector(this.titleSelector)
-                                ?.classList.remove('_open'),
+                            t.parentNode?.querySelector(this.titleSelector)?.classList.remove('_open'),
                             this.stateManager.removeOpenedPath(e));
                     }
                     closePathWithChildren(e) {
@@ -46,23 +41,16 @@
                     }
                     togglePath(e) {
                         const t = document.querySelector(`${this.listSelector}[data-id="${e}"]`);
-                        t &&
-                            (t.classList.contains('_open')
-                                ? this.closePathWithChildren(e)
-                                : this.openPathAndSave(e));
+                        t && (t.classList.contains('_open') ? this.closePathWithChildren(e) : this.openPathAndSave(e));
                     }
                     addListeners() {
-                        const e = document.querySelectorAll(
-                            '.js-category-title:not([data-id="root"])'
-                        );
+                        const e = document.querySelectorAll('.js-category-title:not([data-id="root"])');
                         for (const t of e)
                             t.addEventListener('click', () => {
                                 const e = t.dataset.id || '';
                                 this.togglePath(e);
                             });
-                        this.addExpandListener(),
-                            this.addCollapseListener(),
-                            this.addTargetListener();
+                        this.addExpandListener(), this.addCollapseListener(), this.addTargetListener();
                     }
                     addExpandListener() {
                         document.querySelector('.js-tree-expand')?.addEventListener('click', () => {
@@ -74,15 +62,13 @@
                         });
                     }
                     addCollapseListener() {
-                        document
-                            .querySelector('.js-tree-collapse')
-                            ?.addEventListener('click', () => {
-                                const e = document.querySelectorAll(this.listSelector);
-                                for (const t of e) {
-                                    const e = t.dataset.id || '';
-                                    this.closePath(e);
-                                }
-                            });
+                        document.querySelector('.js-tree-collapse')?.addEventListener('click', () => {
+                            const e = document.querySelectorAll(this.listSelector);
+                            for (const t of e) {
+                                const e = t.dataset.id || '';
+                                this.closePath(e);
+                            }
+                        });
                     }
                     addTargetListener() {
                         document.querySelector('.js-tree-target')?.addEventListener('click', () => {
@@ -120,17 +106,13 @@
                         this.openedPaths.push(e), this.updateState();
                     }
                     removeOpenedPath(e) {
-                        (this.openedPaths = this.openedPaths.filter((t) => t !== e)),
-                            this.updateState();
+                        (this.openedPaths = this.openedPaths.filter((t) => t !== e)), this.updateState();
                     }
                     getOpenedPaths() {
                         return this.openedPaths;
                     }
                     updateState() {
-                        localStorage.setItem(
-                            this.openedPathLsKey,
-                            JSON.stringify(this.openedPaths)
-                        );
+                        localStorage.setItem(this.openedPathLsKey, JSON.stringify(this.openedPaths));
                     }
                 };
             },

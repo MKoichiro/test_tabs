@@ -3,11 +3,7 @@ import styled from 'styled-components';
 import { TodoType } from '../../../../../providers/types/categories';
 import { TodoHeader } from './TodoHeader';
 import { SlidableParams } from '../../../../../functions/slidable/types';
-import {
-    Slidable,
-    SlidableHidden,
-    SlidableMain,
-} from '../../../../../functions/slidable/Components';
+import { Slidable, SlidableHidden, SlidableMain } from '../../../../../functions/slidable/Components';
 import { ArrowUpward, DeleteOutline } from '@mui/icons-material';
 import { useDispatch, useWindowSizeSelector } from '../../../../../providers/redux/store';
 import { deleteTodo, updateTodoProps } from '../../../../../providers/redux/slices/categoriesSlice';

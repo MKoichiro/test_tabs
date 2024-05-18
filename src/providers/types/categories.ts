@@ -1,14 +1,7 @@
 type NotSetType = '---';
 export const notSet: NotSetType = '---';
 
-export const statusLiterals = [
-    notSet,
-    'Not Started',
-    'completed',
-    'In Progress...',
-    'Aborted',
-    'Pending',
-] as const;
+export const statusLiterals = [notSet, 'Not Started', 'completed', 'In Progress...', 'Aborted', 'Pending'] as const;
 export const priorityLiterals = [notSet, 'Highest', 'High', 'Medium', 'Low', 'Lowest'] as const;
 export type StatusLiteralsType = typeof statusLiterals;
 export type PriorityLiteralsType = typeof priorityLiterals;

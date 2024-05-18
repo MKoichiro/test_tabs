@@ -51,22 +51,16 @@ interface GhostCategoryType {
  *
  * @category Component
  */
-export const GhostCategory = forwardRef<HTMLDivElement, GhostCategoryType>(
-    ({ draggingCategory }, ref) => {
-        const { device } = useWindowSizeSelector();
+export const GhostCategory = forwardRef<HTMLDivElement, GhostCategoryType>(({ draggingCategory }, ref) => {
+    const { device } = useWindowSizeSelector();
 
-        return (
-            <StyledDiv ref={ref}>
-                {!(isTouchDevice && device === 'sp') ? (
-                    <BulletIcon />
-                ) : (
-                    <DragBtn className="icon-gripper" />
-                )}
-                <p children={draggingCategory.name} />
-            </StyledDiv>
-        );
-    }
-);
+    return (
+        <StyledDiv ref={ref}>
+            {!(isTouchDevice && device === 'sp') ? <BulletIcon /> : <DragBtn className="icon-gripper" />}
+            <p children={draggingCategory.name} />
+        </StyledDiv>
+    );
+});
 // ====================================================== COMPONENT === //
 
 // === STYLE ========================================================= //

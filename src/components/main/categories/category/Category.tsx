@@ -11,7 +11,7 @@
  */
 
 /* --- react/styled-components --- */
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import styled from 'styled-components';
 
 /* --- child components ---------- */
@@ -20,6 +20,7 @@ import { ArchivedTodos } from './ArchivedTodos';
 
 /* --- types --------------------- */
 import { CategoryType } from '../../../../providers/types/categories';
+import { useIsGloballyDragging } from '../../../../providers/redux/store';
 
 /* --- dev ----------------------- */
 // import { isDebugMode } from '../../../../utils/adminDebugMode';
@@ -44,7 +45,7 @@ export const useCategory = (props: CategoryProps) => {
     const { category } = props;
     const todos = category.todos;
 
-    const isGloballyDraggingState = useState(false);
+    const isGloballyDraggingState = useIsGloballyDragging('todo');
     const [isGloballyDragging] = isGloballyDraggingState;
 
     // ドラッグ中はユーザー選択を無効化。

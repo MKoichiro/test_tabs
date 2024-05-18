@@ -18,17 +18,13 @@ import styled, { css } from 'styled-components';
 import { TodoDetail } from './TodoDetail';
 import { TodoHeader } from './TodoHeader';
 // slidable
-import {
-    Slidable,
-    SlidableMain,
-    SlidableHidden,
-} from '../../../../../functions/slidable/Components';
+import { Slidable, SlidableMain, SlidableHidden } from '../../../../../functions/slidable/Components';
 
 /* --- redux --------------------- */
 import { useDispatch } from 'react-redux';
 import { updateTodoProps } from '../../../../../providers/redux/slices/categoriesSlice';
 import { setActiveIdx as setCardViewActiveIdx } from '../../../../../providers/redux/slices/cardSlice';
-import { setActiveIdx as setInfoTableActiveIdx } from '../../../../../providers/redux/slices/infoTableActiveIdx';
+import { setActiveIdx as setInfoTableActiveIdx } from '../../../../../providers/redux/slices/infoTableActiveIdxSlice';
 
 /* --- providers/contexts -------- */
 import { useCardViewOpener } from '../../../../../providers/context_api/CardView';
@@ -47,20 +43,11 @@ import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { useWindowSizeSelector } from '../../../../../providers/redux/store';
 import { vw2px } from '../../../../../utils/converters';
-import {
-    Inventory2Outlined,
-    TaskAltOutlined,
-    UnpublishedOutlined,
-    ViewArrayOutlined,
-} from '@mui/icons-material';
+import { Inventory2Outlined, TaskAltOutlined, UnpublishedOutlined, ViewArrayOutlined } from '@mui/icons-material';
 import { useSlidableRegister } from '../../../../../functions/slidable/Hooks';
 import { isTouchDevice } from '../../../../../data/constants/constants';
 import { ControlPanel } from '../../../../common/list_control_panel/ControlPanel';
-import {
-    activeListCommon,
-    draggingItemStyle,
-    marginBetweenLiEls,
-} from '../../../../../globalStyle';
+import { activeListCommon, draggingItemStyle, marginBetweenLiEls } from '../../../../../globalStyle';
 // import { useGlobalSelectRef } from '../../../../../providers/context_api/global_ref/GlobalSelectRef';
 import { setInEditing } from '../../../../../providers/redux/slices/immediateEditableSlice';
 // import { SerializedStyles, css } from '@emotion/react';
@@ -150,18 +137,20 @@ export const useActiveTodo = ({
         cardViewOpen(activeTodoIdx);
         dispatch(setCardViewActiveIdx(activeTodoIdx));
     };
-    
+
     const handleCompleteBtnClick = () => {
         if (isCompleted) {
             dispatch(setInEditing({ property: 'status', newState: { id: todoId, inEditing: true } }));
             dispatch(setInfoTableActiveIdx({ todoId: todoId, activeIdx: 1 }));
-            dispatch(updateTodoProps({
-                todoId,
-                update: {
-                    status: notSet,
-                    isOpen: true,
-                }
-            }));
+            dispatch(
+                updateTodoProps({
+                    todoId,
+                    update: {
+                        status: notSet,
+                        isOpen: true,
+                    },
+                })
+            );
         } else {
             dispatch(updateTodoProps({ todoId, update: { status: 'completed' } }));
         }
@@ -218,12 +207,7 @@ export const useActiveTodo = ({
  *
  * @category Component
  */
-export const ActiveTodo = ({
-    todo,
-    activeTodoIdx,
-    isGloballyDragging,
-    handleMouseDown,
-}: ActiveTodoProps) => {
+export const ActiveTodo = ({ todo, activeTodoIdx, isGloballyDragging, handleMouseDown }: ActiveTodoProps) => {
     const {
         todoId,
         isCompleted,

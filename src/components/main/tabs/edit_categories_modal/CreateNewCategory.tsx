@@ -14,10 +14,7 @@ import styled from 'styled-components';
 
 /* --- redux --------------------- */
 import { useDispatch, useCategoriesSelector } from '../../../../providers/redux/store';
-import {
-    switchCategory,
-    updateCategories,
-} from '../../../../providers/redux/slices/categoriesSlice';
+import { switchCategory, updateCategories } from '../../../../providers/redux/slices/categoriesSlice';
 
 /* --- types --------------------- */
 import { TodoType, CategoryType, notSet } from '../../../../providers/types/categories';
@@ -136,8 +133,7 @@ export const useCreateNewCategory = () => {
  * @category Component
  */
 export const CreateNewCategory = () => {
-    const { handleSubmit, executeSubmit, errors, refForName, restForName, nameRef } =
-        useCreateNewCategory();
+    const { handleSubmit, executeSubmit, errors, refForName, restForName, nameRef } = useCreateNewCategory();
 
     return (
         <StyledForm onSubmit={handleSubmit(executeSubmit)}>

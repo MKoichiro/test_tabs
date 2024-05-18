@@ -66,8 +66,7 @@ export const useEditCategoriesModal = () => {
  * @category Component
  */
 export const EditCategoriesModal = ({ className }: EditCategoriesModalProps) => {
-    const { modalName, isOpen, setBasicsRef, addScrollableRef, closeModal } =
-        useEditCategoriesModal();
+    const { modalName, isOpen, setBasicsRef, addScrollableRef, closeModal } = useEditCategoriesModal();
 
     return (
         <StyledModal

@@ -46,7 +46,5 @@ if (rootDiv) {
         </>
     );
 } else {
-    console.error(
-        'The element with the id "root" is not found. Please ensure that the element exists in your HTML.'
-    );
+    console.error('The element with the id "root" is not found. Please ensure that the element exists in your HTML.');
 }

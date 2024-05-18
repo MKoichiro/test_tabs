@@ -43,23 +43,16 @@ const categories = createSlice({
             state.categoriesEntity = action.payload;
         },
 
-        updateCategoryProps: (
-            state,
-            action: PayloadAction<{ categoryId: string; update: Partial<CategoryType> }>
-        ) => {
+        updateCategoryProps: (state, action: PayloadAction<{ categoryId: string; update: Partial<CategoryType> }>) => {
             const { categoryId, update } = action.payload;
-            const categoryIdx = state.categoriesEntity.findIndex(
-                (category) => category.id === categoryId
-            );
+            const categoryIdx = state.categoriesEntity.findIndex((category) => category.id === categoryId);
             const targetCategory = state.categoriesEntity[categoryIdx];
             Object.assign(targetCategory, update);
         },
 
         deleteCategory: (state, action: PayloadAction<{ categoryId: string }>) => {
             const { categoryId } = action.payload;
-            const removedCategories = state.categoriesEntity.filter(
-                (category) => category.id !== categoryId
-            );
+            const removedCategories = state.categoriesEntity.filter((category) => category.id !== categoryId);
             state.categoriesEntity = removedCategories;
         },
 
@@ -88,10 +81,7 @@ const categories = createSlice({
 
         // 複数propsにも対応
         // updateに{title: 'new title', detail: 'new detail'}を指定すれば、titleとdetailが更新される
-        updateTodoProps: (
-            state,
-            action: PayloadAction<{ todoId: string; update: Partial<TodoType> }>
-        ) => {
+        updateTodoProps: (state, action: PayloadAction<{ todoId: string; update: Partial<TodoType> }>) => {
             const { todoId, update } = action.payload;
             const targetTodo = getTargetTodo(state, todoId);
             Object.assign(targetTodo, update);

@@ -1,11 +1,4 @@
-import React, {
-    MutableRefObject,
-    ReactNode,
-    createContext,
-    useEffect,
-    useRef,
-    useState,
-} from 'react';
+import React, { MutableRefObject, ReactNode, createContext, useEffect, useRef, useState } from 'react';
 import SimpleMDE, { ToolbarIcon, Options } from 'easymde';
 // import { convertRemToPx } from '../../utils/converters';
 const rootFontSize = parseFloat(getComputedStyle(document.documentElement).fontSize);

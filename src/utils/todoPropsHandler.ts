@@ -28,10 +28,7 @@ const statusCheckers = {
  * 0-9が日付, 10は区切り文字'T', 11-23が時刻
  * 0から10文字取りたいので、slice(0, 10)とする。
  */
-const toSaveDeadline = (
-    dateInput: string | undefined,
-    timeInput: string | undefined
-): DeadlineType => {
+const toSaveDeadline = (dateInput: string | undefined, timeInput: string | undefined): DeadlineType => {
     const deadlineDate: string = dateInput || new Date().toISOString().slice(0, 10);
     const deadlineTime: string = timeInput || '23:59:59.999Z';
 

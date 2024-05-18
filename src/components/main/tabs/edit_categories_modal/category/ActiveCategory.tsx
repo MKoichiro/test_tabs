@@ -26,11 +26,7 @@ import { CSS } from '@dnd-kit/utilities';
 
 /* --- hooks --------------------- */
 /* slidable */
-import {
-    Slidable,
-    SlidableMain,
-    SlidableHidden,
-} from '../../../../../functions/slidable/Components';
+import { Slidable, SlidableMain, SlidableHidden } from '../../../../../functions/slidable/Components';
 import { SlidableParams } from '../../../../../functions/slidable/types';
 /* immediateEditable */
 import { useImmediateInputEditable } from '../../../../../functions/immediateEditable/Hooks_ver2';
@@ -42,12 +38,7 @@ import { ControlPanel } from '../../../../common/list_control_panel/ControlPanel
 import { isTouchDevice } from '../../../../../data/constants/constants';
 import { BulletIcon } from '../../../../common/btns_icons/bullet_icon/BulletIcon';
 import { DragBtn } from '../../../../common/btns_icons/drag_btn/DragBtn';
-import {
-    activeListCommon,
-    draggingItemStyle,
-    listTitleFont,
-    marginBetweenLiEls,
-} from '../../../../../globalStyle';
+import { activeListCommon, draggingItemStyle, listTitleFont, marginBetweenLiEls } from '../../../../../globalStyle';
 
 /* --- dev ----------------------- */
 // import { isDebugMode } from '../../../../../utils/adminDebugMode';
@@ -128,11 +119,7 @@ export const useActiveCategory = ({
  * ```
  * @category Component
  */
-export const ActiveCategory = ({
-    activeCategory,
-    isGloballyDragging,
-    handleMouseDown,
-}: ActiveCategoryProps) => {
+export const ActiveCategory = ({ activeCategory, isGloballyDragging, handleMouseDown }: ActiveCategoryProps) => {
     const {
         inEditing,
         inputRef,

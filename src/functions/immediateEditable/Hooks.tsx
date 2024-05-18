@@ -1,10 +1,5 @@
 import { useState, useRef, FormEvent, ChangeEvent, useEffect, MutableRefObject } from 'react';
-import {
-    CategoryType,
-    PriorityUnionType,
-    StatusUnionType,
-    TodoType,
-} from '../../providers/types/categories';
+import { CategoryType, PriorityUnionType, StatusUnionType, TodoType } from '../../providers/types/categories';
 import { updateCategoryProps, updateTodoProps } from '../../providers/redux/slices/categoriesSlice';
 import { setInEditing } from '../../providers/redux/slices/immediateEditableSlice';
 
@@ -14,9 +9,7 @@ import { useGlobalInputRef } from '../../providers/context_api/global_ref/Global
 type todoProp = Extract<keyof TodoType, 'title' | 'deadline' | 'status' | 'priority'>;
 type categoryProp = Extract<keyof CategoryType, 'name'>;
 
-type Arg =
-    | { target: CategoryType; targetProperty: categoryProp }
-    | { target: TodoType; targetProperty: todoProp };
+type Arg = { target: CategoryType; targetProperty: categoryProp } | { target: TodoType; targetProperty: todoProp };
 type PossibleChangeEvent = ChangeEvent<HTMLInputElement | HTMLSelectElement>;
 type actionType = ReturnType<typeof updateCategoryProps> | ReturnType<typeof updateTodoProps>;
 
@@ -53,13 +46,11 @@ export const useImmediateEditable = ({ target, targetProperty }: Arg) => {
 
     switch (targetProperty) {
         case 'name': {
-            actionCreator = (e) =>
-                updateCategoryProps({ categoryId: target.id, update: { name: e.target.value } });
+            actionCreator = (e) => updateCategoryProps({ categoryId: target.id, update: { name: e.target.value } });
             break;
         }
         case 'title': {
-            actionCreator = (e) =>
-                updateTodoProps({ todoId: target.id, update: { title: e.target.value } });
+            actionCreator = (e) => updateTodoProps({ todoId: target.id, update: { title: e.target.value } });
             break;
         }
         case 'deadline': {
@@ -91,9 +82,7 @@ export const useImmediateEditable = ({ target, targetProperty }: Arg) => {
     // onSubmit: bind to <form>
     const handleSubmit = (e: FormEvent) => {
         e.preventDefault();
-        dispatch(
-            setInEditing({ property: targetProperty, target: { id: target.id, inEditing: false } })
-        );
+        dispatch(setInEditing({ property: targetProperty, target: { id: target.id, inEditing: false } }));
     };
 
     // onDoubleClick: bind to <element> you want to make trigger for entering into editing mode

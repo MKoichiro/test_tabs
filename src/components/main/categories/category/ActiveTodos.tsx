@@ -12,7 +12,7 @@
  */
 
 /* --- react/styled-components --- */
-import React, { Dispatch, SetStateAction, useState } from 'react';
+import React, { useState } from 'react';
 import { createPortal } from 'react-dom';
 import styled from 'styled-components';
 
@@ -43,12 +43,7 @@ import {
     useSensor,
     useSensors,
 } from '@dnd-kit/core';
-import {
-    SortableContext,
-    sortableKeyboardCoordinates,
-    verticalListSortingStrategy,
-} from '@dnd-kit/sortable';
-import { restrictToVerticalAxis, restrictToWindowEdges } from '@dnd-kit/modifiers';
+import { SortableContext, sortableKeyboardCoordinates, verticalListSortingStrategy } from '@dnd-kit/sortable';
 
 /* --- dev ----------------------- */
 // import { isDebugMode } from '../../../../utils/adminDebugMode';
@@ -61,7 +56,7 @@ import { restrictToVerticalAxis, restrictToWindowEdges } from '@dnd-kit/modifier
  */
 interface ActiveTodosProps {
     todos: TodoType[];
-    isGloballyDraggingState: [boolean, Dispatch<SetStateAction<boolean>>];
+    isGloballyDraggingState: [boolean, (newState: boolean) => void];
 }
 // =========================================================== TYPE === //
 
@@ -137,15 +132,8 @@ export const useActiveTodos = ({ todos, isGloballyDraggingState }: ActiveTodosPr
  * @category Component
  */
 export const ActiveTodos = ({ todos, isGloballyDraggingState }: ActiveTodosProps) => {
-    const {
-        activeId,
-        activeTodos,
-        sensors,
-        handleMouseDown,
-        handleDragStart,
-        handleDragEnd,
-        isGloballyDragging,
-    } = useActiveTodos({ todos, isGloballyDraggingState });
+    const { activeId, activeTodos, sensors, handleMouseDown, handleDragStart, handleDragEnd, isGloballyDragging } =
+        useActiveTodos({ todos, isGloballyDraggingState });
 
     return (
         <StyledSection>
@@ -154,7 +142,13 @@ export const ActiveTodos = ({ todos, isGloballyDraggingState }: ActiveTodosProps
                 collisionDetection={closestCenter}
                 onDragStart={handleDragStart}
                 onDragEnd={handleDragEnd}
-                // modifiers={[restrictToVerticalAxis]}
+                /**
+                 * overflow: hidden; にしていても、コンテナ内の横方向のautoScrollはデフォルトで有効にであり、
+                 * カルーセルコンテナがこれにより意図せずスクロールされる問題を解決。
+                 * 横方向のautoScrollを無効化、default値は0.2らしい。x: 0 にすると横方向のautoScrollが無効化される。
+                 * @see https://github.com/clauderic/dnd-kit/issues/611
+                 */
+                autoScroll={{ enabled: true, threshold: { x: 0, y: 0.2 } }}
             >
                 <SortableContext
                     items={todos.filter((todo) => !todo.isArchived)}

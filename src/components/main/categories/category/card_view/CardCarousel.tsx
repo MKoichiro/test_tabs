@@ -92,8 +92,7 @@ export const useCardCarousel = (category: CategoryType) => {
  * @category Component
  */
 export const CardCarousel = ({ category, addScrollableRef }: CardsCarouselProps) => {
-    const { adjustedPadding_vw, gap_vw, carouselContainerRef, todosFormatted } =
-        useCardCarousel(category);
+    const { adjustedPadding_vw, gap_vw, carouselContainerRef, todosFormatted } = useCardCarousel(category);
 
     return (
         <StyledUl

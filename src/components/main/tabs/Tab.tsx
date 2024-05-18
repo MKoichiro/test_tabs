@@ -18,11 +18,7 @@ import React, { RefObject } from 'react';
 import styled from 'styled-components';
 
 /* --- redux --------------------- */
-import {
-    useDispatch,
-    useCategoriesSelector,
-    useWindowSizeSelector,
-} from '../../../providers/redux/store';
+import { useDispatch, useCategoriesSelector, useWindowSizeSelector } from '../../../providers/redux/store';
 import { switchCategory } from '../../../providers/redux/slices/categoriesSlice';
 
 /* --- utils --------------------- */
@@ -89,9 +85,7 @@ export const useTabSwitcher = ({
         /** tab の idx と 非アクティブ時の tab の幅を元に、スクロール位置を計算してスムーズスクロール */
         const currentContentWidth = vw2px(contentsWidth);
         const inactiveTabWidth =
-            currentContentWidth *
-            (1 - styleFactors.modalBtnWidth / 100) *
-            (styleFactors.tabMinWidth / 100);
+            currentContentWidth * (1 - styleFactors.modalBtnWidth / 100) * (styleFactors.tabMinWidth / 100);
         const targetCoordinate = inactiveTabWidth * idx;
         container.scrollTo({ left: targetCoordinate, behavior: 'smooth' });
     };

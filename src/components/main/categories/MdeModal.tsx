@@ -51,15 +51,8 @@ import 'easymde/dist/easymde.min.css';
 export const useMdeModal = () => {
     const { activeIdx } = useCategoriesSelector();
 
-    const {
-        refs,
-        inEditing,
-        getEditorValue,
-        handleChange,
-        options,
-        viewportHeight,
-        hasEditorOverflow,
-    } = useContext(MdeContext);
+    const { refs, inEditing, getEditorValue, handleChange, options, viewportHeight, hasEditorOverflow } =
+        useContext(MdeContext);
 
     return {
         /** store にある categories の activeIdx */
@@ -97,16 +90,8 @@ export const useMdeModal = () => {
  * @category Component
  */
 export const MdeModal = () => {
-    const {
-        activeIdx,
-        refs,
-        inEditing,
-        getEditorValue,
-        handleChange,
-        options,
-        viewportHeight,
-        hasEditorOverflow,
-    } = useMdeModal();
+    const { activeIdx, refs, inEditing, getEditorValue, handleChange, options, viewportHeight, hasEditorOverflow } =
+        useMdeModal();
 
     return (
         <>

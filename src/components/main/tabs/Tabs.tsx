@@ -15,11 +15,7 @@ import styled from 'styled-components';
 
 /* --- redux --------------------- */
 import { register } from '../../../providers/redux/slices/modalSlice';
-import {
-    useCategoriesSelector,
-    useDispatch,
-    useWindowSizeSelector,
-} from '../../../providers/redux/store';
+import { useCategoriesSelector, useDispatch, useWindowSizeSelector } from '../../../providers/redux/store';
 
 /* --- providers/contexts -------- */
 import { useModalOpener } from '../../../providers/context_api/ModalElmsRef';

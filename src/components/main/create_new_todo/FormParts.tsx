@@ -40,10 +40,7 @@ interface FormPartsProps {
 // =========================================================== TYPE === //
 
 // === FUNCTION ======================================================= //
-export const useFormParts = ({
-    partsFor,
-    register,
-}: Pick<FormPartsProps, 'partsFor' | 'register'>) => {
+export const useFormParts = ({ partsFor, register }: Pick<FormPartsProps, 'partsFor' | 'register'>) => {
     const htmlFor = partsFor;
     const id = partsFor;
     const labelTxt = partsFor.charAt(0).toUpperCase() + partsFor.slice(1); // 例: 'Title', ::after で ':' を付与
@@ -147,9 +144,7 @@ export const FormParts = (props: FormPartsProps) => {
                     </select>
                 )}
 
-                <p className="error-message">
-                    {error && !isFieldsetBlurred && (error.message as React.ReactNode)}
-                </p>
+                <p className="error-message">{error && !isFieldsetBlurred && (error.message as React.ReactNode)}</p>
             </div>
         </StyledDiv>
     );

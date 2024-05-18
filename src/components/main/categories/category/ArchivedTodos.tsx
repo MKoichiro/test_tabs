@@ -12,7 +12,7 @@
  */
 
 /* --- react/styled-components --- */
-import React, { Dispatch, SetStateAction } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 
 /* --- child components ---------- */
@@ -33,7 +33,7 @@ import { TodoType } from '../../../../providers/types/categories';
  */
 interface ActiveTodosProps {
     todos: TodoType[];
-    isGloballyDraggingState: [boolean, Dispatch<SetStateAction<boolean>>];
+    isGloballyDraggingState: [boolean, (newState: boolean) => void];
 }
 // =========================================================== TYPE === //
 

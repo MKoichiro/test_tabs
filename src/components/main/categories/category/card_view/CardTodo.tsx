@@ -94,8 +94,10 @@ export const useCardTodo = ({ todo, idx }: Omit<CardTodoProps, 'addScrollableRef
  * @category Component
  */
 export const CardTodo = ({ todo, idx, addScrollableRef }: CardTodoProps) => {
-    const { todoTitle, todoDetail, isActive, handleClick, activeWidth_vw, inactiveMagnification } =
-        useCardTodo({ todo, idx });
+    const { todoTitle, todoDetail, isActive, handleClick, activeWidth_vw, inactiveMagnification } = useCardTodo({
+        todo,
+        idx,
+    });
 
     return (
         <StyledLi
@@ -117,9 +119,7 @@ export const CardTodo = ({ todo, idx, addScrollableRef }: CardTodoProps) => {
                     <p>{todoDetail}</p>
                 </div>
 
-                <div className="category-container">
-                    Category-0 // todoからcategoryを参照できるようにする
-                </div>
+                <div className="category-container">Category-0 // todoからcategoryを参照できるようにする</div>
             </section>
         </StyledLi>
     );
@@ -140,13 +140,9 @@ const StyledLi = styled.li<StyledLiType>`
     pointer-events: auto;
     background-color: inherit;
     min-width: ${(props) =>
-        props.$isActive
-            ? 'var(--active-width)'
-            : 'calc(var(--active-width) * var(--shrink-ratio))'};
+        props.$isActive ? 'var(--active-width)' : 'calc(var(--active-width) * var(--shrink-ratio))'};
     height: ${(props) =>
-        props.$isActive
-            ? 'var(--active-height)'
-            : 'calc(var(--active-height) * var(--shrink-ratio))'};
+        props.$isActive ? 'var(--active-height)' : 'calc(var(--active-height) * var(--shrink-ratio))'};
     overflow-y: hidden;
     transition:
         min-width 300ms,

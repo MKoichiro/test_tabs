@@ -16,17 +16,10 @@ import { CategoryType } from '../../../../../providers/types/categories';
 
 /* --- styles -------------------- */
 import { CategoryCommonStylesType } from './CategoryCommonStyles';
-import {
-    Slidable,
-    SlidableHidden,
-    SlidableMain,
-} from '../../../../../functions/slidable/Components';
+import { Slidable, SlidableHidden, SlidableMain } from '../../../../../functions/slidable/Components';
 import { useDispatch, useWindowSizeSelector } from '../../../../../providers/redux/store';
 import { ArrowUpward, DeleteOutline, HorizontalRule } from '@mui/icons-material';
-import {
-    deleteCategory,
-    updateCategoryProps,
-} from '../../../../../providers/redux/slices/categoriesSlice';
+import { deleteCategory, updateCategoryProps } from '../../../../../providers/redux/slices/categoriesSlice';
 import { vw2px } from '../../../../../utils/converters';
 import { useSlidableRegister } from '../../../../../functions/slidable/Hooks';
 import { ControlPanel } from '../../../../common/list_control_panel/ControlPanel';
@@ -75,9 +68,7 @@ export const ArchivedCategory = ({ archivedCategory }: ArchivedCategoryProps) =>
 
     // handlers
     const handleUnarchiveBtnClick = () => {
-        dispatch(
-            updateCategoryProps({ categoryId: archivedCategory.id, update: { isArchived: false } })
-        );
+        dispatch(updateCategoryProps({ categoryId: archivedCategory.id, update: { isArchived: false } }));
     };
 
     const handleDeleteBtnClick = () => {

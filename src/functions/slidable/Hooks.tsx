@@ -22,13 +22,7 @@ const enableAnimation = (container: HTMLElement, duration: number) => {
 };
 
 // state作成はここで行い、最低限のhandlerやstateを返して外部で利用可能にしておく。
-export const useSlidableRegister = ({
-    params,
-    skipCondition,
-}: {
-    params: SlidableParams;
-    skipCondition?: boolean;
-}) => {
+export const useSlidableRegister = ({ params, skipCondition }: { params: SlidableParams; skipCondition?: boolean }) => {
     const {
         SLIDABLE_LENGTH,
         GRADIENT_THRESHOLD = defaultValForOptionalParams.GRADIENT_THRESHOLD,
@@ -261,17 +255,13 @@ export const useSlidable = ({
                 // skip close if invoked in the <SlidableMain /> container
                 const invokedInSlidableContainer =
                     (e.target as Element).closest('.slidable-container') === containerRef.current;
-                const invokedInSlidableHiddenContainer = (e.target as Element).closest(
-                    '.slidable-hidden-container'
-                );
-                const invokedInSlidableMainContainer =
-                    invokedInSlidableContainer && !invokedInSlidableHiddenContainer;
+                const invokedInSlidableHiddenContainer = (e.target as Element).closest('.slidable-hidden-container');
+                const invokedInSlidableMainContainer = invokedInSlidableContainer && !invokedInSlidableHiddenContainer;
                 if (invokedInSlidableMainContainer) return;
 
                 // skip close if invoked in the added buttons
                 const btnEls = btnsRef.current;
-                const invokedInAddedBtns =
-                    btnEls && btnEls.some((btn) => btn.contains(e.target as Node));
+                const invokedInAddedBtns = btnEls && btnEls.some((btn) => btn.contains(e.target as Node));
                 if (invokedInAddedBtns) return;
 
                 enableAnimation();

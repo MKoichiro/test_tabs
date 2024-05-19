@@ -75,7 +75,7 @@ const StyledHeader = styled.header`
         .header-grip-icon {
             padding-left: 0.8rem;
             svg {
-                font-size: inherit;
+                font-size: 3.2rem;
                 height: 100%;
             }
         }
@@ -91,6 +91,7 @@ const StyledHeader = styled.header`
             align-items: center;
             padding: 0 0.8rem;
             svg {
+                font-size: 3.2rem;
                 height: 0.75em;
             }
         }

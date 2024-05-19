@@ -14,7 +14,7 @@ import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 
 /* --- redux --------------------- */
-import { useCategoriesSelector, useIsGloballyDragging, useWindowSizeSelector } from '../../../providers/redux/store';
+import { useCategoriesSelector, useWindowSizeSelector } from '../../../providers/redux/store';
 
 /* --- child components ---------- */
 import { CategoryContainer } from './category/CategoryContainer';
@@ -46,6 +46,7 @@ export const Categories = () => {
     const { contentsWidth } = useWindowSizeSelector();
     const contentsWidthPx = vw2px(contentsWidth);
     const [translateX, setTranslateX] = useState(0);
+    // const categoriesSectionRef = useGlobalElementRef();
 
     useEffect(() => {
         setTranslateX(-1 * activeIdx * contentsWidthPx);

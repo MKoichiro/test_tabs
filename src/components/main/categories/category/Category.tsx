@@ -21,6 +21,7 @@ import { ArchivedTodos } from './ArchivedTodos';
 /* --- types --------------------- */
 import { CategoryType } from '../../../../providers/types/categories';
 import { useIsGloballyDragging } from '../../../../providers/redux/store';
+import { useGlobalElementRef } from '../../../../providers/context_api/global_ref/GlobalElementRef';
 
 /* --- dev ----------------------- */
 // import { isDebugMode } from '../../../../utils/adminDebugMode';
@@ -48,6 +49,9 @@ export const useCategory = (props: CategoryProps) => {
     const isGloballyDraggingState = useIsGloballyDragging('todo');
     const [isGloballyDragging] = isGloballyDraggingState;
 
+    const categoryDivRef = useGlobalElementRef({ propertyName: 'categoryDiv', id: category.id});
+    // console.log('categoryDivRef:', categoryDivRef.current)
+
     // ドラッグ中はユーザー選択を無効化。
     // ドラッグ中に停止していると長押し判定が出て意図せず選択されてしまうため。
     // 完ぺきではないが、これでかなりその挙動が低減される。
@@ -62,6 +66,7 @@ export const useCategory = (props: CategoryProps) => {
     return {
         todos,
         isGloballyDraggingState,
+        categoryRef: categoryDivRef.setRef,
     };
 };
 // ====================================================== FUNCTIONS === //
@@ -73,10 +78,10 @@ export const useCategory = (props: CategoryProps) => {
  * @returns
  */
 export const Category = (props: CategoryProps) => {
-    const { todos, isGloballyDraggingState } = useCategory(props);
+    const { todos, isGloballyDraggingState, categoryRef } = useCategory(props);
 
     return (
-        <StyledDiv>
+        <StyledDiv ref={categoryRef}>
             <ActiveTodos
                 todos={todos}
                 isGloballyDraggingState={isGloballyDraggingState}

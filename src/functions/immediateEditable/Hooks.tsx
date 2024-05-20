@@ -4,7 +4,7 @@ import { updateCategoryProps, updateTodoProps } from '../../providers/redux/slic
 import { setInEditing } from '../../providers/redux/slices/immediateEditableSlice';
 
 import { useDispatch, useImmediateEditableSelector } from '../../providers/redux/store';
-import { useGlobalInputRef } from '../../providers/context_api/global_ref/GlobalInputRef';
+import { useGlobalInputRef } from '../../providers/context_api/global_ref/GlobalInputRef_ignore';
 
 type todoProp = Extract<keyof TodoType, 'title' | 'deadline' | 'status' | 'priority'>;
 type categoryProp = Extract<keyof CategoryType, 'name'>;

@@ -116,6 +116,9 @@ const GlobalStyle = createGlobalStyle`
     background: none;
     border-radius: 0;
   }
+  input:focus {
+    outline-offset: 0;
+  }
   textarea {
     resize: none;
   }
@@ -178,12 +181,60 @@ export const archivedListCommon = ({ type }: { type: 'todo' | 'category' }) => c
     margin-right: auto;
     margin-left: auto;
 `;
+
 export const listTitleFont = () => css`
     font-size: 2rem;
     line-height: var(--list-title-line-height);
     @media (width < 600px) {
         font-size: 16px;
     }
+`;
+
+export const immediateEditableInput = ({fontSizes: {pc, tb, sp} = {pc: '1.8rem', tb: '16px', sp: '11px'}}: {fontSizes?: {pc?: string, tb?: string, sp?: string}} = {}) => css`
+  --pc-formatted: ${pc?.replace('rem', '')};
+  --tb-formatted: ${tb?.replace('px', '')};
+  --sp-formatted: ${sp?.replace('px', '')};
+  .IE-display {
+    cursor: pointer;
+    
+    // 半角英数字の文字列、の場合にも折り返しを行う
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+  }
+  .IE-display, .IE-edit {
+    --fs: var(--pc-formatted);
+    @media (width < 1024px) {
+      --fs: var(--tb-formatted);
+    }
+    font-size: calc(var(--fs) * 1rem);
+    @media (width < 600px) {
+        --fs: var(--sp-formatted);
+        font-size: calc(var(--fs) * 1px);
+    }
+    line-height: var(--list-title-line-height);
+  }
+  form {
+    .IE-edit {
+      font-family: var(--ff-3);
+      --real-fs: 1.6;
+      font-size: calc(var(--real-fs) * 1rem);
+      @media (width < 1024px) {
+        --real-fs: 16;
+        font-size: calc(var(--real-fs) * 1px);
+      }
+      font-size: calc(var(--real-fs) * 1rem);
+      @media (width < 1024px) {
+        font-size: calc(var(--real-fs) * 1px);
+      }
+      --net-fs: var(--fs);
+      --shrink: calc(var(--net-fs) / var(--real-fs));
+      --expand: calc(var(--real-fs) / var(--net-fs));
+
+      transform: scale(var(--shrink));
+      transform-origin: left;
+      width: calc(100% * var(--expand));
+    }
+  }
 `;
 
 export const draggingItemStyle = ($isDragging: boolean, $isGhost = false) => css`

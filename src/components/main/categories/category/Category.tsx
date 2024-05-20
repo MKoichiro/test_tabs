@@ -21,7 +21,7 @@ import { ArchivedTodos } from './ArchivedTodos';
 /* --- types --------------------- */
 import { CategoryType } from '../../../../providers/types/categories';
 import { useIsGloballyDragging } from '../../../../providers/redux/store';
-import { useGlobalElementRef } from '../../../../providers/context_api/global_ref/GlobalElementRef';
+import { useGlobalRef } from '../../../../providers/context_api/global_ref/GlobalRef';
 
 /* --- dev ----------------------- */
 // import { isDebugMode } from '../../../../utils/adminDebugMode';
@@ -49,8 +49,7 @@ export const useCategory = (props: CategoryProps) => {
     const isGloballyDraggingState = useIsGloballyDragging('todo');
     const [isGloballyDragging] = isGloballyDraggingState;
 
-    const categoryDivRef = useGlobalElementRef({ propertyName: 'categoryDiv', id: category.id});
-    // console.log('categoryDivRef:', categoryDivRef.current)
+    const categoryDivRef = useGlobalRef({ propertyName: 'categoryDiv', id: category.id});
 
     // ドラッグ中はユーザー選択を無効化。
     // ドラッグ中に停止していると長押し判定が出て意図せず選択されてしまうため。

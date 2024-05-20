@@ -3,8 +3,7 @@ import { CategoryType, PriorityUnionType, StatusUnionType, TodoType } from '../.
 import { updateCategoryProps, updateTodoProps } from '../../providers/redux/slices/categoriesSlice';
 import { setInEditing as setInEditingActionCreator } from '../../providers/redux/slices/immediateEditableSlice';
 import { useDispatch, useImmediateEditableSelector } from '../../providers/redux/store';
-import { useGlobalInputRef } from '../../providers/context_api/global_ref/GlobalInputRef';
-import { useGlobalSelectRef } from '../../providers/context_api/global_ref/GlobalSelectRef';
+import { useGlobalRef } from '../../providers/context_api/global_ref/GlobalRef';
 
 type actionType = ReturnType<typeof updateCategoryProps> | ReturnType<typeof updateTodoProps>;
 type ImmediateInputEditableArg =
@@ -42,23 +41,23 @@ export const useImmediateInputEditable = (arg: ImmediateInputEditableArg) => {
     const id = target.id;
     const dispatch = useDispatch();
     const [inEditing, setInEditing] = useInEditingState(arg);
-    const inputRef = useGlobalInputRef({ propertyName: targetProperty, id });
+    const inputRef = useGlobalRef({ propertyName: targetProperty, id });
 
-    let actionCreator: (e: ChangeEvent<HTMLInputElement>) => actionType;
+    let actionCreator: (e: ChangeEvent<HTMLElement>) => actionType;
     switch (targetProperty) {
         case 'name': {
-            actionCreator = (e) => updateCategoryProps({ categoryId: id, update: { name: e.target.value } });
+            actionCreator = (e) => updateCategoryProps({ categoryId: id, update: { name: (e.target as HTMLInputElement).value } });
             break;
         }
         case 'title': {
-            actionCreator = (e) => updateTodoProps({ todoId: id, update: { title: e.target.value } });
+            actionCreator = (e) => updateTodoProps({ todoId: id, update: { title: (e.target as HTMLInputElement).value } });
             break;
         }
         case 'deadline': {
             actionCreator = (e) =>
                 updateTodoProps({
                     todoId: target.id,
-                    update: { deadline: { date: e.target.value, use_time: false } },
+                    update: { deadline: { date: (e.target as HTMLInputElement).value, use_time: false } },
                 });
             break;
         }
@@ -76,7 +75,7 @@ export const useImmediateInputEditable = (arg: ImmediateInputEditableArg) => {
         !inEditing && setInEditing(true);
     };
     // onChange, onBlur: bind to <input> or <select>
-    const handleChange = (e: ChangeEvent<HTMLInputElement>) => dispatch(actionCreator(e));
+    const handleChange = (e: ChangeEvent<HTMLElement>) => dispatch(actionCreator(e));
     const handleBlur = () => setInEditing(false);
 
     // autofocus
@@ -103,15 +102,15 @@ export const useImmediateSelectEditable = (arg: ImmediateSelectEditableArg) => {
     const id = target.id;
     const dispatch = useDispatch();
     const [inEditing, setInEditing] = useInEditingState(arg);
-    const selectRef = useGlobalSelectRef({ propertyName: targetProperty, id });
+    const selectRef = useGlobalRef({ propertyName: targetProperty, id });
 
-    let actionCreator: (e: ChangeEvent<HTMLSelectElement>) => actionType;
+    let actionCreator: (e: ChangeEvent<HTMLElement>) => actionType;
     switch (targetProperty) {
         case 'status': {
             actionCreator = (e) =>
                 updateTodoProps({
                     todoId: id,
-                    update: { status: e.target.value as StatusUnionType },
+                    update: { status: (e.target as HTMLSelectElement).value as StatusUnionType },
                 });
             break;
         }
@@ -119,7 +118,7 @@ export const useImmediateSelectEditable = (arg: ImmediateSelectEditableArg) => {
             actionCreator = (e) =>
                 updateTodoProps({
                     todoId: id,
-                    update: { priority: e.target.value as PriorityUnionType },
+                    update: { priority: (e.target as HTMLSelectElement).value as PriorityUnionType },
                 });
             break;
         }
@@ -134,7 +133,7 @@ export const useImmediateSelectEditable = (arg: ImmediateSelectEditableArg) => {
     // onDoubleClick: bind to <element> you want to make trigger for entering into editing mode
     const handleDoubleClick = () => !inEditing && setInEditing(true);
     // onChange, onBlur: bind to <input> or <select>
-    const handleChange = (e: ChangeEvent<HTMLSelectElement>) => dispatch(actionCreator(e));
+    const handleChange = (e: ChangeEvent<HTMLElement>) => dispatch(actionCreator(e));
     const handleBlur = () => setInEditing(false);
 
     // autofocus
@@ -152,6 +151,6 @@ export const useImmediateSelectEditable = (arg: ImmediateSelectEditableArg) => {
     };
 };
 
-// export const useImmediateEditable = <T,>(arg: T extends HTMLInputElement ? ImmediateInputEditableArg : ImmediateSelectEditableArg) => {
+// export const useImmediateEditable = <T,>(arg: T extends HTMLElement ? ImmediateInputEditableArg : ImmediateSelectEditableArg) => {
 
 // };

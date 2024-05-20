@@ -35,7 +35,7 @@ import { useForm } from 'react-hook-form';
 import { defaultValues, statusOptions, priorityOptions, placeholders } from './FormSetting';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
-import { useGlobalElementRef } from '../../../providers/context_api/global_ref/GlobalElementRef';
+import { useGlobalRef } from '../../../providers/context_api/global_ref/GlobalRef';
 import { useCategoriesSelector } from '../../../providers/redux/store';
 
 /* --- dev ----------------------- */
@@ -177,7 +177,7 @@ export const CreateNewTodo = () => {
     // activeIdxが更新されるたびに、activeCategoryDivも更新し、フォームを付け替えるイメージ。
     const {categoriesEntity: categories, activeIdx} = useCategoriesSelector();
     const activeCategoryId = categories[activeIdx].id;
-    const categoryDivRef = useGlobalElementRef({propertyName: 'categoryDiv', id: activeCategoryId});
+    const categoryDivRef = useGlobalRef({propertyName: 'categoryDiv', id: activeCategoryId});
     const [activeCategoryDiv, setActiveCategoryDiv] = useState<HTMLElement | undefined | null>(null);
 
     // 初回ロード時にcategoryDivRefのセットより先にフォームを表示しようとするため、

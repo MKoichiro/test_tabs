@@ -38,7 +38,7 @@ import { ControlPanel } from '../../../../common/list_control_panel/ControlPanel
 import { isTouchDevice } from '../../../../../data/constants/constants';
 import { BulletIcon } from '../../../../common/btns_icons/bullet_icon/BulletIcon';
 import { DragBtn } from '../../../../common/btns_icons/drag_btn/DragBtn';
-import { activeListCommon, draggingItemStyle, listTitleFont, marginBetweenLiEls } from '../../../../../globalStyle';
+import { activeListCommon, draggingItemStyle, immediateEditableInput, listTitleFont, marginBetweenLiEls } from '../../../../../globalStyle';
 
 /* --- dev ----------------------- */
 // import { isDebugMode } from '../../../../../utils/adminDebugMode';
@@ -172,9 +172,10 @@ export const ActiveCategory = ({ activeCategory, isGloballyDragging, handleMouse
                     )}
 
                     <div className="category-name-container">
-                        <p onDoubleClick={handleDoubleClick}>{activeCategory.name}</p>
+                        <p className="IE-display" onDoubleClick={handleDoubleClick}>{activeCategory.name}</p>
                         <form onSubmit={handleSubmit}>
                             <input
+                                className="IE-edit"
                                 type={'text'}
                                 ref={inputRef.setRef}
                                 value={activeCategory.name}
@@ -223,22 +224,14 @@ const StyledLi = styled.li<StyledLiProps>`
             margin: 0.4rem 0.8rem 0.4rem 0;
             border-bottom: ${({ $inEditing }) =>
                 $inEditing ? 'var(--border-1)' : 'var(--border-weight) solid transparent'};
-            > * {
-                ${listTitleFont()}
-            }
-            p {
-                cursor: pointer;
-                display: ${({ $inEditing }) => ($inEditing ? 'none' : 'block')};
 
-                // 半角英数字の文字列、の場合にも折り返しを行う
-                overflow-wrap: break-word;
-                word-wrap: break-word;
+            ${immediateEditableInput()}
+            .IE-display {
+                display: ${({ $inEditing }) => ($inEditing ? 'none' : 'block')};
             }
             form {
                 display: ${({ $inEditing }) => ($inEditing ? 'block' : 'none')};
-                input {
-                    width: 100%;
-                }
+                .IE-edit {}
             }
         }
     }

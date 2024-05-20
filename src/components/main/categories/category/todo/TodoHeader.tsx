@@ -33,7 +33,7 @@ import { useWindowSizeSelector } from '../../../../../providers/redux/store';
 import { isTouchDevice } from '../../../../../data/constants/constants';
 import { BulletIcon } from '../../../../common/btns_icons/bullet_icon/BulletIcon';
 import { DragBtn } from '../../../../common/btns_icons/drag_btn/DragBtn';
-import { listTitleFont } from '../../../../../globalStyle';
+import { immediateEditableInput, listTitleFont } from '../../../../../globalStyle';
 import { useImmediateInputEditable } from '../../../../../functions/immediateEditable/Hooks_ver2';
 
 /* --- dev ----------------------- */
@@ -173,9 +173,10 @@ export const TodoHeader = ({ todo, attributes, listeners, isGloballyDragging, ha
                     className="main-container"
                     onDoubleClick={handleDoubleClick}
                 >
-                    <h4 children={title} />
+                    <h4 className="IE-display" children={title} />
                     <form onSubmit={handleSubmit}>
                         <input
+                            className="IE-edit"
                             type="text"
                             ref={inputRef.setRef}
                             defaultValue={title}
@@ -234,7 +235,6 @@ const StyledHeader = styled.header<StyledHeaderType>`
 
     display: flex;
     align-items: center;
-    ${listTitleFont()}
     color: ${({ $isCompleted, $isArchived }) =>
         $isCompleted || $isArchived ? 'var(--color-gray-1)' : 'var(--color-black-1)'};
 
@@ -274,12 +274,10 @@ const StyledHeader = styled.header<StyledHeaderType>`
         border-bottom: ${({ $inEditing }) =>
             $inEditing ? 'var(--border-1)' : 'var(--border-weight) solid transparent'};
 
-        h4,
-        input {
-            font-size: inherit;
-            line-height: inherit;
-        }
-        h4 {
+        ${immediateEditableInput()}
+
+
+        .IE-display {
             cursor: ${({ $isActive }) => ($isActive ? 'pointer' : 'default')};
             display: ${({ $inEditing }) => ($inEditing ? 'none' : 'block')};
             text-decoration: ${({ $isCompleted }) => ($isCompleted ? 'line-through' : '')};
@@ -293,9 +291,8 @@ const StyledHeader = styled.header<StyledHeaderType>`
             white-space: ${({ $isGloballyDragging, $isArchived }) =>
                 $isGloballyDragging || $isArchived ? 'nowrap' : 'normal'};
         }
-        input {
+        .IE-edit {
             display: ${({ $inEditing }) => ($inEditing ? 'block' : 'none')};
-            width: 100%;
         }
     }
 `;

@@ -49,7 +49,7 @@ export const useCategory = (props: CategoryProps) => {
     const isGloballyDraggingState = useIsGloballyDragging('todo');
     const [isGloballyDragging] = isGloballyDraggingState;
 
-    const categoryDivRef = useGlobalRef({ propertyName: 'categoryDiv', id: category.id});
+    const categoryDivRef = useGlobalRef({ propertyName: 'categoryDiv', id: category.id });
 
     // ドラッグ中はユーザー選択を無効化。
     // ドラッグ中に停止していると長押し判定が出て意図せず選択されてしまうため。

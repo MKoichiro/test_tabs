@@ -38,7 +38,13 @@ import { ControlPanel } from '../../../../common/list_control_panel/ControlPanel
 import { isTouchDevice } from '../../../../../data/constants/constants';
 import { BulletIcon } from '../../../../common/btns_icons/bullet_icon/BulletIcon';
 import { DragBtn } from '../../../../common/btns_icons/drag_btn/DragBtn';
-import { activeListCommon, draggingItemStyle, immediateEditableInput, listTitleFont, marginBetweenLiEls } from '../../../../../globalStyle';
+import {
+    activeListCommon,
+    draggingItemStyle,
+    immediateEditableInput,
+    listTitleFont,
+    marginBetweenLiEls,
+} from '../../../../../globalStyle';
 
 /* --- dev ----------------------- */
 // import { isDebugMode } from '../../../../../utils/adminDebugMode';
@@ -172,11 +178,18 @@ export const ActiveCategory = ({ activeCategory, isGloballyDragging, handleMouse
                     )}
 
                     <div className="category-name-container">
-                        <p className="IE-display" onDoubleClick={handleDoubleClick}>{activeCategory.name}</p>
-                        <form onSubmit={handleSubmit}>
-                            <input
+                        <p
+                            className="IE-display"
+                            onDoubleClick={handleDoubleClick}
+                        >
+                            {activeCategory.name}
+                        </p>
+                        <form
+                            className="IE-form"
+                            onSubmit={handleSubmit}
+                        >
+                            <textarea
                                 className="IE-edit"
-                                type={'text'}
                                 ref={inputRef.setRef}
                                 value={activeCategory.name}
                                 onChange={handleChange}
@@ -222,16 +235,13 @@ const StyledLi = styled.li<StyledLiProps>`
             --icon-widths: calc(var(--icon-size-1) * var(--num-of-icons));
             width: calc(100% - var(--icon-widths));
             margin: 0.4rem 0.8rem 0.4rem 0;
-            border-bottom: ${({ $inEditing }) =>
-                $inEditing ? 'var(--border-1)' : 'var(--border-weight) solid transparent'};
 
-            ${immediateEditableInput()}
+            ${({ $inEditing }) => immediateEditableInput({ $inEditing })}
             .IE-display {
-                display: ${({ $inEditing }) => ($inEditing ? 'none' : 'block')};
             }
-            form {
-                display: ${({ $inEditing }) => ($inEditing ? 'block' : 'none')};
-                .IE-edit {}
+            .IE-form {
+                .IE-edit {
+                }
             }
         }
     }

@@ -121,6 +121,15 @@ const GlobalStyle = createGlobalStyle`
   }
   textarea {
     resize: none;
+    padding: 0;
+    margin: 0;
+    border: none;
+    outline: none;
+    border-radius: 0;
+    background: none;
+  }
+  textarea:focus {
+    outline-offset: 0;
   }
 
 
@@ -190,51 +199,73 @@ export const listTitleFont = () => css`
     }
 `;
 
-export const immediateEditableInput = ({fontSizes: {pc, tb, sp} = {pc: '1.8rem', tb: '16px', sp: '11px'}}: {fontSizes?: {pc?: string, tb?: string, sp?: string}} = {}) => css`
-  --pc-formatted: ${pc?.replace('rem', '')};
-  --tb-formatted: ${tb?.replace('px', '')};
-  --sp-formatted: ${sp?.replace('px', '')};
-  .IE-display {
-    cursor: pointer;
-    
-    // 半角英数字の文字列、の場合にも折り返しを行う
-    overflow-wrap: break-word;
-    word-wrap: break-word;
-  }
-  .IE-display, .IE-edit {
-    --fs: var(--pc-formatted);
-    @media (width < 1024px) {
-      --fs: var(--tb-formatted);
-    }
-    font-size: calc(var(--fs) * 1rem);
-    @media (width < 600px) {
-        --fs: var(--sp-formatted);
-        font-size: calc(var(--fs) * 1px);
-    }
-    line-height: var(--list-title-line-height);
-  }
-  form {
-    .IE-edit {
-      font-family: var(--ff-3);
-      --real-fs: 1.6;
-      font-size: calc(var(--real-fs) * 1rem);
-      @media (width < 1024px) {
-        --real-fs: 16;
-        font-size: calc(var(--real-fs) * 1px);
-      }
-      font-size: calc(var(--real-fs) * 1rem);
-      @media (width < 1024px) {
-        font-size: calc(var(--real-fs) * 1px);
-      }
-      --net-fs: var(--fs);
-      --shrink: calc(var(--net-fs) / var(--real-fs));
-      --expand: calc(var(--real-fs) / var(--net-fs));
+export const immediateEditableInput = ({
+    fontSizes: { pc, tb, sp } = { pc: '1.8rem', tb: '16px', sp: '11px' },
+    $inEditing,
+}: {
+    fontSizes?: { pc?: string; tb?: string; sp?: string };
+    $inEditing: boolean;
+}) => css`
+    position: relative;
+    border-bottom: ${$inEditing ? 'var(--border-1)' : 'var(--border-weight) solid transparent'};
 
-      transform: scale(var(--shrink));
-      transform-origin: left;
-      width: calc(100% * var(--expand));
+    --pc-formatted: ${pc?.replace('rem', '')};
+    --tb-formatted: ${tb?.replace('px', '')};
+    --sp-formatted: ${sp?.replace('px', '')};
+    .IE-display {
+        cursor: pointer;
+        visibility: ${$inEditing ? 'hidden' : 'visible'};
+        // 半角英数字の文字列、の場合にも折り返しを行う
+        overflow-wrap: break-word;
+        word-wrap: break-word;
+        white-space: pre-line;
     }
-  }
+    .IE-display,
+    .IE-edit {
+        font-weight: bold;
+        line-height: 1.5em;
+        min-height: 1.5em;
+        --fs: var(--pc-formatted);
+        @media (width < 1024px) {
+            --fs: var(--tb-formatted);
+        }
+        font-size: calc(var(--fs) * 1rem);
+        @media (width < 600px) {
+            --fs: var(--sp-formatted);
+            font-size: calc(var(--fs) * 1px);
+        }
+    }
+    .IE-form {
+        display: ${$inEditing ? 'block' : 'none'};
+        .IE-edit {
+            color: var(--color-gray-1);
+            position: absolute;
+            top: 0;
+            left: 0;
+            font-family: var(--ff-3);
+            --real-fs: 1.6;
+            font-size: calc(var(--real-fs) * 1rem);
+            @media (width < 1024px) {
+                --real-fs: 16;
+                font-size: calc(var(--real-fs) * 1px);
+            }
+            font-size: calc(var(--real-fs) * 1rem);
+            @media (width < 1024px) {
+                font-size: calc(var(--real-fs) * 1px);
+            }
+            --net-fs: var(--fs);
+            --shrink: calc(var(--net-fs) / var(--real-fs));
+            --expand: calc(var(--real-fs) / var(--net-fs));
+
+            transform: scale(var(--shrink));
+            transform-origin: top left;
+            // 縮めた分だけ矩形も縮まるので、その分だけ拡大する
+            height: calc(100% * var(--expand));
+            width: calc(100% * var(--expand));
+            // おそらく小数点以下の桁数によって微妙にずれることでスクロールが発生することがあるので隠す
+            overflow: hidden;
+        }
+    }
 `;
 
 export const draggingItemStyle = ($isDragging: boolean, $isGhost = false) => css`

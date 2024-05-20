@@ -83,6 +83,7 @@ const categories = createSlice({
         // updateに{title: 'new title', detail: 'new detail'}を指定すれば、titleとdetailが更新される
         updateTodoProps: (state, action: PayloadAction<{ todoId: string; update: Partial<TodoType> }>) => {
             const { todoId, update } = action.payload;
+            console.log(update);
             const targetTodo = getTargetTodo(state, todoId);
             Object.assign(targetTodo, update);
         },

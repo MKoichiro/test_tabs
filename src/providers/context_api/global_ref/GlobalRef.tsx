@@ -10,15 +10,15 @@ interface Methods {
 }
 
 type PropertyNames =
-  // input
-  | 'name'
-  | 'title'
-  | 'deadline'
-  // select
-  | 'status'
-  | 'priority'
-  // div
-  | 'categoryDiv';
+    // input
+    | 'name'
+    | 'title'
+    | 'deadline'
+    // select
+    | 'status'
+    | 'priority'
+    // div
+    | 'categoryDiv';
 type ContextType = {
     // input
     name: Methods;
@@ -82,8 +82,8 @@ export const GlobalRef = ({ children }: PropsWithChildren<GlobalRefProps>) => {
     };
     // select
     const statusGetter = (id: string) => {
-      const elData = statusRef.current.find((item) => item.id === id);
-      return elData?.el;
+        const elData = statusRef.current.find((item) => item.id === id);
+        return elData?.el;
     };
     const priorityGetter = (id: string) => {
         const elData = priorityRef.current.find((item) => item.id === id);
@@ -94,7 +94,6 @@ export const GlobalRef = ({ children }: PropsWithChildren<GlobalRefProps>) => {
         const elData = categoryDivRef.current.find((item) => item.id === id);
         return elData?.el;
     };
-
 
     const value: ContextType = {
         // input

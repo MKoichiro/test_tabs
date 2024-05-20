@@ -147,6 +147,15 @@ var Q=Y,Z=Symbol.for("react.element"),J=Symbol.for("react.fragment"),ee=Object.p
   }
   textarea {
     resize: none;
+    padding: 0;
+    margin: 0;
+    border: none;
+    outline: none;
+    border-radius: 0;
+    background: none;
+  }
+  textarea:focus {
+    outline-offset: 0;
   }
 
 
@@ -198,51 +207,67 @@ var Q=Y,Z=Symbol.for("react.element"),J=Symbol.for("react.fragment"),ee=Object.p
     width: ${"todo"===e?"var(--archived-todo-width)":"var(--archived-category-width)"};
     margin-right: auto;
     margin-left: auto;
-`,mh=({fontSizes:{pc:e,tb:t,sp:n}={pc:"1.8rem",tb:"16px",sp:"11px"}}={})=>Yp`
-  --pc-formatted: ${null==e?void 0:e.replace("rem","")};
-  --tb-formatted: ${null==t?void 0:t.replace("px","")};
-  --sp-formatted: ${null==n?void 0:n.replace("px","")};
-  .IE-display {
-    cursor: pointer;
-    
-    // 半角英数字の文字列、の場合にも折り返しを行う
-    overflow-wrap: break-word;
-    word-wrap: break-word;
-  }
-  .IE-display, .IE-edit {
-    --fs: var(--pc-formatted);
-    @media (width < 1024px) {
-      --fs: var(--tb-formatted);
-    }
-    font-size: calc(var(--fs) * 1rem);
-    @media (width < 600px) {
-        --fs: var(--sp-formatted);
-        font-size: calc(var(--fs) * 1px);
-    }
-    line-height: var(--list-title-line-height);
-  }
-  form {
-    .IE-edit {
-      font-family: var(--ff-3);
-      --real-fs: 1.6;
-      font-size: calc(var(--real-fs) * 1rem);
-      @media (width < 1024px) {
-        --real-fs: 16;
-        font-size: calc(var(--real-fs) * 1px);
-      }
-      font-size: calc(var(--real-fs) * 1rem);
-      @media (width < 1024px) {
-        font-size: calc(var(--real-fs) * 1px);
-      }
-      --net-fs: var(--fs);
-      --shrink: calc(var(--net-fs) / var(--real-fs));
-      --expand: calc(var(--real-fs) / var(--net-fs));
+`,mh=({fontSizes:{pc:e,tb:t,sp:n}={pc:"1.8rem",tb:"16px",sp:"11px"},$inEditing:r})=>Yp`
+    position: relative;
+    border-bottom: ${r?"var(--border-1)":"var(--border-weight) solid transparent"};
 
-      transform: scale(var(--shrink));
-      transform-origin: left;
-      width: calc(100% * var(--expand));
+    --pc-formatted: ${null==e?void 0:e.replace("rem","")};
+    --tb-formatted: ${null==t?void 0:t.replace("px","")};
+    --sp-formatted: ${null==n?void 0:n.replace("px","")};
+    .IE-display {
+        cursor: pointer;
+        visibility: ${r?"hidden":"visible"};
+        // 半角英数字の文字列、の場合にも折り返しを行う
+        overflow-wrap: break-word;
+        word-wrap: break-word;
+        white-space: pre-line;
     }
-  }
+    .IE-display,
+    .IE-edit {
+        font-weight: bold;
+        line-height: 1.5em;
+        min-height: 1.5em;
+        --fs: var(--pc-formatted);
+        @media (width < 1024px) {
+            --fs: var(--tb-formatted);
+        }
+        font-size: calc(var(--fs) * 1rem);
+        @media (width < 600px) {
+            --fs: var(--sp-formatted);
+            font-size: calc(var(--fs) * 1px);
+        }
+    }
+    .IE-form {
+        display: ${r?"block":"none"};
+        .IE-edit {
+            color: var(--color-gray-1);
+            position: absolute;
+            top: 0;
+            left: 0;
+            font-family: var(--ff-3);
+            --real-fs: 1.6;
+            font-size: calc(var(--real-fs) * 1rem);
+            @media (width < 1024px) {
+                --real-fs: 16;
+                font-size: calc(var(--real-fs) * 1px);
+            }
+            font-size: calc(var(--real-fs) * 1rem);
+            @media (width < 1024px) {
+                font-size: calc(var(--real-fs) * 1px);
+            }
+            --net-fs: var(--fs);
+            --shrink: calc(var(--net-fs) / var(--real-fs));
+            --expand: calc(var(--real-fs) / var(--net-fs));
+
+            transform: scale(var(--shrink));
+            transform-origin: top left;
+            // 縮めた分だけ矩形も縮まるので、その分だけ拡大する
+            height: calc(100% * var(--expand));
+            width: calc(100% * var(--expand));
+            // おそらく小数点以下の桁数によって微妙にずれることでスクロールが発生することがあるので隠す
+            overflow: hidden;
+        }
+    }
 `,gh=(e,t=!1)=>Yp`
     background: ${e?"var(--color-black-1)":""};
     & * {
@@ -510,7 +535,7 @@ var Q=Y,Z=Symbol.for("react.element"),J=Symbol.for("react.fragment"),ee=Object.p
             font-size: 14px;
         }
     }
-`,bL=({activeCategory:e,isGloballyDragging:t,handleMouseDown:n})=>{const{inEditing:r,inputRef:i,handleDoubleClick:o,handleSubmit:a,handleChange:l,handleBlur:s,isDragging:u,listeners:c,attributes:d,setNodeRef:f,style:p,SLIDABLE_LENGTH:h,handleDeleteBtnClick:m,register:g,isSlided:v,slide:y,addSlidableBtn:b,device:x}=(({activeCategory:e,isGloballyDragging:t})=>{const n=e.id,r=aO(),{contentsWidth:i,device:o}=uO(),a=.2*bO(i),l={SLIDABLE_LENGTH:a},{isSlided:s,slide:u,unSlide:c,register:d,addSlidableBtn:f}=Q_({params:l,skipCondition:t}),{transform:p,transition:h,isDragging:m,...g}=EF({id:n}),v={transform:YE.Transform.toString(p),transition:h};return{...cL({target:e,targetProperty:"name"}),isDragging:m,...g,style:v,SLIDABLE_LENGTH:a,handleDeleteBtnClick:()=>{r(IF({categoryId:n,update:{isArchived:!0}}))},register:d,isSlided:s,slide:u,addSlidableBtn:f,device:o}})({activeCategory:e,isGloballyDragging:t});return ie.jsx(xL,{ref:f,style:p,$inEditing:r,$isDragging:u,...d,children:ie.jsxs(J_,{...g,children:[ie.jsxs(eL,{className:"slidable-main-contents",children:[gL&&"sp"===x?ie.jsx(fL,{className:"btn-gripper",listeners:c,handleMouseDown:n}):ie.jsxs(ie.Fragment,{children:[ie.jsx(hL,{attrs:["drag","slide"],isGloballyDragging:t,drag:{handleMouseDown:n,listeners:c},slide:{isSlided:v,slide:y,addSlidableBtn:b}}),ie.jsx(vL,{})]}),ie.jsxs("div",{className:"category-name-container",children:[ie.jsx("p",{className:"IE-display",onDoubleClick:o,children:e.name}),ie.jsx("form",{onSubmit:a,children:ie.jsx("input",{className:"IE-edit",type:"text",ref:i.setRef,value:e.name,onChange:l,onBlur:s})})]})]}),ie.jsx(tL,{className:"slidable-hidden-contents",slidableLength:h,children:ie.jsx("button",{className:"btn-archive",onClick:m,children:ie.jsx(US,{})})})]})})},xL=Qp.li`
+`,bL=({activeCategory:e,isGloballyDragging:t,handleMouseDown:n})=>{const{inEditing:r,inputRef:i,handleDoubleClick:o,handleSubmit:a,handleChange:l,handleBlur:s,isDragging:u,listeners:c,attributes:d,setNodeRef:f,style:p,SLIDABLE_LENGTH:h,handleDeleteBtnClick:m,register:g,isSlided:v,slide:y,addSlidableBtn:b,device:x}=(({activeCategory:e,isGloballyDragging:t})=>{const n=e.id,r=aO(),{contentsWidth:i,device:o}=uO(),a=.2*bO(i),l={SLIDABLE_LENGTH:a},{isSlided:s,slide:u,unSlide:c,register:d,addSlidableBtn:f}=Q_({params:l,skipCondition:t}),{transform:p,transition:h,isDragging:m,...g}=EF({id:n}),v={transform:YE.Transform.toString(p),transition:h};return{...cL({target:e,targetProperty:"name"}),isDragging:m,...g,style:v,SLIDABLE_LENGTH:a,handleDeleteBtnClick:()=>{r(IF({categoryId:n,update:{isArchived:!0}}))},register:d,isSlided:s,slide:u,addSlidableBtn:f,device:o}})({activeCategory:e,isGloballyDragging:t});return ie.jsx(xL,{ref:f,style:p,$inEditing:r,$isDragging:u,...d,children:ie.jsxs(J_,{...g,children:[ie.jsxs(eL,{className:"slidable-main-contents",children:[gL&&"sp"===x?ie.jsx(fL,{className:"btn-gripper",listeners:c,handleMouseDown:n}):ie.jsxs(ie.Fragment,{children:[ie.jsx(hL,{attrs:["drag","slide"],isGloballyDragging:t,drag:{handleMouseDown:n,listeners:c},slide:{isSlided:v,slide:y,addSlidableBtn:b}}),ie.jsx(vL,{})]}),ie.jsxs("div",{className:"category-name-container",children:[ie.jsx("p",{className:"IE-display",onDoubleClick:o,children:e.name}),ie.jsx("form",{className:"IE-form",onSubmit:a,children:ie.jsx("textarea",{className:"IE-edit",ref:i.setRef,value:e.name,onChange:l,onBlur:s})})]})]}),ie.jsx(tL,{className:"slidable-hidden-contents",slidableLength:h,children:ie.jsx("button",{className:"btn-archive",onClick:m,children:ie.jsx(US,{})})})]})})},xL=Qp.li`
     ${fh()}
     ${ph({type:"category"})}
     ${({$isDragging:e})=>gh(e)}
@@ -524,15 +549,13 @@ var Q=Y,Z=Symbol.for("react.element"),J=Symbol.for("react.fragment"),ee=Object.p
             --icon-widths: calc(var(--icon-size-1) * var(--num-of-icons));
             width: calc(100% - var(--icon-widths));
             margin: 0.4rem 0.8rem 0.4rem 0;
-            border-bottom: ${({$inEditing:e})=>e?"var(--border-1)":"var(--border-weight) solid transparent"};
 
-            ${mh()}
+            ${({$inEditing:e})=>mh({$inEditing:e})}
             .IE-display {
-                display: ${({$inEditing:e})=>e?"none":"block"};
             }
-            form {
-                display: ${({$inEditing:e})=>e?"block":"none"};
-                .IE-edit {}
+            .IE-form {
+                .IE-edit {
+                }
             }
         }
     }
@@ -996,7 +1019,7 @@ var Q=Y,Z=Symbol.for("react.element"),J=Symbol.for("react.fragment"),ee=Object.p
             }
         }
     }
-`,hR=({todo:e,attributes:t,listeners:n,isGloballyDragging:r,handleMouseDown:i})=>{const{inEditing:o,inputRef:a,handleDoubleClick:l,handleSubmit:s,handleChange:u,handleBlur:c,title:d,isExpired:f,isCompleted:p,isOpen:h,toggleOpen:m,isArchived:g,isActive:v,isGhost:y}=(({todo:e,attributes:t})=>{const{checkIsCompleted:n,checkIsExpired:r}=YM,i=dE(),{inEditing:o,inputRef:a,handleDoubleClick:l,handleSubmit:s,handleChange:u,handleBlur:c}=cL({target:e,targetProperty:"title"}),{title:d,isOpen:f}=e;return{inEditing:o,inputRef:a,handleDoubleClick:l,handleSubmit:s,handleChange:u,handleBlur:c,title:d,isExpired:r(e),isCompleted:n(e),isOpen:f,toggleOpen:()=>{i(BF(f?{todoId:e.id,update:{isOpen:!1}}:{todoId:e.id,update:{isOpen:!0}}))},isArchived:e.isArchived,isActive:!e.isArchived,isGhost:"ghost"===t}})({todo:e,attributes:t}),{device:b}=uO();return ie.jsxs(mR,{$isCompleted:p,$inEditing:o,$isOpen:h,$isGloballyDragging:r,$isActive:v,$isExpired:f,$isArchived:g,children:[gL&&"sp"===b&&!g?ie.jsx(fL,{className:"btn-gripper",listeners:n,handleMouseDown:i}):ie.jsx(vL,{}),f&&ie.jsx("span",{className:"icon-expired",children:ie.jsx($S,{})}),v&&ie.jsxs("div",{className:"main-container",onDoubleClick:l,children:[ie.jsx("h4",{className:"IE-display",children:d}),ie.jsx("form",{onSubmit:s,children:ie.jsx("input",{className:"IE-edit",type:"text",ref:a.setRef,defaultValue:d,onChange:u,onBlur:c})})]}),!v&&ie.jsx("div",{className:"main-container",children:ie.jsx("h4",{children:d})}),ie.jsx("button",{className:"btn-toggle-detail",onClick:v?()=>m():void 0,children:!g&&ie.jsx(HS,{})})]})},mR=Qp.header`
+`,hR=({todo:e,attributes:t,listeners:n,isGloballyDragging:r,handleMouseDown:i})=>{const{inEditing:o,inputRef:a,handleDoubleClick:l,handleSubmit:s,handleChange:u,handleBlur:c,title:d,isExpired:f,isCompleted:p,isOpen:h,toggleOpen:m,isArchived:g,isActive:v,isGhost:y}=(({todo:e,attributes:t})=>{const{checkIsCompleted:n,checkIsExpired:r}=YM,i=dE(),{inEditing:o,inputRef:a,handleDoubleClick:l,handleSubmit:s,handleChange:u,handleBlur:c}=cL({target:e,targetProperty:"title"}),{title:d,isOpen:f}=e;return{inEditing:o,inputRef:a,handleDoubleClick:l,handleSubmit:s,handleChange:u,handleBlur:c,title:d,isExpired:r(e),isCompleted:n(e),isOpen:f,toggleOpen:()=>{i(BF(f?{todoId:e.id,update:{isOpen:!1}}:{todoId:e.id,update:{isOpen:!0}}))},isArchived:e.isArchived,isActive:!e.isArchived,isGhost:"ghost"===t}})({todo:e,attributes:t}),{device:b}=uO();return ie.jsxs(mR,{$isCompleted:p,$inEditing:o,$isOpen:h,$isGloballyDragging:r,$isActive:v,$isExpired:f,$isArchived:g,children:[gL&&"sp"===b&&!g?ie.jsx(fL,{className:"btn-gripper",listeners:n,handleMouseDown:i}):ie.jsx(vL,{}),f&&ie.jsx("span",{className:"icon-expired",children:ie.jsx($S,{})}),v&&ie.jsxs("div",{className:"main-container",onDoubleClick:l,children:[ie.jsx("h4",{className:"IE-display",children:d}),ie.jsx("form",{className:"IE-form",onSubmit:s,children:ie.jsx("textarea",{className:"IE-edit",ref:a.setRef,defaultValue:d,onChange:u,onBlur:c})})]}),!v&&ie.jsx("div",{className:"main-container",children:ie.jsx("h4",{children:d})}),ie.jsx("button",{className:"btn-toggle-detail",onClick:v?()=>m():void 0,children:!g&&ie.jsx(HS,{})})]})},mR=Qp.header`
     /* set variables */
     --expired-width: ${({$isExpired:e,$isArchived:t})=>t?"0px":e?"var(--icon-size-1)":"0px"};
     --num-of-btns: ${({$isActive:e})=>e?2:1};
@@ -1041,23 +1064,21 @@ var Q=Y,Z=Symbol.for("react.element"),J=Symbol.for("react.fragment"),ee=Object.p
     .main-container {
         flex: 1;
         max-width: var(--title-width);
-        border-bottom: ${({$inEditing:e})=>e?"var(--border-1)":"var(--border-weight) solid transparent"};
 
-        ${mh()}
-
+        ${({$inEditing:e})=>mh({$inEditing:e})}
 
         .IE-display {
             cursor: ${({$isActive:e})=>e?"pointer":"default"};
-            display: ${({$inEditing:e})=>e?"none":"block"};
             text-decoration: ${({$isCompleted:e})=>e?"line-through":""};
 
             height: ${({$isGloballyDragging:e,$isArchived:t})=>e||t?"var(--list-title-line-height)":"auto"};
             text-overflow: ${({$isGloballyDragging:e,$isArchived:t})=>e||t?"ellipsis":"clip"};
             overflow: ${({$isGloballyDragging:e,$isArchived:t})=>e||t?"hidden":"visible"};
-            white-space: ${({$isGloballyDragging:e,$isArchived:t})=>e||t?"nowrap":"normal"};
+            white-space: ${({$isGloballyDragging:e,$isArchived:t})=>e||t?"nowrap":"pre-line"};
         }
-        .IE-edit {
-            display: ${({$inEditing:e})=>e?"block":"none"};
+        .IE-form {
+            .IE-edit {
+            }
         }
     }
 `,gR=Y.createContext({carouselContainerRef:null,handleScroll:()=>{}}),vR=e=>{const{children:t}=e,n=Y.useRef(null),r={carouselContainerRef:n,handleScroll:(e,t,r)=>{const{gap_vw:i,activeWidth_vw:o,inactiveMagnification:a}=r,l=2*i,s=o*a,u=bO(i),c=bO(l),d=bO(s);let f;if(0===e)f=0;else f=c+(d+u)*(e-1)+(d-u);requestAnimationFrame((()=>{n.current&&n.current.scrollTo({left:f,behavior:t})}))}};return ie.jsx(gR.Provider,{value:r,children:t})},yR=e=>{const[t,n]=Y.useState(!1),{handleScroll:r}=Y.useContext(gR),{activeIdx:i}=oO((e=>e.card));return Y.useEffect((()=>{n(e===i)}),[i]),{handleScroll:r,isActive:t}},bR=({todo:e,activeTodoIdx:t,isGloballyDragging:n})=>{const r=e.id,i="completed"===e.status,{contentsWidth:o}=uO(),a=.5*bO(o),l={SLIDABLE_LENGTH:a},{isSlided:s,slide:u,unSlide:c,addSlidableBtn:d,register:f}=Q_({params:l,skipCondition:n}),{attributes:p,listeners:h,setNodeRef:m,style:g,isDragging:v}=(e=>{const{attributes:t,listeners:n,setNodeRef:r,transform:i,transition:o,isDragging:a}=EF({id:e});return{attributes:t,listeners:n,setNodeRef:r,style:{transform:YE.Transform.toString(i),transition:o,height:a?"3.2rem":"auto"},isDragging:a}})(r),y=dE(),{cardViewOpen:b}=(()=>{const{handleScroll:e}=Y.useContext(gR),{device:t}=uO(),n=yO,r=aO(),i=mO(n);return{cardViewOpen:Y.useCallback((n=>{if(!t)return;const o=lh[t];i(),r(VF(n)),e(n,"instant",o)}),[t])}})(),x=Y.useRef(null);return{todoId:r,isCompleted:i,attributes:p,listeners:h,setNodeRef:m,style:g,isDragging:v,liRef:x,handleInfoBtnClick:()=>{b(t),y(VF(t))},handleCompleteBtnClick:()=>{i?(y(QF({property:"status",newState:{id:r,inEditing:!0}})),y(eO({todoId:r,activeIdx:1})),y(BF({todoId:r,update:{status:SO,isOpen:!0}}))):y(BF({todoId:r,update:{status:"completed"}}))},handleArchiveBtnClick:()=>{y(BF({todoId:r,update:{isArchived:!0}}))},SLIDABLE_LENGTH:a,register:f,isSlided:s,slide:u,unSlide:c,addSlidableBtn:d}},xR=({todo:e,activeTodoIdx:t,isGloballyDragging:n,handleMouseDown:r})=>{const{todoId:i,isCompleted:o,attributes:a,listeners:l,setNodeRef:s,style:u,isDragging:c,liRef:d,handleInfoBtnClick:f,handleCompleteBtnClick:p,handleArchiveBtnClick:h,SLIDABLE_LENGTH:m,register:g,isSlided:v,slide:y,unSlide:b,addSlidableBtn:x}=bR({todo:e,activeTodoIdx:t,isGloballyDragging:n}),{device:w}=uO(),k=e.isOpen;return ie.jsx(wR,{style:u,$isDragging:c,$isGlobalDragging:n,$isOpen:k,ref:e=>{s(e),d.current=e},...a,children:ie.jsxs(J_,{...g,children:[ie.jsxs(eL,{className:"slidable-main-contents",children:[!(gL&&"sp"===w)&&ie.jsx(hL,{attrs:["drag","slide"],isGloballyDragging:n,isOpen:k,drag:{handleMouseDown:r,listeners:l},slide:{isSlided:v,slide:y,addSlidableBtn:x}}),ie.jsxs("div",{className:"contents",children:[ie.jsx(hR,{attributes:"active",listeners:l,todo:e,isGloballyDragging:n,handleMouseDown:r}),ie.jsx(fR,{ref:d,todo:e,isGloballyDragging:n})]})]}),ie.jsxs(tL,{className:"btns-container",slidableLength:m,children:[ie.jsx("div",{className:"each-btn-container info-btn-container",children:ie.jsx("button",{className:"each-btn btn-info",onClick:f,children:ie.jsx(KS,{})})}),ie.jsx("div",{className:"each-btn-container check-btn-container",children:ie.jsx("button",{className:"each-btn btn-check",onClick:p,children:o?ie.jsx(YS,{}):ie.jsx(GS,{})})}),ie.jsx("div",{className:"each-btn-container delete-btn-container",children:ie.jsx("button",{className:"each-btn btn-delete",onClick:h,children:ie.jsx(US,{})})})]})]})},i)},wR=Qp.li`

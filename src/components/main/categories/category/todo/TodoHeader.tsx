@@ -138,6 +138,7 @@ export const TodoHeader = ({ todo, attributes, listeners, isGloballyDragging, ha
     } = useTodoHeader({ todo, attributes });
 
     const { device } = useWindowSizeSelector();
+    console.log(title);
 
     return (
         <StyledHeader
@@ -173,11 +174,16 @@ export const TodoHeader = ({ todo, attributes, listeners, isGloballyDragging, ha
                     className="main-container"
                     onDoubleClick={handleDoubleClick}
                 >
-                    <h4 className="IE-display" children={title} />
-                    <form onSubmit={handleSubmit}>
-                        <input
+                    <h4
+                        className="IE-display"
+                        children={title}
+                    />
+                    <form
+                        className="IE-form"
+                        onSubmit={handleSubmit}
+                    >
+                        <textarea
                             className="IE-edit"
-                            type="text"
                             ref={inputRef.setRef}
                             defaultValue={title}
                             onChange={handleChange}
@@ -271,15 +277,11 @@ const StyledHeader = styled.header<StyledHeaderType>`
     .main-container {
         flex: 1;
         max-width: var(--title-width);
-        border-bottom: ${({ $inEditing }) =>
-            $inEditing ? 'var(--border-1)' : 'var(--border-weight) solid transparent'};
 
-        ${immediateEditableInput()}
-
+        ${({ $inEditing }) => immediateEditableInput({ $inEditing })}
 
         .IE-display {
             cursor: ${({ $isActive }) => ($isActive ? 'pointer' : 'default')};
-            display: ${({ $inEditing }) => ($inEditing ? 'none' : 'block')};
             text-decoration: ${({ $isCompleted }) => ($isCompleted ? 'line-through' : '')};
 
             height: ${({ $isGloballyDragging, $isArchived }) =>
@@ -289,10 +291,11 @@ const StyledHeader = styled.header<StyledHeaderType>`
             overflow: ${({ $isGloballyDragging, $isArchived }) =>
                 $isGloballyDragging || $isArchived ? 'hidden' : 'visible'};
             white-space: ${({ $isGloballyDragging, $isArchived }) =>
-                $isGloballyDragging || $isArchived ? 'nowrap' : 'normal'};
+                $isGloballyDragging || $isArchived ? 'nowrap' : 'pre-line'};
         }
-        .IE-edit {
-            display: ${({ $inEditing }) => ($inEditing ? 'block' : 'none')};
+        .IE-form {
+            .IE-edit {
+            }
         }
     }
 `;

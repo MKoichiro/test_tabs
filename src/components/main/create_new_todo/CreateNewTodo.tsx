@@ -37,6 +37,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import { useGlobalRef } from '../../../providers/context_api/global_ref/GlobalRef';
 import { useCategoriesSelector } from '../../../providers/redux/store';
+import { SectionSeparator } from '../../common/section_separator/SectionSeparator';
+import { AddBoxOutlined, Inventory2Outlined } from '@mui/icons-material';
 
 /* --- dev ----------------------- */
 // import { isDebugMode } from '../../../utils/adminDebugMode';
@@ -188,115 +190,122 @@ export const CreateNewTodo = () => {
 
     return activeCategoryDiv
         ? createPortal(
-              <StyledForm onSubmit={handleSubmit(executeSubmit)}>
-                  <fieldset
-                      className="parent-field"
-                      onBlur={handleBlur}
-                      onFocus={handleFocus}
-                  >
-                      <legend className="form-legend">CREATE NEW TODO</legend>
+              <>
+                  <SectionSeparator
+                      sectionName="Add New"
+                      icon={<AddBoxOutlined />}
+                      marginTop="3.2rem"
+                  />
+                  <StyledForm onSubmit={handleSubmit(executeSubmit)}>
+                      <fieldset
+                          className="parent-field"
+                          onBlur={handleBlur}
+                          onFocus={handleFocus}
+                      >
+                          {/* <legend className="form-legend">ADD NEW</legend> */}
 
-                      <fieldset className="child-field">
-                          <legend className="child-legend">Main</legend>
-                          <div className="parts-container title-detail">
-                              <FormParts
-                                  className={'parts title'}
-                                  partsFor={'title'}
-                                  as={'input'}
-                                  feature={'required'}
-                                  register={register}
-                                  partsRef={titleRef}
-                                  defaultValue={defaultValues.title}
-                                  inputType={'text'}
-                                  placeholder={placeholders.title}
-                                  error={errors.title}
-                                  isFieldsetBlurred={isFieldsetBlurred}
-                              />
+                          <fieldset className="child-field">
+                              <legend className="child-legend">Main</legend>
+                              <div className="parts-container title-detail">
+                                  <FormParts
+                                      className={'parts title'}
+                                      partsFor={'title'}
+                                      as={'input'}
+                                      feature={'required'}
+                                      register={register}
+                                      partsRef={titleRef}
+                                      defaultValue={defaultValues.title}
+                                      inputType={'text'}
+                                      placeholder={placeholders.title}
+                                      error={errors.title}
+                                      isFieldsetBlurred={isFieldsetBlurred}
+                                  />
 
-                              <FormParts
-                                  className={'parts detail'}
-                                  partsFor={'detail'}
-                                  as={'textarea'}
-                                  feature={'optional'}
-                                  register={register}
-                                  partsRef={detailRef}
-                                  defaultValue={defaultValues.detail}
-                                  placeholder={placeholders.detail}
-                                  isFieldsetBlurred={isFieldsetBlurred}
-                              />
+                                  <FormParts
+                                      className={'parts detail'}
+                                      partsFor={'detail'}
+                                      as={'textarea'}
+                                      feature={'optional'}
+                                      register={register}
+                                      partsRef={detailRef}
+                                      defaultValue={defaultValues.detail}
+                                      placeholder={placeholders.detail}
+                                      isFieldsetBlurred={isFieldsetBlurred}
+                                  />
+                              </div>
+                          </fieldset>
+
+                          <fieldset className="child-field">
+                              <legend className="child-legend">Deadline</legend>
+                              <div className="parts-container date-time">
+                                  <FormParts
+                                      className={'parts date'}
+                                      partsFor={'date'}
+                                      as={'input'}
+                                      feature={'optional'}
+                                      register={register}
+                                      partsRef={dateRef}
+                                      defaultValue={defaultValues.date}
+                                      inputType={'date'}
+                                      placeholder={placeholders.date}
+                                      isFieldsetBlurred={isFieldsetBlurred}
+                                  />
+                                  <span className="form-separator"></span>
+                                  <FormParts
+                                      className={'parts time'}
+                                      partsFor={'time'}
+                                      as={'input'}
+                                      feature={'optional'}
+                                      register={register}
+                                      partsRef={timeRef}
+                                      defaultValue={defaultValues.time}
+                                      inputType={'time'}
+                                      placeholder={placeholders.time}
+                                      isFieldsetBlurred={isFieldsetBlurred}
+                                  />
+                              </div>
+                          </fieldset>
+
+                          <fieldset className="child-field">
+                              <legend className="child-legend">Others</legend>
+                              <div className="parts-container status-priority">
+                                  <FormParts
+                                      className={'parts status'}
+                                      partsFor={'status'}
+                                      as={'select'}
+                                      feature={'optional'}
+                                      register={register}
+                                      partsRef={statusRef}
+                                      defaultValue={'---'}
+                                      selectOptions={statusOptions}
+                                      placeholder={placeholders.status}
+                                      isFieldsetBlurred={isFieldsetBlurred}
+                                  />
+                                  <span className="form-separator"></span>
+                                  <FormParts
+                                      className={'parts priority'}
+                                      partsFor={'priority'}
+                                      as={'select'}
+                                      feature={'optional'}
+                                      register={register}
+                                      partsRef={priorityRef}
+                                      defaultValue={'---'}
+                                      selectOptions={priorityOptions}
+                                      placeholder={placeholders.priority}
+                                      isFieldsetBlurred={isFieldsetBlurred}
+                                  />
+                              </div>
+                          </fieldset>
+
+                          <div className="btn-submit-container">
+                              <button>
+                                  <FontAwesomeIcon icon={faPlus} />
+                                  ADD
+                              </button>
                           </div>
                       </fieldset>
-
-                      <fieldset className="child-field">
-                          <legend className="child-legend">Deadline</legend>
-                          <div className="parts-container date-time">
-                              <FormParts
-                                  className={'parts date'}
-                                  partsFor={'date'}
-                                  as={'input'}
-                                  feature={'optional'}
-                                  register={register}
-                                  partsRef={dateRef}
-                                  defaultValue={defaultValues.date}
-                                  inputType={'date'}
-                                  placeholder={placeholders.date}
-                                  isFieldsetBlurred={isFieldsetBlurred}
-                              />
-                              <span className="form-separator"></span>
-                              <FormParts
-                                  className={'parts time'}
-                                  partsFor={'time'}
-                                  as={'input'}
-                                  feature={'optional'}
-                                  register={register}
-                                  partsRef={timeRef}
-                                  defaultValue={defaultValues.time}
-                                  inputType={'time'}
-                                  placeholder={placeholders.time}
-                                  isFieldsetBlurred={isFieldsetBlurred}
-                              />
-                          </div>
-                      </fieldset>
-
-                      <fieldset className="child-field">
-                          <legend className="child-legend">Others</legend>
-                          <div className="parts-container status-priority">
-                              <FormParts
-                                  className={'parts status'}
-                                  partsFor={'status'}
-                                  as={'select'}
-                                  feature={'optional'}
-                                  register={register}
-                                  partsRef={statusRef}
-                                  defaultValue={'---'}
-                                  selectOptions={statusOptions}
-                                  placeholder={placeholders.status}
-                                  isFieldsetBlurred={isFieldsetBlurred}
-                              />
-                              <span className="form-separator"></span>
-                              <FormParts
-                                  className={'parts priority'}
-                                  partsFor={'priority'}
-                                  as={'select'}
-                                  feature={'optional'}
-                                  register={register}
-                                  partsRef={priorityRef}
-                                  defaultValue={'---'}
-                                  selectOptions={priorityOptions}
-                                  placeholder={placeholders.priority}
-                                  isFieldsetBlurred={isFieldsetBlurred}
-                              />
-                          </div>
-                      </fieldset>
-
-                      <div className="btn-submit-container">
-                          <button>
-                              <FontAwesomeIcon icon={faPlus} />
-                              ADD
-                          </button>
-                      </div>
-                  </fieldset>
-              </StyledForm>,
+                  </StyledForm>
+              </>,
               activeCategoryDiv
           )
         : null; // copilot: nullよりloading iconを表示した方が良い。とのこと、今のところ読み込みにはほぼ時間がかからないので、そのまま。
@@ -305,7 +314,7 @@ export const CreateNewTodo = () => {
 
 // === STYLE ========================================================= //
 const StyledForm = styled.form`
-    margin-top: 6.4rem;
+    /* margin-top: 6.4rem; */
     /* reset */
     fieldset {
         border: none;

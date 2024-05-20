@@ -44,6 +44,7 @@ import {
     useSensors,
 } from '@dnd-kit/core';
 import { SortableContext, sortableKeyboardCoordinates, verticalListSortingStrategy } from '@dnd-kit/sortable';
+import { DirectionsWalkOutlined } from '@mui/icons-material';
 
 /* --- dev ----------------------- */
 // import { isDebugMode } from '../../../../utils/adminDebugMode';
@@ -154,7 +155,11 @@ export const ActiveTodos = ({ todos, isGloballyDraggingState }: ActiveTodosProps
                     items={todos.filter((todo) => !todo.isArchived)}
                     strategy={verticalListSortingStrategy}
                 >
-                    <SectionSeparator sectionName="Active" />
+                    <SectionSeparator
+                        sectionName="Active"
+                        icon={<DirectionsWalkOutlined />}
+                        marginTop="0.8rem"
+                    />
                     <ul>
                         {activeTodos.map((todo, i) => (
                             <ActiveTodo

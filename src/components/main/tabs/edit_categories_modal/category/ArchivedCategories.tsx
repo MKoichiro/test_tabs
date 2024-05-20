@@ -23,6 +23,7 @@ import { CategoryType } from '../../../../../providers/types/categories';
 
 /* --- MUI ----------------------- */
 import { SectionSeparator } from '../../../../common/section_separator/SectionSeparator';
+import { Inventory2Outlined } from '@mui/icons-material';
 
 /* --- dev ----------------------- */
 // import { isDebugMode } from '../../../../../utils/adminDebugMode';
@@ -56,7 +57,10 @@ interface ArchivedCategoriesProps {
 export const ArchivedCategories = ({ archivedCategories }: ArchivedCategoriesProps) => {
     return (
         <StyledSection>
-            <SectionSeparator sectionName="Archive" />
+            <SectionSeparator
+                sectionName="Archive"
+                icon={<Inventory2Outlined />}
+            />
             <ul className="archived-categories-container">
                 {archivedCategories.map((category) => (
                     <ArchivedCategory

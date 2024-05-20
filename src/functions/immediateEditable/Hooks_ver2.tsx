@@ -47,19 +47,19 @@ export const useImmediateInputEditable = (arg: ImmediateInputEditableArg) => {
     switch (targetProperty) {
         case 'name': {
             actionCreator = (e) =>
-                updateCategoryProps({ categoryId: id, update: { name: (e.target as HTMLInputElement).value } });
+                updateCategoryProps({ categoryId: id, update: { name: (e.target as HTMLTextAreaElement).value } });
             break;
         }
         case 'title': {
             actionCreator = (e) =>
-                updateTodoProps({ todoId: id, update: { title: (e.target as HTMLInputElement).value } });
+                updateTodoProps({ todoId: id, update: { title: (e.target as HTMLTextAreaElement).value } });
             break;
         }
         case 'deadline': {
             actionCreator = (e) =>
                 updateTodoProps({
                     todoId: target.id,
-                    update: { deadline: { date: (e.target as HTMLInputElement).value, use_time: false } },
+                    update: { deadline: { date: (e.target as HTMLTextAreaElement).value, use_time: false } },
                 });
             break;
         }

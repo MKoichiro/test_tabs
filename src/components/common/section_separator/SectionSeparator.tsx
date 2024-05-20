@@ -2,9 +2,6 @@
 import React from 'react';
 import styled from 'styled-components';
 
-/* --- MUI ----------------------- */
-import { DirectionsWalkOutlined, Inventory2Outlined } from '@mui/icons-material';
-
 // === TYPE =========================================================== //
 /**
  * @property sectionName - セクション名
@@ -12,6 +9,9 @@ import { DirectionsWalkOutlined, Inventory2Outlined } from '@mui/icons-material'
  */
 interface SectionSeparatorProps {
     sectionName: string;
+    icon: React.ReactNode;
+    marginTop?: string;
+    acc?: boolean; // booleanではなく開閉するコンテナのrefを受け取るようにした方が良いかも。
 }
 // =========================================================== TYPE === //
 
@@ -28,12 +28,15 @@ interface SectionSeparatorProps {
  * ```
  *
  */
-export const SectionSeparator = ({ sectionName }: SectionSeparatorProps) => {
+export const SectionSeparator = ({ sectionName, icon, marginTop = '2.4rem', acc = true }: SectionSeparatorProps) => {
     const sectionNameFormatted = sectionName.toUpperCase();
 
     return (
-        <StyledH4 className="section-separator">
-            {sectionName === 'Active' ? <DirectionsWalkOutlined /> : <Inventory2Outlined />}
+        <StyledH4
+            className="section-separator"
+            $marginTop={marginTop}
+        >
+            {icon}
             <span className="section-name">{sectionNameFormatted}</span>
         </StyledH4>
     );
@@ -41,12 +44,16 @@ export const SectionSeparator = ({ sectionName }: SectionSeparatorProps) => {
 // ====================================================== COMPONENT === //
 
 // === STYLE ========================================================== //
-const StyledH4 = styled.h4`
+interface StyledH4Props {
+    $marginTop: string;
+}
+const StyledH4 = styled.h4<StyledH4Props>`
     display: flex;
     justify-content: center;
     align-items: center;
     height: 2.4rem;
     margin: 2.4rem 0 1.6rem;
+    margin-top: ${({ $marginTop }) => $marginTop};
 
     &::before,
     &::after {

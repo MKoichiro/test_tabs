@@ -21,6 +21,7 @@ import { SectionSeparator } from '../../../common/section_separator/SectionSepar
 
 /* --- types --------------------- */
 import { TodoType } from '../../../../providers/types/categories';
+import { Inventory2Outlined } from '@mui/icons-material';
 
 /* --- dev ----------------------- */
 // import { isDebugMode } from '../../../../utils/adminDebugMode';
@@ -72,7 +73,10 @@ export const ArchivedTodos = ({ todos, isGloballyDraggingState }: ActiveTodosPro
 
     return (
         <StyledSection>
-            <SectionSeparator sectionName="Archive" />
+            <SectionSeparator
+                sectionName="Archive"
+                icon={<Inventory2Outlined />}
+            />
             <ul className="archived-todos-container">
                 {archivedTodos.map((todo, i) => (
                     <ArchivedTodo

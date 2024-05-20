@@ -50,6 +50,7 @@ import { switchCategory, updateCategories } from '../../../../../providers/redux
 
 /* --- MUI ------------------------ */
 import { SectionSeparator } from '../../../../common/section_separator/SectionSeparator';
+import { DirectionsWalkOutlined } from '@mui/icons-material';
 
 /* --- dev ----------------------- */
 // import { isDebugMode } from '../../../../../utils/adminDebugMode';
@@ -152,7 +153,11 @@ export const ActiveCategories = ({ activeCategories }: ActiveCategoriesProps) =>
                 onDragStart={handleDragStart}
                 onDragEnd={handleDragEnd}
             >
-                <SectionSeparator sectionName="Active" />
+                <SectionSeparator
+                    sectionName="Active"
+                    icon={<DirectionsWalkOutlined />}
+                    marginTop="0.8rem"
+                />
                 {/* ActiveCategory: 常時表示、ul内に収まってドロップ位置を示唆する要素 */}
                 <SortableContext
                     items={activeCategories}

@@ -105,31 +105,45 @@ const GlobalStyle = createGlobalStyle`
   form {
     font-size: inherit;
   }
+  fieldset {
+    border: none;
+    padding: 0;
+    margin: 0;
+  }
   label {
     cursor: pointer;
   }
-  input {
-    margin: 0;
+  input,
+  textarea,
+  select {
     padding: 0;
+    margin: 0;
     border: none;
     outline: none;
     background: none;
     border-radius: 0;
-  }
-  input:focus {
-    outline-offset: 0;
   }
   textarea {
     resize: none;
-    padding: 0;
-    margin: 0;
-    border: none;
-    outline: none;
-    border-radius: 0;
-    background: none;
   }
-  textarea:focus {
+  input:focus,
+  textarea:focus,
+  select:focus {
     outline-offset: 0;
+  }
+  input[type='date'],
+  input[type='time'],
+  input[type='datetime-local'] {
+      -webkit-appearance: none;
+  }
+  /* Webkit（Chrome、Safari）の日付入力箇所のスタイリング */
+  input[type='date']::-webkit-inner-spin-button {
+    /* スピンボタンの非表示 */
+    /* display: none; */
+  }
+  input[type='date']::-webkit-calendar-picker-indicator {
+    /* カレンダーピッカーのスタイリング */
+    /* background: transparent; */
   }
 
 
@@ -218,6 +232,7 @@ export const immediateEditableInput = ({
         // 半角英数字の文字列、の場合にも折り返しを行う
         overflow-wrap: break-word;
         word-wrap: break-word;
+        // 改行を適切に反映させる
         white-space: pre-line;
     }
     .IE-display,

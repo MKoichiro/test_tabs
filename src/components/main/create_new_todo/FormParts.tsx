@@ -16,6 +16,7 @@ import { StatusLiteralsType, PriorityLiteralsType } from '../../../providers/typ
 
 /* --- react-hook-form ----------- */ /* の型 */
 import { FieldError, FieldErrorsImpl, FieldValues, Merge, UseFormRegister } from 'react-hook-form';
+import { toUpperCaseFirstLetter } from '../../../utils/toUpperCaseFirstLetter';
 
 /* --- dev ----------------------- */
 // import { isDebugMode } from '../../../utils/adminDebugMode';
@@ -43,7 +44,7 @@ interface FormPartsProps {
 export const useFormParts = ({ partsFor, register }: Pick<FormPartsProps, 'partsFor' | 'register'>) => {
     const htmlFor = partsFor;
     const id = partsFor;
-    const labelTxt = partsFor.charAt(0).toUpperCase() + partsFor.slice(1); // 例: 'Title', ::after で ':' を付与
+    const labelTxt = toUpperCaseFirstLetter(partsFor); // 例: 'Title', ::after で ':' を付与
 
     let options;
     switch (partsFor) {
@@ -86,14 +87,10 @@ export const FormParts = (props: FormPartsProps) => {
 
     const { id, htmlFor, labelTxt, ref, rest } = useFormParts({ partsFor, register });
 
-    const toFirstUpperCase = (str: string) => {
-        return str.charAt(0).toUpperCase() + str.slice(1);
-    };
-
     return (
         <StyledDiv className={className}>
             <label htmlFor={htmlFor}>
-                <span className={feature + ' feature'}>{toFirstUpperCase(feature)}</span>
+                <span className={feature + ' feature'}>{toUpperCaseFirstLetter(feature)}</span>
                 <span className="label-txt">{labelTxt}</span>
             </label>
 
@@ -149,20 +146,10 @@ export const FormParts = (props: FormPartsProps) => {
         </StyledDiv>
     );
 };
-
 // ====================================================== COMPONENT === //
 
-// === STYLE ========================================================= //
+// === STYLE ========================================================== //
 const StyledDiv = styled.div`
-    /* Webkit（Chrome、Safari）の日付入力箇所のスタイリング */
-    input[type='date']::-webkit-inner-spin-button {
-        /* スピンボタンの非表示 */
-        /* display: none; */
-    }
-    input[type='date']::-webkit-calendar-picker-indicator {
-        /* カレンダーピッカーのスタイリング */
-        /* background: transparent; */
-    }
     .error-message {
         margin-top: 0.2rem;
         color: tomato;

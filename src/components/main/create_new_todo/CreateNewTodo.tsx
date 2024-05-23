@@ -39,6 +39,7 @@ import { useGlobalRef } from '../../../providers/context_api/global_ref/GlobalRe
 import { useCategoriesSelector } from '../../../providers/redux/store';
 import { SectionSeparator } from '../../common/section_separator/SectionSeparator';
 import { AddBoxOutlined, Inventory2Outlined } from '@mui/icons-material';
+import { MainField } from './MainField';
 
 /* --- dev ----------------------- */
 // import { isDebugMode } from '../../../utils/adminDebugMode';
@@ -72,7 +73,8 @@ export const useCreateNewTodo = () => {
         resetField,
     } = useForm({ mode: 'onChange' });
     // set up element refs
-    const titleRef = useRef<HTMLInputElement | null>(null);
+    // const titleRef = useRef<HTMLInputElement | null>(null);
+    const titleRef = useRef<HTMLTextAreaElement | null>(null);
     const detailRef = useRef<HTMLTextAreaElement | null>(null);
     const dateRef = useRef<HTMLInputElement | null>(null);
     const timeRef = useRef<HTMLInputElement | null>(null);
@@ -204,7 +206,7 @@ export const CreateNewTodo = () => {
                       >
                           {/* <legend className="form-legend">ADD NEW</legend> */}
 
-                          <fieldset className="child-field">
+                          {/* <fieldset className="child-field">
                               <legend className="child-legend">Main</legend>
                               <div className="parts-container title-detail">
                                   <FormParts
@@ -233,7 +235,14 @@ export const CreateNewTodo = () => {
                                       isFieldsetBlurred={isFieldsetBlurred}
                                   />
                               </div>
-                          </fieldset>
+                          </fieldset> */}
+                          <MainField
+                              className="child-field"
+                              register={register}
+                              refs={{ title: titleRef, detail: detailRef }}
+                              error={errors.title}
+                              isFieldsetBlurred={isFieldsetBlurred}
+                          />
 
                           <fieldset className="child-field">
                               <legend className="child-legend">Deadline</legend>
@@ -314,40 +323,13 @@ export const CreateNewTodo = () => {
 
 // === STYLE ========================================================= //
 const StyledForm = styled.form`
-    /* margin-top: 6.4rem; */
-    /* reset */
-    fieldset {
-        border: none;
-        padding: 0;
-        margin: 0;
-    }
-    input,
-    textarea,
-    select {
-        border: none;
-        border-radius: 0;
-        outline: none;
-    }
-    input[type='date'],
-    input[type='time'] {
-        -webkit-appearance: none;
-    }
-    /* reset */
-
     .parent-field {
         margin: 0 0.8rem;
-
-        legend {
-            font-weight: bold;
-        }
-
-        .form-legend {
-            font-size: 2.4rem;
-        }
 
         .child-field {
             margin-top: 1.6rem;
             .child-legend {
+                font-weight: bold;
                 font-size: 2rem;
                 margin-bottom: 0.8rem;
             }
@@ -396,14 +378,14 @@ const StyledForm = styled.form`
                             }
                             @media (width < 600px) {
                                 justify-content: flex-start;
-                                font-size: 16px;
+                                font-size: 12px;
                             }
                         }
                     }
 
                     .input-error {
                         input,
-                        textarea,
+                        /* textarea, */
                         select {
                             min-width: 100%;
                             color: var(--color-black-1);
@@ -419,10 +401,10 @@ const StyledForm = styled.form`
                             height: 3.2rem;
                             line-height: 3.2rem;
                         }
-                        textarea {
+                        /* textarea {
                             min-height: 6.4rem;
                             line-height: 1.6;
-                        }
+                        } */
                         .error-message {
                             text-align: right;
                         }

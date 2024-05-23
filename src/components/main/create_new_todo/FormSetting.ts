@@ -40,6 +40,7 @@
 */
 
 import { notSet, priorityLiterals, statusLiterals } from '../../../providers/types/categories';
+import { toUpperCaseFirstLetter } from '../../../utils/toUpperCaseFirstLetter';
 /* --- dev ----------------------- */
 // import { isDebugMode } from '../../../utils/adminDebugMode';
 
@@ -68,3 +69,75 @@ export const placeholders = {
     priority: '選択してください',
     status: '選択してください',
 } as const;
+
+class FormData {
+    #name: string;
+    #required: string | false;
+    #placeholder: string;
+
+    constructor({ name, required, placeholder }: { name: string; required: string | false; placeholder: string }) {
+        this.#name = name;
+        this.#required = required;
+        this.#placeholder = placeholder;
+    }
+
+    // getters
+    get name() {
+        return this.#name;
+    }
+    get required() {
+        return this.#required;
+    }
+    get placeholder() {
+        return this.#placeholder;
+    }
+    getFeature() {
+        return this.#required ? 'required' : 'optional';
+    }
+    getUpperFeature() {
+        return toUpperCaseFirstLetter(this.getFeature());
+    }
+    getUpperName() {
+        return toUpperCaseFirstLetter(this.#name);
+    }
+}
+
+export class TitleFormData extends FormData {
+    constructor({ required, placeholder }: { required: string | false; placeholder: string }) {
+        super({
+            name: 'title',
+            required,
+            placeholder,
+        });
+    }
+}
+export class DetailFormData extends FormData {
+    constructor({ required, placeholder }: { required: string | false; placeholder: string }) {
+        super({
+            name: 'detail',
+            required,
+            placeholder,
+        });
+    }
+}
+
+interface ConstructorBase {
+    required: string | false;
+    placeholder: string;
+}
+interface TitleConstructor extends ConstructorBase {}
+interface DetailConstructor extends ConstructorBase {}
+
+// argument for constructor
+const titleConstructor: TitleConstructor = {
+    required: 'Please enter a title',
+    placeholder: 'Grocery Shopping',
+};
+const detailConstructor: DetailConstructor = {
+    required: false,
+    placeholder: 'Buy milk, eggs, and bread',
+};
+
+// generate form data instances
+export const titleData = new TitleFormData(titleConstructor);
+export const detailData = new DetailFormData(detailConstructor);

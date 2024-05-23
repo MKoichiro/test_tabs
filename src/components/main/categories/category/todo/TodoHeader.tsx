@@ -9,7 +9,7 @@
 
 /* --- react/styled-components --- */
 import React from 'react';
-import styled, { css } from 'styled-components';
+import styled from 'styled-components';
 
 /* --- redux --------------------- */
 import { useDispatch } from 'react-redux';
@@ -21,9 +21,6 @@ import { TodoType } from '../../../../../providers/types/categories';
 /* --- utils --------------------- */
 import { statusCheckers } from '../../../../../utils/todoPropsHandler';
 
-/* --- hooks --------------------- */
-import { useImmediateEditable } from '../../../../../functions/immediateEditable/Hooks';
-
 /* --- material icons ------------ */
 import { ErrorOutline, ExpandLess } from '@mui/icons-material';
 
@@ -33,7 +30,7 @@ import { useWindowSizeSelector } from '../../../../../providers/redux/store';
 import { isTouchDevice } from '../../../../../data/constants/constants';
 import { BulletIcon } from '../../../../common/btns_icons/bullet_icon/BulletIcon';
 import { DragBtn } from '../../../../common/btns_icons/drag_btn/DragBtn';
-import { immediateEditableInput, listTitleFont } from '../../../../../globalStyle';
+import { immediateEditableInput } from '../../../../../globalStyle';
 import { useImmediateInputEditable } from '../../../../../functions/immediateEditable/Hooks_ver2';
 
 /* --- dev ----------------------- */
@@ -138,7 +135,6 @@ export const TodoHeader = ({ todo, attributes, listeners, isGloballyDragging, ha
     } = useTodoHeader({ todo, attributes });
 
     const { device } = useWindowSizeSelector();
-    console.log(title);
 
     return (
         <StyledHeader

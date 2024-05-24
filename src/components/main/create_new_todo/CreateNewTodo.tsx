@@ -39,7 +39,10 @@ import { useGlobalRef } from '../../../providers/context_api/global_ref/GlobalRe
 import { useCategoriesSelector } from '../../../providers/redux/store';
 import { SectionSeparator } from '../../common/section_separator/SectionSeparator';
 import { AddBoxOutlined, Inventory2Outlined } from '@mui/icons-material';
-import { MainField } from './MainField';
+import { MainField } from './fields/MainField';
+import { DeadlineField } from './fields/DeadlineField';
+import { OthersField } from './fields/OthersField';
+import { AddBtn } from '../../common/btns_icons/add_btn/AddBtn';
 
 /* --- dev ----------------------- */
 // import { isDebugMode } from '../../../utils/adminDebugMode';
@@ -204,38 +207,6 @@ export const CreateNewTodo = () => {
                           onBlur={handleBlur}
                           onFocus={handleFocus}
                       >
-                          {/* <legend className="form-legend">ADD NEW</legend> */}
-
-                          {/* <fieldset className="child-field">
-                              <legend className="child-legend">Main</legend>
-                              <div className="parts-container title-detail">
-                                  <FormParts
-                                      className={'parts title'}
-                                      partsFor={'title'}
-                                      as={'input'}
-                                      feature={'required'}
-                                      register={register}
-                                      partsRef={titleRef}
-                                      defaultValue={defaultValues.title}
-                                      inputType={'text'}
-                                      placeholder={placeholders.title}
-                                      error={errors.title}
-                                      isFieldsetBlurred={isFieldsetBlurred}
-                                  />
-
-                                  <FormParts
-                                      className={'parts detail'}
-                                      partsFor={'detail'}
-                                      as={'textarea'}
-                                      feature={'optional'}
-                                      register={register}
-                                      partsRef={detailRef}
-                                      defaultValue={defaultValues.detail}
-                                      placeholder={placeholders.detail}
-                                      isFieldsetBlurred={isFieldsetBlurred}
-                                  />
-                              </div>
-                          </fieldset> */}
                           <MainField
                               className="child-field"
                               register={register}
@@ -244,75 +215,23 @@ export const CreateNewTodo = () => {
                               isFieldsetBlurred={isFieldsetBlurred}
                           />
 
-                          <fieldset className="child-field">
-                              <legend className="child-legend">Deadline</legend>
-                              <div className="parts-container date-time">
-                                  <FormParts
-                                      className={'parts date'}
-                                      partsFor={'date'}
-                                      as={'input'}
-                                      feature={'optional'}
-                                      register={register}
-                                      partsRef={dateRef}
-                                      defaultValue={defaultValues.date}
-                                      inputType={'date'}
-                                      placeholder={placeholders.date}
-                                      isFieldsetBlurred={isFieldsetBlurred}
-                                  />
-                                  <span className="form-separator"></span>
-                                  <FormParts
-                                      className={'parts time'}
-                                      partsFor={'time'}
-                                      as={'input'}
-                                      feature={'optional'}
-                                      register={register}
-                                      partsRef={timeRef}
-                                      defaultValue={defaultValues.time}
-                                      inputType={'time'}
-                                      placeholder={placeholders.time}
-                                      isFieldsetBlurred={isFieldsetBlurred}
-                                  />
-                              </div>
-                          </fieldset>
+                          <DeadlineField
+                              className="child-field"
+                              register={register}
+                              refs={{ date: dateRef, time: timeRef }}
+                              error={errors.date}
+                              isFieldsetBlurred={isFieldsetBlurred}
+                          />
 
-                          <fieldset className="child-field">
-                              <legend className="child-legend">Others</legend>
-                              <div className="parts-container status-priority">
-                                  <FormParts
-                                      className={'parts status'}
-                                      partsFor={'status'}
-                                      as={'select'}
-                                      feature={'optional'}
-                                      register={register}
-                                      partsRef={statusRef}
-                                      defaultValue={'---'}
-                                      selectOptions={statusOptions}
-                                      placeholder={placeholders.status}
-                                      isFieldsetBlurred={isFieldsetBlurred}
-                                  />
-                                  <span className="form-separator"></span>
-                                  <FormParts
-                                      className={'parts priority'}
-                                      partsFor={'priority'}
-                                      as={'select'}
-                                      feature={'optional'}
-                                      register={register}
-                                      partsRef={priorityRef}
-                                      defaultValue={'---'}
-                                      selectOptions={priorityOptions}
-                                      placeholder={placeholders.priority}
-                                      isFieldsetBlurred={isFieldsetBlurred}
-                                  />
-                              </div>
-                          </fieldset>
-
-                          <div className="btn-submit-container">
-                              <button>
-                                  <FontAwesomeIcon icon={faPlus} />
-                                  ADD
-                              </button>
-                          </div>
+                          <OthersField
+                              className="child-field"
+                              register={register}
+                              refs={{ status: statusRef, priority: priorityRef }}
+                              error={errors.status}
+                              isFieldsetBlurred={isFieldsetBlurred}
+                          />
                       </fieldset>
+                      <AddBtn />
                   </StyledForm>
               </>,
               activeCategoryDiv
@@ -323,170 +242,14 @@ export const CreateNewTodo = () => {
 
 // === STYLE ========================================================= //
 const StyledForm = styled.form`
-    .parent-field {
-        margin: 0 0.8rem;
-
-        .child-field {
-            margin-top: 1.6rem;
-            .child-legend {
-                font-weight: bold;
-                font-size: 2rem;
-                margin-bottom: 0.8rem;
-            }
-
-            /* common */
-            .parts-container {
-                display: flex;
-                .parts {
-                    display: flex;
-                    gap: 0.8rem;
-                    @media (width < 600px) {
-                        flex-direction: column;
-                        gap: 0.4rem;
-                    }
-
-                    label {
-                        display: flex;
-                        height: fit-content;
-                        align-items: center;
-                        gap: 0.4rem;
-                        .feature {
-                            height: 100%;
-                            font-size: 0.9em;
-                            padding: 0.2rem 0.6rem;
-                        }
-                        .feature.optional {
-                            font-weight: bold;
-                            letter-spacing: 0.1rem;
-                            border: var(--border-weight) solid var(--color-black-1);
-                        }
-                        .feature.required {
-                            background: var(--color-black-1);
-                            color: var(--color-white-2);
-                            font-weight: bold;
-                            letter-spacing: 0.1rem;
-                            border: var(--border-weight) solid var(--color-black-1);
-                        }
-                        .label-txt {
-                            flex: 1;
-                            display: flex;
-                            justify-content: space-between;
-                            font-weight: bold;
-                            font-size: 1.8rem;
-                            &::after {
-                                content: ':';
-                            }
-                            @media (width < 600px) {
-                                justify-content: flex-start;
-                                font-size: 12px;
-                            }
-                        }
-                    }
-
-                    .input-error {
-                        input,
-                        /* textarea, */
-                        select {
-                            min-width: 100%;
-                            color: var(--color-black-1);
-                            background-color: #efefef;
-                            padding: 0 0.8rem;
-                            font-size: 1.8rem;
-                            @media (width < 600px) {
-                                font-size: 16px;
-                            }
-                        }
-                        input,
-                        select {
-                            height: 3.2rem;
-                            line-height: 3.2rem;
-                        }
-                        /* textarea {
-                            min-height: 6.4rem;
-                            line-height: 1.6;
-                        } */
-                        .error-message {
-                            text-align: right;
-                        }
-                    }
-                }
-            }
-
-            /* each */
-            /* .parts-container for title-detail */
-            .title-detail {
-                gap: 0.8rem;
-                flex-direction: column;
-                /* label : input = 2 : 6 + 1 + 2 + 6 (=15) */
-                .parts {
-                    label {
-                        flex: 2;
-                    }
-                    .input-error {
-                        flex: 15;
-                    }
-                }
-            }
-            /* .parts-container for date-time, status-priority */
-            .date-time,
-            .status-priority {
-                flex-direction: row;
-                /* label : input : separator : label : input = 2 : 6 : 1 : 2 : 6 */
-                .parts {
-                    flex: 8; // 2 + 6
-                    label {
-                        flex: 2;
-                    }
-                    .input-error {
-                        flex: 6;
-                    }
-                }
-                .form-separator {
-                    flex: 1;
-                    display: flex;
-                    justify-content: center;
-                    align-items: center;
-                    &::before {
-                        content: '';
-                        display: block;
-                        height: 80%;
-                        border-left: var(--border-1);
-                    }
-                }
-                @media (width < 600px) {
-                    flex-direction: column;
-                    gap: 0.8rem;
-                    .parts {
-                        label {
-                            flex: 2;
-                        }
-                        .input-error {
-                            flex: 6;
-                        }
-                    }
-                    .form-separator {
-                        display: none;
-                    }
-                }
-            }
-        }
-
-        .btn-submit-container {
-            margin-top: 2.4rem;
-            button {
-                display: block;
-                margin-left: auto;
-                padding: 0.4rem 0.8rem;
-                border: var(--border-1);
-                .fa-plus {
-                    margin-right: 0.8rem;
-                }
-            }
-            button:active {
-                scale: 0.9;
-                transition: scale 50ms;
-            }
-        }
+    /* variables */
+    --input-padding: 0.8rem;
+    --input-line-height: 1.5rem;
+    --input-fs-num: 1.6;
+    --input-fs: calc(var(--input-fs-num) * 1rem);
+    @media (width < 600px) {
+        --input-fs-num: 11;
+        --input-fs: calc(var(--input-fs-num) * 1px);
     }
 `;
 // ========================================================= STYLE === //

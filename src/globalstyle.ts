@@ -122,6 +122,7 @@ const GlobalStyle = createGlobalStyle`
     outline: none;
     background: none;
     border-radius: 0;
+    cursor: pointer;
   }
   textarea {
     resize: none;

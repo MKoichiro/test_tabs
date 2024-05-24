@@ -1,11 +1,19 @@
 import React from 'react';
 import styled from 'styled-components';
-import { DetailFormData, TitleFormData } from './FormSetting';
+import {
+    DetailFormData,
+    TitleFormData,
+    D_DateFormData,
+    D_TimeFormData,
+    StatusFormData,
+    PriorityFormData,
+} from '../../FormSetting';
 
 // === TYPE =========================================================== //
 interface AddNewLabelProps {
     className?: string;
-    formData: TitleFormData | DetailFormData;
+    htmlFor?: string;
+    formData: TitleFormData | DetailFormData | D_DateFormData | D_TimeFormData | StatusFormData | PriorityFormData;
 }
 // =========================================================== TYPE === //
 
@@ -13,8 +21,8 @@ interface AddNewLabelProps {
 // ======================================================= FUNCTION === //
 
 // === COMPONENT ====================================================== //
-export const AddNewLabel = ({ className, formData }: AddNewLabelProps) => {
-    const classNameLabel = className ? className : '';
+export const AddNewLabel = ({ className, htmlFor, formData }: AddNewLabelProps) => {
+    const classNameFormatted = `${className} label-as-layout-item`;
     const featureClassList = [
         formData.getFeature(), // 'required' or 'optional'
         'feature',
@@ -23,8 +31,8 @@ export const AddNewLabel = ({ className, formData }: AddNewLabelProps) => {
 
     return (
         <StyledLabel
-            className={classNameLabel}
-            htmlFor={formData.name}
+            className={classNameFormatted}
+            htmlFor={htmlFor || formData.name}
         >
             <span className={classNameFeature}>{formData.getUpperFeature()}</span>
             <span className="label-txt">{formData.getUpperName()}</span>
@@ -34,17 +42,17 @@ export const AddNewLabel = ({ className, formData }: AddNewLabelProps) => {
 // ====================================================== COMPONENT === //
 
 // === STYLE ========================================================== //
-const StyledLabel = styled.label`
+interface StyledLabelProps {}
+const StyledLabel = styled.label<StyledLabelProps>`
     display: flex;
     height: fit-content;
-    min-width: 15%;
     align-items: center;
     gap: 0.4rem;
     font-weight: bold;
     .feature {
         height: 100%;
-        font-size: 0.9em;
-        padding: 0.2rem 0.6rem;
+        font-size: 0.8em;
+        padding: 0.1em 0.5em;
         letter-spacing: 0.1em;
     }
     .feature.optional {
@@ -59,12 +67,12 @@ const StyledLabel = styled.label`
         flex: 1;
         display: flex;
         justify-content: space-between;
-        font-size: 1.8rem;
+        font-size: 1.6rem;
         @media (width < 600px) {
             justify-content: flex-start;
-            font-size: 12px;
+            font-size: 11px;
         }
-        letter-spacing: 0.05em;
+        letter-spacing: 0.08em;
         &::after {
             content: ':';
         }

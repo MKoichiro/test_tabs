@@ -39,7 +39,15 @@
 - copilotからの提案をここに箇条書きで記述する。
 */
 
-import { notSet, priorityLiterals, statusLiterals } from '../../../providers/types/categories';
+import {
+    PriorityLiteralsType,
+    PriorityUnionType,
+    StatusLiteralsType,
+    StatusUnionType,
+    notSet,
+    priorityLiterals,
+    statusLiterals,
+} from '../../../providers/types/categories';
 import { toUpperCaseFirstLetter } from '../../../utils/toUpperCaseFirstLetter';
 /* --- dev ----------------------- */
 // import { isDebugMode } from '../../../utils/adminDebugMode';
@@ -70,12 +78,39 @@ export const placeholders = {
     status: '選択してください',
 } as const;
 
-class FormData {
+interface FormDataBaseConstructor {
+    name: string;
+    required: string | false;
+    placeholder?: string;
+}
+type ConstructorBase = Omit<FormDataBaseConstructor, 'name'>;
+
+type FormDataTextareaConstructor = Required<ConstructorBase>;
+interface TitleConstructor extends FormDataTextareaConstructor {}
+interface DetailConstructor extends FormDataTextareaConstructor {}
+
+type FormDataInputConstructor = FormDataTextareaConstructor;
+interface D_DateConstructor extends FormDataInputConstructor {}
+interface D_TimeConstructor extends FormDataInputConstructor {}
+
+type FormDataSelectConstructor = Omit<FormDataBaseConstructor, 'name' | 'placeholder'>;
+interface StatusConstructor extends FormDataSelectConstructor {
+    optionValues: StatusLiteralsType;
+    optionDisplays?: StatusLiteralsType;
+    defaultValue: StatusUnionType;
+}
+interface PriorityConstructor extends FormDataSelectConstructor {
+    optionValues: PriorityLiteralsType;
+    optionDisplays?: PriorityLiteralsType;
+    defaultValue: PriorityUnionType;
+}
+
+class FormDataBase {
     #name: string;
     #required: string | false;
-    #placeholder: string;
+    #placeholder?: string;
 
-    constructor({ name, required, placeholder }: { name: string; required: string | false; placeholder: string }) {
+    constructor({ name, required, placeholder }: FormDataBaseConstructor) {
         this.#name = name;
         this.#required = required;
         this.#placeholder = placeholder;
@@ -102,8 +137,18 @@ class FormData {
     }
 }
 
-export class TitleFormData extends FormData {
-    constructor({ required, placeholder }: { required: string | false; placeholder: string }) {
+// textarea
+class FormDataTextareaAddition extends FormDataBase {
+    constructor({ name, required, placeholder }: { name: string; required: string | false; placeholder: string }) {
+        super({
+            name,
+            required,
+            placeholder,
+        });
+    }
+}
+export class TitleFormData extends FormDataTextareaAddition {
+    constructor({ required, placeholder }: TitleConstructor) {
         super({
             name: 'title',
             required,
@@ -111,8 +156,8 @@ export class TitleFormData extends FormData {
         });
     }
 }
-export class DetailFormData extends FormData {
-    constructor({ required, placeholder }: { required: string | false; placeholder: string }) {
+export class DetailFormData extends FormDataTextareaAddition {
+    constructor({ required, placeholder }: DetailConstructor) {
         super({
             name: 'detail',
             required,
@@ -121,14 +166,117 @@ export class DetailFormData extends FormData {
     }
 }
 
-interface ConstructorBase {
-    required: string | false;
-    placeholder: string;
-}
-interface TitleConstructor extends ConstructorBase {}
-interface DetailConstructor extends ConstructorBase {}
+// input
+class FormDataInputAddition extends FormDataBase {
+    #type: string;
+    constructor({
+        name,
+        required,
+        placeholder,
+        type,
+    }: {
+        name: string;
+        required: string | false;
+        placeholder: string;
+        type: string;
+    }) {
+        super({
+            name,
+            required,
+            placeholder,
+        });
+        this.#type = type;
+    }
 
-// argument for constructor
+    // getters
+    get type() {
+        return this.#type;
+    }
+}
+export class D_DateFormData extends FormDataInputAddition {
+    constructor({ required, placeholder }: D_DateConstructor) {
+        super({
+            name: 'date',
+            required,
+            placeholder,
+            type: 'date',
+        });
+    }
+}
+export class D_TimeFormData extends FormDataInputAddition {
+    constructor({ required, placeholder }: D_TimeConstructor) {
+        super({
+            name: 'time',
+            required,
+            placeholder,
+            type: 'time',
+        });
+    }
+}
+
+// select
+class FormDataSelectAddition<T, U> extends FormDataBase {
+    #optionValues: T;
+    #optionDisplays: T | string[];
+    #defaultValue: U;
+    constructor({
+        name,
+        required,
+        optionValues,
+        optionDisplays = optionValues,
+        defaultValue,
+    }: {
+        name: string;
+        required: string | false;
+        optionValues: T;
+        optionDisplays?: T | string[];
+        defaultValue: U;
+    }) {
+        super({
+            name,
+            required,
+        });
+        this.#optionValues = optionValues;
+        this.#optionDisplays = optionDisplays || optionValues;
+        this.#defaultValue = defaultValue;
+    }
+
+    // getters
+    get optionValues() {
+        return this.#optionValues;
+    }
+    get optionDisplays() {
+        return this.#optionDisplays;
+    }
+    get defaultValue() {
+        return this.#defaultValue;
+    }
+}
+export class StatusFormData extends FormDataSelectAddition<StatusLiteralsType, StatusUnionType> {
+    constructor({ required, optionValues, optionDisplays, defaultValue }: StatusConstructor) {
+        super({
+            name: 'status',
+            required,
+            optionValues,
+            optionDisplays,
+            defaultValue,
+        });
+    }
+}
+export class PriorityFormData extends FormDataSelectAddition<PriorityLiteralsType, PriorityUnionType> {
+    constructor({ required, optionValues, optionDisplays, defaultValue }: PriorityConstructor) {
+        super({
+            name: 'priority',
+            required,
+            optionValues,
+            optionDisplays,
+            defaultValue,
+        });
+    }
+}
+
+// argument for generating form data instances
+// textarea
 const titleConstructor: TitleConstructor = {
     required: 'Please enter a title',
     placeholder: 'Grocery Shopping',
@@ -138,6 +286,35 @@ const detailConstructor: DetailConstructor = {
     placeholder: 'Buy milk, eggs, and bread',
 };
 
+// input
+const D_dateConstructor: D_DateConstructor = {
+    required: false,
+    placeholder: 'yyyy-mm-dd',
+};
+const D_timeConstructor: D_TimeConstructor = {
+    required: false,
+    placeholder: 'hh:mm',
+};
+
+// select
+const statusConstructor: StatusConstructor = {
+    required: false,
+    optionValues: statusLiterals,
+    defaultValue: notSet,
+};
+const priorityConstructor: PriorityConstructor = {
+    required: false,
+    optionValues: priorityLiterals,
+    defaultValue: notSet,
+};
+
 // generate form data instances
+// textarea
 export const titleData = new TitleFormData(titleConstructor);
 export const detailData = new DetailFormData(detailConstructor);
+// input
+export const d_DateData = new D_DateFormData(D_dateConstructor);
+export const d_TimeData = new D_TimeFormData(D_timeConstructor);
+// select
+export const statusData = new StatusFormData(statusConstructor);
+export const priorityData = new PriorityFormData(priorityConstructor);

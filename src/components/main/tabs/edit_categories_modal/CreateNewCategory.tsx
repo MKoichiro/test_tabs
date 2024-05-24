@@ -26,6 +26,7 @@ import { useForm } from 'react-hook-form';
 import { generateUUID } from '../../../../utils/generateUUID';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
+import { AddBtn } from '../../../common/btns_icons/add_btn/AddBtn';
 
 /* --- dev ----------------------- */
 // import { isDebugMode } from '../../../../utils/adminDebugMode';
@@ -160,13 +161,7 @@ export const CreateNewCategory = () => {
                     </div>
                 </div>
 
-                {/* <button className="btn-add">ADD</button> */}
-                <div className="btn-submit-container">
-                    <button>
-                        <FontAwesomeIcon icon={faPlus} />
-                        ADD
-                    </button>
-                </div>
+                <AddBtn className="btn-add"/>
             </fieldset>
         </StyledForm>
     );
@@ -243,22 +238,11 @@ const StyledForm = styled.form`
             }
         }
 
-        .btn-submit-container {
+        .btn-add {
             margin-top: 1.6rem;
-            button {
-                display: block;
-                margin-left: auto;
-                padding: 0.4rem 0.8rem;
-                border: var(--border-1);
-                .fa-plus {
-                    margin-right: 0.8rem;
-                }
-            }
-            button:active {
-                scale: 0.9;
-                transition: scale 50ms;
-            }
         }
+
+
     }
 `;
 // ========================================================= STYLE === //

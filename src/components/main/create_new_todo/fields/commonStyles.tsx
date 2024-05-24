@@ -23,6 +23,8 @@ const StyledLegend = styled.legend`
 `;
 
 // =========================================================== TYPE === //
+
+
 interface FormPartsWithErrorProps {
     className?: string;
     error?: FieldError | Merge<FieldError, FieldErrorsImpl<any>>;
@@ -42,13 +44,13 @@ export const FormPartsWithError = ({ className, children, ...rest }: PropsWithCh
 const StyledDiv = styled.div`
     input,
     select {
-        min-width: 100%;
         color: var(--color-black-1);
         background: var(--color-white-3);
         padding: var(--input-padding);
         font-size: var(--input-fs);
         line-height: var(--input-line-height);
-        min-height: calc(var(--input-line-height) + var(--input-padding) * 2);
+        width: 100%;
+        height: calc(var(--input-line-height) + var(--input-padding) * 2);
     }
 `;
 
@@ -89,6 +91,14 @@ const GridStyle = () => css`
         .label-as-layout-item {
             grid-area: label;
         }
+
+        .input-error-as-layout-item {
+            grid-area: input-error;
+        }
+
+        @media (width < 600px) {
+            grid-template-columns: 5fr 12fr;
+        }
     }
 `;
 const FlexStyle = () => css`
@@ -101,8 +111,10 @@ const FlexStyle = () => css`
         }
         .label-as-layout-item {
             flex: 2;
+            @media (width < 600px) {
+                max-width: calc(100% * (5 / 17));
+            };
         }
-
         .input-error-as-layout-item {
             flex: 15;
         }

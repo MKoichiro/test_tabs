@@ -69,7 +69,6 @@ const StyledLabel = styled.label<StyledLabelProps>`
         justify-content: space-between;
         font-size: 1.6rem;
         @media (width < 600px) {
-            justify-content: flex-start;
             font-size: 11px;
         }
         letter-spacing: 0.08em;

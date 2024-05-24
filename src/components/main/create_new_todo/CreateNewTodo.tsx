@@ -13,7 +13,12 @@ import { createPortal } from 'react-dom';
 import styled from 'styled-components';
 
 /* --- child components ---------- */
-import { FormParts } from './FormParts';
+import { SectionSeparator } from '../../common/section_separator/SectionSeparator';
+import { MainField } from './fields/MainField';
+import { DeadlineField } from './fields/DeadlineField';
+import { OthersField } from './fields/OthersField';
+import { AddBoxOutlined } from '@mui/icons-material';
+import { AddBtn } from '../../common/btns_icons/add_btn/AddBtn';
 
 /* --- providers/contexts -------- */
 import { addTodo } from '../../../providers/redux/slices/categoriesSlice';
@@ -32,17 +37,8 @@ import { DLFormatters } from '../../../utils/todoPropsHandler';
 import { useForm } from 'react-hook-form';
 
 /* --- settings ------------------ */
-import { defaultValues, statusOptions, priorityOptions, placeholders } from './FormSetting';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import { useGlobalRef } from '../../../providers/context_api/global_ref/GlobalRef';
 import { useCategoriesSelector } from '../../../providers/redux/store';
-import { SectionSeparator } from '../../common/section_separator/SectionSeparator';
-import { AddBoxOutlined, Inventory2Outlined } from '@mui/icons-material';
-import { MainField } from './fields/MainField';
-import { DeadlineField } from './fields/DeadlineField';
-import { OthersField } from './fields/OthersField';
-import { AddBtn } from '../../common/btns_icons/add_btn/AddBtn';
 
 /* --- dev ----------------------- */
 // import { isDebugMode } from '../../../utils/adminDebugMode';

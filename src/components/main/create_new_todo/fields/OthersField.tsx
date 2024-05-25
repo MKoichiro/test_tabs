@@ -14,8 +14,10 @@ interface OthersFieldProps {
         status: MutableRefObject<HTMLSelectElement | null>;
         priority: MutableRefObject<HTMLSelectElement | null>;
     };
-    error?: FieldError | Merge<FieldError, FieldErrorsImpl<any>>;
-    isFieldsetBlurred: boolean;
+    errors?: {
+        status: FieldError | Merge<FieldError, FieldErrorsImpl<any>> | undefined;
+        priority: FieldError | Merge<FieldError, FieldErrorsImpl<any>> | undefined;
+    };
 }
 // =========================================================== TYPE === //
 
@@ -50,7 +52,7 @@ const useOthersField = ({ register, refs }: Pick<OthersFieldProps, PropsPickerFo
 // ======================================================= FUNCTION === //
 
 // === COMPONENT ====================================================== //
-export const OthersField = ({ className, error, isFieldsetBlurred, ...rest }: OthersFieldProps) => {
+export const OthersField = ({ className, errors, ...rest }: OthersFieldProps) => {
     const { setRefs, handleChanges, RHFRest } = useOthersField({ ...rest });
 
     return (
@@ -67,10 +69,7 @@ export const OthersField = ({ className, error, isFieldsetBlurred, ...rest }: Ot
                         htmlFor={statusData.name}
                         formData={statusData}
                     />
-                    <FormPartsWithError
-                        error={error}
-                        isFieldsetBlurred={isFieldsetBlurred}
-                    >
+                    <FormPartsWithError error={errors?.status}>
                         <select
                             id={statusData.name}
                             defaultValue={statusData.defaultValue}
@@ -101,10 +100,7 @@ export const OthersField = ({ className, error, isFieldsetBlurred, ...rest }: Ot
                         htmlFor={priorityData.name}
                         formData={priorityData}
                     />
-                    <FormPartsWithError
-                        error={error}
-                        isFieldsetBlurred={isFieldsetBlurred}
-                    >
+                    <FormPartsWithError error={errors?.priority}>
                         <select
                             id={priorityData.name}
                             defaultValue={priorityData.defaultValue}

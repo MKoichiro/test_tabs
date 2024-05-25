@@ -6,7 +6,6 @@ import { FieldError, FieldErrorsImpl, Merge } from 'react-hook-form';
 interface ErrorMessageProps {
     className?: string;
     error?: FieldError | Merge<FieldError, FieldErrorsImpl<any>>;
-    isFieldsetBlurred: boolean;
 }
 // =========================================================== TYPE === //
 
@@ -14,14 +13,24 @@ interface ErrorMessageProps {
 // ======================================================= FUNCTION === //
 
 // === COMPONENT ====================================================== //
-export const ErrorMessage = ({ className, error, isFieldsetBlurred }: ErrorMessageProps) => {
-    return <StyledP className={className}>{error && !isFieldsetBlurred && (error.message as ReactNode)}</StyledP>;
+export const ErrorMessage = ({ className, error }: ErrorMessageProps) => {
+    return <StyledP className={className}>{error && (error.message as ReactNode)}</StyledP>;
 };
 // ====================================================== COMPONENT === //
 
 // === STYLE ========================================================== //
-interface StyledFieldSetProps {}
+interface StyledFieldSetProps {
+    $isBlurred?: boolean;
+}
 const StyledP = styled.p<StyledFieldSetProps>`
+    /* opacity: ${({ $isBlurred }) => ($isBlurred ? 0 : 1)};
+    transition: ${({ $isBlurred }) => {
+        if ($isBlurred) {
+            return 'opacity 3s 5s';
+        } else {
+            return 'opacity 1s ease-out';
+        }
+    }}; */
     margin-top: 0.2rem;
     color: tomato;
     height: 1.6rem;

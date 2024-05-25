@@ -2,7 +2,8 @@ import React, { MutableRefObject, useState } from 'react';
 import styled, { css } from 'styled-components';
 import { DetailFormData, TitleFormData } from '../../FormSetting';
 import { FieldValues, UseFormRegister } from 'react-hook-form';
-import { isDebugMode } from '../../../../../utils/adminDebugMode';
+// import { isDebugMode } from '../../../../../utils/adminDebugMode';
+const isDebugMode = false;
 
 // === TYPE =========================================================== //
 interface FlexibleTextareaProps {

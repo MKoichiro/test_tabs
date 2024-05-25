@@ -161,7 +161,7 @@ export const CreateNewCategory = () => {
                     </div>
                 </div>
 
-                <AddBtn className="btn-add"/>
+                <AddBtn className="btn-add" />
             </fieldset>
         </StyledForm>
     );
@@ -241,8 +241,6 @@ const StyledForm = styled.form`
         .btn-add {
             margin-top: 1.6rem;
         }
-
-
     }
 `;
 // ========================================================= STYLE === //

@@ -14,8 +14,10 @@ interface DeadlineFieldProps {
         date: MutableRefObject<HTMLInputElement | null>;
         time: MutableRefObject<HTMLInputElement | null>;
     };
-    error?: FieldError | Merge<FieldError, FieldErrorsImpl<any>>;
-    isFieldsetBlurred: boolean;
+    errors?: {
+        date: FieldError | Merge<FieldError, FieldErrorsImpl<any>> | undefined;
+        time: FieldError | Merge<FieldError, FieldErrorsImpl<any>> | undefined;
+    };
 }
 // =========================================================== TYPE === //
 
@@ -50,12 +52,13 @@ const useDeadlineField = ({ register, refs }: Pick<DeadlineFieldProps, PropsPick
 // ======================================================= FUNCTION === //
 
 // === COMPONENT ====================================================== //
-export const DeadlineField = ({ className, error, isFieldsetBlurred, ...rest }: DeadlineFieldProps) => {
+export const DeadlineField = ({ className, errors, ...rest }: DeadlineFieldProps) => {
     const { setRefs, handleChanges, RHFRest } = useDeadlineField({ ...rest });
 
     return (
         <StyledFieldSet className={className}>
             <ChildLegend>Deadline</ChildLegend>
+
             <FormLayoutContainer $twoCols={true}>
                 {/* date */}
                 <FormLayoutItem
@@ -66,10 +69,7 @@ export const DeadlineField = ({ className, error, isFieldsetBlurred, ...rest }: 
                         htmlFor={d_DateData.name}
                         formData={d_DateData}
                     />
-                    <FormPartsWithError
-                        error={error}
-                        isFieldsetBlurred={isFieldsetBlurred}
-                    >
+                    <FormPartsWithError error={errors?.date}>
                         <input
                             type={d_DateData.type}
                             id={d_DateData.name}
@@ -92,10 +92,7 @@ export const DeadlineField = ({ className, error, isFieldsetBlurred, ...rest }: 
                         htmlFor={d_TimeData.name}
                         formData={d_TimeData}
                     />
-                    <FormPartsWithError
-                        error={error}
-                        isFieldsetBlurred={isFieldsetBlurred}
-                    >
+                    <FormPartsWithError error={errors?.time}>
                         <input
                             type={d_TimeData.type}
                             id={d_TimeData.name}

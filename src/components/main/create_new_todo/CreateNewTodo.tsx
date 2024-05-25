@@ -27,7 +27,7 @@ import { addTodo } from '../../../providers/redux/slices/categoriesSlice';
 import { useDispatch } from 'react-redux';
 
 /* --- types --------------------- */
-import { StatusUnionType, PriorityUnionType, TodoType } from '../../../providers/types/categories';
+import { StatusUnionType, PriorityUnionType, TodoType, notSet } from '../../../providers/types/categories';
 
 /* --- utils --------------------- */
 import { generateUUID } from '../../../utils/generateUUID';
@@ -44,8 +44,6 @@ import { useCategoriesSelector } from '../../../providers/redux/store';
 // import { isDebugMode } from '../../../utils/adminDebugMode';
 
 // === TYPE =========================================================== //
-// interface CreateNewTodoType {}
-
 interface InputDataType {
     title?: string;
     detail?: string;
@@ -70,9 +68,12 @@ export const useCreateNewTodo = () => {
         handleSubmit,
         formState: { errors },
         resetField,
-    } = useForm({ mode: 'onChange' });
+    } = useForm({
+        mode: 'onChange',
+        resetOptions: { keepErrors: false, keepValues: false },
+        reValidateMode: 'onChange',
+    });
     // set up element refs
-    // const titleRef = useRef<HTMLInputElement | null>(null);
     const titleRef = useRef<HTMLTextAreaElement | null>(null);
     const detailRef = useRef<HTMLTextAreaElement | null>(null);
     const dateRef = useRef<HTMLInputElement | null>(null);
@@ -89,8 +90,8 @@ export const useCreateNewTodo = () => {
         detailRef.current && (detailRef.current.value = '');
         dateRef.current && (dateRef.current.value = '');
         timeRef.current && (timeRef.current.value = '');
-        priorityRef.current && (priorityRef.current.value = '---');
-        statusRef.current && (statusRef.current.value = '---');
+        priorityRef.current && (priorityRef.current.value = notSet);
+        statusRef.current && (statusRef.current.value = notSet);
         // focus を title にリセット
         titleRef.current && titleRef.current.focus();
     };
@@ -103,9 +104,9 @@ export const useCreateNewTodo = () => {
             id: generateUUID(),
             createdDate: nowDateISOStr,
             updatedDate: nowDateISOStr,
-            status: inputData.status || '---',
+            status: inputData.status || notSet,
             deadline: formattedDeadline,
-            priority: inputData.priority || '---',
+            priority: inputData.priority || notSet,
             isArchived: false,
             title: inputData.title || '',
             detail: inputData.detail || '',
@@ -119,7 +120,6 @@ export const useCreateNewTodo = () => {
     const executeSubmit = (inputData: InputDataType) => {
         formInitializer(); // 1. form の初期化
         addNewTodo(inputData); // 2. newTodo を categories に追加
-        resetField('title', { keepError: false }); // 3. react-hook-form の form をリセット(エラーメッセージの表示など、これをしないと「エラーで拒絶→正常な入力でsubmit」の次回以降の入力時、フォーカスしただけでエラーメッセージが表示されてしまう)
     };
     // ------------------------------------------ submit で実行 --- //
 
@@ -138,6 +138,25 @@ export const useCreateNewTodo = () => {
     };
 };
 
+/**
+ * activeCategoryDiv を取得し、その中にフォームを表示。
+ * activeIdxが更新されるたびに、activeCategoryDivも更新し、フォームを付け替えるイメージ。
+ * 初回ロード時にcategoryDivRefのセットより先にフォームを表示しようとするため、
+ * useEffectでcategoryDivRefが初期化されたらactiveCategoryDivにセットする。
+ * @category Custom Hook
+ */
+export const useActiveCategoryAttachment = () => {
+    const { categoriesEntity: categories, activeIdx } = useCategoriesSelector();
+    const activeCategoryId = categories[activeIdx].id;
+    const categoryDivRef = useGlobalRef({ propertyName: 'categoryDiv', id: activeCategoryId });
+    const [activeCategoryDiv, setActiveCategoryDiv] = useState<HTMLElement | undefined | null>(null);
+
+    useEffect(() => {
+        setActiveCategoryDiv(categoryDivRef.current);
+    }, [categoryDivRef.current]);
+
+    return { activeCategoryDiv };
+};
 // ======================================================= FUNCTION === //
 
 // === COMPONENT ====================================================== //
@@ -164,30 +183,9 @@ export const CreateNewTodo = () => {
         statusRef,
         executeSubmit,
         errors,
-        resetField,
     } = useCreateNewTodo();
 
-    const [isFieldsetBlurred, setIsFieldsetBlurred] = useState(false);
-    const handleFocus = () => {
-        setIsFieldsetBlurred(false);
-    };
-    const handleBlur = () => {
-        setIsFieldsetBlurred(true);
-        resetField('title', { keepError: false });
-    };
-
-    // activeCategoryDiv を取得し、その中にフォームを表示。
-    // activeIdxが更新されるたびに、activeCategoryDivも更新し、フォームを付け替えるイメージ。
-    const { categoriesEntity: categories, activeIdx } = useCategoriesSelector();
-    const activeCategoryId = categories[activeIdx].id;
-    const categoryDivRef = useGlobalRef({ propertyName: 'categoryDiv', id: activeCategoryId });
-    const [activeCategoryDiv, setActiveCategoryDiv] = useState<HTMLElement | undefined | null>(null);
-
-    // 初回ロード時にcategoryDivRefのセットより先にフォームを表示しようとするため、
-    // useEffectでcategoryDivRefが初期化されたらactiveCategoryDivにセットする。
-    useEffect(() => {
-        setActiveCategoryDiv(categoryDivRef.current);
-    }, [categoryDivRef.current]);
+    const { activeCategoryDiv } = useActiveCategoryAttachment();
 
     return activeCategoryDiv
         ? createPortal(
@@ -198,33 +196,26 @@ export const CreateNewTodo = () => {
                       marginTop="3.2rem"
                   />
                   <StyledForm onSubmit={handleSubmit(executeSubmit)}>
-                      <fieldset
-                          className="parent-field"
-                          onBlur={handleBlur}
-                          onFocus={handleFocus}
-                      >
+                      <fieldset className="parent-field">
                           <MainField
                               className="child-field"
                               register={register}
                               refs={{ title: titleRef, detail: detailRef }}
-                              error={errors.title}
-                              isFieldsetBlurred={isFieldsetBlurred}
+                              errors={{ title: errors.title, detail: errors.detail }}
                           />
 
                           <DeadlineField
                               className="child-field"
                               register={register}
                               refs={{ date: dateRef, time: timeRef }}
-                              error={errors.date}
-                              isFieldsetBlurred={isFieldsetBlurred}
+                              errors={{ date: errors.deadlineDate, time: errors.deadlineTime }}
                           />
 
                           <OthersField
                               className="child-field"
                               register={register}
                               refs={{ status: statusRef, priority: priorityRef }}
-                              error={errors.status}
-                              isFieldsetBlurred={isFieldsetBlurred}
+                              errors={{ status: errors.status, priority: errors.priority }}
                           />
                       </fieldset>
                       <AddBtn />
@@ -240,10 +231,11 @@ export const CreateNewTodo = () => {
 const StyledForm = styled.form`
     /* variables */
     --input-padding: 0.8rem;
-    --input-line-height: 1.5rem;
+    --input-line-height: 2rem;
     --input-fs-num: 1.6;
     --input-fs: calc(var(--input-fs-num) * 1rem);
     @media (width < 600px) {
+        --input-line-height: 1.5rem;
         --input-fs-num: 11;
         --input-fs: calc(var(--input-fs-num) * 1px);
     }

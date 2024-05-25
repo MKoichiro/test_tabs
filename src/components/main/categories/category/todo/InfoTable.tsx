@@ -94,6 +94,7 @@ const useInfoTable = (todo: TodoType) => {
         }
     };
     useEffect(() => {
+        // cleanupが正常に動作していないことを確認(2024/05/25)
         activeIdx !== undefined
             ? document.addEventListener('mousedown', handleOutsideClick)
             : document.removeEventListener('mousedown', handleOutsideClick); // cleanup
@@ -161,9 +162,10 @@ const useInfoTable = (todo: TodoType) => {
 
     const handleDeadlineChange = (e: ChangeEvent<HTMLInputElement>) => {
         deadlineIE.handleChange(e);
-        if (deadlineIE.inputRef && deadlineIE.inputRef.current) {
-            deadlineIE.inputRef.current.blur();
-        }
+        console.log('handleDeadlineChange');
+        // if (deadlineIE.inputRef && deadlineIE.inputRef.current) {
+        //     deadlineIE.inputRef.current.blur();
+        // }
     };
     const handleStatusChange = (e: ChangeEvent<HTMLSelectElement>) => {
         statusIE.handleChange(e);
@@ -307,13 +309,20 @@ export const InfoTable = ({ todo }: InfoTableProps) => {
                         onClick={handleDeadlineClick}
                     >
                         {deadlineIE.inEditing ? (
-                            <form onSubmit={deadlineIE.handleSubmit}>
+                            <form
+                                onSubmit={(e) => {
+                                    deadlineIE.handleSubmit(e);
+                                    handleDeadlineBlur();
+                                    if (deadlineIE.inputRef && deadlineIE.inputRef.current) {
+                                        deadlineIE.inputRef.current.blur();
+                                    }
+                                }}
+                            >
                                 <input
-                                    type="date"
+                                    type="datetime-local"
                                     ref={deadlineIE.inputRef.setRef}
                                     defaultValue={deadline}
                                     onChange={handleDeadlineChange}
-                                    onBlur={handleDeadlineBlur}
                                 />
                             </form>
                         ) : (
@@ -459,11 +468,11 @@ const StyledTable = styled.table<{ $isDev: boolean }>`
         flex: 1;
         height: 67%;
         font-size: 1.4rem;
-        letter-spacing: 0.05em;
+        letter-spacing: 0.1em;
         display: flex;
         align-items: center;
         justify-content: center;
-        color: #999;
+        color: var(--color-gray-1);
     }
 `;
 
@@ -475,6 +484,10 @@ const StyledTh = styled.th<{ $isActive: boolean }>`
     border-left-width: var(--border-weight);
     border-left-style: solid;
     border-left-color: ${({ $isActive }) => ($isActive ? 'var(--color-black-1)' : 'transparent')};
+    tr > & {
+        // 詳細度を1 point 上げるためにセレクタを指定
+        color: ${({ $isActive }) => ($isActive ? 'var(--color-black-1)' : 'var(--color-gray-1)')};
+    }
     transition:
         min-height 300ms,
         border-top-color 1000ms,
@@ -489,6 +502,11 @@ const StyledTd = styled.td<{ $isActive: boolean }>`
     border-right-width: var(--border-weight);
     border-right-style: solid;
     border-right-color: ${({ $isActive }) => ($isActive ? 'var(--color-black-1)' : 'transparent')};
+    tr > & {
+        // 詳細度を1 point 上げるためにセレクタを指定
+        color: var(--color-black-1);
+        font-weight: bold;
+    }
     transition:
         min-height 300ms,
         border-bottom-color 1000ms,
@@ -541,19 +559,5 @@ const getActiveStyles = ($isActive: boolean) => css`
     cursor: pointer;
     font-size: ${$isActive ? '1.6rem' : '1.4rem'};
     min-height: ${$isActive ? '85%' : '67%'};
-    tr > & {
-        // 詳細度を1 point 上げるためにセレクタを指定
-        color: ${$isActive ? '#000' : '#999'};
-    }
 `;
 // ========================================================= STYLE === //
-
-// memo: React.MouseEvent と MouseEvent の違い
-// そもそも'MouseEvent'には二種類存在する。
-// 1. 'MouseEvent': これはブラウザネイティブのAPIから提供されている型定義で、Reactのイベントとは関係ない。
-// 2. 'React.MouseEvent': これはReactが提供している型定義。
-
-// 使い分け
-// 1. 'MouseEvent': vanilla.js の add(/remove)EventListener に渡す関数の型定義として使う。
-// 2. 'React.MouseEvent': JSX の 例えば onClick などのReactのイベントハンドラに渡す関数の型定義として使う。
-// 混同すると、これらは相互に互換性がないため、エラーが発生する。

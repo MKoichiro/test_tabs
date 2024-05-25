@@ -1,4 +1,4 @@
-import React, { PropsWithChildren } from 'react';
+import React, { MutableRefObject, PropsWithChildren } from 'react';
 import styled, { css } from 'styled-components';
 import { ErrorMessage } from './parts/ErrorMessage';
 import { FieldError, FieldErrorsImpl, Merge } from 'react-hook-form';
@@ -24,11 +24,9 @@ const StyledLegend = styled.legend`
 
 // =========================================================== TYPE === //
 
-
 interface FormPartsWithErrorProps {
     className?: string;
     error?: FieldError | Merge<FieldError, FieldErrorsImpl<any>>;
-    isFieldsetBlurred: boolean;
 }
 
 export const FormPartsWithError = ({ className, children, ...rest }: PropsWithChildren<FormPartsWithErrorProps>) => {
@@ -113,7 +111,7 @@ const FlexStyle = () => css`
             flex: 2;
             @media (width < 600px) {
                 max-width: calc(100% * (5 / 17));
-            };
+            }
         }
         .input-error-as-layout-item {
             flex: 15;

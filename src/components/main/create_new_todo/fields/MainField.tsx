@@ -14,8 +14,11 @@ interface MainFieldProps {
         title: MutableRefObject<HTMLTextAreaElement | null>;
         detail: MutableRefObject<HTMLTextAreaElement | null>;
     };
-    error?: FieldError | Merge<FieldError, FieldErrorsImpl<any>>;
-    isFieldsetBlurred: boolean;
+    errors?: {
+        title: FieldError | Merge<FieldError, FieldErrorsImpl<any>> | undefined;
+        detail: FieldError | Merge<FieldError, FieldErrorsImpl<any>> | undefined;
+    };
+    // isFieldsetBlurred: boolean;
 }
 // =========================================================== TYPE === //
 
@@ -23,7 +26,7 @@ interface MainFieldProps {
 // ======================================================= FUNCTION === //
 
 // === COMPONENT ====================================================== //
-export const MainField = ({ className, register, refs, error, isFieldsetBlurred }: MainFieldProps) => {
+export const MainField = ({ className, register, refs, errors }: MainFieldProps) => {
     return (
         <StyledFieldSet className={className}>
             <ChildLegend>Main</ChildLegend>
@@ -35,10 +38,7 @@ export const MainField = ({ className, register, refs, error, isFieldsetBlurred 
                     idx={0}
                 >
                     <AddNewLabel formData={titleData} />
-                    <FormPartsWithError
-                        error={error}
-                        isFieldsetBlurred={isFieldsetBlurred}
-                    >
+                    <FormPartsWithError error={errors?.title}>
                         <FlexibleTextarea
                             id={titleData.name}
                             RHF_Register={register}
@@ -55,10 +55,7 @@ export const MainField = ({ className, register, refs, error, isFieldsetBlurred 
                     idx={1}
                 >
                     <AddNewLabel formData={detailData} />
-                    <FormPartsWithError
-                        error={error}
-                        isFieldsetBlurred={isFieldsetBlurred}
-                    >
+                    <FormPartsWithError error={errors?.detail}>
                         <FlexibleTextarea
                             id={detailData.name}
                             RHF_Register={register}

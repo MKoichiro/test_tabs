@@ -59,7 +59,7 @@ export const useImmediateInputEditable = (arg: ImmediateInputEditableArg) => {
             actionCreator = (e) =>
                 updateTodoProps({
                     todoId: target.id,
-                    update: { deadline: { date: (e.target as HTMLTextAreaElement).value, use_time: false } },
+                    update: { deadline: { date: (e.target as HTMLTextAreaElement).value, use_time: true } },
                 });
             break;
         }
@@ -72,13 +72,13 @@ export const useImmediateInputEditable = (arg: ImmediateInputEditableArg) => {
         setInEditing(false);
     };
     // onDoubleClick: bind to <element> you want to make trigger for entering into editing mode
-    const handleDoubleClick = () => {
-        console.log('handleDoubleClick', inEditing);
-        !inEditing && setInEditing(true);
-    };
+    const handleDoubleClick = () => !inEditing && setInEditing(true);
     // onChange, onBlur: bind to <input> or <select>
     const handleChange = (e: ChangeEvent<HTMLElement>) => dispatch(actionCreator(e));
-    const handleBlur = () => setInEditing(false);
+    const handleBlur = () => {
+        console.log('handleBlur');
+        setInEditing(false);
+    };
 
     // autofocus
     useEffect(() => {

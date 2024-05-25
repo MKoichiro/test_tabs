@@ -22,7 +22,6 @@ import { getFormattedDate } from '../../../../../utils/dateFormatter';
 
 /* --- dev ----------------------- */
 import { isDebugMode } from '../../../../../utils/adminDebugMode';
-import { useImmediateEditable } from '../../../../../functions/immediateEditable/Hooks';
 import { useCoexistSingleDoubleClickHandler } from '../../../../../functions/coexist_single_double_click_handler/Hooks';
 import {
     useImmediateInputEditable,
@@ -267,16 +266,16 @@ export const InfoTable = ({ todo }: InfoTableProps) => {
                         children="priority"
                         onClick={handlePriorityClick}
                     />
-                    <th
-                        className="info-head"
-                        children="created"
-                    />
-                    <th
-                        className="info-head"
-                        children="updated"
-                    />
                     {isDebugMode && displayMoreInfo && (
                         <>
+                            <th
+                                className="info-head"
+                                children="created"
+                            />
+                            <th
+                                className="info-head"
+                                children="updated"
+                            />
                             <th
                                 className="dev-th info-head"
                                 children="archived"
@@ -381,16 +380,16 @@ export const InfoTable = ({ todo }: InfoTableProps) => {
                             <span children={priority} />
                         )}
                     </StyledTd>
-                    <td
-                        className="info-value"
-                        children={createdDate}
-                    />
-                    <td
-                        className="info-value"
-                        children={updatedDate}
-                    />
                     {isDebugMode && displayMoreInfo && (
                         <>
+                            <td
+                                className="info-value"
+                                children={createdDate}
+                            />
+                            <td
+                                className="info-value"
+                                children={updatedDate}
+                            />
                             <td
                                 className="dev-td info-value"
                                 children={String(isArchived)}

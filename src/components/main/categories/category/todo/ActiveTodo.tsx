@@ -47,7 +47,7 @@ import { Inventory2Outlined, TaskAltOutlined, UnpublishedOutlined, ViewArrayOutl
 import { useSlidableRegister } from '../../../../../functions/slidable/Hooks';
 import { isTouchDevice } from '../../../../../data/constants/constants';
 import { ControlPanel } from '../../../../common/list_control_panel/ControlPanel';
-import { activeListCommon, draggingItemStyle, marginBetweenLiEls } from '../../../../../globalStyle';
+import { activeListCommon, draggingItemStyle, marginBetweenLiEls } from '../../../../../styles/global/globalStyle';
 // import { useGlobalSelectRef } from '../../../../../providers/context_api/global_ref/GlobalSelectRef';
 import { setInEditing } from '../../../../../providers/redux/slices/immediateEditableSlice';
 // import { SerializedStyles, css } from '@emotion/react';

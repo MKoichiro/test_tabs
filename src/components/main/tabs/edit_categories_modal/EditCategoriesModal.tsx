@@ -116,10 +116,10 @@ const StyledModal = styled(Modal)<StyledModalType>`
     color: var(--color-black-1);
 
     .edit-categories-modal-mask {
-        --bdf: ${(props) => (props.isOpen ? 'blur(2px)' : 'blur(0)')};
-        --bgc: ${(props) => (props.isOpen ? 'rgba(69 78 112 / .5)' : 'rgba(69 78 112 / 0)')};
+        --bdf: ${({ isOpen }) => (isOpen ? 'blur(2px)' : 'blur(0)')};
         backdrop-filter: var(--bdf);
         -webkit-backdrop-filter: var(--bdf);
+        --bgc: ${({ isOpen }) => (isOpen ? 'rgba(0 0 0 / .5)' : 'rgba(0 0 0 / 0)')};
         background-color: var(--bgc);
 
         transition:
@@ -135,7 +135,7 @@ const StyledModal = styled(Modal)<StyledModalType>`
         gap: 1.6rem;
         grid-template:
             'heading   btn' auto
-            'list     list' 50vh
+            'list     list' 60vh
             'form     form' auto
             / 1fr 3rem;
 
@@ -144,14 +144,17 @@ const StyledModal = styled(Modal)<StyledModalType>`
             padding: 0.8rem;
             border-radius: 0.2rem;
         }
+
         .modal-heading {
             grid-area: heading;
         }
+
         .btn-modal-close {
             grid-area: btn;
             display: block;
             outline: none;
         }
+
         .categories-display-container {
             grid-area: list;
             overflow-y: auto;
@@ -162,6 +165,7 @@ const StyledModal = styled(Modal)<StyledModalType>`
                 display: none;
             }
         }
+
         .form-create-new-categories-container {
             grid-area: form;
         }

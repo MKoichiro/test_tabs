@@ -18,7 +18,7 @@ import { TodoHeader } from './TodoHeader';
 
 /* --- types --------------------- */
 import { TodoType } from '../../../../../providers/types/categories';
-import { draggingItemStyle } from '../../../../../globalStyle';
+import { draggingItemStyle } from '../../../../../styles/global/globalStyle';
 
 /* --- dev ----------------------- */
 // import { isDebugMode } from '../../../../../utils/adminDebugMode';

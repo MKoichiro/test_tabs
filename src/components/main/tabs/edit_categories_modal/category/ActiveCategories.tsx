@@ -156,7 +156,7 @@ export const ActiveCategories = ({ activeCategories }: ActiveCategoriesProps) =>
                 <SectionSeparator
                     sectionName="Active"
                     icon={<DirectionsWalkOutlined />}
-                    marginTop="0.8rem"
+                    marginTop="0px"
                 />
                 {/* ActiveCategory: 常時表示、ul内に収まってドロップ位置を示唆する要素 */}
                 <SortableContext

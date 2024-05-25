@@ -39,6 +39,7 @@ import { useForm } from 'react-hook-form';
 /* --- settings ------------------ */
 import { useGlobalRef } from '../../../providers/context_api/global_ref/GlobalRef';
 import { useCategoriesSelector } from '../../../providers/redux/store';
+import { formControlStyleContext } from '../../../styles/common/formControl';
 
 /* --- dev ----------------------- */
 // import { isDebugMode } from '../../../utils/adminDebugMode';
@@ -227,17 +228,8 @@ export const CreateNewTodo = () => {
 };
 // ====================================================== COMPONENT === //
 
-// === STYLE ========================================================= //
+// === STYLE ========================================================== //
 const StyledForm = styled.form`
-    /* variables */
-    --input-padding: 0.8rem;
-    --input-line-height: 2rem;
-    --input-fs-num: 1.6;
-    --input-fs: calc(var(--input-fs-num) * 1rem);
-    @media (width < 600px) {
-        --input-line-height: 1.5rem;
-        --input-fs-num: 11;
-        --input-fs: calc(var(--input-fs-num) * 1px);
-    }
+    ${formControlStyleContext()};
 `;
-// ========================================================= STYLE === //
+// ========================================================== STYLE === //

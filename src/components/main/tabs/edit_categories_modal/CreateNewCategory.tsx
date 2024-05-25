@@ -24,9 +24,12 @@ import { useForm } from 'react-hook-form';
 
 /* --- utils --------------------- */
 import { generateUUID } from '../../../../utils/generateUUID';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import { AddBtn } from '../../../common/btns_icons/add_btn/AddBtn';
+import { AddNewLabel } from './AddNewLabel';
+import { StyledLegend } from '../../create_new_todo/fields/StyledLegend';
+import { SFC, SFCContainer } from '../../create_new_todo/fields/parts/form_controls/ShrinkableFormControl';
+import { FormLayoutContainer, FormLayoutItem } from '../../create_new_todo/fields/parts/FormLayout';
+import { FormPartsWithError } from '../../create_new_todo/fields/parts/FormPartsWithError';
 
 /* --- dev ----------------------- */
 // import { isDebugMode } from '../../../../utils/adminDebugMode';
@@ -115,7 +118,12 @@ export const useCreateNewCategory = () => {
         dispatch(switchCategory(categories.length));
     };
 
-    return { handleSubmit, executeSubmit, errors, refForName, restForName, nameRef };
+    const setRef = (e: HTMLInputElement) => {
+        refForName(e);
+        nameRef.current = e;
+    };
+
+    return { handleSubmit, executeSubmit, errors, restForName, setRef };
 };
 // ======================================================= FUNCTION === //
 
@@ -134,32 +142,33 @@ export const useCreateNewCategory = () => {
  * @category Component
  */
 export const CreateNewCategory = () => {
-    const { handleSubmit, executeSubmit, errors, refForName, restForName, nameRef } = useCreateNewCategory();
+    const { handleSubmit, executeSubmit, errors, restForName, setRef } = useCreateNewCategory();
 
     return (
         <StyledForm onSubmit={handleSubmit(executeSubmit)}>
             <fieldset>
-                <legend children="Create New Category" />
+                <StyledLegend children="Create New Category" />
 
-                <div className="container category_name-container">
-                    <label htmlFor="category_name">
-                        <span className="input-feature required">Required</span>
-                        <span>Category Name:</span>
-                    </label>
-                    <div className="input-and-error">
-                        <input
-                            type="text"
-                            id="category_name"
-                            placeholder="例: 買い物リスト"
-                            {...restForName}
-                            ref={(e) => {
-                                refForName(e);
-                                nameRef.current = e;
-                            }}
+                <FormLayoutContainer $twoCols={false}>
+                    <FormLayoutItem idx={0}>
+                        <AddNewLabel
+                            htmlFor="category_name"
+                            feature="required"
+                            labelTxt="name"
                         />
-                        <p>{errors.category_name?.message}</p>
-                    </div>
-                </div>
+                        <FormPartsWithError error={errors.category_name}>
+                            <SFCContainer>
+                                <SFC
+                                    type="text"
+                                    id="category_name"
+                                    placeholder="例: 買い物リスト"
+                                    {...restForName}
+                                    ref={setRef}
+                                />
+                            </SFCContainer>
+                        </FormPartsWithError>
+                    </FormLayoutItem>
+                </FormLayoutContainer>
 
                 <AddBtn className="btn-add" />
             </fieldset>
@@ -171,75 +180,8 @@ export const CreateNewCategory = () => {
 // === STYLE ========================================================= //
 const StyledForm = styled.form`
     fieldset {
-        // reset
-        border: none;
-        padding: 0;
-        margin: 0;
-        color: var(--color-black-1);
-
-        legend {
-            padding: 0; // reset
-            font-weight: bold;
-            font-size: 2rem;
-        }
-
-        .container {
-            margin-top: 1.6rem;
-            display: flex;
-            align-items: center;
-            gap: 0.8rem;
-
-            label {
-                display: flex;
-                gap: 0.8rem;
-                font-weight: bold;
-                .input-feature {
-                    font-size: 0.9em;
-                    padding: 0.2rem 0.6rem;
-
-                    background: var(--color-black-1);
-                    color: var(--color-white-2);
-                    font-weight: bold;
-                    letter-spacing: 0.1rem;
-                    border: var(--border-weight) solid var(--color-black-1);
-                }
-            }
-
-            .input-and-error {
-                flex: 1;
-                input {
-                    font-size: var(--fs-form);
-                    line-height: 3.6rem;
-                    width: 100%;
-                    border-radius: 0;
-                    border: none;
-                    outline: none;
-                    padding: 0 0.8rem;
-                    background: var(--color-white-3);
-                }
-                p {
-                    margin-left: auto;
-                    width: fit-content;
-                }
-            }
-
-            @media (width < 600px) {
-                flex-direction: column;
-                align-items: flex-start;
-                label {
-                    margin-right: auto;
-                }
-                .input-and-error {
-                    flex: 0 1 auto;
-                    width: 100%;
-                    input {
-                    }
-                }
-            }
-        }
-
         .btn-add {
-            margin-top: 1.6rem;
+            margin-top: 0.4rem;
         }
     }
 `;

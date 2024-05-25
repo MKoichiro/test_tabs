@@ -17,7 +17,7 @@ import React, { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 
 /* --- styles -------------------- */
-import GlobalStyle from './globalStyle';
+import GlobalStyle from './styles/global/globalStyle';
 
 /* --- child components ---------- */
 import { App } from './components/App';

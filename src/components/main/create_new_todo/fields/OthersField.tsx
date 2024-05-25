@@ -3,8 +3,11 @@ import styled from 'styled-components';
 import { statusData, priorityData } from '../FormSetting';
 import { FieldError, FieldErrorsImpl, FieldValues, Merge, UseFormRegister } from 'react-hook-form';
 import { AddNewLabel } from './parts/AddNewLabel';
-import { ChildLegend, FormLayoutContainer, FormLayoutItem, FormPartsWithError } from './commonStyles';
+import { StyledLegend } from './StyledLegend';
 import { FormColSeparator } from './parts/FormColSeparator';
+import { FormControl } from './parts/form_controls/FormControl';
+import { FormLayoutContainer, FormLayoutItem } from './parts/FormLayout';
+import { FormPartsWithError } from './parts/FormPartsWithError';
 
 // === TYPE =========================================================== //
 interface OthersFieldProps {
@@ -57,7 +60,7 @@ export const OthersField = ({ className, errors, ...rest }: OthersFieldProps) =>
 
     return (
         <StyledFieldSet className={className}>
-            <ChildLegend>Others</ChildLegend>
+            <StyledLegend>Others</StyledLegend>
 
             <FormLayoutContainer $twoCols={true}>
                 {/* status */}
@@ -70,7 +73,8 @@ export const OthersField = ({ className, errors, ...rest }: OthersFieldProps) =>
                         formData={statusData}
                     />
                     <FormPartsWithError error={errors?.status}>
-                        <select
+                        <FormControl
+                            as="select"
                             id={statusData.name}
                             defaultValue={statusData.defaultValue}
                             ref={setRefs.status}
@@ -85,7 +89,7 @@ export const OthersField = ({ className, errors, ...rest }: OthersFieldProps) =>
                                     {status}
                                 </option>
                             ))}
-                        </select>
+                        </FormControl>
                     </FormPartsWithError>
                 </FormLayoutItem>
 
@@ -101,7 +105,8 @@ export const OthersField = ({ className, errors, ...rest }: OthersFieldProps) =>
                         formData={priorityData}
                     />
                     <FormPartsWithError error={errors?.priority}>
-                        <select
+                        <FormControl
+                            as="select"
                             id={priorityData.name}
                             defaultValue={priorityData.defaultValue}
                             ref={setRefs.priority}
@@ -116,7 +121,7 @@ export const OthersField = ({ className, errors, ...rest }: OthersFieldProps) =>
                                     {priority}
                                 </option>
                             ))}
-                        </select>
+                        </FormControl>
                     </FormPartsWithError>
                 </FormLayoutItem>
             </FormLayoutContainer>

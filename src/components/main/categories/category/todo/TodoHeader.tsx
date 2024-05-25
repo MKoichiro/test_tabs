@@ -30,7 +30,7 @@ import { useWindowSizeSelector } from '../../../../../providers/redux/store';
 import { isTouchDevice } from '../../../../../data/constants/constants';
 import { BulletIcon } from '../../../../common/btns_icons/bullet_icon/BulletIcon';
 import { DragBtn } from '../../../../common/btns_icons/drag_btn/DragBtn';
-import { immediateEditableInput } from '../../../../../globalStyle';
+import { immediateEditableInput } from '../../../../../styles/global/globalStyle';
 import { useImmediateInputEditable } from '../../../../../functions/immediateEditable/Hooks_ver2';
 
 /* --- dev ----------------------- */

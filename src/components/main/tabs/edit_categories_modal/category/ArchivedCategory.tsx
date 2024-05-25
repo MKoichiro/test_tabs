@@ -25,7 +25,7 @@ import { useSlidableRegister } from '../../../../../functions/slidable/Hooks';
 import { ControlPanel } from '../../../../common/list_control_panel/ControlPanel';
 import { isTouchDevice } from '../../../../../data/constants/constants';
 import { BulletIcon } from '../../../../common/btns_icons/bullet_icon/BulletIcon';
-import { archivedListCommon, listTitleFont, marginBetweenLiEls } from '../../../../../globalStyle';
+import { archivedListCommon, listTitleFont, marginBetweenLiEls } from '../../../../../styles/global/globalStyle';
 
 /* --- dev ----------------------- */
 // import { isDebugMode } from '../../../../../utils/adminDebugMode';
@@ -123,6 +123,7 @@ const StyledLi = styled.li<CategoryCommonStylesType>`
     .slidable-main-container {
         display: flex;
         .category-name-container {
+            font-size: 1.8rem;
             --num-of-icons: 1;
             --icon-widths: calc(var(--icon-size-1) * var(--num-of-icons));
             width: calc(100% - var(--icon-widths));

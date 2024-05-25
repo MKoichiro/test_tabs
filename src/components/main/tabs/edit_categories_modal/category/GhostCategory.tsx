@@ -22,7 +22,7 @@ import { DragBtn } from '../../../../common/btns_icons/drag_btn/DragBtn';
 import { isTouchDevice } from '../../../../../data/constants/constants';
 import { useWindowSizeSelector } from '../../../../../providers/redux/store';
 import { BulletIcon } from '../../../../common/btns_icons/bullet_icon/BulletIcon';
-import { draggingItemStyle } from '../../../../../globalStyle';
+import { draggingItemStyle } from '../../../../../styles/global/globalStyle';
 
 /* --- dev ----------------------- */
 // import { isDebugMode } from '../../../../../utils/adminDebugMode';

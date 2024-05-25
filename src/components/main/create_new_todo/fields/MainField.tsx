@@ -3,8 +3,11 @@ import styled from 'styled-components';
 import { FieldError, FieldErrorsImpl, FieldValues, Merge, UseFormRegister } from 'react-hook-form';
 import { titleData, detailData } from '../FormSetting';
 import { AddNewLabel } from './parts/AddNewLabel';
-import { FlexibleTextarea } from './parts/FlexibleTextarea';
-import { ChildLegend, FormLayoutContainer, FormLayoutItem, FormPartsWithError } from './commonStyles';
+import { FTAContext, useFTA, FTA } from './parts/form_controls/FlexTextarea';
+import { StyledLegend } from './StyledLegend';
+import { isDebugMode } from '../../../../utils/adminDebugMode';
+import { FormLayoutContainer, FormLayoutItem } from './parts/FormLayout';
+import { FormPartsWithError } from './parts/FormPartsWithError';
 
 // === TYPE =========================================================== //
 interface MainFieldProps {
@@ -18,18 +21,50 @@ interface MainFieldProps {
         title: FieldError | Merge<FieldError, FieldErrorsImpl<any>> | undefined;
         detail: FieldError | Merge<FieldError, FieldErrorsImpl<any>> | undefined;
     };
-    // isFieldsetBlurred: boolean;
 }
 // =========================================================== TYPE === //
 
 // === FUNCTION ======================================================= //
+const useMainField = ({ register, refs }: Pick<MainFieldProps, 'register' | 'refs'>) => {
+    const titleFTA = useFTA();
+    const detailFTA = useFTA();
+
+    const { ref: RHF_titleRef, onChange: RHF_titleOnChange, ...RHF_titleRest } = register('title');
+    const { ref: RHF_detailRef, onChange: RHF_detailOnChange, ...RHF_detailRest } = register('detail');
+
+    const setTitleRef = (e: HTMLTextAreaElement | null) => {
+        refs.title.current = e;
+        RHF_titleRef(e);
+    };
+    const setDetailRef = (e: HTMLTextAreaElement | null) => {
+        refs.detail.current = e;
+        RHF_detailRef(e);
+    };
+
+    const handleTitleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+        RHF_titleOnChange(e);
+        titleFTA.handleChange(e);
+    };
+    const handleDetailChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+        RHF_detailOnChange(e);
+        detailFTA.handleChange(e);
+    };
+
+    return {
+        setRefs: { title: setTitleRef, detail: setDetailRef },
+        handleChanges: { title: handleTitleChange, detail: handleDetailChange },
+        RHFRest: { title: RHF_titleRest, detail: RHF_detailRest },
+        settings: { title: titleFTA.settings, detail: detailFTA.settings },
+    };
+};
 // ======================================================= FUNCTION === //
 
 // === COMPONENT ====================================================== //
 export const MainField = ({ className, register, refs, errors }: MainFieldProps) => {
+    const { setRefs, handleChanges, RHFRest, settings } = useMainField({ register, refs });
     return (
         <StyledFieldSet className={className}>
-            <ChildLegend>Main</ChildLegend>
+            <StyledLegend>Main</StyledLegend>
 
             <FormLayoutContainer $twoCols={false}>
                 {/* title */}
@@ -39,13 +74,17 @@ export const MainField = ({ className, register, refs, errors }: MainFieldProps)
                 >
                     <AddNewLabel formData={titleData} />
                     <FormPartsWithError error={errors?.title}>
-                        <FlexibleTextarea
-                            id={titleData.name}
-                            RHF_Register={register}
-                            textareaRef={refs.title}
-                            formData={titleData}
-                            placeholder={titleData.placeholder}
-                        />
+                        <FTAContext FTASettings={settings.title}>
+                            <FTA
+                                as="textarea"
+                                id={titleData.name}
+                                placeholder={titleData.placeholder}
+                                ref={setRefs.title}
+                                onChange={handleChanges.title}
+                                {...RHFRest.title}
+                                $isDev={isDebugMode}
+                            />
+                        </FTAContext>
                     </FormPartsWithError>
                 </FormLayoutItem>
 
@@ -56,13 +95,17 @@ export const MainField = ({ className, register, refs, errors }: MainFieldProps)
                 >
                     <AddNewLabel formData={detailData} />
                     <FormPartsWithError error={errors?.detail}>
-                        <FlexibleTextarea
-                            id={detailData.name}
-                            RHF_Register={register}
-                            textareaRef={refs.detail}
-                            formData={detailData}
-                            placeholder={detailData.placeholder}
-                        />
+                        <FTAContext FTASettings={settings.detail}>
+                            <FTA
+                                as="textarea"
+                                id={detailData.name}
+                                placeholder={detailData.placeholder}
+                                ref={setRefs.detail}
+                                onChange={handleChanges.detail}
+                                {...RHFRest.detail}
+                                $isDev={isDebugMode}
+                            />
+                        </FTAContext>
                     </FormPartsWithError>
                 </FormLayoutItem>
             </FormLayoutContainer>

@@ -1,5 +1,5 @@
 import { createGlobalStyle, css } from 'styled-components';
-import { contentsWidths } from './data/styleMagics';
+import { contentsWidths } from '../../data/styleMagics';
 
 const GlobalStyle = createGlobalStyle`
 
@@ -11,21 +11,19 @@ const GlobalStyle = createGlobalStyle`
       --contents-width: ${`${contentsWidths.sp}vw`};
     }
 
-
     /* font-family */
     --ff-1:                            Arial, 'Helvetica Neue', Helvetica, sans-serif;
     --ff-2: 'Times NewRoman', 'Times', Arial, 'Helvetica Neue', Helvetica, sans-serif;
     --ff-3: 'Economica'              , Arial, 'Helvetica Neue', Helvetica, sans-serif;
 
-    /* color */
+  
+    /* colors */
     --color-black-1: #444;
     --color-black-2: #262626;
-
     --color-white-1: #e1e1e1;
     --color-white-2: #f9f9f9;
     --color-white-3: #efefef;
     --color-white-4: #f5f5f5;
-
     --color-gray-1: #888;
 
 
@@ -36,8 +34,10 @@ const GlobalStyle = createGlobalStyle`
       --border-weight: .1rem;
     }
 
+  
     /* icon size */
     --icon-size-1: 3.2rem;
+
 
     /* list */
     --active-todo-width: var(--contents-width);
@@ -48,9 +48,6 @@ const GlobalStyle = createGlobalStyle`
     @media (width < 600px) {
       --list-title-line-height: 24px;
     }
-
-
-
   }
 
   /* reset */
@@ -122,7 +119,7 @@ const GlobalStyle = createGlobalStyle`
     outline: none;
     background: none;
     border-radius: 0;
-    cursor: pointer;
+    /* cursor: pointer; */
   }
   textarea {
     resize: none;
@@ -183,6 +180,19 @@ const GlobalStyle = createGlobalStyle`
 
 export default GlobalStyle;
 
+// export const formControlStyleContext = () => css`
+//     /* form control */
+//     --input-padding: 0.8rem;
+//     --input-line-height: 2rem;
+//     --input-fs-num: 1.6;
+//     --input-fs: calc(var(--input-fs-num) * 1rem);
+//     @media (width < 600px) {
+//         --input-line-height: 15.0px;
+//         --input-fs-num: 11.0;
+//         --input-fs: calc(var(--input-fs-num) * 1px);
+//     }
+// `;
+
 export const marginBetweenLiEls = () => css`
     li + & {
         margin-top: 1.4rem;
@@ -207,10 +217,10 @@ export const archivedListCommon = ({ type }: { type: 'todo' | 'category' }) => c
 `;
 
 export const listTitleFont = () => css`
-    font-size: 2rem;
+    font-size: 1.8rem;
     line-height: var(--list-title-line-height);
     @media (width < 600px) {
-        font-size: 16px;
+        font-size: 11px;
     }
 `;
 
@@ -242,10 +252,11 @@ export const immediateEditableInput = ({
         line-height: 1.5em;
         min-height: 1.5em;
         --fs: var(--pc-formatted);
+        font-size: calc(var(--fs) * 1rem);
         @media (width < 1024px) {
             --fs: var(--tb-formatted);
+            font-size: calc(var(--fs) * 1px);
         }
-        font-size: calc(var(--fs) * 1rem);
         @media (width < 600px) {
             --fs: var(--sp-formatted);
             font-size: calc(var(--fs) * 1px);
@@ -265,7 +276,6 @@ export const immediateEditableInput = ({
                 --real-fs: 16;
                 font-size: calc(var(--real-fs) * 1px);
             }
-            font-size: calc(var(--real-fs) * 1rem);
             @media (width < 1024px) {
                 font-size: calc(var(--real-fs) * 1px);
             }

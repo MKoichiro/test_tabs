@@ -25,7 +25,7 @@ export const AddNewLabel = ({ className, htmlFor, formData }: AddNewLabelProps) 
     const classNameFormatted = `${className} label-as-layout-item`;
     const featureClassList = [
         formData.getFeature(), // 'required' or 'optional'
-        'feature',
+        'feature-icon',
     ];
     const classNameFeature = featureClassList.join(' ');
 
@@ -49,20 +49,24 @@ const StyledLabel = styled.label<StyledLabelProps>`
     align-items: center;
     gap: 0.4rem;
     font-weight: bold;
-    .feature {
+
+    .feature-icon {
         height: 100%;
         font-size: 0.8em;
         padding: 0.1em 0.5em;
         letter-spacing: 0.1em;
     }
-    .feature.optional {
+
+    .optional {
         border: var(--border-weight) solid var(--color-black-1);
     }
-    .feature.required {
+
+    .required {
         background: var(--color-black-1);
         color: var(--color-white-2);
         border: var(--border-weight) solid var(--color-black-1);
     }
+
     .label-txt {
         flex: 1;
         display: flex;

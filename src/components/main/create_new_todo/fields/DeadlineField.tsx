@@ -3,8 +3,11 @@ import styled from 'styled-components';
 import { d_DateData, d_TimeData } from '../FormSetting';
 import { FieldError, FieldErrorsImpl, FieldValues, Merge, UseFormRegister } from 'react-hook-form';
 import { AddNewLabel } from './parts/AddNewLabel';
-import { ChildLegend, FormLayoutContainer, FormLayoutItem, FormPartsWithError } from './commonStyles';
+import { StyledLegend } from './StyledLegend';
 import { FormColSeparator } from './parts/FormColSeparator';
+import { FormControl } from './parts/form_controls/FormControl';
+import { FormLayoutContainer, FormLayoutItem } from './parts/FormLayout';
+import { FormPartsWithError } from './parts/FormPartsWithError';
 
 // === TYPE =========================================================== //
 interface DeadlineFieldProps {
@@ -57,7 +60,7 @@ export const DeadlineField = ({ className, errors, ...rest }: DeadlineFieldProps
 
     return (
         <StyledFieldSet className={className}>
-            <ChildLegend>Deadline</ChildLegend>
+            <StyledLegend>Deadline</StyledLegend>
 
             <FormLayoutContainer $twoCols={true}>
                 {/* date */}
@@ -70,7 +73,7 @@ export const DeadlineField = ({ className, errors, ...rest }: DeadlineFieldProps
                         formData={d_DateData}
                     />
                     <FormPartsWithError error={errors?.date}>
-                        <input
+                        <FormControl
                             type={d_DateData.type}
                             id={d_DateData.name}
                             ref={setRefs.date}
@@ -93,7 +96,7 @@ export const DeadlineField = ({ className, errors, ...rest }: DeadlineFieldProps
                         formData={d_TimeData}
                     />
                     <FormPartsWithError error={errors?.time}>
-                        <input
+                        <FormControl
                             type={d_TimeData.type}
                             id={d_TimeData.name}
                             ref={setRefs.time}

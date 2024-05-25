@@ -11,7 +11,7 @@ import { vw2px } from '../../../../../utils/converters';
 import { useSlidableRegister } from '../../../../../functions/slidable/Hooks';
 import { isTouchDevice } from '../../../../../data/constants/constants';
 import { ControlPanel } from '../../../../common/list_control_panel/ControlPanel';
-import { archivedListCommon, marginBetweenLiEls } from '../../../../../globalStyle';
+import { archivedListCommon, marginBetweenLiEls } from '../../../../../styles/global/globalStyle';
 
 interface ArchivedTodoProps {
     key: string;

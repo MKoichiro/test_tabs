@@ -44,7 +44,7 @@ import {
     immediateEditableInput,
     listTitleFont,
     marginBetweenLiEls,
-} from '../../../../../globalStyle';
+} from '../../../../../styles/global/globalStyle';
 
 /* --- dev ----------------------- */
 // import { isDebugMode } from '../../../../../utils/adminDebugMode';
